@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">KEYS</string>
+
+    <string name="login_title">Login</string>
+    <string name="keys">KEYS</string>
+    <string name="forget_password">forget pssword</string>
+    <string name="register_title">Register</string>
+    <string name="home_title">Home</string>
+    <string name="welcome_to_keys">Welcome to KEYS</string>
+    <string name="FAB_item">Item</string>
+    <string name="item">Item</string>
+    <string name="add_password_tv">Add Password</string>
+    <string name="password_genrator_tv">Password Genrator</string>
+    <string name="keys_logo">KEYS logo</string>
+    <string name="genrate_password">Genrate\nPassword</string>
+    <string name="A">A</string>
+    <string name="a">a</string>
+    <string name="_1">1</string>
+    <string name="hash">#</string>
+    <string name="your_password_tv">Your PassWord</string>
+    <string name="profile_title">Profile</string>
+    <string name="login_data">Login Data</string>
+    <string name="mobile_no_tv">Mobile NO:</string>
+    <string name="email_tv">Email</string>
+    <string name="signin_data_tv">Signin Data</string>
+    <string name="password_tv">Email</string>
+    <string name="name_tv">Name</string>
+    <string name="log_out_btn">Log out</string>
+    <string name="add_personal_nfo">Personal \nInfo</string>
+    <string name="prefix">www.</string>
+    <string name="suffix">.com</string>
+
+    <string name="rate_dialog_title">Rating</string>
+    <string name="rate_dialog_message">If you like this App, \nplease rate our App. \nThanks for your support </string>
+    <string name="rate_dialog_ok">rate it now</string>
+    <string name="rate_dialog_cancel">remind  me later</string>
+    <string name="rate_dialog_no">no thanks</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="setting_title">Setting</string>
+</resources>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PassGenActivity">
+
+    <TextView
+        android:id="@+id/title1"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="@color/Activity_theme"
+        android:fontFamily="@font/aclonica"
+        android:gravity="center"
+        android:text="@string/genrate_password"
+        android:textSize="30sp"
+        app:layout_constraintTop_toTopOf="parent" />
+    <ImageButton
+    android:id="@+id/img_back"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="20dp"
+    android:layout_marginTop="20dp"
+    android:background="@color/Activity_theme"
+    android:src="@drawable/arrow_back"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider_pass_lenght"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:stepSize="4.0"
+        android:value="8"
+        android:valueFrom="4.0"
+        android:valueTo="40.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title1" />
+
+    <LinearLayout
+        android:id="@+id/linear_layout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:gravity="end"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="@+id/slider_pass_lenght"
+        app:layout_constraintTop_toBottomOf="@+id/tv_password">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/checkBox1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upper Case Alphabate" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/checkBox2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Lower Case Alphabate" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/checkBox3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Number" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/checkBox4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Spcial charactor" />
+
+
+    </LinearLayout>
+
+
+    <Button
+        android:id="@+id/bt_use"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="80dp"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/button_back"
+        android:text="Use "
+        android:visibility="visible"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear_layout2" />
+
+    <Button
+        android:id="@+id/bt_copy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="@color/button_back"
+        android:text="Copy"
+        app:layout_constraintLeft_toRightOf="@+id/bt_use"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linear_layout2" />
+
+    <TextView
+        android:id="@+id/tv_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:textIsSelectable="true"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/slider_pass_lenght" />
+
+
+    <!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
+    <!--        android:id="@+id/bottom_nav"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:background="@color/Activity_theme"-->
+    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--        app:menu="@menu/bottom_nevigation_menu" />-->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
