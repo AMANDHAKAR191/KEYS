@@ -2,7 +2,6 @@ package com.example.keys.settings;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.keys.R;
-import com.example.keys.baseactivitys.SettingActivity;
 
 public class AppInfo extends AppCompatActivity {
     TextView tv_app_version;
@@ -26,7 +24,7 @@ public class AppInfo extends AppCompatActivity {
         img_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(AppInfo.this, SettingActivity.class));
+                overridePendingTransition(R.anim.slide_right_left,0);
                 finish();
             }
         });

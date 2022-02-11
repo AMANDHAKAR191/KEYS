@@ -3,7 +3,6 @@ package com.example.keys;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,11 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.example.keys.signin_login.LogInActivity;
+
 public class SplashActivity extends AppCompatActivity {
 
-    SharedPreferences sharedPreferences;
-    private int BIOMETRIC_PERMISSION_CODE = 1;
-    Boolean isfingerprinton;
+    private final int BIOMETRIC_PERMISSION_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,20 +35,11 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 if (ContextCompat.checkSelfPermission(SplashActivity.this,
                         Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                    sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-                    isfingerprinton = sharedPreferences.getBoolean(SignUpActivity.KEY_USE_FINGERPRINT, false);
 
-//                    isfingerprinton = true;
-                    System.out.println(isfingerprinton);
-                    if (!isfingerprinton){
-                        Intent intent1 = new Intent(SplashActivity.this, LogInActivity.class);
-                        startActivity(intent1);
-                        finish();
-                    }else {
-                        Intent intent2 = new Intent(SplashActivity.this, BiometricActivity.class);
-                        startActivity(intent2);
-                        finish();
-                    }
+                    Intent intent2 = new Intent(SplashActivity.this, LogInActivity.class);
+                    overridePendingTransition(R.anim.slide_right_left, 0);
+                    startActivity(intent2);
+                    finish();
 
                 } else {
                     requestStoragePermission();

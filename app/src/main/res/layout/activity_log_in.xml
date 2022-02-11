@@ -5,7 +5,7 @@
     android:id="@+id/constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LogInActivity">
+    tools:context=".signin_login.LogInActivity">
 
     <TextView
         android:id="@+id/login_title"
@@ -14,7 +14,8 @@
         android:layout_marginBottom="300dp"
         android:background="@color/Activity_theme"
         android:fontFamily="@font/aclonica"
-        android:gravity="start|center"
+        android:gravity="center"
+        android:onClick="vibrate"
         android:text="@string/login_title"
         android:textSize="40dp"
         app:layout_constraintTop_toTopOf="parent" />
@@ -28,21 +29,24 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:layout_width="110dp"
-            android:layout_height="110dp"
-            android:src="@drawable/keys_logs" />
+            android:id="@+id/keys_icon"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="10dp"
+            android:onClick="open_secret_notes"
+            android:src="@drawable/group_1final_keys_logo" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="-30dp"
-            android:fontFamily="@font/aclonica"
-            android:gravity="center"
-            android:text="@string/keys"
-            android:textSize="35dp"
-            android:textStyle="bold"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="-30dp"-->
+<!--            android:fontFamily="@font/aclonica"-->
+<!--            android:gravity="center"-->
+<!--            android:text="@string/keys"-->
+<!--            android:textSize="35dp"-->
+<!--            android:textStyle="bold"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent" />-->
 
     </LinearLayout>
 
@@ -63,7 +67,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Enter Mobile No."
                 app:endIconMode="clear_text"
-                app:startIconDrawable="@drawable/contact_phone">
+                app:startIconDrawable="@drawable/phone">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -94,6 +98,7 @@
                 android:id="@+id/tv_forget_password"
                 android:background="#00000000"
                 android:layout_gravity="end"
+                android:onClick="forgetpassword"
                 android:text="@string/forget_password"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -117,6 +122,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="90dp"
                 android:text="Login"
+                android:onClick="login"
                 android:backgroundTint="@color/purple_200"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
@@ -140,6 +146,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:text="Create Account"
+                android:onClick="create_account"
                 android:textColor="@color/purple_200"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"

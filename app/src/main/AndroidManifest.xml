@@ -5,22 +5,26 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
-    <uses-permission  android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/icon_iamge"
+        android:icon="@drawable/keys_icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/icon_iamge_background"
+        android:roundIcon="@drawable/keys_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.KEYS">
         <activity
-            android:name=".settings.sendEmailActivity"
+            android:name=".notes.BiometricActivity"
             android:exported="false" />
         <activity
-            android:name=".BiometricActivity"
+            android:name=".notes.secretNotesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".notes.addNotesActivity"
             android:exported="false" />
         <activity
             android:name=".SplashActivity"
@@ -32,50 +36,52 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LogInActivity"
+            android:name=".signin_login.LogInActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".OTPVerification"
+            android:name=".settings.OTPVerification"
             android:exported="false" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".signin_login.SignUpActivity"
             android:exported="false" />
         <activity
-            android:name=".baseactivitys.HomeActivity"
+            android:name=".home.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".ShowCardviewDataActivity"
+            android:name=".home.ShowCardviewDataActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".notes.notesActivity"
             android:exported="false" />
         <activity
-            android:name=".PassGenActivity"
+            android:name=".home.PassGenActivity"
             android:exported="false" />
         <activity
-            android:name=".baseactivitys.ProfileActivity"
+            android:name=".settings.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".addPasswordData"
+            android:name=".home.addpassword.addPasswordData"
             android:exported="false" />
         <activity
-            android:name=".baseactivitys.SettingActivity"
-            android:exported="false" />
-        <activity
-            android:name=".settings.PrivecyActivity"
+            android:name=".settings.SettingActivity"
             android:exported="false" />
         <activity
             android:name=".settings.AppInfo"
             android:exported="false" />
-
         <activity
             android:name=".changePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".notes.pinLockFragment"
             android:exported="false" />
 
         <meta-data
             android:name="preloaded_fonts"
-            android:resource="@array/preloaded_fonts" />
+            android:resource="@array/preloaded_fonts" /> <!-- Sample AdMob App ID: ca-app-pub-3940256099942544~3347511713 -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713" />
     </application>
 
 </manifest>

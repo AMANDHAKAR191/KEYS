@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.keys.signin_login.SignUpActivity;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -99,10 +100,7 @@ public class changePasswordActivity extends AppCompatActivity {
         }else if(userEnteredoldPassword.equals(userEnterednewPassword)){
             System.out.println("same password please enter again");
             return false;
-        }else if(!userEnterednewPassword.equals(userEnteredconformPassword)){
-            return false;
-        }
-        return true;
+        }else return userEnterednewPassword.equals(userEnteredconformPassword);
     }
 
 }

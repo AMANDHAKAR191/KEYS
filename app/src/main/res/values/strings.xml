@@ -3,12 +3,12 @@
 
     <string name="login_title">Login</string>
     <string name="keys">KEYS</string>
-    <string name="forget_password">forget pssword</string>
+    <string name="forget_password">forget password</string>
     <string name="register_title">Register</string>
     <string name="home_title">Home</string>
     <string name="welcome_to_keys">Welcome to KEYS</string>
     <string name="FAB_item">Item</string>
-    <string name="item">Item</string>
+    <string name="Notes">Note</string>
     <string name="add_password_tv">Add Password</string>
     <string name="password_genrator_tv">Password Genrator</string>
     <string name="keys_logo">KEYS logo</string>
@@ -39,4 +39,5 @@
 
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="setting_title">Setting</string>
+    <string name="item">Item</string>
 </resources>

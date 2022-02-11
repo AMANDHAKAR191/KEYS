@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShowCardviewDataActivity">
+    tools:context=".home.ShowCardviewDataActivity">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="180dp"
@@ -22,28 +22,32 @@
             android:textSize="20dp"
             android:textStyle="bold"
             android:elevation="20dp"
-            android:background="#6D75A8"
+            android:background="@drawable/rounded_thems1"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
-<!--        <TextView-->
-<!--            android:id="@+id/title"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:gravity="center"-->
-<!--            android:text="Website.com"-->
-<!--            android:textSize="30dp"-->
-<!--            app:layout_constraintBottom_toBottomOf="parent" />-->
+
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/img_back"
             android:src="@drawable/arrow_back"
+            android:onClick="goback"
             android:background="@color/Activity_theme"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"/>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/img_edit"
+            android:src="@drawable/create"
+            android:background="@color/Activity_theme"
+            android:onClick="editdata"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:layout_margin="20dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout

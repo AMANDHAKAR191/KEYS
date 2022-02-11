@@ -16,7 +16,7 @@
         android:layout_height="100dp"
         android:layout_marginLeft="20dp"
         android:gravity="center"
-        android:text="Loding..."
+        android:text="Loading..."
         android:textSize="30sp"
         android:textStyle="bold" />
 

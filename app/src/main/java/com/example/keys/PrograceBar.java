@@ -5,20 +5,20 @@ import android.app.AlertDialog;
 import android.view.LayoutInflater;
 
 public class PrograceBar {
-    Activity activity;
+    final Activity activity;
     AlertDialog dialog;
 
-    PrograceBar(Activity thisActivity){
+    public PrograceBar(Activity thisActivity){
         activity = thisActivity;
     }
-    void showDialog(){
+    public void showDialog(){
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.prograce_bar_layout,null));
         dialog = builder.create();
         dialog.show();
     }
-    void dismissbar(){
+    public void dismissbar(){
         dialog.dismiss();
     }
 }

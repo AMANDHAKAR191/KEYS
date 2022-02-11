@@ -10,8 +10,8 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class AES {
     private SecretKey key;
-    private int KEY_SIZE = 128;
-    private int T_LEN = 128;
+    private final int KEY_SIZE = 128;
+    private final int T_LEN = 128;
     private byte[] IV;
 
     public void init() throws Exception {

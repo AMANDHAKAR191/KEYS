@@ -5,9 +5,9 @@
         android:id="@+id/menu_home"
         android:enabled="true"
         android:icon="@drawable/home"/>
-    <item android:title="Profile"
-        android:id="@+id/menu_profile"
-        android:icon="@drawable/profile"
+    <item android:title="@string/Notes"
+        android:id="@+id/menu_notes"
+        android:icon="@drawable/notes"
         android:enabled="true"/>
     <item android:title="Setting"
         android:id="@+id/menu_setting"
