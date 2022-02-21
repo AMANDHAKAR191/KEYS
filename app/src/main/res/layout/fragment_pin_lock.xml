@@ -5,8 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mine_shaft"
-    tools:context="com.example.keys.notes.pinLockFragment">
-
+    tools:context=".aman.app.notes.pinLockFragment">
+    <ImageButton
+        android:id="@+id/img_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:onClick="gocencal"
+        android:background="@color/mine_shaft"
+        android:src="@drawable/close"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <ImageView
         android:id="@+id/profile_image"
         android:layout_width="84dp"
@@ -15,16 +25,17 @@
         android:layout_marginTop="104dp"
         android:src="@drawable/profile" />
 
-    <TextView
-        android:id="@+id/tv_use_biometrix"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/profile_name"
-        android:gravity="center"
-        android:onClick="open_fingerprintActivity"
-        android:text="Use FingerPrint"
-        android:textColor="@color/white"
-        android:textSize="24dp" />
+<!--    <TextView-->
+<!--        android:id="@+id/tv_use_biometrix"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_below="@+id/profile_name"-->
+<!--        android:gravity="center"-->
+<!--        android:onClick="open_fingerprintActivity"-->
+<!--        android:text="Use FingerPrint"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="24dp"-->
+<!--        android:visibility="visible" />-->
 
     <TextView
         android:id="@+id/profile_name"
@@ -44,7 +55,7 @@
         android:id="@+id/indicator_dots"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_use_biometrix"
+        android:layout_below="@id/profile_name"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="36dp" />
 

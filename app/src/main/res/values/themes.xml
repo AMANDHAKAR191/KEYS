@@ -2,16 +2,18 @@
     <!-- Base application theme. -->
     <style name="Theme.KEYS" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryVariant">@color/Action_bar_color</item>
+        <item name="colorPrimary">@color/Activity_theme</item>
+        <item name="colorPrimaryVariant">@color/button_back</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/teal_200</item>
-        <item name="colorSecondaryVariant">@color/teal_700</item>
+        <item name="colorSecondary">@color/button_back</item>
+        <item name="colorSecondaryVariant">@color/Activity_theme_background</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorSecondaryVariant</item>
         <!-- Customize your theme here. -->
+
+
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowEnterTransition">@transition/left_trans_anim</item>
         <item name="android:windowExitTransition">@transition/left_trans_anim</item>

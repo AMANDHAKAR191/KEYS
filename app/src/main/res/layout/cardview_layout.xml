@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="130dp"
         android:background="@drawable/rounded_thems2"
-        android:id="@+id/lenear_layout_card"
-        android:elevation="5dp"
+        android:id="@+id/linear_layout_card"
+        android:elevation="10dp"
         android:layout_margin="10dp"
         android:orientation="horizontal">
         <TextView
@@ -39,6 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
+                android:textColor="?attr/colorOnSecondary"
                 android:text="User Login"
                 android:textSize="20sp" />
             <TextView
@@ -47,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp"
+                android:textColor="?attr/colorOnSecondary"
                 android:text="Password "
                 android:inputType="textWebPassword"
                 android:textSize="20sp" />

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:background="#B8B0B0"
+    android:background="@drawable/rounded_thems2"
     android:orientation="horizontal">
 
     <ProgressBar

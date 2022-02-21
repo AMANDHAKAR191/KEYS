@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:elevation="20dp"
-    tools:context=".settings.OTPVerification">
+    tools:context=".aman.app.settings.OTPVerification">
     <ImageButton
         android:id="@+id/img_back"
         android:layout_width="wrap_content"

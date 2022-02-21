@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".settings.SettingActivity">
+    tools:context=".aman.app.settings.SettingActivity">
 
     <TextView
         android:id="@+id/login_title"
@@ -54,6 +54,23 @@
             android:orientation="vertical"
             android:padding="20dp">
 
+
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Switch
+                    android:id="@+id/sw_use_pin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Use Pin for Unlock App"/>
+                <Switch
+                    android:id="@+id/sw_use_finger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Use FingerPrint for Unlock App"/>
+            </RadioGroup>
+
             <TextView
                 android:id="@+id/tv_app_info"
                 android:layout_width="match_parent"
@@ -87,6 +104,12 @@
                 android:drawableStart="@drawable/terms_and_conditions_icon"
                 android:text="\t\Terms &amp; conditions"
                 android:textSize="20dp" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/create"
+                android:layout_marginTop="20dp"
+                android:onClick="addwebsite"/>
 
 
         </LinearLayout>
@@ -99,5 +122,7 @@
         android:layout_marginTop="150dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

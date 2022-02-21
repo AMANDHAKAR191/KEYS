@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".home.HomeActivity">
+    tools:context=".aman.app.home.HomeActivity">
 
     <LinearLayout
         android:id="@+id/toolbar"
@@ -66,11 +66,13 @@
         app:layout_constraintTop_toTopOf="parent"/>
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="590dp"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="55dp"
         app:layout_constraintStart_toStartOf="parent"
-
         app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -83,6 +85,7 @@
             android:layout_marginBottom="1dp"
             android:clickable="true" />
     </ScrollView>
+
     <TextView
         android:id="@+id/tv_NOTE"
         android:layout_width="match_parent"
@@ -96,7 +99,6 @@
         android:id="@+id/ExtendedFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/button_back"
         android:contentDescription="@string/FAB_item"
         android:text="@string/item"
         android:layout_marginBottom="-10dp"
@@ -111,9 +113,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/button_back"
         android:contentDescription="@string/FAB_item"
         app:fabSize="normal"
+        app:backgroundTint="?attr/colorSecondary"
         android:onClick="AddPasswordFab"
         app:layout_constraintBottom_toTopOf="@id/ExtendedFloatingActionButton"
         app:layout_constraintRight_toRightOf="@id/ExtendedFloatingActionButton"
@@ -125,7 +127,6 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
         android:text="@string/add_password_tv"
-        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@id/add_alarm_fab"
         app:layout_constraintRight_toLeftOf="@id/add_alarm_fab"
         app:layout_constraintTop_toTopOf="@id/add_alarm_fab" />
@@ -135,9 +136,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/button_back"
         android:contentDescription="@string/FAB_item"
         app:fabSize="normal"
+        app:backgroundTint="?attr/colorSecondary"
         android:onClick="PasswordGenratorFab"
         app:layout_constraintBottom_toTopOf="@+id/add_alarm_fab"
         app:layout_constraintRight_toRightOf="@id/add_alarm_fab"
@@ -149,7 +150,6 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
         android:text="@string/password_genrator_tv"
-        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@id/add_person_fab"
         app:layout_constraintRight_toLeftOf="@id/add_person_fab"
         app:layout_constraintTop_toTopOf="@id/add_person_fab" />
@@ -159,9 +159,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
-        android:backgroundTint="@color/button_back"
         android:contentDescription="@string/FAB_item"
         app:fabSize="normal"
+        app:backgroundTint="?attr/colorSecondary"
         android:onClick="Add_Note"
         app:layout_constraintBottom_toTopOf="@+id/add_person_fab"
         app:layout_constraintRight_toRightOf="@id/add_alarm_fab"
@@ -173,7 +173,6 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="10dp"
         android:text="Notes"
-        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="@id/show_personal_info_fab"
         app:layout_constraintRight_toLeftOf="@id/show_personal_info_fab"
         app:layout_constraintTop_toTopOf="@id/show_personal_info_fab" />

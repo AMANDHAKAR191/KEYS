@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/KEYS/app/src/main/res/drawable-anydpi/content_copy.xml" value="0.191" />
+        <entry key="..\:/KEYS/app/src/main/res/drawable-anydpi/create.xml" value="0.1495" />
         <entry key="..\:/KEYS/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/add.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/arrow_back.xml" value="0.1425925925925926" />
@@ -13,16 +15,21 @@
         <entry key="..\:/KEYS/app/src/main/res/drawable/cutom_rippel_with_border.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/downward.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/empty.xml" value="0.191" />
+        <entry key="..\:/KEYS/app/src/main/res/drawable/home.xml" value="0.1605" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/icontent_copy.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/lock.xml" value="0.202" />
+        <entry key="..\:/KEYS/app/src/main/res/drawable/notes.xml" value="0.1605" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/perm_identity.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/person.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/policy.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/privacy_policy.xml" value="0.191" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/profile.xml" value="0.191" />
+        <entry key="..\:/KEYS/app/src/main/res/drawable/round_btn.xml" value="0.183" />
+        <entry key="..\:/KEYS/app/src/main/res/drawable/rounded_thems1.xml" value="0.1605" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/rounded_thems2.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/rounded_thenm.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/save.xml" value="0.202" />
+        <entry key="..\:/KEYS/app/src/main/res/drawable/settings.xml" value="0.1605" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/textsms.xml" value="0.194" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/tv_round.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/visibility_off.xml" value="0.202" />
@@ -31,6 +38,7 @@
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_app_info.xml" value="0.271875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_home.xml" value="0.271875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_log_in.xml" value="0.271875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_notes.xml" value="0.20390625" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_otpverification.xml" value="0.271875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_setting.xml" value="0.271875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_show_cardview_data.xml" value="0.20390625" />
@@ -54,10 +62,11 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_app_info.xml" value="0.25" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_biometric.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_change_password.xml" value="0.17552083333333332" />
-        <entry key="..\:/KEYS/app/src/main/res/layout/activity_home.xml" value="0.2" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_home.xml" value="0.25" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_log_in.xml" value="0.22" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_login1.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_my_autofill_service.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_notes.xml" value="0.2" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_otpverification.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_pass_gen.xml" value="0.17552083333333332" />
@@ -67,23 +76,26 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_save_notes.xml" value="0.25" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_secret_notes.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_send_email.xml" value="0.1" />
-        <entry key="..\:/KEYS/app/src/main/res/layout/activity_setting.xml" value="0.11764705882352941" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_setting.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_show_cardview_data.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_sign_up.xml" value="0.22" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_splash.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/layout/cardview_layout.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/check_internet_dialog.xml" value="0.14666666666666667" />
         <entry key="..\:/KEYS/app/src/main/res/layout/dialogdbtakinglongtime.xml" value="0.1875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/fragment_add_website.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_check_internet.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_contact_us.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_o_t_p_verification.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_pin_lock.xml" value="0.2" />
         <entry key="..\:/KEYS/app/src/main/res/layout/note_cardview_layout.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/prograce_bar_layout.xml" value="0.17552083333333332" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/website_card.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/menu/bottom_nevigation_menu.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.19166666666666668" />
         <entry key="..\:/KEYS/app/src/main/res/mipmap-anydpi-v26/icon_iamge.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/mipmap-anydpi-v26/icon_iamge_round.xml" value="0.121" />
+        <entry key="..\:/KEYS/app/src/main/res/mipmap-anydpi-v26/keys_louncher_icon.xml" value="0.121" />
       </map>
     </option>
   </component>

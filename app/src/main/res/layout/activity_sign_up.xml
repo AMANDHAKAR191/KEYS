@@ -5,7 +5,7 @@
     android:id="@+id/constraint"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".signin_login.SignUpActivity">
+    tools:context=".aman.app.signin_login.SignUpActivity">
 
     <TextView
         android:id="@+id/login_title"
@@ -30,33 +30,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <LinearLayout
-        android:id="@+id/title_linear_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginTop="10dp"
-        android:src="@drawable/group_1final_keys_logo" />
-
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginTop="-30dp"-->
-<!--            android:fontFamily="@font/aclonica"-->
-<!--            android:gravity="center"-->
-<!--            android:text="@string/keys"-->
-<!--            android:textSize="35dp"-->
-<!--            android:textStyle="bold"-->
-<!--            app:layout_constraintLeft_toLeftOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent" />-->
-
-    </LinearLayout>
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -84,6 +57,7 @@
                     android:id="@+id/tiet_signin_name"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:textColor="?attr/colorOnSecondary"
                     android:inputType="text" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -101,6 +75,7 @@
                     android:id="@+id/tiet_signin_mobile_no"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:textColor="?attr/colorOnSecondary"
                     android:inputType="phone" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -118,6 +93,7 @@
                     android:id="@+id/tiet_signin_email"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:textColor="?attr/colorOnSecondary"
                     android:inputType="textEmailAddress" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -131,7 +107,7 @@
                 app:startIconDrawable="@drawable/lock">
 
                 <com.google.android.material.textfield.TextInputEditText
-
+                    android:textColor="?attr/colorOnSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="textWebPassword" />
@@ -147,7 +123,7 @@
                 app:startIconDrawable="@drawable/lock">
 
                 <com.google.android.material.textfield.TextInputEditText
-
+                    android:textColor="?attr/colorOnSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:inputType="textWebPassword" />
@@ -171,8 +147,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginTop="30dp"
+                android:textColor="?attr/colorOnSecondary"
                 android:onClick="register_or_updatadata"
-                android:backgroundTint="@color/purple_200"
+                android:background="@drawable/round_btn"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/set_error" />
