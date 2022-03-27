@@ -1,10 +1,13 @@
 package com.example.keys.aman.app.notes;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
+import com.example.keys.aman.app.signin_login.SignUpActivity;
 
 import java.util.ArrayList;
 
@@ -25,6 +29,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
     final ArrayList<addDNoteHelperClass> dataholder;
     final Context context;
     Activity activity;
+    private SharedPreferences sharedPreferences;
 
     public myadaptorfornote(ArrayList<addDNoteHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
@@ -44,7 +49,8 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
         AES aes = new AES();
-        aes.initFromStrings("Hx5wJOLisX7xre0jKon2Gy==","Dq49mwRPzFgir544");
+        sharedPreferences = context.getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
         int p = holder.getAdapterPosition();
         String tv_date, tv_title, tv_note,tv_title_dc, tv_note_dc;
         boolean cb_hide_note;

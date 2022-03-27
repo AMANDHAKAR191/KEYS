@@ -8,7 +8,7 @@
 
     <ProgressBar
         android:layout_width="wrap_content"
-        android:layout_height="100dp"
+        android:layout_height="40dp"
         android:layout_marginLeft="30dp" />
 
     <TextView
@@ -17,7 +17,7 @@
         android:layout_marginLeft="20dp"
         android:gravity="center"
         android:text="Loading..."
-        android:textSize="30sp"
+        android:textSize="25sp"
         android:textStyle="bold" />
 
 </LinearLayout>

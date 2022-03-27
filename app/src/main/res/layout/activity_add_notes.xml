@@ -56,7 +56,8 @@
         android:id="@+id/cb_hide_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hide this note and show in secret notes section"
+        android:layout_marginLeft="10dp"
+        android:text="\t\tHide this note and show in\n\t\tsecret notes section"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintLeft_toLeftOf="parent"/>
 

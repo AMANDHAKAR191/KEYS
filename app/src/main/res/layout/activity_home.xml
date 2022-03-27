@@ -85,6 +85,16 @@
         android:gravity="center"
         android:text="Your saved password will show here"
         android:visibility="invisible" />
+    <ImageView
+        android:id="@+id/btn_refrash"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="0dp"
+        android:src="@drawable/refrash"
+        android:onClick="refrash_activty"
+        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

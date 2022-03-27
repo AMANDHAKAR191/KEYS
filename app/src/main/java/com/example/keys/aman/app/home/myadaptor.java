@@ -31,6 +31,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
     final ArrayList<addDataHelperClass> dataholder;
     final Context context;
     Activity activity;
+    private SharedPreferences sharedPreferences;
 
     public myadaptor(ArrayList<addDataHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
@@ -50,7 +51,8 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
         AES aes = new AES();
-        aes.initFromStrings("Hx5wJOLisX7xre0jKon2Gy==","Dq49mwRPzFgir544");
+        sharedPreferences = context.getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
         int p = holder.getAdapterPosition();
         final addDataHelperClass temp = dataholder.get(position);
         String dlogin, dpassword, dwebsite;

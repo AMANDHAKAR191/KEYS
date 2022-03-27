@@ -61,6 +61,7 @@ public class notesActivity extends AppCompatActivity {
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        Toast.makeText(notesActivity.this, "UID: " + uid, Toast.LENGTH_LONG).show();
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
@@ -205,5 +206,12 @@ public class notesActivity extends AppCompatActivity {
         }
         click_counter = click_counter + 1;
         Toast.makeText(notesActivity.this,"Click counter: " + click_counter, Toast.LENGTH_SHORT).show();
+    }
+
+    public void refrash_activty(View view) {
+        finish();
+        overridePendingTransition(0, 0);
+        startActivity(getIntent());
+        overridePendingTransition(0, 0);
     }
 }

@@ -127,7 +127,7 @@ public class addNotesActivity extends AppCompatActivity {
             Toast.makeText(addNotesActivity.this,"this",Toast.LENGTH_SHORT).show();
             reference.child(currentDateandTime).setValue(addDNoteHelper);
         }
-//        startActivity(new Intent(addNotesActivity.this,notesActivity.class));
+        startActivity(new Intent(addNotesActivity.this,notesActivity.class));
         finish();
         overridePendingTransition(0, R.anim.slide_out_down);
     }

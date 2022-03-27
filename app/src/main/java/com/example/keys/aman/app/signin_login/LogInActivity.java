@@ -27,6 +27,7 @@ import com.example.keys.aman.app.notes.pinLockFragment;
 import com.example.keys.aman.app.settings.OTPVerification;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -55,10 +56,9 @@ public class LogInActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        //uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //Hooks
         til_login_mobileno = findViewById(R.id.til_login_mobile_no);
@@ -73,6 +73,7 @@ public class LogInActivity extends AppCompatActivity {
         login = findViewById(R.id.b_login);
         signin_btn = findViewById(R.id.b_create_account);
 
+        // remember me data
         boolean isrememberme = sharedPreferences.getBoolean(SignUpActivity.KEY_REMEMBER_ME, false);
         System.out.println("LoginActivity1");
         //TODO Check 4: check internet when user click on login and sign in button in login and sign in Activity
@@ -83,10 +84,11 @@ public class LogInActivity extends AppCompatActivity {
             login.setFocusable(true);
         }
 
-        boolean is_use_ingerprint = sharedPreferences.getBoolean(SignUpActivity.KEY_USE_FINGERPRINT,false);
-        boolean is_use_pin = sharedPreferences.getBoolean(SignUpActivity.KEY_USE_PIN,false);
-        Toast.makeText(LogInActivity.this,is_use_ingerprint + " | " + is_use_pin, Toast.LENGTH_SHORT).show();
-        if (is_use_pin && is_use_ingerprint){
+        // show or hide fingerprint and pin options
+        boolean is_use_ingerprint = sharedPreferences.getBoolean(SignUpActivity.KEY_USE_FINGERPRINT, false);
+        boolean is_use_pin = sharedPreferences.getBoolean(SignUpActivity.KEY_USE_PIN, false);
+        Toast.makeText(LogInActivity.this, is_use_ingerprint + " | " + is_use_pin, Toast.LENGTH_SHORT).show();
+        if (is_use_pin && is_use_ingerprint) {
             tv_use_pin.setVisibility(View.VISIBLE);
             img_use_fingerprint.setVisibility(View.VISIBLE);
         }
@@ -96,11 +98,13 @@ public class LogInActivity extends AppCompatActivity {
     private void checkUser(String userEnteredmobile, String userEnteredPassword) {
         progressbar();
         AES aes = new AES();
-        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
+        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY, null), sharedPreferences.getString(SignUpActivity.AES_IV, null));
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Query checkUser = null;
         try {
             checkUser = reference.orderByChild("uid").equalTo(uid);
+            System.out.println("<>" + checkUser + uid);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -109,6 +113,7 @@ public class LogInActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    Toast.makeText(LogInActivity.this, "Checking......", Toast.LENGTH_SHORT).show();
                     passwordFromDB = dataSnapshot.child(userEnteredmobile).child("password").getValue(String.class);
                     mobileFromDB = dataSnapshot.child(userEnteredmobile).child("mobile").getValue(String.class);
                     nameFromDB = dataSnapshot.child(userEnteredmobile).child("name").getValue(String.class);
@@ -123,8 +128,8 @@ public class LogInActivity extends AppCompatActivity {
                             editor.putString(SignUpActivity.KEY_USER_NAME, nameFromDB);
                             editor.putString(SignUpActivity.KEY_USER_EMAIL, emailFromDB);
                             editor.putBoolean(SignUpActivity.KEY_REMEMBER_ME, true);
-                            editor.putBoolean(SignUpActivity.KEY_USE_FINGERPRINT,true);
-                            editor.putBoolean(SignUpActivity.KEY_USE_PIN,true);
+                            editor.putBoolean(SignUpActivity.KEY_USE_FINGERPRINT, true);
+                            editor.putBoolean(SignUpActivity.KEY_USE_PIN, true);
                             editor.apply();
                             startActivity(new Intent(LogInActivity.this, HomeActivity.class));
                             prograce_bar.dismissbar();
@@ -192,19 +197,17 @@ public class LogInActivity extends AppCompatActivity {
 //        }
     }
 
-
-
     // Check Internet Connection
     private boolean isConnected(LogInActivity logInActivity) {
         ConnectivityManager connectivityManager = (ConnectivityManager) logInActivity.getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         return mobileConn != null && mobileConn.isConnected();
     }
+
     private void showCustomDiolog() {
         checkInternetFragment checkInternet = new checkInternetFragment();
-        checkInternet.show(getSupportFragmentManager(),"check internet");
+        checkInternet.show(getSupportFragmentManager(), "check internet");
     }
-
     //Validate Fields
     private boolean validatedata() {
         if (userEnteredmobile.equals("")) {
@@ -228,14 +231,14 @@ public class LogInActivity extends AppCompatActivity {
 
     public void use_pin(View view) {
         Intent intent = new Intent(LogInActivity.this, pinLockFragment.class);
-        intent.putExtra("request_code",REQUEST_CODE);
+        intent.putExtra("request_code", REQUEST_CODE);
         startActivity(intent);
 
     }
 
     public void use_fingerprint(View view) {
         Intent intent = new Intent(LogInActivity.this, BiometricActivity.class);
-        intent.putExtra("request_code",REQUEST_CODE);
+        intent.putExtra("request_code", REQUEST_CODE);
         startActivity(intent);
 
     }

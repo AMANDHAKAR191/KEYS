@@ -99,6 +99,23 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_signin_oldpassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Enter old Password"
+                app:endIconMode="password_toggle"
+                android:visibility="gone"
+                app:startIconDrawable="@drawable/lock">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:textColor="?attr/colorOnSecondary"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="textWebPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_signin_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -118,7 +135,7 @@
                 android:id="@+id/til_signin_cpassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Enter Password"
+                android:hint="Enter conform Password"
                 app:endIconMode="password_toggle"
                 app:startIconDrawable="@drawable/lock">
 

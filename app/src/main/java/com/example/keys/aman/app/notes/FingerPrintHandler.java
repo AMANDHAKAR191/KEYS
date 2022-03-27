@@ -8,7 +8,6 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.CancellationSignal;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.home.HomeActivity;
@@ -55,6 +54,7 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
             paralable.setTextColor(Color.RED);
         }else {
             paralable.setTextColor(Color.BLACK);
+            img_fingerprint.setImageResource(R.mipmap.done_icon);
             context.startActivity(new Intent(context, HomeActivity.class));
             ((Activity) context).finish();
         }
