@@ -5,7 +5,7 @@ import static com.example.keys.aman.app.signin_login.SignUpActivity.TAG;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,21 +15,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
-import com.example.keys.aman.app.notes.addNotesActivity;
-import com.example.keys.R;
-import com.example.keys.aman.app.settings.SettingActivity;
-import com.example.keys.aman.app.signin_login.LogInActivity;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
 import com.example.keys.aman.app.home.addpassword.addDataHelperClass;
 import com.example.keys.aman.app.home.addpassword.addPasswordData;
+import com.example.keys.aman.app.notes.addNotesActivity;
 import com.example.keys.aman.app.notes.notesActivity;
+import com.example.keys.aman.app.settings.SettingActivity;
+import com.example.keys.aman.app.signin_login.SignUpActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -40,6 +38,7 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,12 +47,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 
 public class HomeActivity extends AppCompatActivity {
 
     private InterstitialAd mInterstitialAd;
-
+    TextToSpeech textToSpeech;
     ScrollView scrollView;
     ExtendedFloatingActionButton exFABtn;
     FloatingActionButton AddPasswordFab, PasswordGenratorFab, ShowpersonalInfofab;
@@ -62,14 +62,18 @@ public class HomeActivity extends AppCompatActivity {
 
     //Shared Preference
     SharedPreferences sharedPreferences;
+    public static DatabaseReference databaseReference;
+    public static myadaptor adaptor;
     private PrograceBar prograce_bar;
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //Hooks
         welcomename = findViewById(R.id.welcome_name);
@@ -88,13 +92,26 @@ public class HomeActivity extends AppCompatActivity {
 
         //set Welcome name on top of the Home Screen
         AES aes = new AES();
-        aes.initFromStrings("CHuO1Fjd8YgJqTyapibFBQ==", "e3IYYJC2hxe24/EO");
+        SignUpActivity.aes_key = SignUpActivity.AES_KEY;
+        SignUpActivity.aes_iv = SignUpActivity.AES_IV;
+        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
         String name = sharedPreferences.getString(SignUpActivity.KEY_USER_NAME, null);
         try {
             welcomename.setText("Hello " + aes.decrypt(name));
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int i) {
+                if (i == TextToSpeech.SUCCESS) {
+                    //Select Language
+                    int lang = textToSpeech.setLanguage(Locale.ENGLISH);
+                }
+            }
+        });
+
 
         recyclerviewsetdata();
 
@@ -113,6 +130,12 @@ public class HomeActivity extends AppCompatActivity {
 //            }
 //        });
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        textToSpeech.speak("Welcome to KEYS, Sir", TextToSpeech.QUEUE_ADD, null);
     }
 
     private void showinterstialAd() {
@@ -219,12 +242,12 @@ public class HomeActivity extends AppCompatActivity {
                     case R.id.menu_setting:
                         Intent intent1 = new Intent(HomeActivity.this, SettingActivity.class);
                         startActivity(intent1);
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         return true;
                     case R.id.menu_notes:
                         Intent intent2 = new Intent(HomeActivity.this, notesActivity.class);
                         startActivity(intent2);
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         return true;
                 }
                 return false;
@@ -234,20 +257,19 @@ public class HomeActivity extends AppCompatActivity {
 
     public void recyclerviewsetdata() {
         RecyclerView recyclerView;
-        DatabaseReference databaseReference;
-        myadaptor adaptor;
         ArrayList<addDataHelperClass> dataholder;
 
 
         recyclerView = findViewById(R.id.recview);
         String mobile = sharedPreferences.getString(SignUpActivity.KEY_USER_MOBILE, null);
         databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata")
-                .child(mobile);
+                .child(uid);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         dataholder = new ArrayList<>();
-        adaptor = new myadaptor(dataholder, getApplicationContext());
+        adaptor = new myadaptor(dataholder, getApplicationContext(), this);
         recyclerView.setAdapter(adaptor);
+        recyclerView.hasFixedSize();
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -268,6 +290,7 @@ public class HomeActivity extends AppCompatActivity {
                     tv_NOTE.setVisibility(View.VISIBLE);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
@@ -282,7 +305,7 @@ public class HomeActivity extends AppCompatActivity {
             Toast.makeText(HomeActivity.this, "The interstitial ad wasn't ready yet.", Toast.LENGTH_LONG).show();
         }
         startActivity(new Intent(HomeActivity.this, addPasswordData.class));
-        overridePendingTransition(R.anim.upward, R.anim.upward);
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
     }
 
     public void PasswordGenratorFab(View view) {
@@ -295,12 +318,12 @@ public class HomeActivity extends AppCompatActivity {
         Intent intent = new Intent(HomeActivity.this, PassGenActivity.class);
         intent.putExtra("requestCode", REQUEST_CODE);
         startActivity(intent);
-        overridePendingTransition(R.anim.upward, R.anim.downward);
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
     }
 
     public void Add_Note(View view) {
         startActivity(new Intent(HomeActivity.this, addNotesActivity.class));
-        overridePendingTransition(R.anim.upward, R.anim.downward);
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
 
     }
 

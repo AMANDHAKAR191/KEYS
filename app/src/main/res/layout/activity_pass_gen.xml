@@ -16,23 +16,27 @@
         android:text="@string/genrate_password"
         android:textSize="30sp"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ImageButton
-    android:id="@+id/img_back"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="20dp"
-    android:layout_marginTop="20dp"
-    android:background="@color/Activity_theme"
-    android:src="@drawable/close"
+        android:id="@+id/img_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+        android:background="@color/Activity_theme"
         android:onClick="goback"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/close"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.slider.Slider
         android:id="@+id/slider_pass_lenght"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
+        app:thumbColor="?attr/colorSecondary"
+        app:tickColor="#C16565"
+        app:trackColor="?attr/colorSecondary"
         android:stepSize="4.0"
         android:value="8"
         android:valueFrom="4.0"
@@ -44,12 +48,11 @@
         android:id="@+id/linear_layout2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:gravity="end"
         android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="@+id/slider_pass_lenght"
-        app:layout_constraintTop_toBottomOf="@+id/tv_password">
+        app:layout_constraintRight_toRightOf="@+id/bt_copy"
+        app:layout_constraintTop_toBottomOf="@+id/bt_copy">
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/checkBox1"
@@ -85,22 +88,22 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="80dp"
         android:layout_marginTop="30dp"
-        android:backgroundTint="@color/button_back"
+        android:background="?attr/colorSecondary"
         android:text="Use "
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linear_layout2" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_password" />
 
     <Button
         android:id="@+id/bt_copy"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:backgroundTint="@color/button_back"
+        android:background="?attr/colorSecondary"
         android:text="Copy"
         app:layout_constraintLeft_toRightOf="@+id/bt_use"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linear_layout2" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_password" />
 
     <TextView
         android:id="@+id/tv_password"
@@ -108,18 +111,10 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
+        android:hint="password"
         android:textIsSelectable="true"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@+id/slider_pass_lenght" />
-
-
-    <!--    <com.google.android.material.bottomnavigation.BottomNavigationView-->
-    <!--        android:id="@+id/bottom_nav"-->
-    <!--        android:layout_width="match_parent"-->
-    <!--        android:layout_height="wrap_content"-->
-    <!--        android:background="@color/Activity_theme"-->
-    <!--        app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--        app:menu="@menu/bottom_nevigation_menu" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

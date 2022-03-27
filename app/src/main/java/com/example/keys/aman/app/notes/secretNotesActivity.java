@@ -1,15 +1,15 @@
 package com.example.keys.aman.app.notes;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.signin_login.SignUpActivity;
@@ -56,7 +56,7 @@ public class secretNotesActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         dataholder = new ArrayList<>();
-        adaptor = new myadaptorfornote(dataholder, getApplicationContext());
+        adaptor = new myadaptorfornote(dataholder, getApplicationContext(),this);
         recyclerView.setAdapter(adaptor);
 
         reference.addValueEventListener(new ValueEventListener() {

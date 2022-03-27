@@ -3,7 +3,6 @@ package com.example.keys.aman.app.home;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -62,5 +61,6 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
     public void goback(View view) {
         startActivity(new Intent(ShowCardviewDataActivity.this, HomeActivity.class));
         finish();
+        overridePendingTransition(0, R.anim.slide_out_down);
     }
 }

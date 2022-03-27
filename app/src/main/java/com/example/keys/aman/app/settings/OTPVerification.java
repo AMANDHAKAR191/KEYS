@@ -1,9 +1,5 @@
 package com.example.keys.aman.app.settings;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,9 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
-import com.example.keys.R;
 import com.example.keys.aman.app.changePasswordActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.example.keys.aman.app.signin_login.SignUpActivity;
@@ -49,6 +49,7 @@ public class OTPVerification extends AppCompatActivity {
     String comingrequestcode;
     String comingmobileno;
     String comingname, comingemail, comingpassword;
+    private String uid;
 
 
     @Override
@@ -162,11 +163,21 @@ public class OTPVerification extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             if (comingrequestcode.equals("SignInActivity")) {
-//                                SignUpActivity SA = new SignUpActivity();
-//                                SA.onActivityresult();
-                                Toast.makeText(OTPVerification.this, "From SignIn Activity!!", Toast.LENGTH_LONG).show();
-                                tiet_mobile.setText(comingmobileno);
-                                onActivityresult(comingname, comingemail, comingpassword);
+
+
+////                                SignUpActivity SA = new SignUpActivity();
+////                                SA.onActivityresult();
+                                Toast.makeText(OTPVerification.this, "Going to SignIn Activity!!", Toast.LENGTH_LONG).show();
+//                                tiet_mobile.setText(comingmobileno);
+////                                SignUpActivity.AES_KEY = PassGenActivity.generateRandomPassword(22,true,true,true, false);
+////                                SignUpActivity.AES_KEY = SignUpActivity.AES_KEY + "==";
+////                                SignUpActivity.AES_KEY = PassGenActivity.generateRandomPassword(16,true,true,true, false);
+//                                Toast.makeText(OTPVerification.this, comingname +  comingemail + comingpassword, Toast.LENGTH_SHORT).show();
+//                                onActivityresult(comingname, comingemail, comingpassword);
+//                                System.out.println(comingname +  comingemail + comingpassword);
+                                Intent intentresult = getIntent();
+                                setResult(RESULT_OK, intentresult);
+                                Toast.makeText(OTPVerification.this, "Successful!!", Toast.LENGTH_LONG).show();
                                 finish();
                             }else if (comingrequestcode.equals("this")){
                                 Toast.makeText(OTPVerification.this, "Successful1122", Toast.LENGTH_LONG).show();
@@ -198,13 +209,14 @@ public class OTPVerification extends AppCompatActivity {
     }
 
     public void onActivityresult(String name, String email, String password) {
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference myRef = firebaseDatabase.getReference("signupdata");
         myRef.child(mobile).setValue("Hello");
 
         //progressbar();
         AES aes = new AES();
-        aes.initFromStrings("CHuO1Fjd8YgJqTyapibFBQ==", "e3IYYJC2hxe24/EO");
+        aes.initFromStrings(SignUpActivity.AES_KEY,SignUpActivity.AES_IV);
         String e_name, e_mobile, e_email, e_password;
         try {
             Toast.makeText(OTPVerification.this,"Saving Data on DB",Toast.LENGTH_SHORT).show();
@@ -212,7 +224,9 @@ public class OTPVerification extends AppCompatActivity {
             e_mobile = aes.encrypt(mobile);
             e_email = aes.encrypt(email);
             e_password = aes.encrypt(password);
-            UserHelperClass userHelperClass = new UserHelperClass(e_name, e_mobile, e_email, e_password);
+            String key = sharedPreferences.getString(SignUpActivity.AES_KEY,null);
+            String iv = sharedPreferences.getString(SignUpActivity.AES_IV, null);
+            UserHelperClass userHelperClass = new UserHelperClass(e_name, e_mobile, e_email, e_password, key, iv, uid);
 
             if (comingrequestcode.equals("ProfileActivity")) {
                 Toast.makeText(OTPVerification.this,"Updated!",Toast.LENGTH_SHORT).show();

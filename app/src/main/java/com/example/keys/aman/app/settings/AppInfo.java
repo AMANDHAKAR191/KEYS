@@ -1,13 +1,13 @@
 package com.example.keys.aman.app.settings;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 
@@ -24,8 +24,8 @@ public class AppInfo extends AppCompatActivity {
         img_back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                overridePendingTransition(R.anim.slide_right_left,0);
                 finish();
+                overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
         try {

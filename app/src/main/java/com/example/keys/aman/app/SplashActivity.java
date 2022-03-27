@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.home.PassGenActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 
 public class SplashActivity extends AppCompatActivity {
@@ -73,12 +72,18 @@ public class SplashActivity extends AppCompatActivity {
         if (requestCode == 1) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 Toast.makeText(this, "External Storage Permission GRANTED", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(SplashActivity.this, LogInActivity.class);
+                startActivity(i);
+                finish();
             }else {
                 Toast.makeText(this, "External Storage Permission DENIED", Toast.LENGTH_SHORT).show();
             }
 
             if (grantResults[1] == PackageManager.PERMISSION_GRANTED){
                 Toast.makeText(this, "Network Access Permission GRANTED", Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(SplashActivity.this, LogInActivity.class);
+                startActivity(i);
+                finish();
             }else {
                 Toast.makeText(this, "Network Access Permission DENIED", Toast.LENGTH_SHORT).show();
             }

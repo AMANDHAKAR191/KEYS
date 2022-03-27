@@ -11,6 +11,22 @@
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_addwebsiteimg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:endIconMode="clear_text">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiet_addwebsiteimg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="Website image"
+                android:inputType="textEmailAddress"
+                android:textSize="18sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/til_addwebsitename"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,7 +54,7 @@
                 android:id="@+id/tiet_addwebsiteurl"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:hint="Website"
+                android:hint="Website Url"
                 android:inputType="textEmailAddress"
                 android:textSize="18sp" />
         </com.google.android.material.textfield.TextInputLayout>

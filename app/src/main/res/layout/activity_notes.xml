@@ -76,6 +76,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Activity_theme"
+        app:itemRippleColor="@color/button_back"
+        app:itemTextColor="@color/white"
+        app:itemIconTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nevigation_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

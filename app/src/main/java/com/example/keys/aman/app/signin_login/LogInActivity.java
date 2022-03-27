@@ -1,8 +1,5 @@
 package com.example.keys.aman.app.signin_login;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -13,20 +10,21 @@ import android.os.Vibrator;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.andrognito.pinlockview.PinLockView;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.keys.R;
 import com.example.keys.aman.app.AES;
+import com.example.keys.aman.app.PrograceBar;
 import com.example.keys.aman.app.checkInternetFragment;
+import com.example.keys.aman.app.home.HomeActivity;
 import com.example.keys.aman.app.notes.BiometricActivity;
 import com.example.keys.aman.app.notes.pinLockFragment;
 import com.example.keys.aman.app.settings.OTPVerification;
-import com.example.keys.aman.app.PrograceBar;
-import com.example.keys.R;
-import com.example.keys.aman.app.home.HomeActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -51,14 +49,18 @@ public class LogInActivity extends AppCompatActivity {
     String userEnteredmobile, userEnteredPassword;
     SharedPreferences sharedPreferences;
     public final String REQUEST_CODE = "LogInActivity";
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        //uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        //Hooks
         til_login_mobileno = findViewById(R.id.til_login_mobile_no);
         til_login_password = findViewById(R.id.til_login_password);
         tiet_login_mobileno = findViewById(R.id.tiet_login_mobile_no);
@@ -80,6 +82,7 @@ public class LogInActivity extends AppCompatActivity {
             tiet_login_password.setText(sharedPreferences.getString(SignUpActivity.KEY_USER_PASSSWORD, null));
             login.setFocusable(true);
         }
+
         boolean is_use_ingerprint = sharedPreferences.getBoolean(SignUpActivity.KEY_USE_FINGERPRINT,false);
         boolean is_use_pin = sharedPreferences.getBoolean(SignUpActivity.KEY_USE_PIN,false);
         Toast.makeText(LogInActivity.this,is_use_ingerprint + " | " + is_use_pin, Toast.LENGTH_SHORT).show();
@@ -93,11 +96,11 @@ public class LogInActivity extends AppCompatActivity {
     private void checkUser(String userEnteredmobile, String userEnteredPassword) {
         progressbar();
         AES aes = new AES();
-        aes.initFromStrings("CHuO1Fjd8YgJqTyapibFBQ==", "e3IYYJC2hxe24/EO");
+        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
         Query checkUser = null;
         try {
-            checkUser = reference.orderByChild("mobile").equalTo(aes.encrypt(userEnteredmobile));
+            checkUser = reference.orderByChild("uid").equalTo(uid);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -124,9 +127,9 @@ public class LogInActivity extends AppCompatActivity {
                             editor.putBoolean(SignUpActivity.KEY_USE_PIN,true);
                             editor.apply();
                             startActivity(new Intent(LogInActivity.this, HomeActivity.class));
-                            overridePendingTransition(R.anim.slide_right_left, 0);
                             prograce_bar.dismissbar();
                             finish();
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         } else {
                             set_error.setVisibility(View.VISIBLE);
                             set_error.setText("Wrong Password");
@@ -195,11 +198,7 @@ public class LogInActivity extends AppCompatActivity {
     private boolean isConnected(LogInActivity logInActivity) {
         ConnectivityManager connectivityManager = (ConnectivityManager) logInActivity.getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        if (mobileConn != null && mobileConn.isConnected()){
-            return true;
-        }else {
-            return false;
-        }
+        return mobileConn != null && mobileConn.isConnected();
     }
     private void showCustomDiolog() {
         checkInternetFragment checkInternet = new checkInternetFragment();
@@ -220,12 +219,7 @@ public class LogInActivity extends AppCompatActivity {
 
     public void create_account(View view) {
         startActivity(new Intent(LogInActivity.this, SignUpActivity.class));
-        overridePendingTransition(R.anim.slide_left_right, R.anim.slide_right_left);
-    }
-
-    public void open_secret_notes(View view) {
-//        startActivity(new Intent(LogInActivity.this, pinLockFragment.class));
-//        finish();
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     public void vibrate(View view) {

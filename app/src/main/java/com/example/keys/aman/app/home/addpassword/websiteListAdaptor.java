@@ -1,7 +1,6 @@
 package com.example.keys.aman.app.home.addpassword;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.home.ShowCardviewDataActivity;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 
@@ -43,25 +40,16 @@ public class websiteListAdaptor extends RecyclerView.Adapter<websiteListAdaptor.
 
         try {
             holder.web_img.setImageResource(R.drawable.add);
-            String website_name = dataholder.get(position).getWebsite_image_name();
+            String website_name = dataholder.get(position).getWebsite_name();
             holder.web_name.setText(website_name);
-//            holder.web_img.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(context, addPasswordData.class);
-//                    String REQUEST_CODE = "from_website_adaptor";
-//                    intent.putExtra("request_code",REQUEST_CODE);
-//                    intent.putExtra("loginwebsite",website_name);
-//                    context.startActivity(intent);
-//                }
-//            });
-//            holder.LLCard.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//
-//
-//                }
-//            });
+            holder.web_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context,"website_name",Toast.LENGTH_SHORT).show();
+//                    System.out.println(website_name);
+                    holder.web_name.setText("website_name");
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }

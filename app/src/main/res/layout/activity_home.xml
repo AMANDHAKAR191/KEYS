@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -47,6 +47,7 @@
 
         </LinearLayout>
     </LinearLayout>
+
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="wrap_content"
@@ -56,52 +57,43 @@
         ads:adSize="BANNER"
         ads:adUnitId="ca-app-pub-3940256099942544~3347511713"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:contentDescription="@string/keys_logo"
         android:src="@drawable/group_1final_keys_logo"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
-        android:id="@+id/scrollView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="100dp"
         android:layout_marginBottom="55dp"
+        android:clickable="true"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="1dp"
-            android:layout_marginEnd="1dp"
-            android:layout_marginBottom="1dp"
-            android:clickable="true" />
-    </ScrollView>
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <TextView
         android:id="@+id/tv_NOTE"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:text="Your saved password will show here"
-        android:visibility="invisible"
-        android:gravity="center"/>
+        android:visibility="invisible" />
 
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/ExtendedFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="-10dp"
         android:contentDescription="@string/FAB_item"
         android:text="@string/item"
-        android:layout_marginBottom="-10dp"
         app:hoveredFocusedTranslationZ="6dp"
         app:icon="@drawable/add"
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
@@ -114,9 +106,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:contentDescription="@string/FAB_item"
-        app:fabSize="normal"
-        app:backgroundTint="?attr/colorSecondary"
         android:onClick="AddPasswordFab"
+        app:backgroundTint="?attr/colorSecondary"
+        app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@id/ExtendedFloatingActionButton"
         app:layout_constraintRight_toRightOf="@id/ExtendedFloatingActionButton"
         app:srcCompat="@drawable/add" />
@@ -137,9 +129,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:contentDescription="@string/FAB_item"
-        app:fabSize="normal"
-        app:backgroundTint="?attr/colorSecondary"
         android:onClick="PasswordGenratorFab"
+        app:backgroundTint="?attr/colorSecondary"
+        app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@+id/add_alarm_fab"
         app:layout_constraintRight_toRightOf="@id/add_alarm_fab"
         app:srcCompat="@drawable/create" />
@@ -160,9 +152,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="24dp"
         android:contentDescription="@string/FAB_item"
-        app:fabSize="normal"
-        app:backgroundTint="?attr/colorSecondary"
         android:onClick="Add_Note"
+        app:backgroundTint="?attr/colorSecondary"
+        app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@+id/add_person_fab"
         app:layout_constraintRight_toRightOf="@id/add_alarm_fab"
         app:srcCompat="@drawable/note_add" />
@@ -182,6 +174,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Activity_theme"
+        ads:itemRippleColor="@color/button_back"
+        ads:itemTextColor="@color/white"
+        ads:itemIconTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nevigation_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

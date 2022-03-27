@@ -1,9 +1,5 @@
 package com.example.keys.aman.app.home;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
-
 import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -12,14 +8,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.keys.aman.app.AES;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
+
 import com.example.keys.R;
+import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.signin_login.SignUpActivity;
 import com.google.android.material.slider.Slider;
 import com.google.firebase.database.DatabaseReference;
@@ -55,7 +54,7 @@ public class PassGenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pass_gen);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        createShortcutOfApp();
+        //createShortcutOfApp();
         //pass_gen_bottom_nav();
 //        String saved_pass = sharedPreferences.getString(KEY_NAME,null);
 
@@ -175,7 +174,7 @@ public class PassGenActivity extends AppCompatActivity {
 
 
 
-    private static String generateRandomPassword(int max_length, boolean upperCase, boolean lowerCase, boolean numbers, boolean specialCharacters) {
+    public static String generateRandomPassword(int max_length, boolean upperCase, boolean lowerCase, boolean numbers, boolean specialCharacters) {
         Random rn = new Random();
         StringBuilder sb = new StringBuilder(max_length);
         try {
@@ -228,7 +227,7 @@ public class PassGenActivity extends AppCompatActivity {
         tv_password.setText("Password: " + pass);
         try {
             AES aes = new AES();
-            aes.initFromStrings("CHuO1Fjd8YgJqTyapibFBQ==", "e3IYYJC2hxe24/EO");
+            aes.initFromStrings(SignUpActivity.AES_KEY, SignUpActivity.AES_IV);
             String encryptedMessage = aes.encrypt(pass);
 //                    saved_pass = encryptedMessage;
             //System.err.println("Encrypted Message : " + encryptedMessage);
@@ -241,28 +240,29 @@ public class PassGenActivity extends AppCompatActivity {
         return pass;
     }
 
-    public void createShortcutOfApp() {
-
-        Intent shortcutIntent = new Intent(getApplicationContext(),
-                PassGenActivity.class);
-        shortcutIntent.setAction(Intent.ACTION_MAIN);
-
-        Intent addIntent = new Intent();
-        addIntent
-                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Genrate password");
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource.fromContext(getApplicationContext(),
-                        R.mipmap.keys_louncher_icon));
-
-        addIntent
-                .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-        addIntent.putExtra("duplicate", false);  //may it's already there so   don't duplicate
-        getApplicationContext().sendBroadcast(addIntent);
-    }
+//    public void createShortcutOfApp() {
+//
+//        Intent shortcutIntent = new Intent(getApplicationContext(),
+//                PassGenActivity.class);
+//        shortcutIntent.setAction(Intent.ACTION_MAIN);
+//
+//        Intent addIntent = new Intent();
+//        addIntent
+//                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+//        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Genrate password");
+//        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
+//                Intent.ShortcutIconResource.fromContext(getApplicationContext(),
+//                        R.mipmap.keys_louncher_icon));
+//
+//        addIntent
+//                .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+//        addIntent.putExtra("duplicate", false);  //may it's already there so   don't duplicate
+//        getApplicationContext().sendBroadcast(addIntent);
+//    }
 
 
     public void goback(View view) {
         finish();
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
     }
 }

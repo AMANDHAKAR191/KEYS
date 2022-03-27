@@ -96,9 +96,11 @@ public class ProfileActivity extends AppCompatActivity {
         intent.putExtra("signmobile", mobile);
         intent.putExtra("signemail", dc_email);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
     }
 
     public void gocencal(View view) {
         finish();
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
     }
 }

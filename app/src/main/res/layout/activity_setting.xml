@@ -65,10 +65,20 @@
                     android:layout_height="wrap_content"
                     android:text="Use Pin for Unlock App"/>
                 <Switch
-                    android:id="@+id/sw_use_finger"
+                    android:id="@+id/sw_addpassword_shortcut"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Use FingerPrint for Unlock App"/>
+                <Switch
+                    android:id="@+id/sw_addnotes_shortcut"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Create shortcut for add password"/>
+                <Switch
+                    android:id="@+id/sw_use_finger"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Create shortcut for add notes"/>
             </RadioGroup>
 
             <TextView

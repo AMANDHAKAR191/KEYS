@@ -3,6 +3,7 @@ package com.example.keys.aman.app.home;
 import static android.accounts.AccountManager.KEY_PASSWORD;
 import static android.content.Context.MODE_PRIVATE;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -19,8 +20,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.keys.aman.app.AES;
 import com.example.keys.R;
+import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.home.addpassword.addDataHelperClass;
 import com.example.keys.aman.app.signin_login.SignUpActivity;
 
@@ -29,10 +30,12 @@ import java.util.ArrayList;
 public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
     final ArrayList<addDataHelperClass> dataholder;
     final Context context;
+    Activity activity;
 
-    public myadaptor(ArrayList<addDataHelperClass> dataholder, Context context) {
+    public myadaptor(ArrayList<addDataHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
         this.context = context;
+        this.activity = activity;
     }
 
     @NonNull
@@ -47,7 +50,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
         AES aes = new AES();
-        aes.initFromStrings("CHuO1Fjd8YgJqTyapibFBQ==", "e3IYYJC2hxe24/EO");
+        aes.initFromStrings("Hx5wJOLisX7xre0jKon2Gy==","Dq49mwRPzFgir544");
         int p = holder.getAdapterPosition();
         final addDataHelperClass temp = dataholder.get(position);
         String dlogin, dpassword, dwebsite;
@@ -70,6 +73,8 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
                     intent.putExtra("loginwebsite", dwebsite);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.slide_in_down, 0);
+
                 }
             });
             holder.dpassword.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +86,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
                     intent.putExtra("loginwebsite", dwebsite);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.slide_in_down, 0);
                 }
             });
             holder.LLCard.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +98,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
                     intent.putExtra("loginwebsite", dwebsite);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.slide_in_down, 0);
                 }
             });
             holder.LLCard.setOnLongClickListener(new View.OnLongClickListener() {
@@ -119,6 +126,15 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
                     Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
                 }
             });
+            holder.img_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    HomeActivity.databaseReference.child(dwebsite).child(dlogin).removeValue();
+                    Toast.makeText(context,"Deleted !!", Toast.LENGTH_SHORT).show();
+                    HomeActivity.adaptor.notifyDataSetChanged();
+                    activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -137,7 +153,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
         final TextView dlogin;
         final TextView dpassword;
         final TextView tv_img_title;
-        final ImageView img_copy;
+        final ImageView img_copy, img_delete;
         final LinearLayout LLCard;
 
         public myviewholder(@NonNull View itemView) {
@@ -145,6 +161,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
             dlogin = itemView.findViewById(R.id.displayname);
             dpassword = itemView.findViewById(R.id.displaycontact);
             img_copy = itemView.findViewById(R.id.img_copy);
+            img_delete = itemView.findViewById(R.id.img_delete);
             LLCard = itemView.findViewById(R.id.linear_layout_card);
             tv_img_title = itemView.findViewById(R.id.tv_img_title);
         }

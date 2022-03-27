@@ -1,24 +1,24 @@
 package com.example.keys.aman.app.notes;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.keys.aman.app.AES;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.keys.R;
+import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.signin_login.SignUpActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -41,8 +41,8 @@ public class addNotesActivity extends AppCompatActivity {
     ProgressBar hori_prograssbar;
     Uri mImageUri;
     private String comingrequestcode;
-    private String coming_data, coming_title, coming_note;
-    private boolean coming_cb_hide_note;
+    private String coming_data;
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,7 @@ public class addNotesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_notes);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //Hooks
         til_addtitle = findViewById(R.id.til_addtitle);
@@ -68,9 +69,9 @@ public class addNotesActivity extends AppCompatActivity {
         }
         Toast.makeText(addNotesActivity.this, comingrequestcode, Toast.LENGTH_LONG).show();
         coming_data = intent.getStringExtra("date");
-        coming_cb_hide_note = intent.getBooleanExtra("hide note",false);
-        coming_title = intent.getStringExtra("title");
-        coming_note = intent.getStringExtra("note");
+        boolean coming_cb_hide_note = intent.getBooleanExtra("hide note", false);
+        String coming_title = intent.getStringExtra("title");
+        String coming_note = intent.getStringExtra("note");
         Toast.makeText(addNotesActivity.this, comingrequestcode, Toast.LENGTH_SHORT).show();
         if (comingrequestcode.equals("notesCardView")) {
             tiet_addtitle.setText(coming_title);
@@ -99,13 +100,14 @@ public class addNotesActivity extends AppCompatActivity {
 
     public void gocencal(View view) {
         finish();
+        overridePendingTransition(0, R.anim.slide_out_down);
     }
 
     public void gosave(View view) {
         title = Objects.requireNonNull(til_addtitle.getEditText()).getText().toString();
         note = Objects.requireNonNull(til_addnote.getEditText()).getText().toString();
         AES aes = new AES();
-        aes.initFromStrings("CHuO1Fjd8YgJqTyapibFBQ==", "e3IYYJC2hxe24/EO");
+        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
         try {
             title_dc = aes.encrypt(title);
             note_dc = aes.encrypt(note);
@@ -117,7 +119,7 @@ public class addNotesActivity extends AppCompatActivity {
 
         mobile = sharedPreferences.getString(SignUpActivity.KEY_USER_MOBILE, null);
         System.out.println(mobile);
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(mobile);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         if (comingrequestcode.equals("notesCardView")){
             Toast.makeText(addNotesActivity.this,"notesCardView",Toast.LENGTH_SHORT).show();
             reference.child(coming_data).setValue(addDNoteHelper);
@@ -127,6 +129,7 @@ public class addNotesActivity extends AppCompatActivity {
         }
 //        startActivity(new Intent(addNotesActivity.this,notesActivity.class));
         finish();
+        overridePendingTransition(0, R.anim.slide_out_down);
     }
 
     public void goedit(View view) {

@@ -1,5 +1,6 @@
 package com.example.keys.aman.app.notes;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -15,18 +16,20 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.keys.aman.app.AES;
 import com.example.keys.R;
+import com.example.keys.aman.app.AES;
 
 import java.util.ArrayList;
 
 public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myviewholder> {
     final ArrayList<addDNoteHelperClass> dataholder;
     final Context context;
+    Activity activity;
 
-    public myadaptorfornote(ArrayList<addDNoteHelperClass> dataholder, Context context) {
+    public myadaptorfornote(ArrayList<addDNoteHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
         this.context = context;
+        this.activity = activity;
     }
 
     @NonNull
@@ -41,7 +44,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
         AES aes = new AES();
-        aes.initFromStrings("CHuO1Fjd8YgJqTyapibFBQ==", "e3IYYJC2hxe24/EO");
+        aes.initFromStrings("Hx5wJOLisX7xre0jKon2Gy==","Dq49mwRPzFgir544");
         int p = holder.getAdapterPosition();
         String tv_date, tv_title, tv_note,tv_title_dc, tv_note_dc;
         boolean cb_hide_note;
@@ -67,6 +70,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
                     intent.putExtra("note", tv_note_dc);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.slide_in_down, 0);
                 }
             });
             holder.img_copy.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +80,14 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
                     ClipData clipData = ClipData.newPlainText("Copy_Password", tv_note_dc);
                     clipboardManager.setPrimaryClip(clipData);
                     Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
+                }
+            });
+            holder.img_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    notesActivity.reference.child(tv_date).removeValue();
+                    Toast.makeText(context,"Deleted !!", Toast.LENGTH_SHORT).show();
+                    notesActivity.adaptor.notifyDataSetChanged();
                 }
             });
         } catch (Exception e) {
@@ -96,7 +108,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
         final TextView tv_date;
         final TextView tv_title;
         final TextView tv_note;
-        final ImageView img_copy;
+        final ImageView img_copy, img_delete;
         final LinearLayout LLCard;
 
         public myviewholder(@NonNull View itemView) {
@@ -105,6 +117,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
             tv_title = itemView.findViewById(R.id.tv_title);
             tv_note = itemView.findViewById(R.id.tv_note);
             img_copy = itemView.findViewById(R.id.img_copy);
+            img_delete = itemView.findViewById(R.id.img_delete);
             LLCard = itemView.findViewById(R.id.lenear_layout_card);
         }
 

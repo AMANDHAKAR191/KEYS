@@ -1,12 +1,5 @@
 package com.example.keys.aman.app.home.addpassword;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -14,33 +7,29 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.keys.aman.app.AES;
-import com.example.keys.aman.app.home.PassGenActivity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.keys.R;
-import com.example.keys.aman.app.home.ShowCardviewDataActivity;
-import com.example.keys.aman.app.home.myadaptor;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
+import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.home.HomeActivity;
+import com.example.keys.aman.app.home.PassGenActivity;
+import com.example.keys.aman.app.home.ShowCardviewDataActivity;
+import com.example.keys.aman.app.signin_login.SignUpActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
 
-public class addPasswordData extends AppCompatActivity {
+public class addPasswordData extends AppCompatActivity implements wesiteListFragment.OnCompleteListener{
 
     private static final int REQUEST_DETAIL_CODE = 1;
     TextInputLayout til_login, til_password, til_website;
@@ -51,6 +40,7 @@ public class addPasswordData extends AppCompatActivity {
     TextView tv_error;
 
     SharedPreferences sharedPreferences;
+    String uid;
     String comingrequestcode;
     String coming_loginname, coming_loginpassword, coming_loginwebsite;
 
@@ -77,6 +67,10 @@ public class addPasswordData extends AppCompatActivity {
         //TODO Check 7: clean password field every time
         //TODO Check: enable generate password feature
         bt_genrate_password.setVisibility(View.GONE);
+
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        System.out.println("uid: " + uid);
+        Toast.makeText(addPasswordData.this,"Uid: " + uid,Toast.LENGTH_SHORT).show();
 
 
         //Hide mobile no and
@@ -108,7 +102,15 @@ public class addPasswordData extends AppCompatActivity {
                 return false;
             }
         });
-        recyclerviewsetdata();
+//        tiet_addwebsitedata.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                wesiteListFragment wesiteListFragment = new wesiteListFragment();
+//                wesiteListFragment.show(getSupportFragmentManager(),"add_password_Activity");
+//                return false;
+//            }
+//
+//        });
 
 
     }
@@ -125,10 +127,11 @@ public class addPasswordData extends AppCompatActivity {
             String e_addlogin = "", e_addpassword = "", e_addwebsite = "";
             String sign_mobile = sharedPreferences.getString(SignUpActivity.KEY_USER_MOBILE, null);
             System.out.println("ShearedPreference " + sign_mobile);
+
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference addDataRef = firebaseDatabase.getReference("addpassworddata").child(sign_mobile).child(addwesite);
+            DatabaseReference addDataRef = firebaseDatabase.getReference("addpassworddata").child(uid).child(addwesite);
             AES aes = new AES();
-            aes.initFromStrings("CHuO1Fjd8YgJqTyapibFBQ==", "e3IYYJC2hxe24/EO");
+            aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
             try {
                 e_addlogin = aes.encrypt(addlogin);
                 e_addpassword = aes.encrypt(addpasword);
@@ -155,53 +158,16 @@ public class addPasswordData extends AppCompatActivity {
 
             startActivity(new Intent(addPasswordData.this, HomeActivity.class));
             finish();
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
         }
 
 
     }
-
-    public void recyclerviewsetdata() {
-        RecyclerView recyclerView;
-        DatabaseReference databaseReference;
-        websiteListAdaptor websiteListAdaptor;
-        ArrayList<websiteHelper> dataholder;
-
-
-        recyclerView = findViewById(R.id.recview);
-        String mobile = sharedPreferences.getString(SignUpActivity.KEY_USER_MOBILE, null);
-        databaseReference = FirebaseDatabase.getInstance().getReference("websitelist");
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        dataholder = new ArrayList<>();
-        websiteListAdaptor = new websiteListAdaptor(dataholder, getApplicationContext());
-        recyclerView.setAdapter(websiteListAdaptor);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, true);
-        recyclerView.setLayoutManager(layoutManager);
-//        recyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        databaseReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        websiteHelper data = ds.getValue(websiteHelper.class);
-                        System.out.println(data);
-                        //Toast.makeText(addPasswordData.this,data,Toast.LENGTH_SHORT).show();
-                        assert data != null;
-                        dataholder.add(data);
-                    }
-                    websiteListAdaptor.notifyDataSetChanged();
-
-                } else {
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+    public void onComplete(String time) {
+        // After the dialog fragment completes, it calls this callback.
+        // use the string here
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -224,8 +190,8 @@ public class addPasswordData extends AppCompatActivity {
     }
 
     public void goback(View view) {
-        overridePendingTransition(R.anim.downward, R.anim.upward);
         finish();
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
     }
 
     public void genratepassword(View view) {

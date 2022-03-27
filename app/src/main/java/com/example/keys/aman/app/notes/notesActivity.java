@@ -1,10 +1,5 @@
 package com.example.keys.aman.app.notes;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,13 +8,17 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.keys.R;
-import com.example.keys.aman.app.settings.SettingActivity;
 import com.example.keys.aman.app.home.HomeActivity;
+import com.example.keys.aman.app.settings.SettingActivity;
 import com.example.keys.aman.app.signin_login.SignUpActivity;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
@@ -31,6 +30,7 @@ import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -44,9 +44,14 @@ public class notesActivity extends AppCompatActivity {
 
     private static final String TAG = "notesActivity";
     SharedPreferences sharedPreferences;
+    public static DatabaseReference reference;
+    public static myadaptorfornote adaptor;
+
+
     TextView tv_NOTE;
     RewardedAd mRewardedAd;
     private int click_counter = 0;
+    private String uid;
 
 
     @Override
@@ -55,6 +60,7 @@ public class notesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notes);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
@@ -100,12 +106,12 @@ public class notesActivity extends AppCompatActivity {
                     case R.id.menu_home:
                         Intent intent1 = new Intent(notesActivity.this, HomeActivity.class);
                         startActivity(intent1);
-                        overridePendingTransition(R.anim.slide_left_right, R.anim.slide_left_right);
+                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         return true;
                     case R.id.menu_setting:
                         Intent intent2 = new Intent(notesActivity.this, SettingActivity.class);
-                        overridePendingTransition(R.anim.slide_right_left, R.anim.slide_right_left);
                         startActivity(intent2);
+                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         return true;
                     case R.id.menu_notes:
 
@@ -118,19 +124,18 @@ public class notesActivity extends AppCompatActivity {
 
     public void recyclerviewsetdata() {
         RecyclerView recyclerView;
-        DatabaseReference databaseReference;
-        myadaptorfornote adaptor;
+
         ArrayList<addDNoteHelperClass> dataholder;
 
 
         recyclerView = findViewById(R.id.recview);
         String mobile = sharedPreferences.getString(SignUpActivity.KEY_USER_MOBILE, null);
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(mobile);
+        reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         dataholder = new ArrayList<>();
-        adaptor = new myadaptorfornote(dataholder, getApplicationContext());
+        adaptor = new myadaptorfornote(dataholder, getApplicationContext(), this);
         recyclerView.setAdapter(adaptor);
 
         reference.addValueEventListener(new ValueEventListener() {
@@ -181,8 +186,8 @@ public class notesActivity extends AppCompatActivity {
             Toast.makeText(notesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
         }
         Intent intent = new Intent(notesActivity.this, addNotesActivity.class);
-        overridePendingTransition(R.anim.upward,0);
         startActivity(intent);
+        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
     }
 
     public void open_secret_notes(View view) {

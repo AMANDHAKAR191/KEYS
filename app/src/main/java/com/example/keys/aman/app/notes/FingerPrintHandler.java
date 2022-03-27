@@ -14,7 +14,7 @@ import com.example.keys.R;
 import com.example.keys.aman.app.home.HomeActivity;
 
 public class FingerPrintHandler extends FingerprintManager.AuthenticationCallback {
-    private Context context;
+    private final Context context;
     private FingerprintManager fingerprintManager;
 
     public FingerPrintHandler(Context context) {
@@ -47,8 +47,8 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
     }
 
     private void update(String s, boolean b) {
-        TextView paralable = (TextView) ((Activity)context).findViewById(R.id.tv_result);
-        ImageView img_fingerprint = (ImageView) ((Activity)context).findViewById(R.id.img_fingerprint);
+        TextView paralable = ((Activity)context).findViewById(R.id.tv_result);
+        ImageView img_fingerprint = ((Activity)context).findViewById(R.id.img_fingerprint);
         paralable.setText(s);
 
         if (b == false){
