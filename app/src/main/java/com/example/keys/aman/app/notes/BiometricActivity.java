@@ -1,8 +1,5 @@
 package com.example.keys.aman.app.notes;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
 import android.Manifest;
 import android.app.KeyguardManager;
 import android.content.Intent;
@@ -15,8 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.example.keys.R;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
+//import com.example.keys.aman.app.signin_login.SignUpActivity;
 
 public class BiometricActivity extends AppCompatActivity{
 

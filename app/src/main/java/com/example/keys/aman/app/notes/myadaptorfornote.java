@@ -21,7 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
+import com.example.keys.aman.app.signin_login.LogInActivity;
 
 import java.util.ArrayList;
 
@@ -49,8 +49,8 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
         AES aes = new AES();
-        sharedPreferences = context.getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
+        sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
         int p = holder.getAdapterPosition();
         String tv_date, tv_title, tv_note,tv_title_dc, tv_note_dc;
         boolean cb_hide_note;
@@ -94,6 +94,10 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
                     notesActivity.reference.child(tv_date).removeValue();
                     Toast.makeText(context,"Deleted !!", Toast.LENGTH_SHORT).show();
                     notesActivity.adaptor.notifyDataSetChanged();
+                    activity.finish();
+                    activity.overridePendingTransition(0, 0);
+                    activity.startActivity(new Intent(context, notesActivity.class));
+                    activity.overridePendingTransition(0, 0);
                 }
             });
         } catch (Exception e) {

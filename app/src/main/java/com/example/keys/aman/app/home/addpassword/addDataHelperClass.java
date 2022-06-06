@@ -5,13 +5,13 @@ import com.example.keys.aman.app.AES;
 import java.util.Comparator;
 
 public class addDataHelperClass {
-    String addDataLogin, addDataPassword, addWebsite;
+    String date, addDataLogin, addDataPassword, addWebsite;
     AES aes = new AES();
     public addDataHelperClass() {
     }
 
-    public addDataHelperClass(String addDataLogin, String addDataPassword, String addWebsite) {
-
+    public addDataHelperClass(String date, String addDataLogin, String addDataPassword, String addWebsite) {
+            this.date = date;
             this.addDataLogin = (addDataLogin);
             this.addDataPassword = (addDataPassword);
             this.addWebsite = (addWebsite);
@@ -23,6 +23,10 @@ public class addDataHelperClass {
             return a1.getAddWebsite().compareTo(a2.getAddWebsite());
         }
     };
+
+    public String getDate() {
+        return date;
+    }
 
     public String getAddDataLogin() {
         return addDataLogin;

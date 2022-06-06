@@ -1,7 +1,5 @@
 package com.example.keys.aman.app.home;
 
-import static com.example.keys.aman.app.signin_login.SignUpActivity.TAG;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -9,16 +7,13 @@ import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
@@ -27,7 +22,7 @@ import com.example.keys.aman.app.home.addpassword.addPasswordData;
 import com.example.keys.aman.app.notes.addNotesActivity;
 import com.example.keys.aman.app.notes.notesActivity;
 import com.example.keys.aman.app.settings.SettingActivity;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
+import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -47,7 +42,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Locale;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -59,6 +53,7 @@ public class HomeActivity extends AppCompatActivity {
     FloatingActionButton AddPasswordFab, PasswordGenratorFab, ShowpersonalInfofab;
     TextView welcomename, textView_addpassword, textView_passgen, textView_ShowpersonalInfo, tv_NOTE;
     Boolean isAllFabsVisible;
+    RecyclerView recview;
 
     //Shared Preference
     SharedPreferences sharedPreferences;
@@ -71,8 +66,8 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //Hooks
@@ -86,32 +81,22 @@ public class HomeActivity extends AppCompatActivity {
         textView_ShowpersonalInfo = findViewById(R.id.tv_personal_info);
         tv_NOTE = findViewById(R.id.tv_NOTE);
         scrollView = findViewById(R.id.scrollView);
+        recview = findViewById(R.id.recview);
 
         MobileAds.initialize(HomeActivity.this);
         showinterstialAd();
 
         //set Welcome name on top of the Home Screen
         AES aes = new AES();
-        SignUpActivity.aes_key = SignUpActivity.AES_KEY;
-        SignUpActivity.aes_iv = SignUpActivity.AES_IV;
-        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
-        String name = sharedPreferences.getString(SignUpActivity.KEY_USER_NAME, null);
+        LogInActivity.aes_key = LogInActivity.AES_KEY;
+        LogInActivity.aes_iv = LogInActivity.AES_IV;
+        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
+        String name = sharedPreferences.getString(LogInActivity.KEY_USER_NAME, null);
         try {
             welcomename.setText("Hello " + aes.decrypt(name));
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        textToSpeech = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
-                if (i == TextToSpeech.SUCCESS) {
-                    //Select Language
-                    int lang = textToSpeech.setLanguage(Locale.ENGLISH);
-                }
-            }
-        });
-
 
         recyclerviewsetdata();
 
@@ -135,7 +120,6 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        textToSpeech.speak("Welcome to KEYS, Sir", TextToSpeech.QUEUE_ADD, null);
     }
 
     private void showinterstialAd() {
@@ -148,7 +132,7 @@ public class HomeActivity extends AppCompatActivity {
                         // The mInterstitialAd reference will be null until
                         // an ad is loaded.
                         mInterstitialAd = interstitialAd;
-                        Log.i(TAG, "onAdLoaded");
+                        //Log.i(TAG, "onAdLoaded");
                         Toast.makeText(HomeActivity.this, "onAdLoaded", Toast.LENGTH_SHORT).show();
                         mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
@@ -179,7 +163,7 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error
-                        Log.i(TAG, loadAdError.getMessage());
+                        //Log.i(TAG, loadAdError.getMessage());
                         mInterstitialAd = null;
                     }
                 });
@@ -261,7 +245,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
         recyclerView = findViewById(R.id.recview);
-        String mobile = sharedPreferences.getString(SignUpActivity.KEY_USER_MOBILE, null);
+        String mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
         databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata")
                 .child(uid);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

@@ -15,12 +15,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
 import com.example.keys.aman.app.changePasswordActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
-import com.example.keys.aman.app.signin_login.UserHelperClass;
+//import com.example.keys.aman.app.signin_login.SignUpActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
@@ -30,8 +28,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthProvider;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -56,7 +52,7 @@ public class OTPVerification extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_otpverification);
-        sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         btn_verify = findViewById(R.id.btn_verify);
         til_otp = findViewById(R.id.til_otp);
         tiet_otp = findViewById(R.id.tiet_otp);
@@ -208,33 +204,5 @@ public class OTPVerification extends AppCompatActivity {
         }, 1000);
     }
 
-    public void onActivityresult(String name, String email, String password) {
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = firebaseDatabase.getReference("signupdata");
-        myRef.child(mobile).setValue("Hello");
 
-        //progressbar();
-        AES aes = new AES();
-        aes.initFromStrings(SignUpActivity.AES_KEY,SignUpActivity.AES_IV);
-        String e_name, e_mobile, e_email, e_password;
-        try {
-            Toast.makeText(OTPVerification.this,"Saving Data on DB",Toast.LENGTH_SHORT).show();
-            e_name = aes.encrypt(name);
-            e_mobile = aes.encrypt(mobile);
-            e_email = aes.encrypt(email);
-            e_password = aes.encrypt(password);
-            String key = sharedPreferences.getString(SignUpActivity.AES_KEY,null);
-            String iv = sharedPreferences.getString(SignUpActivity.AES_IV, null);
-            UserHelperClass userHelperClass = new UserHelperClass(e_name, e_mobile, e_email, e_password, key, iv, uid);
-
-            if (comingrequestcode.equals("ProfileActivity")) {
-                Toast.makeText(OTPVerification.this,"Updated!",Toast.LENGTH_SHORT).show();
-            }
-
-            myRef.child(mobile).setValue(userHelperClass);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 }

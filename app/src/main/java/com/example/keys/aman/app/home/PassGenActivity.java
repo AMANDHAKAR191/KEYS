@@ -19,7 +19,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
+import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.material.slider.Slider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -53,7 +53,7 @@ public class PassGenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pass_gen);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         //createShortcutOfApp();
         //pass_gen_bottom_nav();
 //        String saved_pass = sharedPreferences.getString(KEY_NAME,null);
@@ -227,7 +227,7 @@ public class PassGenActivity extends AppCompatActivity {
         tv_password.setText("Password: " + pass);
         try {
             AES aes = new AES();
-            aes.initFromStrings(SignUpActivity.AES_KEY, SignUpActivity.AES_IV);
+            aes.initFromStrings(LogInActivity.AES_KEY, LogInActivity.AES_IV);
             String encryptedMessage = aes.encrypt(pass);
 //                    saved_pass = encryptedMessage;
             //System.err.println("Encrypted Message : " + encryptedMessage);

@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.CAMERA" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/keys_louncher_icon"
@@ -19,6 +18,9 @@
         android:roundIcon="@mipmap/keys_louncher_icon_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KEYS">
+        <activity
+            android:name=".aman.app.signin_login.SignupwithgoogleActivity"
+            android:exported="false" />
         <activity
             android:name=".aman.app.notes.BiometricActivity"
             android:exported="false" />
@@ -84,7 +86,6 @@
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />
-
     </application>
 
 </manifest>

@@ -1,8 +1,5 @@
 package com.example.keys.aman.app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,8 +7,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.keys.R;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
+import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -21,6 +21,8 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Objects;
+
+//import com.example.keys.aman.app.signin_login.SignUpActivity;
 
 public class changePasswordActivity extends AppCompatActivity {
 
@@ -32,7 +34,7 @@ public class changePasswordActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
-        sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA,MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA,MODE_PRIVATE);
         til_oldpassowrd = findViewById(R.id.til_old_password);
         til_newpassword = findViewById(R.id.til_new_password);
         til_conformpassword = findViewById(R.id.til_new_Conform_password);

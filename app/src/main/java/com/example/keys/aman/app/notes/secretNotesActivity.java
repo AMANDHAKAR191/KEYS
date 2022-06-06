@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
+import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -37,7 +37,7 @@ public class secretNotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_secret_notes);
-        sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         tv_NOTE = findViewById(R.id.tv_NOTE);
@@ -52,7 +52,7 @@ public class secretNotesActivity extends AppCompatActivity {
 
 
         recyclerView = findViewById(R.id.recview);
-        String mobile = sharedPreferences.getString(SignUpActivity.KEY_USER_MOBILE, null);
+        String mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         recyclerView.setHasFixedSize(true);

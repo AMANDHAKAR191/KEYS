@@ -20,13 +20,16 @@ import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.home.HomeActivity;
 import com.example.keys.aman.app.home.PassGenActivity;
 import com.example.keys.aman.app.home.ShowCardviewDataActivity;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
+import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 public class addPasswordData extends AppCompatActivity implements wesiteListFragment.OnCompleteListener{
@@ -42,7 +45,8 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
     SharedPreferences sharedPreferences;
     String uid;
     String comingrequestcode;
-    String coming_loginname, coming_loginpassword, coming_loginwebsite;
+    String coming_date ,coming_loginname, coming_loginpassword, coming_loginwebsite;
+    private String currentDateandTime;
 
 
     @Override
@@ -50,7 +54,7 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_password_data);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
 
         til_login = findViewById(R.id.til_addlogindata);
@@ -80,6 +84,7 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
             comingrequestcode = "this";
         }
         Toast.makeText(addPasswordData.this, comingrequestcode, Toast.LENGTH_LONG).show();
+        coming_date = intent.getStringExtra("date");
         coming_loginname = intent.getStringExtra("loginname");
         coming_loginpassword = intent.getStringExtra("loginpassowrd");
         coming_loginwebsite = intent.getStringExtra("loginwebsite");
@@ -94,6 +99,11 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
         }else if (comingrequestcode.equals("from_website_adaptor")){
             tiet_addwebsitedata.setText("Hello");
         }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        currentDateandTime = sdf.format(new Date());
+        System.out.println("Dateandtime: " + currentDateandTime);
+        Toast.makeText(addPasswordData.this,"Date_time: " + currentDateandTime,Toast.LENGTH_LONG).show();
 
         tiet_addpassworddata.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -125,13 +135,13 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
             tv_error.setTextColor(Color.RED);
         } else {
             String e_addlogin = "", e_addpassword = "", e_addwebsite = "";
-            String sign_mobile = sharedPreferences.getString(SignUpActivity.KEY_USER_MOBILE, null);
+            String sign_mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
             System.out.println("ShearedPreference " + sign_mobile);
 
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             DatabaseReference addDataRef = firebaseDatabase.getReference("addpassworddata").child(uid).child(addwesite);
             AES aes = new AES();
-            aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
+            aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
             try {
                 e_addlogin = aes.encrypt(addlogin);
                 e_addpassword = aes.encrypt(addpasword);
@@ -140,14 +150,18 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
                 e.printStackTrace();
             }
 
-            addDataHelperClass addDataHelperClass = new addDataHelperClass(e_addlogin, e_addpassword, e_addwebsite);
-
-
-            addDataRef.child(addlogin).setValue(addDataHelperClass);
-            Log.d(SignUpActivity.TAG, "done");
+            addDataHelperClass addDataHelperClass = new addDataHelperClass(currentDateandTime, e_addlogin, e_addpassword, e_addwebsite);
+            addDataRef.child(currentDateandTime).setValue(addDataHelperClass);
+            Log.d(LogInActivity.TAG, "done");
             Toast.makeText(addPasswordData.this, "Done", Toast.LENGTH_SHORT).show();
 
             if (comingrequestcode.equals("ShowCardviewDataActivity")) {
+                addDataHelperClass = new addDataHelperClass(coming_date, e_addlogin, e_addpassword, e_addwebsite);
+                addDataRef.child(coming_date).setValue(addDataHelperClass);
+                Log.d(LogInActivity.TAG, "done");
+                Toast.makeText(addPasswordData.this, "Done", Toast.LENGTH_SHORT).show();
+
+
                 Intent intent = new Intent(addPasswordData.this, ShowCardviewDataActivity.class);
                 intent.putExtra("resultlogin", addlogin);
                 intent.putExtra("resultpassword", addpasword);

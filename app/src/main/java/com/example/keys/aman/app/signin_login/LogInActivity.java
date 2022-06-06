@@ -2,32 +2,31 @@ package com.example.keys.aman.app.signin_login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Vibrator;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
-import com.example.keys.aman.app.checkInternetFragment;
 import com.example.keys.aman.app.home.HomeActivity;
-import com.example.keys.aman.app.notes.BiometricActivity;
-import com.example.keys.aman.app.notes.pinLockFragment;
-import com.example.keys.aman.app.settings.OTPVerification;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
+import com.example.keys.aman.app.home.PassGenActivity;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -35,119 +34,215 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.Objects;
 
 public class LogInActivity extends AppCompatActivity {
-    public PrograceBar prograce_bar;
-    Vibrator vibrator;
 
-    TextInputLayout til_login_mobileno, til_login_password;
-    TextInputEditText tiet_login_mobileno, tiet_login_password;
-    Button login;
-    TextView signin_btn, tv_forget_password, set_error, tv_use_pin;
-    ImageView img_use_fingerprint;
-    String passwordFromDB, nameFromDB, mobileFromDB, emailFromDB;
-    String userEnteredmobile, userEnteredPassword;
-    SharedPreferences sharedPreferences;
-    public final String REQUEST_CODE = "LogInActivity";
+    Button btn_login;
+
+
+    private GoogleSignInClient mGoogleSignInClient;
+    private final static int RC_SIGN_IN = 123;
+    private FirebaseAuth mAuth;
     private String uid;
+    SharedPreferences sharedPreferences;
+    public static String AES_KEY = "aes_key";
+    public static String AES_IV = "aes_iv";
+    public static final String SHARED_PREF_ALL_DATA = "All data";
+    public static final String KEY_USER_MOBILE = "mobile";
+    public static final String KEY_USER_PASSSWORD = "password";
+    public static final String KEY_USER_NAME = "name";
+    public static final String KEY_USER_EMAIL = "email";
+    public static String KEY_REMEMBER_ME;
+    public static String KEY_USE_FINGERPRINT;
+    public static String KEY_USE_PIN;
+    public static String KEY_CREATE_ADDP_SHORTCUT;
+    public static String KEY_CREATE_ADDN_SHORTCUT;
+    public static String ISLOGIN;
+    public static String ISFIRST_TIME = "0";
+
+    public static final String TAG = "main Activity";
+    public static String aes_key = "aes_key";
+    public static String aes_iv = "aes_iv";
+    private PrograceBar prograce_bar;
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_log_in);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        sharedPreferences = getSharedPreferences(SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
         //Hooks
-        til_login_mobileno = findViewById(R.id.til_login_mobile_no);
-        til_login_password = findViewById(R.id.til_login_password);
-        tiet_login_mobileno = findViewById(R.id.tiet_login_mobile_no);
-        tiet_login_password = findViewById(R.id.tiet_login_password);
-        tv_forget_password = findViewById(R.id.tv_forget_password);
-        tv_use_pin = findViewById(R.id.tv_use_pin);
-        img_use_fingerprint = findViewById(R.id.img_use_fingerprint);
-        set_error = findViewById(R.id.set_error);
-        set_error.setVisibility(View.INVISIBLE);
-        login = findViewById(R.id.b_login);
-        signin_btn = findViewById(R.id.b_create_account);
+        btn_login = findViewById(R.id.btn_login);
 
-        // remember me data
-        boolean isrememberme = sharedPreferences.getBoolean(SignUpActivity.KEY_REMEMBER_ME, false);
-        System.out.println("LoginActivity1");
-        //TODO Check 4: check internet when user click on login and sign in button in login and sign in Activity
-        if (isrememberme) {
-            System.out.println("LoginActivity2");
-            tiet_login_mobileno.setText(sharedPreferences.getString(SignUpActivity.KEY_USER_MOBILE, null));
-            tiet_login_password.setText(sharedPreferences.getString(SignUpActivity.KEY_USER_PASSSWORD, null));
-            login.setFocusable(true);
+        String islogin = sharedPreferences.getString(ISLOGIN, null);
+        System.out.println(islogin);
+        if (islogin.equals("true")) {
+            Intent intent = new Intent(LogInActivity.this, HomeActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         }
 
-        // show or hide fingerprint and pin options
-        boolean is_use_ingerprint = sharedPreferences.getBoolean(SignUpActivity.KEY_USE_FINGERPRINT, false);
-        boolean is_use_pin = sharedPreferences.getBoolean(SignUpActivity.KEY_USE_PIN, false);
-        Toast.makeText(LogInActivity.this, is_use_ingerprint + " | " + is_use_pin, Toast.LENGTH_SHORT).show();
-        if (is_use_pin && is_use_ingerprint) {
-            tv_use_pin.setVisibility(View.VISIBLE);
-            img_use_fingerprint.setVisibility(View.VISIBLE);
-        }
+//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+//        if (user != null) {
+//            //readData(uid);
+//            Toast.makeText(LogInActivity.this, "check 1", Toast.LENGTH_SHORT).show();
+//            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+//            System.out.println("check 0");
+//            startActivity(intent);
+//
+//        }
+        mAuth = FirebaseAuth.getInstance();
+        createRequest();
 
+        btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                progressbar();
+                signIn();
+            }
+        });
     }
 
-    private void checkUser(String userEnteredmobile, String userEnteredPassword) {
+
+    private void createRequest() {
+        System.out.println("Creating Request...");
+        // Configure Google Sign In
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+
+        // Build a GoogleSignInClient with the options specified by gso.
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+
+    }
+    private void signIn() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         progressbar();
-        AES aes = new AES();
-        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY, null), sharedPreferences.getString(SignUpActivity.AES_IV, null));
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Query checkUser = null;
-        try {
-            checkUser = reference.orderByChild("uid").equalTo(uid);
-            System.out.println("<>" + checkUser + uid);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        System.out.println("getting result from intent");
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                System.out.println("Authenticating with firebase...");
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                prograce_bar.dismissbar();
+                firebaseAuthWithGoogle(account);
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+                // ...
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
         }
-        System.out.println(userEnteredmobile);
-        Objects.requireNonNull(checkUser).addListenerForSingleValueEvent(new ValueEventListener() {
+    }
+
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
+
+        System.out.println("Authenticating with firebase...");
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            System.out.println("Authentication successful with firebase...");
+                            // Sign in success, update UI with the signed-in user's information
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            uid = user.getUid();
+                            //check user if already signed up
+                            System.out.println("checking User on firebase...");
+                            checkUser();
+
+                            System.out.println("uid: " + uid);
+//                            prograce_bar.dismissbar();
+                            writeData(user);
+                            //readData(uid);
+                            prograce_bar.dismissbar();
+
+                            if (sharedPreferences.getString(ISFIRST_TIME,null) == "0"){
+                                Toast.makeText(LogInActivity.this, "Generating KEY and IV...", Toast.LENGTH_SHORT).show();
+                                SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                                editor1.putString(LogInActivity.AES_KEY, PassGenActivity.generateRandomPassword(22, true, true, true, false) + "==");
+                                editor1.putString(LogInActivity.AES_IV, PassGenActivity.generateRandomPassword(16, true, true, true, false));
+                                editor1.putString(ISLOGIN, "true");
+                                editor1.putString(ISFIRST_TIME,"1");
+                                editor1.apply();
+                            }
+
+                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                            startActivity(intent);
+
+
+                        } else {
+                            Toast.makeText(LogInActivity.this, "Sorry auth failed.", Toast.LENGTH_SHORT).show();
+
+
+                        }
+                    }
+                });
+    }
+
+    private void checkUser() {
+        System.out.println("checking User on firebase...");
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
+        System.out.println("UID: " + uid);
+        Query checkUser = reference.orderByChild("uid").equalTo(uid);
+        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    Toast.makeText(LogInActivity.this, "Checking......", Toast.LENGTH_SHORT).show();
-                    passwordFromDB = dataSnapshot.child(userEnteredmobile).child("password").getValue(String.class);
-                    mobileFromDB = dataSnapshot.child(userEnteredmobile).child("mobile").getValue(String.class);
-                    nameFromDB = dataSnapshot.child(userEnteredmobile).child("name").getValue(String.class);
-                    emailFromDB = dataSnapshot.child(userEnteredmobile).child("email").getValue(String.class);
-                    try {
-                        String enc_password = aes.encrypt(userEnteredPassword);
-                        if (passwordFromDB.equals(enc_password)) {
-                            Toast.makeText(LogInActivity.this, "Password Matched", Toast.LENGTH_SHORT).show();
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString(SignUpActivity.KEY_USER_MOBILE, userEnteredmobile);
-                            editor.putString(SignUpActivity.KEY_USER_PASSSWORD, userEnteredPassword);
-                            editor.putString(SignUpActivity.KEY_USER_NAME, nameFromDB);
-                            editor.putString(SignUpActivity.KEY_USER_EMAIL, emailFromDB);
-                            editor.putBoolean(SignUpActivity.KEY_REMEMBER_ME, true);
-                            editor.putBoolean(SignUpActivity.KEY_USE_FINGERPRINT, true);
-                            editor.putBoolean(SignUpActivity.KEY_USE_PIN, true);
-                            editor.apply();
-                            startActivity(new Intent(LogInActivity.this, HomeActivity.class));
-                            prograce_bar.dismissbar();
-                            finish();
-                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        } else {
-                            set_error.setVisibility(View.VISIBLE);
-                            set_error.setText("Wrong Password");
-                            prograce_bar.dismissbar();
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
+                    System.out.println("**Data exist!!");
+//                    String nameFromDB = dataSnapshot.child(userEnteredUsername).child("name").getValue(String.class);
+//                    String usernameFromDB = dataSnapshot.child(userEnteredUsername).child("username").getValue(String.class);
+//                    String phoneNoFromDB = dataSnapshot.child(userEnteredUsername).child("phoneNo").getValue(String.class);
+//                    String emailFromDB = dataSnapshot.child(userEnteredUsername).child("email").getValue(String.class);
 
                 } else {
-                    set_error.setVisibility(View.VISIBLE);
-                    set_error.setText("You didn't have any account");
-                    prograce_bar.dismissbar();
+                    System.out.println("**Data does not exist!!");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println("Error!! " + error);
+
+            }
+        });
+    }
+
+    private void readData(String uid) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
+
+        Query checkUser = reference.orderByChild("uid").equalTo(uid);
+        System.out.println("<>" + checkUser + uid);
+
+        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                System.out.println("check /");
+                if (dataSnapshot.exists()) {
+                    System.out.println("check //");
+                    System.out.println(dataSnapshot);
+                } else {
+                    System.out.println("check  ~//");
                 }
             }
 
@@ -156,90 +251,54 @@ public class LogInActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    private void writeData(FirebaseUser user) {
+        String name, email, mobile, uid;
+        name = user.getDisplayName();
+        email = user.getEmail();
+        mobile = "1234567890";
+
+        uid = user.getUid();
+        System.out.println(name + email + mobile + uid);
+        createEntryonDatabse(name, email, mobile, uid);
+
+    }
+
+    public void createEntryonDatabse(String name, String email, String mobile, String uid) {
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = firebaseDatabase.getReference("signupdata");
+
+        //progressbar();
+        AES aes = new AES();
+        String key = sharedPreferences.getString(LogInActivity.AES_KEY, null);
+        String iv = sharedPreferences.getString(LogInActivity.AES_IV, null);
+        aes.initFromStrings(key, iv);
+        String e_name, e_mobile, e_email;
+        try {
+            Toast.makeText(LogInActivity.this, "Saving Data on DB", Toast.LENGTH_SHORT).show();
+            e_name = aes.encrypt(name);
+            e_mobile = aes.encrypt(mobile);
+            e_email = aes.encrypt(email);
+            UserHelperClass userHelperClass = new UserHelperClass(e_name, e_mobile, e_email, key, iv, uid);
+
+
+            myRef.child(uid).setValue(userHelperClass);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void progressbar() {
         prograce_bar = new PrograceBar(LogInActivity.this);
         prograce_bar.showDialog();
-
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
 
             }
-        }, 3000);
-    }
-
-
-    public void forgetpassword(View view) {
-        startActivity(new Intent(LogInActivity.this, OTPVerification.class));
-    }
-
-    public void login(View view) {
-        System.out.println("LoginActivity3");
-        userEnteredmobile = Objects.requireNonNull(til_login_mobileno.getEditText()).getText().toString();
-        userEnteredPassword = Objects.requireNonNull(til_login_password.getEditText()).getText().toString();
-        System.out.println("LoginActivity4");
-        if (validatedata()) {
-            checkUser(userEnteredmobile, userEnteredPassword);
-        }
-//        if (!isConnected(this)){
-//            showCustomDiolog();
-//        }else {
-//            System.out.println("LoginActivity3");
-//            userEnteredmobile = Objects.requireNonNull(til_login_mobileno.getEditText()).getText().toString();
-//            userEnteredPassword = Objects.requireNonNull(til_login_password.getEditText()).getText().toString();
-//            System.out.println("LoginActivity4");
-//            if (validatedata()) {
-//                checkUser(userEnteredmobile, userEnteredPassword);
-//            }
-//        }
-    }
-
-    // Check Internet Connection
-    private boolean isConnected(LogInActivity logInActivity) {
-        ConnectivityManager connectivityManager = (ConnectivityManager) logInActivity.getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo mobileConn = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        return mobileConn != null && mobileConn.isConnected();
-    }
-
-    private void showCustomDiolog() {
-        checkInternetFragment checkInternet = new checkInternetFragment();
-        checkInternet.show(getSupportFragmentManager(), "check internet");
-    }
-    //Validate Fields
-    private boolean validatedata() {
-        if (userEnteredmobile.equals("")) {
-            set_error.setVisibility(View.VISIBLE);
-            return false;
-        } else if (userEnteredPassword.equals("")) {
-            set_error.setVisibility(View.VISIBLE);
-            return false;
-        }
-        return true;
-    }
-
-    public void create_account(View view) {
-        startActivity(new Intent(LogInActivity.this, SignUpActivity.class));
-        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-    }
-
-    public void vibrate(View view) {
-        vibrator.vibrate(200);
-    }
-
-    public void use_pin(View view) {
-        Intent intent = new Intent(LogInActivity.this, pinLockFragment.class);
-        intent.putExtra("request_code", REQUEST_CODE);
-        startActivity(intent);
-
-    }
-
-    public void use_fingerprint(View view) {
-        Intent intent = new Intent(LogInActivity.this, BiometricActivity.class);
-        intent.putExtra("request_code", REQUEST_CODE);
-        startActivity(intent);
-
+        }, 500);
     }
 }

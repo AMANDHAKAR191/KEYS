@@ -15,7 +15,6 @@
         android:background="@color/Activity_theme"
         android:fontFamily="@font/aclonica"
         android:gravity="center"
-        android:onClick="vibrate"
         android:text="@string/login_title"
         android:textSize="40dp"
         app:layout_constraintTop_toTopOf="parent" />
@@ -33,7 +32,7 @@
             android:layout_width="120dp"
             android:layout_height="120dp"
             android:layout_marginTop="10dp"
-            android:onClick="open_secret_notes"
+
             android:src="@drawable/group_1final_keys_logo" />
 
         <!--        <TextView-->
@@ -50,143 +49,21 @@
 
     </LinearLayout>
 
-    <ScrollView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="120dp">
 
-        <LinearLayout
-            android:id="@+id/layout_Login_data"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/btn_login"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@+id/login_title">
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_login_mobile_no"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter Mobile No."
-                android:tooltipText="?attr/colorOnSecondary"
-                app:endIconMode="clear_text"
-                app:startIconDrawable="@drawable/phone">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tiet_login_mobile_no"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:inputType="phone"
-                    android:textColor="?attr/colorOnSecondary" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_login_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Enter Password"
-                android:tooltipText="?attr/colorOnSecondary"
-                app:endIconMode="password_toggle"
-                app:startIconDrawable="@drawable/lock">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tiet_login_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:inputType="textWebPassword"
-                    android:textColor="?attr/colorOnSecondary" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
-                android:id="@+id/tv_forget_password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:background="#00000000"
-                android:onClick="forgetpassword"
-                android:text="@string/forget_password"
-                android:textColor="?attr/colorOnSecondary"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/set_error"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="50dp"
-                android:text="Fill the Blank Fields"
-                android:textColor="#E80C0C"
-                android:textSize="18dp"
-                android:visibility="invisible"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraint_layout" />
+            android:layout_gravity="center"
+            android:layout_marginLeft="150dp"
+            android:text="Login"/>
+    </LinearLayout>
 
 
-            <ImageView
-                android:id="@+id/img_use_fingerprint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:onClick="use_fingerprint"
-                android:src="@mipmap/fingerprint_icon"
-                android:visibility="invisible" />
-
-            <TextView
-                android:id="@+id/tv_use_pin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:onClick="use_pin"
-                android:text="Use Pin"
-                android:textColor="?attr/colorOnSecondary"
-                android:textSize="20dp"
-                android:visibility="invisible"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent" />
-
-            <Button
-                android:id="@+id/b_login"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/round_btn"
-                android:onClick="login"
-                android:text="Login"
-                android:textColor="?attr/colorOnSecondary"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/set_error" />
-
-            <TextView
-                android:id="@+id/tv_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:text="or"
-                android:textColor="?attr/colorOnSecondary"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/b_login" />
-
-            <TextView
-                android:id="@+id/b_create_account"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:onClick="create_account"
-                android:text="Create Account"
-                android:textColor="?attr/colorOnSecondary"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tv_text" />
-        </LinearLayout>
-    </ScrollView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

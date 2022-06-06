@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/KEYS/app/src/main/res/drawable-anydpi/arrow_next.xml" value="0.2365" />
         <entry key="..\:/KEYS/app/src/main/res/drawable-anydpi/content_copy.xml" value="0.191" />
         <entry key="..\:/KEYS/app/src/main/res/drawable-anydpi/create.xml" value="0.1495" />
         <entry key="..\:/KEYS/app/src/main/res/drawable-anydpi/delete.xml" value="0.1495" />
@@ -61,6 +62,7 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_add_notes.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_add_password_data.xml" value="0.22" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_app_info.xml" value="0.25" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_ask_email.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_biometric.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_change_password.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_home.xml" value="0.16" />
@@ -80,6 +82,7 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_setting.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_show_cardview_data.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_sign_up.xml" value="0.22" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_signupwithgoogle.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_splash.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/layout/cardview_layout.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/check_internet_dialog.xml" value="0.14666666666666667" />

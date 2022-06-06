@@ -23,7 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.home.addpassword.addDataHelperClass;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
+import com.example.keys.aman.app.signin_login.LogInActivity;
 
 import java.util.ArrayList;
 
@@ -51,12 +51,13 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
         AES aes = new AES();
-        sharedPreferences = context.getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
+        sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
         int p = holder.getAdapterPosition();
         final addDataHelperClass temp = dataholder.get(position);
-        String dlogin, dpassword, dwebsite;
+        String current_date, dlogin, dpassword, dwebsite;
         try {
+            current_date = dataholder.get(position).getDate();
             dlogin = aes.decrypt(dataholder.get(position).getAddDataLogin());
             dpassword = aes.decrypt(dataholder.get(position).getAddDataPassword());
             holder.dlogin.setText(dlogin);
@@ -70,6 +71,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ShowCardviewDataActivity.class);
+                    intent.putExtra("date",current_date);
                     intent.putExtra("loginname", dlogin);
                     intent.putExtra("loginpassowrd", dpassword);
                     intent.putExtra("loginwebsite", dwebsite);
@@ -83,6 +85,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ShowCardviewDataActivity.class);
+                    intent.putExtra("date",current_date);
                     intent.putExtra("loginname", dlogin);
                     intent.putExtra("loginpassowrd", dpassword);
                     intent.putExtra("loginwebsite", dwebsite);
@@ -95,6 +98,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ShowCardviewDataActivity.class);
+                    intent.putExtra("date",current_date);
                     intent.putExtra("loginname", dlogin);
                     intent.putExtra("loginpassowrd", dpassword);
                     intent.putExtra("loginwebsite", dwebsite);
@@ -115,7 +119,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
                 @Override
                 public void onClick(View view) {
                     SharedPreferences sharedPreferences;
-                    sharedPreferences = context.getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+                    sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
                     String dp = dpassword;
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(KEY_PASSWORD,dp );
@@ -135,6 +139,10 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
                     Toast.makeText(context,"Deleted !!", Toast.LENGTH_SHORT).show();
                     HomeActivity.adaptor.notifyDataSetChanged();
                     activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+                    activity.finish();
+                    activity.overridePendingTransition(0, 0);
+                    activity.startActivity(new Intent(context, HomeActivity.class));
+                    activity.overridePendingTransition(0, 0);
                 }
             });
         } catch (Exception e) {

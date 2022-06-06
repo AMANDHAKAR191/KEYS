@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
-import com.example.keys.aman.app.signin_login.SignUpActivity;
+import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -49,7 +49,7 @@ public class addNotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notes);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(SignUpActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //Hooks
@@ -107,7 +107,7 @@ public class addNotesActivity extends AppCompatActivity {
         title = Objects.requireNonNull(til_addtitle.getEditText()).getText().toString();
         note = Objects.requireNonNull(til_addnote.getEditText()).getText().toString();
         AES aes = new AES();
-        aes.initFromStrings(sharedPreferences.getString(SignUpActivity.AES_KEY,null),sharedPreferences.getString(SignUpActivity.AES_IV,null));
+        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
         try {
             title_dc = aes.encrypt(title);
             note_dc = aes.encrypt(note);
@@ -117,7 +117,7 @@ public class addNotesActivity extends AppCompatActivity {
 
         addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(currentDateandTime,title_dc,note_dc, hide_note);
 
-        mobile = sharedPreferences.getString(SignUpActivity.KEY_USER_MOBILE, null);
+        mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
         System.out.println(mobile);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         if (comingrequestcode.equals("notesCardView")){
