@@ -81,18 +81,32 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-        boolean is_use_fingerprint = sharedPreferences.getBoolean(LogInActivity.KEY_USE_FINGERPRINT,false);
-        boolean is_use_pin = sharedPreferences.getBoolean(LogInActivity.KEY_USE_PIN,false);
-        boolean is_addp_shortcut_created = sharedPreferences.getBoolean(LogInActivity.KEY_CREATE_ADDP_SHORTCUT,false);
-        boolean is_addn_shortcut_created = sharedPreferences.getBoolean(LogInActivity.KEY_CREATE_ADDN_SHORTCUT,false);
-        if (is_use_fingerprint) {
-            sw_enable_fingerprint.setChecked(is_use_fingerprint);
-        }else if (is_use_pin){
-            sw_enable_pin.setChecked(is_use_pin);
-        }else if (is_addp_shortcut_created){
-            sw_addpassword_shortcut.setChecked(is_addp_shortcut_created);
-        }else if (is_addn_shortcut_created){
-            sw_addnotes_shortcut.setChecked(is_addn_shortcut_created);
+        String is_use_fingerprint = sharedPreferences.getString(LogInActivity.KEY_USE_FINGERPRINT,"false");
+        String is_use_pin = sharedPreferences.getString(LogInActivity.KEY_USE_PIN,"false");
+        String is_addp_shortcut_created = sharedPreferences.getString(LogInActivity.KEY_CREATE_ADDP_SHORTCUT,"false");
+        String is_addn_shortcut_created = sharedPreferences.getString(LogInActivity.KEY_CREATE_ADDN_SHORTCUT,"false");
+        if (is_use_fingerprint == "true") {
+            sw_enable_fingerprint.setChecked(true);
+        }else {
+            sw_enable_fingerprint.setChecked(false);
+        }
+
+        if (is_use_pin == "true"){
+            sw_enable_pin.setChecked(true);
+        }else {
+            sw_enable_pin.setChecked(true);
+        }
+
+        if (is_addp_shortcut_created == "true"){
+            sw_addpassword_shortcut.setChecked(true);
+        }else {
+            sw_addpassword_shortcut.setChecked(false);
+        }
+
+        if (is_addn_shortcut_created == "true"){
+            sw_addnotes_shortcut.setChecked(true);
+        }else {
+            sw_addnotes_shortcut.setChecked(false);
         }
 
         sw_enable_fingerprint.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

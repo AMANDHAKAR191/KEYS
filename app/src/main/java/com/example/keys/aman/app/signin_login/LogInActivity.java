@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
@@ -67,12 +69,6 @@ public class LogInActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -82,12 +78,13 @@ public class LogInActivity extends AppCompatActivity {
         //Hooks
         btn_login = findViewById(R.id.btn_login);
 
-        String islogin = sharedPreferences.getString(ISLOGIN, null);
+        boolean islogin = sharedPreferences.getBoolean(ISLOGIN, false);
         System.out.println(islogin);
-        if (islogin.equals("true")) {
+        if (islogin) {
             Intent intent = new Intent(LogInActivity.this, HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            finish();
         }
 
 //        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -119,7 +116,6 @@ public class LogInActivity extends AppCompatActivity {
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
@@ -171,12 +167,6 @@ public class LogInActivity extends AppCompatActivity {
                             System.out.println("checking User on firebase...");
                             checkUser();
 
-                            System.out.println("uid: " + uid);
-//                            prograce_bar.dismissbar();
-                            writeData(user);
-                            //readData(uid);
-                            prograce_bar.dismissbar();
-
                             if (sharedPreferences.getString(ISFIRST_TIME,null) == "0"){
                                 Toast.makeText(LogInActivity.this, "Generating KEY and IV...", Toast.LENGTH_SHORT).show();
                                 SharedPreferences.Editor editor1 = sharedPreferences.edit();
@@ -185,7 +175,47 @@ public class LogInActivity extends AppCompatActivity {
                                 editor1.putString(ISLOGIN, "true");
                                 editor1.putString(ISFIRST_TIME,"1");
                                 editor1.apply();
+                                System.out.println("ISLOGIN" + sharedPreferences.getString(ISLOGIN,null));
+                                System.out.println("ISFIRST_TIME" + sharedPreferences.getString(ISFIRST_TIME,null));
+                                writeData(user);
+                            }else {
+                                System.out.println("Getting IV AND KT+EY from database");
+                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(uid);
+                                // Read from the database
+                                reference.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        // This method is called once with the initial value and again
+                                        // whenever data at this location is updated.
+                                        String aes_iv = dataSnapshot.child("aes_iv").getValue(String.class);
+                                        String aes_key= dataSnapshot.child("eas_key").getValue(String.class);
+                                        System.out.println("AES_IV: " + aes_iv + "AES_KEY: " + aes_key);
+
+                                        SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                                        editor1.putString(LogInActivity.AES_KEY, aes_key);
+                                        editor1.putString(LogInActivity.AES_IV, aes_iv);
+                                        editor1.putString(ISLOGIN, "true");
+                                        editor1.putString(ISFIRST_TIME,"1");
+                                        editor1.apply();
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError error) {
+                                        // Failed to read value
+                                        System.out.println("Not able get data from database");
+                                    }
+                                });
                             }
+
+                            System.out.println("uid: " + uid);
+//                            prograce_bar.dismissbar();
+
+                            //readData(uid);
+                            prograce_bar.dismissbar();
+                            System.out.println("Completed!!\n end");
+
+
 
                             Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                             startActivity(intent);

@@ -3,19 +3,19 @@ package com.example.keys.aman.app.home;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.keys.R;
-import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
 import com.example.keys.aman.app.home.addpassword.addDataHelperClass;
 import com.example.keys.aman.app.home.addpassword.addPasswordData;
@@ -47,11 +47,10 @@ import java.util.Collections;
 public class HomeActivity extends AppCompatActivity {
 
     private InterstitialAd mInterstitialAd;
-    TextToSpeech textToSpeech;
     ScrollView scrollView;
     ExtendedFloatingActionButton exFABtn;
     FloatingActionButton AddPasswordFab, PasswordGenratorFab, ShowpersonalInfofab;
-    TextView welcomename, textView_addpassword, textView_passgen, textView_ShowpersonalInfo, tv_NOTE;
+    TextView textView_addpassword, textView_passgen, textView_ShowpersonalInfo, tv_NOTE;
     Boolean isAllFabsVisible;
     RecyclerView recview;
 
@@ -71,7 +70,6 @@ public class HomeActivity extends AppCompatActivity {
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //Hooks
-        welcomename = findViewById(R.id.welcome_name);
         exFABtn = findViewById(R.id.ExtendedFloatingActionButton);
         AddPasswordFab = findViewById(R.id.add_alarm_fab);
         textView_addpassword = findViewById(R.id.tv_add_password);
@@ -86,17 +84,17 @@ public class HomeActivity extends AppCompatActivity {
         MobileAds.initialize(HomeActivity.this);
         showinterstialAd();
 
-        //set Welcome name on top of the Home Screen
-        AES aes = new AES();
-        LogInActivity.aes_key = LogInActivity.AES_KEY;
-        LogInActivity.aes_iv = LogInActivity.AES_IV;
-        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
-        String name = sharedPreferences.getString(LogInActivity.KEY_USER_NAME, null);
-        try {
-            welcomename.setText("Hello " + aes.decrypt(name));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        //set Welcome name on top of the Home Screen
+//        AES aes = new AES();
+//        LogInActivity.aes_key = LogInActivity.AES_KEY;
+//        LogInActivity.aes_iv = LogInActivity.AES_IV;
+//        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
+//        String name = sharedPreferences.getString(LogInActivity.KEY_USER_NAME, null);
+//        try {
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
 
         recyclerviewsetdata();
 

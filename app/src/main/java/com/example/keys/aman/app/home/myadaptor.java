@@ -135,10 +135,12 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
             holder.img_delete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    HomeActivity.databaseReference.child(dwebsite).child(dlogin).removeValue();
+                    System.out.println(HomeActivity.databaseReference);
+                    HomeActivity.databaseReference.child(dwebsite).child(current_date).removeValue();
+                    System.out.println(dwebsite);
+                    System.out.println(dlogin);
                     Toast.makeText(context,"Deleted !!", Toast.LENGTH_SHORT).show();
                     HomeActivity.adaptor.notifyDataSetChanged();
-                    activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                     activity.finish();
                     activity.overridePendingTransition(0, 0);
                     activity.startActivity(new Intent(context, HomeActivity.class));
