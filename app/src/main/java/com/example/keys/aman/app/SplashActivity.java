@@ -79,26 +79,26 @@ public class SplashActivity extends AppCompatActivity {
                 Toast.makeText(this, "External Storage Permission DENIED", Toast.LENGTH_SHORT).show();
             }
 
-            if (grantResults[1] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "Network Access Permission GRANTED", Toast.LENGTH_SHORT).show();
-                Intent i = new Intent(SplashActivity.this, LogInActivity.class);
-                startActivity(i);
-                finish();
-            }else {
-                Toast.makeText(this, "Network Access Permission DENIED", Toast.LENGTH_SHORT).show();
-            }
-
-            if (grantResults[2] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "Biometric Permission GRANTED", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(this, "Biometric Permission DENIED", Toast.LENGTH_SHORT).show();
-            }
-
-            if (grantResults[3] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this, "Vibration Permission GRANTED", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(this, "Vibration Permission DENIED", Toast.LENGTH_SHORT).show();
-            }
+//            if (grantResults[1] == PackageManager.PERMISSION_GRANTED){
+//                Toast.makeText(this, "Network Access Permission GRANTED", Toast.LENGTH_SHORT).show();
+//                Intent i = new Intent(SplashActivity.this, LogInActivity.class);
+//                startActivity(i);
+//                finish();
+//            }else {
+//                Toast.makeText(this, "Network Access Permission DENIED", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            if (grantResults[2] == PackageManager.PERMISSION_GRANTED){
+//                Toast.makeText(this, "Biometric Permission GRANTED", Toast.LENGTH_SHORT).show();
+//            }else {
+//                Toast.makeText(this, "Biometric Permission DENIED", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            if (grantResults[3] == PackageManager.PERMISSION_GRANTED){
+//                Toast.makeText(this, "Vibration Permission GRANTED", Toast.LENGTH_SHORT).show();
+//            }else {
+//                Toast.makeText(this, "Vibration Permission DENIED", Toast.LENGTH_SHORT).show();
+//            }
         }
     }
 

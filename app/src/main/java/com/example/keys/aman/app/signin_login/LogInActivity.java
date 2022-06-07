@@ -66,6 +66,8 @@ public class LogInActivity extends AppCompatActivity {
     public static String aes_key = "aes_key";
     public static String aes_iv = "aes_iv";
     private PrograceBar prograce_bar;
+    private String A1;
+    private boolean turn = false;
 
 
     @Override
@@ -78,9 +80,9 @@ public class LogInActivity extends AppCompatActivity {
         //Hooks
         btn_login = findViewById(R.id.btn_login);
 
-        boolean islogin = sharedPreferences.getBoolean(ISLOGIN, false);
+        String islogin = sharedPreferences.getString(ISLOGIN, "false");
         System.out.println(islogin);
-        if (islogin) {
+        if (islogin.equals("true")) {
             Intent intent = new Intent(LogInActivity.this, HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
@@ -159,68 +161,86 @@ public class LogInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+
                             System.out.println("Authentication successful with firebase...");
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             uid = user.getUid();
-                            //check user if already signed up
-                            System.out.println("checking User on firebase...");
+                            System.out.println("Turn = " + turn);
                             checkUser();
 
-                            if (sharedPreferences.getString(ISFIRST_TIME,null) == "0"){
-                                Toast.makeText(LogInActivity.this, "Generating KEY and IV...", Toast.LENGTH_SHORT).show();
-                                SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                                editor1.putString(LogInActivity.AES_KEY, PassGenActivity.generateRandomPassword(22, true, true, true, false) + "==");
-                                editor1.putString(LogInActivity.AES_IV, PassGenActivity.generateRandomPassword(16, true, true, true, false));
-                                editor1.putString(ISLOGIN, "true");
-                                editor1.putString(ISFIRST_TIME,"1");
-                                editor1.apply();
-                                System.out.println("ISLOGIN" + sharedPreferences.getString(ISLOGIN,null));
-                                System.out.println("ISFIRST_TIME" + sharedPreferences.getString(ISFIRST_TIME,null));
-                                writeData(user);
-                            }else {
-                                System.out.println("Getting IV AND KT+EY from database");
-                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(uid);
-                                // Read from the database
-                                reference.addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        // This method is called once with the initial value and again
-                                        // whenever data at this location is updated.
-                                        String aes_iv = dataSnapshot.child("aes_iv").getValue(String.class);
-                                        String aes_key= dataSnapshot.child("eas_key").getValue(String.class);
-                                        System.out.println("AES_IV: " + aes_iv + "AES_KEY: " + aes_key);
+                            //check user if already signed up
+                            System.out.println("checking User on firebase...");
 
+                            Handler handler = new Handler();
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    while (!turn){
+                                        System.out.println("checking User on firebase...");
+                                    }
+                                    A1 = sharedPreferences.getString(ISFIRST_TIME,"0");
+                                    System.out.println(A1);
+                                    if (A1 == "0"){
+
+                                        Toast.makeText(LogInActivity.this, "Generating KEY and IV...", Toast.LENGTH_SHORT).show();
+                                        System.out.println("Generating KEY and IV...");
                                         SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                                        editor1.putString(LogInActivity.AES_KEY, aes_key);
-                                        editor1.putString(LogInActivity.AES_IV, aes_iv);
+                                        editor1.putString(LogInActivity.AES_KEY, PassGenActivity.generateRandomPassword(22, true, true, true, false) + "==");
+                                        editor1.putString(LogInActivity.AES_IV, PassGenActivity.generateRandomPassword(16, true, true, true, false));
                                         editor1.putString(ISLOGIN, "true");
                                         editor1.putString(ISFIRST_TIME,"1");
                                         editor1.apply();
+                                        System.out.println("ISLOGIN: " + sharedPreferences.getString(ISLOGIN,null));
+                                        System.out.println("ISFIRST_TIME: " + sharedPreferences.getString(ISFIRST_TIME,null));
+                                        writeData(user);
+                                        turn = false;
+                                    }else {
+                                        System.out.println("Getting IV AND KT+EY from database");
+                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(uid);
+                                        // Read from the database
+                                        reference.addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                // This method is called once with the initial value and again
+                                                // whenever data at this location is updated.
+                                                String aes_iv = dataSnapshot.child("aes_iv").getValue(String.class);
+                                                String aes_key= dataSnapshot.child("aes_key").getValue(String.class);
+                                                System.out.println("AES_IV: " + aes_iv + "AES_KEY: " + aes_key);
 
-                                    }
+                                                SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                                                editor1.putString(LogInActivity.AES_KEY, aes_key);
+                                                editor1.putString(LogInActivity.AES_IV, aes_iv);
+                                                editor1.putString(ISLOGIN, "true");
+                                                editor1.putString(ISFIRST_TIME,"1");
+                                                editor1.apply();
+                                                System.out.println("AES KEY" + sharedPreferences.getString(AES_KEY,null));
+                                                System.out.println("AES IV" + sharedPreferences.getString(AES_IV,null));
+                                                turn = false;
 
-                                    @Override
-                                    public void onCancelled(DatabaseError error) {
-                                        // Failed to read value
-                                        System.out.println("Not able get data from database");
-                                    }
-                                });
-                            }
 
-                            System.out.println("uid: " + uid);
+                                            }
+
+                                            @Override
+                                            public void onCancelled(DatabaseError error) {
+                                                // Failed to read value
+                                                System.out.println("Not able get data from database");
+                                            }
+                                        });
+                                        System.out.println("uid: " + uid);
 //                            prograce_bar.dismissbar();
 
-                            //readData(uid);
-                            prograce_bar.dismissbar();
-                            System.out.println("Completed!!\n end");
+                                        //readData(uid);
+                                        prograce_bar.dismissbar();
+                                        System.out.println("Completed!!\n end");
 
 
 
-                            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                            startActivity(intent);
-
-
+                                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                                        startActivity(intent);
+                                    }
+                                }
+                            }, 5000);
                         } else {
                             Toast.makeText(LogInActivity.this, "Sorry auth failed.", Toast.LENGTH_SHORT).show();
 
@@ -233,26 +253,29 @@ public class LogInActivity extends AppCompatActivity {
     private void checkUser() {
         System.out.println("checking User on firebase...");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
-        System.out.println("UID: " + uid);
-        Query checkUser = reference.orderByChild("uid").equalTo(uid);
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    System.out.println("**Data exist!!");
-//                    String nameFromDB = dataSnapshot.child(userEnteredUsername).child("name").getValue(String.class);
-//                    String usernameFromDB = dataSnapshot.child(userEnteredUsername).child("username").getValue(String.class);
-//                    String phoneNoFromDB = dataSnapshot.child(userEnteredUsername).child("phoneNo").getValue(String.class);
-//                    String emailFromDB = dataSnapshot.child(userEnteredUsername).child("email").getValue(String.class);
-
-                } else {
-                    System.out.println("**Data does not exist!!");
+                System.out.println(dataSnapshot.getValue());
+                String val = dataSnapshot.getValue().toString();
+                if (val != ""){
+                    System.out.println("User Exist!!");
+                    SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                    editor1.putString(ISFIRST_TIME,"1");
+                    editor1.apply();
+                    turn = true;
+                    System.out.println("Turn = " + turn);
+                    return;
+                }else {
+                    turn = true;
+                    System.out.println("Turn = " + turn);
+                    return;
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println("Error!! " + error);
+                System.out.println(error);
 
             }
         });

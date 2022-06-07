@@ -85,108 +85,140 @@
         android:gravity="center"
         android:text="Your saved password will show here"
         android:visibility="invisible" />
+
     <ImageView
         android:id="@+id/btn_refrash"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginBottom="0dp"
-        android:src="@drawable/refrash"
         android:onClick="refrash_activty"
+        android:src="@drawable/refrash"
         app:layout_constraintBottom_toBottomOf="@+id/toolbar"
         app:layout_constraintLeft_toLeftOf="parent" />
 
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/ExtendedFloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="-10dp"
-        android:contentDescription="@string/FAB_item"
-        android:text="@string/item"
-        app:hoveredFocusedTranslationZ="6dp"
-        app:icon="@drawable/add"
-        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:pressedTranslationZ="12dp" />
+    <LinearLayout
+        android:id="@+id/ll_fab"
+        android:layout_width="match_parent"
+        android:layout_height="1500dp"
+        android:gravity="end|bottom"
+        android:orientation="vertical"
+        ads:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+        ads:layout_constraintRight_toRightOf="parent">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_alarm_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:contentDescription="@string/FAB_item"
-        android:onClick="AddPasswordFab"
-        app:backgroundTint="?attr/colorSecondary"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toTopOf="@id/ExtendedFloatingActionButton"
-        app:layout_constraintRight_toRightOf="@id/ExtendedFloatingActionButton"
-        app:srcCompat="@drawable/add" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_add_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:text="@string/add_password_tv"
-        app:layout_constraintBottom_toBottomOf="@id/add_alarm_fab"
-        app:layout_constraintRight_toLeftOf="@id/add_alarm_fab"
-        app:layout_constraintTop_toTopOf="@id/add_alarm_fab" />
+            <TextView
+                android:id="@+id/tv_personal_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:text="Notes"
+                android:textColor="@color/white" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_person_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:contentDescription="@string/FAB_item"
-        android:onClick="PasswordGenratorFab"
-        app:backgroundTint="?attr/colorSecondary"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toTopOf="@+id/add_alarm_fab"
-        app:layout_constraintRight_toRightOf="@id/add_alarm_fab"
-        app:srcCompat="@drawable/create" />
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/show_personal_info_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/FAB_item"
+                android:onClick="Add_Note"
+                app:backgroundTint="?attr/colorSecondary"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/note_add" />
 
-    <TextView
-        android:id="@+id/tv_pass_gen"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:text="@string/password_genrator_tv"
-        app:layout_constraintBottom_toBottomOf="@id/add_person_fab"
-        app:layout_constraintRight_toLeftOf="@id/add_person_fab"
-        app:layout_constraintTop_toTopOf="@id/add_person_fab" />
+        </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/show_personal_info_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:contentDescription="@string/FAB_item"
-        android:onClick="Add_Note"
-        app:backgroundTint="?attr/colorSecondary"
-        app:fabSize="normal"
-        app:layout_constraintBottom_toTopOf="@+id/add_person_fab"
-        app:layout_constraintRight_toRightOf="@id/add_alarm_fab"
-        app:srcCompat="@drawable/note_add" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/tv_personal_info"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:text="Notes"
-        app:layout_constraintBottom_toBottomOf="@id/show_personal_info_fab"
-        app:layout_constraintRight_toLeftOf="@id/show_personal_info_fab"
-        app:layout_constraintTop_toTopOf="@id/show_personal_info_fab" />
+            <TextView
+                android:id="@+id/tv_pass_gen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:text="@string/password_genrator_tv"
+                android:textColor="@color/white" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_person_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/FAB_item"
+                android:onClick="PasswordGenratorFab"
+                app:backgroundTint="?attr/colorSecondary"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/create" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginBottom="24dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_add_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:text="@string/add_password_tv"
+                android:textColor="@color/white" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/add_alarm_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:contentDescription="@string/FAB_item"
+                android:onClick="AddPasswordFab"
+                app:backgroundTint="?attr/colorSecondary"
+                app:fabSize="normal"
+                app:srcCompat="@drawable/add" />
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/ExtendedFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginBottom="-10dp"
+            android:contentDescription="@string/FAB_item"
+            android:text="@string/item"
+            app:hoveredFocusedTranslationZ="6dp"
+            app:icon="@drawable/add"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:pressedTranslationZ="12dp" />
+
+
+    </LinearLayout>
+
     <!--    TODO Check 2 Add Personal Info Feature insted of Profile and move Profile to Setting-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/Activity_theme"
+        ads:itemIconTint="@color/white"
         ads:itemRippleColor="@color/button_back"
         ads:itemTextColor="@color/white"
-        ads:itemIconTint="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nevigation_menu" />
 </androidx.constraintlayout.widget.ConstraintLayout>

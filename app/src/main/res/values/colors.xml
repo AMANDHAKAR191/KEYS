@@ -13,5 +13,6 @@
     <color name="card_background">#BAB8B8</color>
     <color name="button_back">#4A956E</color>
     <color name="gray">#A3A3A3</color>
+    <color name="ll_fab">#E9E5E5</color>
 
 </resources>

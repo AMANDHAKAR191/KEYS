@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +43,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -53,6 +55,7 @@ public class HomeActivity extends AppCompatActivity {
     TextView textView_addpassword, textView_passgen, textView_ShowpersonalInfo, tv_NOTE;
     Boolean isAllFabsVisible;
     RecyclerView recview;
+    LinearLayout ll_fab;
 
     //Shared Preference
     SharedPreferences sharedPreferences;
@@ -67,7 +70,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         //Hooks
         exFABtn = findViewById(R.id.ExtendedFloatingActionButton);
@@ -80,6 +83,7 @@ public class HomeActivity extends AppCompatActivity {
         tv_NOTE = findViewById(R.id.tv_NOTE);
         scrollView = findViewById(R.id.scrollView);
         recview = findViewById(R.id.recview);
+        ll_fab = findViewById(R.id.ll_fab);
 
         MobileAds.initialize(HomeActivity.this);
         showinterstialAd();
@@ -192,6 +196,7 @@ public class HomeActivity extends AppCompatActivity {
                             textView_ShowpersonalInfo.setVisibility(View.VISIBLE);
                             exFABtn.shrink();
                             exFABtn.setIconResource(R.drawable.close);
+                            ll_fab.setBackground(getDrawable(R.drawable.transparent_background));
                             isAllFabsVisible = true;
                         } else {
                             AddPasswordFab.hide();
@@ -202,6 +207,7 @@ public class HomeActivity extends AppCompatActivity {
                             textView_ShowpersonalInfo.setVisibility(View.GONE);
                             exFABtn.setIconResource(R.drawable.add);
                             exFABtn.extend();
+                            ll_fab.setBackground(getDrawable(R.drawable.fully_transparent_background));
                             isAllFabsVisible = false;
                         }
 
