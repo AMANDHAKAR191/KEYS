@@ -70,6 +70,7 @@
 
             <RadioGroup
                 android:layout_width="match_parent"
+                android:visibility="gone"
                 android:layout_height="wrap_content">
                 <Switch
                     android:id="@+id/sw_use_pin"
