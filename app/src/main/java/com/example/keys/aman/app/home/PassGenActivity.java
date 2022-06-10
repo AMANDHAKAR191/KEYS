@@ -44,6 +44,7 @@ public class PassGenActivity extends AppCompatActivity {
     ImageButton img_back;
     TextView tv_password;
     String saved_pass;
+    String comingrequestcode;
     Slider slider;
     int MAX_LENGTH = 0;
     private String pass;
@@ -54,7 +55,6 @@ public class PassGenActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pass_gen);
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        //createShortcutOfApp();
         //pass_gen_bottom_nav();
 //        String saved_pass = sharedPreferences.getString(KEY_NAME,null);
 
@@ -79,14 +79,20 @@ public class PassGenActivity extends AppCompatActivity {
 //        bt_use.setVisibility(View.VISIBLE);
         //Hide use button
         Intent intent = getIntent();
-        String comingrequestcode =  intent.getStringExtra("requestCode");
-        //Toast.makeText(PassGenActivity.this,comingrequestcode,Toast.LENGTH_SHORT).show();
+        comingrequestcode =  intent.getStringExtra("requestCode");
+        if (comingrequestcode == null){
+            comingrequestcode = "fromAppsShortcut";
+        }
+//        Toast.makeText(PassGenActivity.this,comingrequestcode,Toast.LENGTH_SHORT).show();
         if (comingrequestcode.equals("HomeActivity")){
-            Toast.makeText(PassGenActivity.this,comingrequestcode,Toast.LENGTH_SHORT).show();
+//            Toast.makeText(PassGenActivity.this,comingrequestcode,Toast.LENGTH_SHORT).show();
             bt_use.setVisibility(View.INVISIBLE);
         }else if (comingrequestcode.equals("addPasswordData")){
-            Toast.makeText(PassGenActivity.this,comingrequestcode,Toast.LENGTH_SHORT).show();
+//            Toast.makeText(PassGenActivity.this,comingrequestcode,Toast.LENGTH_SHORT).show();
             bt_use.setVisibility(View.VISIBLE);
+        }else if (comingrequestcode.equals("fromAppsShortcut")){
+//            Toast.makeText(PassGenActivity.this,comingrequestcode,Toast.LENGTH_SHORT).show();
+            bt_use.setVisibility(View.INVISIBLE);
         }
 
         //Slider
@@ -229,36 +235,14 @@ public class PassGenActivity extends AppCompatActivity {
             AES aes = new AES();
             aes.initFromStrings(LogInActivity.AES_KEY, LogInActivity.AES_IV);
             String encryptedMessage = aes.encrypt(pass);
-//                    saved_pass = encryptedMessage;
-            //System.err.println("Encrypted Message : " + encryptedMessage);
             String decryptedMessage = aes.decrypt(encryptedMessage);
-            //pass_decoded.setText(decryptedMessage);
-            //System.err.println("Decrypted Message : " + decryptedMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return pass;
     }
 
-//    public void createShortcutOfApp() {
-//
-//        Intent shortcutIntent = new Intent(getApplicationContext(),
-//                PassGenActivity.class);
-//        shortcutIntent.setAction(Intent.ACTION_MAIN);
-//
-//        Intent addIntent = new Intent();
-//        addIntent
-//                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-//        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Genrate password");
-//        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-//                Intent.ShortcutIconResource.fromContext(getApplicationContext(),
-//                        R.mipmap.keys_louncher_icon));
-//
-//        addIntent
-//                .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-//        addIntent.putExtra("duplicate", false);  //may it's already there so   don't duplicate
-//        getApplicationContext().sendBroadcast(addIntent);
-//    }
+
 
 
     public void goback(View view) {

@@ -4,13 +4,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
+import android.view.autofill.AutofillManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
@@ -20,6 +24,8 @@ import com.example.keys.aman.app.notes.addNotesActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class SettingActivity extends AppCompatActivity {
 
     TextView tv_app_info, tv_contectus, tv_privacy_policy, tv_terms_and_conditions, tv_profile_name;
@@ -28,7 +34,9 @@ public class SettingActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     public static boolean ischecked;
     Button button_logout;
-    ImageView img_profile;
+    CircleImageView img_profile;
+    AutofillManager mAutofillManager;
+    private static final int REQUEST_CODE_SET_DEFAULT = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,11 +93,7 @@ public class SettingActivity extends AppCompatActivity {
         String is_use_pin = sharedPreferences.getString(LogInActivity.KEY_USE_PIN,"false");
         String is_addp_shortcut_created = sharedPreferences.getString(LogInActivity.KEY_CREATE_ADDP_SHORTCUT,"false");
         String is_addn_shortcut_created = sharedPreferences.getString(LogInActivity.KEY_CREATE_ADDN_SHORTCUT,"false");
-        if (is_use_fingerprint == "true") {
-            sw_enable_fingerprint.setChecked(true);
-        }else {
-            sw_enable_fingerprint.setChecked(false);
-        }
+        sw_enable_fingerprint.setChecked(is_use_fingerprint == "true");
 
         if (is_use_pin == "true"){
             sw_enable_pin.setChecked(true);
@@ -97,33 +101,19 @@ public class SettingActivity extends AppCompatActivity {
             sw_enable_pin.setChecked(true);
         }
 
-        if (is_addp_shortcut_created == "true"){
-            sw_addpassword_shortcut.setChecked(true);
-        }else {
-            sw_addpassword_shortcut.setChecked(false);
-        }
+        sw_addpassword_shortcut.setChecked(is_addp_shortcut_created == "true");
 
-        if (is_addn_shortcut_created == "true"){
-            sw_addnotes_shortcut.setChecked(true);
-        }else {
-            sw_addnotes_shortcut.setChecked(false);
-        }
+        sw_addnotes_shortcut.setChecked(is_addn_shortcut_created == "true");
 
         sw_enable_fingerprint.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                editor.putBoolean(SignUpActivity.KEY_USE_FINGERPRINT, b);
-//                editor.apply();
                 sw_enable_fingerprint.setChecked(b);
             }
         });
         sw_enable_pin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                SharedPreferences.Editor editor = sharedPreferences.edit();
-//                editor.putBoolean(SignUpActivity.KEY_USE_PIN, b);
-//                editor.apply();
                 sw_enable_pin.setChecked(b);
             }
         });
@@ -148,21 +138,60 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-        button_logout.setOnClickListener(new View.OnClickListener() {
+//        button_logout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                FirebaseAuth.getInstance().signOut();
+//
+//                SharedPreferences.Editor editor1 = sharedPreferences.edit();
+//                editor1.putString(LogInActivity.ISLOGIN, "false");
+//                editor1.apply();
+//                System.out.println(sharedPreferences.getString(LogInActivity.ISLOGIN,null));
+//
+//                Intent intent = new Intent(getApplicationContext(),LogInActivity.class);
+//                startActivity(intent);
+//            }
+//        });
+
+
+        button_logout.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
-                FirebaseAuth.getInstance().signOut();
-
-                SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                editor1.putString(LogInActivity.ISLOGIN, "false");
-                editor1.apply();
-                System.out.println(sharedPreferences.getString(LogInActivity.ISLOGIN,null));
-
-                Intent intent = new Intent(getApplicationContext(),LogInActivity.class);
-                startActivity(intent);
+            public boolean onLongClick(View view) {
+                mAutofillManager = getSystemService(AutofillManager.class);
+               if (mAutofillManager.hasEnabledAutofillServices()){
+                   Toast.makeText(SettingActivity.this, "AutoFill Enabled", Toast.LENGTH_SHORT).show();
+               } else {
+                   Intent intent = new Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE);
+                   intent.setData(Uri.parse("package:com.example.android.autofill.service"));
+                   startActivityForResult(intent, 123);
+               }
+                return false;
             }
         });
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        System.out.println("onActivityResult(): req=" + requestCode);
+        switch (requestCode) {
+            case REQUEST_CODE_SET_DEFAULT:
+                onDefaultServiceSet(resultCode);
+                break;
+        }
+    }
+    private void onDefaultServiceSet(int resultCode) {
+        System.out.println("resultCode=%d" +  resultCode);
+        switch (resultCode) {
+            case RESULT_OK:
+                System.out.println("Autofill service set.");
+                Toast.makeText(SettingActivity.this, "Autofill service set.", Toast.LENGTH_SHORT).show();
+                break;
+            case RESULT_CANCELED:
+                System.out.println("Autofill service not selected.");
+                Toast.makeText(SettingActivity.this, "Autofill service not selected.", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 
     @Override

@@ -7,13 +7,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
@@ -28,32 +32,38 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-public class addPasswordData extends AppCompatActivity implements wesiteListFragment.OnCompleteListener{
+public class addPasswordData extends AppCompatActivity {
 
     private static final int REQUEST_DETAIL_CODE = 1;
     TextInputLayout til_login, til_password, til_website;
     TextInputEditText tiet_addlogindata, tiet_addpassworddata, tiet_addwebsitedata;
     Button btn_submit, bt_genrate_password;
-    String getnumber;
     ImageView img_back;
     TextView tv_error;
-
+    ScrollView scrollView1, scrollView2;
     SharedPreferences sharedPreferences;
     String uid;
     String comingrequestcode;
-    String coming_date ,coming_loginname, coming_loginpassword, coming_loginwebsite;
+    String coming_date, coming_loginname, coming_loginpassword, coming_loginwebsite;
     private String currentDateandTime;
+    public static myadaptorforaddpassword adaptor;
+
+    String s1 = "https://console.firebase.google.com/u/2/project/keyse-9895a/database/keyse-9895a-default-rtdb/data";
+    String s2 = "https://material.io/components/menus/android#theming-menus";
+    String s3 = "https://www.youtube.com/feed/history";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_password_data);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
 
@@ -68,13 +78,14 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
         tiet_addwebsitedata = findViewById(R.id.tiet_addwebsitedata);
         bt_genrate_password = findViewById(R.id.bt_genrate_password);
         tv_error = findViewById(R.id.tv_error);
-        //TODO Check 7: clean password field every time
-        //TODO Check: enable generate password feature
+        scrollView1 = findViewById(R.id.scrollview1);
+        scrollView2 = findViewById(R.id.scrollview2);
+
         bt_genrate_password.setVisibility(View.GONE);
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         System.out.println("uid: " + uid);
-        Toast.makeText(addPasswordData.this,"Uid: " + uid,Toast.LENGTH_SHORT).show();
+        Toast.makeText(addPasswordData.this, "Uid: " + uid, Toast.LENGTH_SHORT).show();
 
 
         //Hide mobile no and
@@ -96,14 +107,24 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
             tiet_addpassworddata.setText(coming_loginpassword);
             tiet_addwebsitedata.setText(coming_loginwebsite);
             tiet_addwebsitedata.setEnabled(false);
-        }else if (comingrequestcode.equals("from_website_adaptor")){
-            tiet_addwebsitedata.setText("Hello");
+            scrollView1.setVisibility(View.GONE);
+            scrollView2.setVisibility(View.VISIBLE);
+        } else if (comingrequestcode.equals("myadaptorforaddpassword")) {
+            Intent intent1 = getIntent();
+            String name = intent1.getStringExtra("loginname");
+            String website = intent1.getStringExtra("loginwebsite");
+            scrollView1.setVisibility(View.GONE);
+            scrollView2.setVisibility(View.VISIBLE);
+            tiet_addwebsitedata.setText(website);
+        } else if (comingrequestcode.equals("this")) {
+            scrollView1.setVisibility(View.VISIBLE);
+            scrollView2.setVisibility(View.GONE);
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         currentDateandTime = sdf.format(new Date());
         System.out.println("Dateandtime: " + currentDateandTime);
-        Toast.makeText(addPasswordData.this,"Date_time: " + currentDateandTime,Toast.LENGTH_LONG).show();
+        Toast.makeText(addPasswordData.this, "Date_time: " + currentDateandTime, Toast.LENGTH_LONG).show();
 
         tiet_addpassworddata.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -112,15 +133,8 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
                 return false;
             }
         });
-//        tiet_addwebsitedata.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View view, MotionEvent motionEvent) {
-//                wesiteListFragment wesiteListFragment = new wesiteListFragment();
-//                wesiteListFragment.show(getSupportFragmentManager(),"add_password_Activity");
-//                return false;
-//            }
-//
-//        });
+
+        recyclerviewsetdata();
 
 
     }
@@ -135,14 +149,13 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
             tv_error.setTextColor(Color.RED);
         } else {
             String e_addlogin = "", e_addpassword = "", e_addwebsite = "";
-            String sign_mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
-            System.out.println("ShearedPreference " + sign_mobile);
 
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             DatabaseReference addDataRef = firebaseDatabase.getReference("addpassworddata").child(uid).child(addwesite);
             AES aes = new AES();
-            aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
+            aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
             try {
+                websiteHelper websiteHelper = new websiteHelper();
                 e_addlogin = aes.encrypt(addlogin);
                 e_addpassword = aes.encrypt(addpasword);
                 e_addwebsite = aes.encrypt(addwesite);
@@ -177,21 +190,17 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
 
 
     }
-    public void onComplete(String time) {
-        // After the dialog fragment completes, it calls this callback.
-        // use the string here
-    }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        //add_password_data.setText("");
+
 
         if (requestCode == REQUEST_DETAIL_CODE) {
+            // TODO : Check Point
 //            if(resultCode == 1){
             System.err.println("requestCode: " + requestCode + "resultCode: " + resultCode);
-            assert data != null;
             String resultdata = data.getStringExtra("saved_Password");
             System.err.println("result: " + resultdata);
             tiet_addpassworddata.setText(resultdata);
@@ -214,5 +223,48 @@ public class addPasswordData extends AppCompatActivity implements wesiteListFrag
         Intent intent = new Intent(addPasswordData.this, PassGenActivity.class);
         intent.putExtra("requestCode", REQUEST_CODE);
         startActivityForResult(intent, REQUEST_DETAIL_CODE);
+    }
+
+    public void recyclerviewsetdata() {
+        RecyclerView recyclerView;
+        ArrayList<websiteHelper> dataholder;
+
+
+        recyclerView = findViewById(R.id.recview);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        dataholder = new ArrayList<>();
+        adaptor = new myadaptorforaddpassword(dataholder, getApplicationContext(), this);
+        recyclerView.setAdapter(adaptor);
+        recyclerView.hasFixedSize();
+
+
+        websiteHelper data = new websiteHelper("Google", "https://www.google.com/");
+        dataholder.add(data);
+        websiteHelper data1 = new websiteHelper("Facebook", "https://www.google.com/");
+        dataholder.add(data1);
+        websiteHelper data2 = new websiteHelper("Instagram", "https://www.google.com/");
+        dataholder.add(data2);
+
+        websiteHelper data4 = new websiteHelper(fun(s1), s1);
+        dataholder.add(data4);
+        websiteHelper data5 = new websiteHelper(fun(s2), s2);
+        dataholder.add(data5);
+        websiteHelper data6 = new websiteHelper(fun(s3), s3);
+        dataholder.add(data6);
+
+
+        Collections.sort(dataholder, websiteHelper.addDataHelperClassComparator);
+        adaptor.notifyDataSetChanged();
+
+    }
+
+    public String fun(String str) {
+//        String str= "This#string%contains^special*characters&.";
+        String[] str1 = str.split("/");
+        System.out.println(str1[2]);
+        str = str1[2].replaceAll("[^a-zA-Z0-9]", "_");
+        System.out.println(str);
+        return str;
     }
 }

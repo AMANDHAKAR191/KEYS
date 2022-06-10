@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:title="Copy"
+        android:id="@+id/img_copy"
+        android:enabled="true"
+        android:icon="@drawable/content_copy" />
+    <item android:title="Delete"
+        android:id="@+id/img_delete"
+        android:icon="@drawable/delete"
+        android:enabled="true"/>
+</menu>

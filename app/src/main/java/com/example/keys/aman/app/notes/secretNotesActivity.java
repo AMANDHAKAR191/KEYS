@@ -52,7 +52,6 @@ public class secretNotesActivity extends AppCompatActivity {
 
 
         recyclerView = findViewById(R.id.recview);
-        String mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         recyclerView.setHasFixedSize(true);

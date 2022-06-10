@@ -8,7 +8,7 @@
     <LinearLayout
         android:id="@+id/linear_layout_card"
         android:layout_width="match_parent"
-        android:layout_height="130dp"
+        android:layout_height="100dp"
         android:layout_margin="10dp"
         android:background="@drawable/rounded_thems2"
         android:elevation="10dp"
@@ -17,7 +17,7 @@
         <TextView
             android:id="@+id/tv_img_title"
             android:layout_width="130dp"
-            android:layout_height="100dp"
+            android:layout_height="70dp"
             android:layout_margin="10dp"
             android:background="@drawable/rounded_thems1"
             android:elevation="20dp"
@@ -33,27 +33,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:gravity="center"
             android:padding="5dp">
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/cardview_more"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                app:menu="@menu/cardview_menu"
-                android:src="@drawable/ic_baseline_more_vert_24" />
 
             <TextView
                 android:id="@+id/displayname"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_margin="5dp"
                 android:text="User Login"
+                android:gravity="center|start"
                 android:textColor="?attr/colorOnSecondary"
                 android:textSize="20sp" />
-
-
 
         </LinearLayout>
     </LinearLayout>

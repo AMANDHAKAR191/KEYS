@@ -4,6 +4,9 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
+import android.content.pm.ShortcutManager;
+import android.graphics.drawable.Icon;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,7 +18,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.keys.R;
+import com.example.keys.aman.app.home.PassGenActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
+
+import java.util.Arrays;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -25,6 +31,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        createShortcutOfApp();
 
         //TODO Check 5: check internet in this Activity also internet stability
         //TODO Check 6: Cehck internet spped in every Activity if speed is low then show Error to user
@@ -52,6 +60,21 @@ public class SplashActivity extends AppCompatActivity {
         }, 1000);
 
 
+    }
+
+    public void createShortcutOfApp() {
+
+        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+
+        Intent intent = new Intent(SplashActivity.this, PassGenActivity.class);
+        intent.setAction(Intent.ACTION_VIEW);
+        ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(this,"short1").
+                setShortLabel("Gen Password").
+                setLongLabel("Open PassGenActivity ").
+                setIcon(Icon.createWithResource(SplashActivity.this,R.drawable.add)).
+                setIntent(intent).
+                build();
+        shortcutManager.setDynamicShortcuts(Arrays.asList(shortcutInfo));
     }
 
     private boolean hasPermissions(Context context, String... permissions) {

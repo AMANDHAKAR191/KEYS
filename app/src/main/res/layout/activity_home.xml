@@ -32,16 +32,10 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/welcome_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title_home" />
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/welcome_to_keys"
+                android:layout_marginTop="5dp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/texview1" />
 
@@ -67,6 +61,17 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <SearchView
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:id="@+id/search_bar"
+        android:elevation="8dp"
+        android:layout_marginTop="-25dp"
+        android:background="@drawable/search_et_background"
+        ads:layout_constraintLeft_toLeftOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/toolbar"
+        />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recview"
         android:layout_width="match_parent"
@@ -86,23 +91,12 @@
         android:text="Your saved password will show here"
         android:visibility="invisible" />
 
-    <ImageView
-        android:id="@+id/btn_refrash"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginBottom="0dp"
-        android:onClick="refrash_activty"
-        android:src="@drawable/refrash"
-        app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
 
     <LinearLayout
         android:id="@+id/ll_fab"
         android:layout_width="match_parent"
         android:layout_height="1500dp"
-        android:gravity="end|bottom"
+        android:gravity="bottom"
         android:orientation="vertical"
         ads:layout_constraintBottom_toTopOf="@+id/bottom_nav"
         ads:layout_constraintRight_toRightOf="parent">
@@ -198,7 +192,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
-            android:layout_marginBottom="-10dp"
             android:contentDescription="@string/FAB_item"
             android:text="@string/item"
             app:hoveredFocusedTranslationZ="6dp"

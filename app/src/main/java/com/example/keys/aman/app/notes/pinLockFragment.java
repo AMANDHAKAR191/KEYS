@@ -27,7 +27,7 @@ public class pinLockFragment extends AppCompatActivity {
     private PinLockView mPinLockView;
     private IndicatorDots mIndicatorDots;
 
-    private PinLockListener mPinLockListener = new PinLockListener() {
+    private final PinLockListener mPinLockListener = new PinLockListener() {
         @Override
         public void onComplete(String pin) {
             Log.d(TAG, "Pin complete: " + pin);

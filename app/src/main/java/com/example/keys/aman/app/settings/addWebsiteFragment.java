@@ -9,7 +9,6 @@ import android.widget.Button;
 import androidx.fragment.app.DialogFragment;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.home.addpassword.websiteHelper;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -43,8 +42,8 @@ public class addWebsiteFragment extends DialogFragment {
 
                 addDataRef = firebaseDatabase.getReference("websitelist").child((website_name));
 
-                websiteHelper websiteHelper = new websiteHelper(website_img, website_name, website_url);
-                addDataRef.setValue(websiteHelper);
+//                websiteHelper websiteHelper = new websiteHelper(website_img, website_name, website_url);
+//                addDataRef.setValue(websiteHelper);
                 dismiss();
             }
         });

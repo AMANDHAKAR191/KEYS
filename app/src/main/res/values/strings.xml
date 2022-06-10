@@ -40,4 +40,7 @@
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
     <string name="setting_title">Setting</string>
     <string name="item">Item</string>
+    <string name="compose_shortcut_short_label1">Gen Password</string>
+    <string name="compose_shortcut_long_label1">Open Password Generator Activity</string>
+    <string name="compose_disabled_message1">"This is Desabled "</string>
 </resources>

@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +59,8 @@ public class HomeActivity extends AppCompatActivity {
     Boolean isAllFabsVisible;
     RecyclerView recview;
     LinearLayout ll_fab;
+    SearchView searchView;
+    BottomNavigationView bottomNavigationView;
 
     //Shared Preference
     SharedPreferences sharedPreferences;
@@ -68,7 +73,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
@@ -84,21 +89,49 @@ public class HomeActivity extends AppCompatActivity {
         scrollView = findViewById(R.id.scrollView);
         recview = findViewById(R.id.recview);
         ll_fab = findViewById(R.id.ll_fab);
+        searchView = findViewById(R.id.search_bar);
+        bottomNavigationView = findViewById(R.id.bottom_nav);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                System.out.println("onQueryTextChange...");
+                adaptor.getFilter().filter(s);
+                System.out.println();
+                adaptor.notifyDataSetChanged();
+
+                return false;
+            }
+        });
+        ll_fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddPasswordFab.hide();
+                PasswordGenratorFab.hide();
+                ShowpersonalInfofab.hide();
+                textView_addpassword.setVisibility(View.GONE);
+                textView_passgen.setVisibility(View.GONE);
+                textView_ShowpersonalInfo.setVisibility(View.GONE);
+                exFABtn.setIconResource(R.drawable.add);
+                exFABtn.extend();
+                ll_fab.setBackground(getDrawable(R.drawable.fully_transparent_background));
+                // Gets linearlayout
+                ViewGroup.LayoutParams params = ll_fab.getLayoutParams();
+                params.height = 240;
+                params.width = 260;
+                ll_fab.setLayoutParams(params);
+                isAllFabsVisible = false;
+            }
+        });
 
         MobileAds.initialize(HomeActivity.this);
         showinterstialAd();
 
-//        //set Welcome name on top of the Home Screen
-//        AES aes = new AES();
-//        LogInActivity.aes_key = LogInActivity.AES_KEY;
-//        LogInActivity.aes_iv = LogInActivity.AES_IV;
-//        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
-//        String name = sharedPreferences.getString(LogInActivity.KEY_USER_NAME, null);
-//        try {
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
         recyclerviewsetdata();
 
@@ -106,22 +139,7 @@ public class HomeActivity extends AppCompatActivity {
 
         home_bottom_nav();
 
-//        Toast.makeText(HomeActivity.this,"UI",Toast.LENGTH_SHORT).show();
-//        Handler handler = new Handler();
-//        handler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                Toast.makeText(HomeActivity.this,"Fetching Data From DB",Toast.LENGTH_SHORT).show();
-//                recyclerviewsetdata();
-//
-//            }
-//        });
 
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
     }
 
     private void showinterstialAd() {
@@ -197,6 +215,12 @@ public class HomeActivity extends AppCompatActivity {
                             exFABtn.shrink();
                             exFABtn.setIconResource(R.drawable.close);
                             ll_fab.setBackground(getDrawable(R.drawable.transparent_background));
+                            // Gets linearlayout
+                            ViewGroup.LayoutParams params = ll_fab.getLayoutParams();
+                            params.height = 1500;
+                            params.width = 720;
+                            ll_fab.setLayoutParams(params);
+                            isAllFabsVisible = false;
                             isAllFabsVisible = true;
                         } else {
                             AddPasswordFab.hide();
@@ -208,6 +232,11 @@ public class HomeActivity extends AppCompatActivity {
                             exFABtn.setIconResource(R.drawable.add);
                             exFABtn.extend();
                             ll_fab.setBackground(getDrawable(R.drawable.fully_transparent_background));
+                            // Gets linearlayout
+                            ViewGroup.LayoutParams params = ll_fab.getLayoutParams();
+                            params.height = 500;
+                            params.width = 600;
+                            ll_fab.setLayoutParams(params);
                             isAllFabsVisible = false;
                         }
 
@@ -249,7 +278,6 @@ public class HomeActivity extends AppCompatActivity {
 
 
         recyclerView = findViewById(R.id.recview);
-        String mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
         databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata")
                 .child(uid);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -268,12 +296,13 @@ public class HomeActivity extends AppCompatActivity {
                         for (DataSnapshot ds1 : ds.getChildren()) {
 
                             addDataHelperClass data = ds1.getValue(addDataHelperClass.class);
-                            assert data != null;
                             dataholder.add(data);
                         }
                     }
+                    //TODO : Sorting is not working properly
                     Collections.sort(dataholder, addDataHelperClass.addDataHelperClassComparator);
                     adaptor.notifyDataSetChanged();
+
                 } else {
                     tv_NOTE.setVisibility(View.VISIBLE);
                 }
@@ -315,10 +344,4 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    public void refrash_activty(View view) {
-        finish();
-        overridePendingTransition(0, 0);
-        startActivity(getIntent());
-        overridePendingTransition(0, 0);
-    }
 }

@@ -1,20 +1,24 @@
 package com.example.keys.aman.app.home.addpassword;
 
+import java.util.Comparator;
+
 public class websiteHelper {
-    String website_image, website_login_url, website_name;
+    String website_login_url, website_name;
 
     public websiteHelper() {
     }
 
-    public websiteHelper(String website_image, String website_name, String website_login_url) {
-        this.website_image = website_image;
+    public websiteHelper( String website_name, String website_login_url) {
+
         this.website_login_url = website_login_url;
         this.website_name = website_name;
     }
-
-    public String getWebsite_image() {
-        return website_image;
-    }
+    public static Comparator<websiteHelper> addDataHelperClassComparator = new Comparator<websiteHelper>() {
+        @Override
+        public int compare(websiteHelper a1, websiteHelper a2) {
+            return a1.getWebsite_name().compareTo(a2.getWebsite_name());
+        }
+    };
 
     public String getWebsite_login_url() {
         return website_login_url;

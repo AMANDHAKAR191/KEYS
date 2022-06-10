@@ -2,13 +2,12 @@ package com.example.keys.aman.app.notes;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,9 +36,7 @@ public class addNotesActivity extends AppCompatActivity {
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
-    ImageButton img_attach_image, img_show_image, img_save, img_edit;
-    ProgressBar hori_prograssbar;
-    Uri mImageUri;
+    ImageButton img_save, img_edit;
     private String comingrequestcode;
     private String coming_data;
     String uid;
@@ -48,7 +45,7 @@ public class addNotesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notes);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
@@ -117,8 +114,6 @@ public class addNotesActivity extends AppCompatActivity {
 
         addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(currentDateandTime,title_dc,note_dc, hide_note);
 
-        mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
-        System.out.println(mobile);
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         if (comingrequestcode.equals("notesCardView")){
             Toast.makeText(addNotesActivity.this,"notesCardView",Toast.LENGTH_SHORT).show();

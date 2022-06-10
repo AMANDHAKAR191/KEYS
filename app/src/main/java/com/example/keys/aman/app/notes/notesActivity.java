@@ -8,6 +8,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +50,7 @@ public class notesActivity extends AppCompatActivity {
 
 
     TextView tv_NOTE;
+    SearchView searchView;
     RewardedAd mRewardedAd;
     private int click_counter = 0;
     private String uid;
@@ -61,7 +63,28 @@ public class notesActivity extends AppCompatActivity {
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        Toast.makeText(notesActivity.this, "UID: " + uid, Toast.LENGTH_LONG).show();
+//        Toast.makeText(notesActivity.this, "UID: " + uid, Toast.LENGTH_LONG).show();
+
+        //Hooks
+        searchView = findViewById(R.id.search_bar);
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                System.out.println("onQueryTextChange...");
+                adaptor.getFilter().filter(s);
+
+                adaptor.notifyDataSetChanged();
+
+                return false;
+            }
+        });
+
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
@@ -130,7 +153,7 @@ public class notesActivity extends AppCompatActivity {
 
 
         recyclerView = findViewById(R.id.recview);
-        String mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
+//        String mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
 
         reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -200,18 +223,12 @@ public class notesActivity extends AppCompatActivity {
             }
         },1000);
         if (click_counter == 2){
-            Toast.makeText(notesActivity.this,"Opening Secret Notes", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(notesActivity.this,"Opening Secret Notes", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(notesActivity.this,pinLockFragment.class));
             click_counter = 0;
         }
         click_counter = click_counter + 1;
-        Toast.makeText(notesActivity.this,"Click counter: " + click_counter, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(notesActivity.this,"Click counter: " + click_counter, Toast.LENGTH_SHORT).show();
     }
 
-    public void refrash_activty(View view) {
-        finish();
-        overridePendingTransition(0, 0);
-        startActivity(getIntent());
-        overridePendingTransition(0, 0);
-    }
 }

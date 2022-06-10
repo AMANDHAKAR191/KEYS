@@ -41,7 +41,6 @@ public class LogInActivity extends AppCompatActivity {
 
     Button btn_login;
 
-
     private GoogleSignInClient mGoogleSignInClient;
     private final static int RC_SIGN_IN = 123;
     private FirebaseAuth mAuth;
@@ -50,11 +49,8 @@ public class LogInActivity extends AppCompatActivity {
     public static String AES_KEY = "aes_key";
     public static String AES_IV = "aes_iv";
     public static final String SHARED_PREF_ALL_DATA = "All data";
-    public static final String KEY_USER_MOBILE = "mobile";
-    public static final String KEY_USER_PASSSWORD = "password";
     public static final String KEY_USER_NAME = "name";
     public static final String KEY_USER_EMAIL = "email";
-    public static String KEY_REMEMBER_ME;
     public static String KEY_USE_FINGERPRINT;
     public static String KEY_USE_PIN;
     public static String KEY_CREATE_ADDP_SHORTCUT;
@@ -63,11 +59,10 @@ public class LogInActivity extends AppCompatActivity {
     public static String ISFIRST_TIME = "0";
 
     public static final String TAG = "main Activity";
-    public static String aes_key = "aes_key";
-    public static String aes_iv = "aes_iv";
     private PrograceBar prograce_bar;
     private String A1;
     private boolean turn = false;
+    private String val = "";
 
 
     @Override
@@ -80,6 +75,7 @@ public class LogInActivity extends AppCompatActivity {
         //Hooks
         btn_login = findViewById(R.id.btn_login);
 
+        // Check if User is already login then go direct to HomeScreen
         String islogin = sharedPreferences.getString(ISLOGIN, "false");
         System.out.println(islogin);
         if (islogin.equals("true")) {
@@ -89,15 +85,7 @@ public class LogInActivity extends AppCompatActivity {
             finish();
         }
 
-//        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-//        if (user != null) {
-//            //readData(uid);
-//            Toast.makeText(LogInActivity.this, "check 1", Toast.LENGTH_SHORT).show();
-//            Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-//            System.out.println("check 0");
-//            startActivity(intent);
-//
-//        }
+
         mAuth = FirebaseAuth.getInstance();
         createRequest();
 
@@ -177,10 +165,12 @@ public class LogInActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     while (!turn){
+                                        progressbar();
                                         System.out.println("checking User on firebase...");
                                     }
+                                    prograce_bar.dismissbar();
                                     A1 = sharedPreferences.getString(ISFIRST_TIME,"0");
-                                    System.out.println(A1);
+                                    System.out.println("A1" + A1);
                                     if (A1 == "0"){
 
                                         Toast.makeText(LogInActivity.this, "Generating KEY and IV...", Toast.LENGTH_SHORT).show();
@@ -228,7 +218,6 @@ public class LogInActivity extends AppCompatActivity {
                                             }
                                         });
                                         System.out.println("uid: " + uid);
-//                            prograce_bar.dismissbar();
 
                                         //readData(uid);
                                         prograce_bar.dismissbar();
@@ -251,14 +240,21 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     private void checkUser() {
-        System.out.println("checking User on firebase...");
+        System.out.println("checking User on firebase1...");
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
         reference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 System.out.println(dataSnapshot.getValue());
-                String val = dataSnapshot.getValue().toString();
-                if (val != ""){
+                try {
+                    val = dataSnapshot.getValue().toString();
+                }catch (Exception e){
+                    System.out.println("Exception: " + e.getMessage());
+                    val = "1";
+                }
+
+
+                if (val != "1"){
                     System.out.println("User Exist!!");
                     SharedPreferences.Editor editor1 = sharedPreferences.edit();
                     editor1.putString(ISFIRST_TIME,"1");
@@ -267,6 +263,8 @@ public class LogInActivity extends AppCompatActivity {
                     System.out.println("Turn = " + turn);
                     return;
                 }else {
+                    System.out.println("User Does not Exist!!");
+                    System.out.println("Creating new User!!");
                     turn = true;
                     System.out.println("Turn = " + turn);
                     return;

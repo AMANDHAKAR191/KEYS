@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,14 +15,16 @@ import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class ProfileActivity extends AppCompatActivity {
 
     //Variable
-    ImageView img_profileimage;
+    CircleImageView img_profileimage;
     TextView textView_signin_name, textView_signin_mobile, textView_signin_password;
     Button button_logout;
     String mobile, name, email, title_text;
-    String dc_name, dc_mobile, dc_email;
+    String dc_name, dc_email;
     public final String REQUEST_CODE = "ProfileActivity";
     SharedPreferences sharedPreferences;
 
@@ -74,22 +75,19 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         //for signin data
-        mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
+
         name = sharedPreferences.getString(LogInActivity.KEY_USER_NAME, null);
         email = sharedPreferences.getString(LogInActivity.KEY_USER_EMAIL, null);
-
 
         try {
             AES aes = new AES();
             aes.initFromStrings("CHuO1Fjd8YgJqTyapibFBQ==", "e3IYYJC2hxe24/EO");
             dc_name = aes.decrypt(name);
-            //dc_mobile = aes.decrypt(mobile);
             dc_email = aes.decrypt(email);
             title_text = dc_name.substring(0, 1).toUpperCase();
 
             if (dc_name != null & mobile != null & dc_email != null) {
                 textView_signin_name.setText("Name: " + dc_name);
-                textView_signin_mobile.setText("Mobile No: " + mobile);
                 //TODO Check 3: Remove The password data from profile
                 textView_signin_password.setText("Email: " + dc_email);
             }
@@ -99,17 +97,6 @@ public class ProfileActivity extends AppCompatActivity {
         }
     }
 
-
-
-//    public void editsigndata(View view) {
-//        Intent intent = new Intent(ProfileActivity.this, SignUpActivity.class);
-//        intent.putExtra("request_code", REQUEST_CODE);
-//        intent.putExtra("signname", dc_name);
-//        intent.putExtra("signmobile", mobile);
-//        intent.putExtra("signemail", dc_email);
-//        startActivity(intent);
-//        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-//    }
 
     public void gocencal(View view) {
         finish();
