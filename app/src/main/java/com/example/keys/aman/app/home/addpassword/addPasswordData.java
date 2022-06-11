@@ -23,7 +23,6 @@ import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.home.HomeActivity;
 import com.example.keys.aman.app.home.PassGenActivity;
-import com.example.keys.aman.app.home.ShowCardviewDataActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -158,29 +157,31 @@ public class addPasswordData extends AppCompatActivity {
                 websiteHelper websiteHelper = new websiteHelper();
                 e_addlogin = aes.encrypt(addlogin);
                 e_addpassword = aes.encrypt(addpasword);
-                e_addwebsite = aes.encrypt(addwesite);
+//                e_addwebsite = aes.encrypt(addwesite);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            addDataHelperClass addDataHelperClass = new addDataHelperClass(currentDateandTime, e_addlogin, e_addpassword, e_addwebsite);
+            addDataHelperClass addDataHelperClass = new addDataHelperClass(currentDateandTime, e_addlogin, e_addpassword, addwesite);
             addDataRef.child(currentDateandTime).setValue(addDataHelperClass);
             Log.d(LogInActivity.TAG, "done");
             Toast.makeText(addPasswordData.this, "Done", Toast.LENGTH_SHORT).show();
 
             if (comingrequestcode.equals("ShowCardviewDataActivity")) {
                 addDataHelperClass = new addDataHelperClass(coming_date, e_addlogin, e_addpassword, e_addwebsite);
+                // TODO : Error Check Again
                 addDataRef.child(coming_date).setValue(addDataHelperClass);
                 Log.d(LogInActivity.TAG, "done");
                 Toast.makeText(addPasswordData.this, "Done", Toast.LENGTH_SHORT).show();
 
 
-                Intent intent = new Intent(addPasswordData.this, ShowCardviewDataActivity.class);
-                intent.putExtra("resultlogin", addlogin);
-                intent.putExtra("resultpassword", addpasword);
-                intent.putExtra("resultwebsite", addwesite);
+                Intent intent = new Intent(addPasswordData.this, HomeActivity.class);
+//                intent.putExtra("resultlogin", addlogin);
+//                intent.putExtra("resultpassword", addpasword);
+//                intent.putExtra("resultwebsite", addwesite);
                 startActivity(intent);
                 finish();
+                overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
             }
 
             startActivity(new Intent(addPasswordData.this, HomeActivity.class));

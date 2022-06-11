@@ -67,7 +67,8 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
             dlogin = aes.decrypt(dataholder.get(position).getAddDataLogin());
             dpassword = aes.decrypt(dataholder.get(position).getAddDataPassword());
             holder.dlogin.setText(dlogin);
-            dwebsite = aes.decrypt(temp.getAddWebsite());
+//            dwebsite = aes.decrypt(temp.getAddWebsite());
+            dwebsite = temp.getAddWebsite();
             //String Title = website.substring(0, 1).toUpperCase() + website.substring(1, 2);
             String Title = dwebsite.substring(0, 1).toUpperCase() + dwebsite.substring(1);
             holder.tv_img_title.setText(Title);
@@ -160,11 +161,11 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
 
                 for (addDataHelperClass addDataHelperClass : dataholder) {
                     try {
-                        String a1 = aes.decrypt(addDataHelperClass.getAddWebsite());
+                        String a1 = addDataHelperClass.getAddWebsite();
                         if (a1.toLowerCase().contains(filterPattern)) {
                             filteredDataList.add(addDataHelperClass);
                             try {
-                                System.out.println("Filtered data: " + aes.decrypt(addDataHelperClass.getAddWebsite()));
+                                System.out.println("Filtered data: " + addDataHelperClass.getAddWebsite());
                                 System.out.println("Filtered ArrayList : " + filteredDataList);
                             } catch (Exception e) {
                                 e.printStackTrace();

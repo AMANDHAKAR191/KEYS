@@ -17,6 +17,7 @@ import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
 import com.example.keys.aman.app.home.HomeActivity;
 import com.example.keys.aman.app.home.PassGenActivity;
+import com.example.keys.aman.app.settings.AppInfo;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -185,6 +186,9 @@ public class LogInActivity extends AppCompatActivity {
                                         System.out.println("ISFIRST_TIME: " + sharedPreferences.getString(ISFIRST_TIME,null));
                                         writeData(user);
                                         turn = false;
+                                        Intent intent = new Intent(getApplicationContext(), AppInfo.class);
+                                        intent.putExtra("request_code",147);
+                                        startActivity(intent);
                                     }else {
                                         System.out.println("Getting IV AND KT+EY from database");
                                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(uid);
@@ -226,6 +230,7 @@ public class LogInActivity extends AppCompatActivity {
 
 
                                         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                                        intent.putExtra("request_code","LogInActivity");
                                         startActivity(intent);
                                     }
                                 }

@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -120,11 +119,12 @@ public class HomeActivity extends AppCompatActivity {
                 exFABtn.setIconResource(R.drawable.add);
                 exFABtn.extend();
                 ll_fab.setBackground(getDrawable(R.drawable.fully_transparent_background));
-                // Gets linearlayout
-                ViewGroup.LayoutParams params = ll_fab.getLayoutParams();
-                params.height = 240;
-                params.width = 260;
-                ll_fab.setLayoutParams(params);
+                ll_fab.setVisibility(View.INVISIBLE);
+//                // Gets linearlayout
+//                ViewGroup.LayoutParams params = ll_fab.getLayoutParams();
+//                params.height = 240;
+//                params.width = 260;
+//                ll_fab.setLayoutParams(params);
                 isAllFabsVisible = false;
             }
         });
@@ -214,13 +214,9 @@ public class HomeActivity extends AppCompatActivity {
                             textView_ShowpersonalInfo.setVisibility(View.VISIBLE);
                             exFABtn.shrink();
                             exFABtn.setIconResource(R.drawable.close);
+                            exFABtn.setTranslationZ(1000);
                             ll_fab.setBackground(getDrawable(R.drawable.transparent_background));
-                            // Gets linearlayout
-                            ViewGroup.LayoutParams params = ll_fab.getLayoutParams();
-                            params.height = 1500;
-                            params.width = 720;
-                            ll_fab.setLayoutParams(params);
-                            isAllFabsVisible = false;
+                            ll_fab.setVisibility(View.VISIBLE);
                             isAllFabsVisible = true;
                         } else {
                             AddPasswordFab.hide();
@@ -231,12 +227,14 @@ public class HomeActivity extends AppCompatActivity {
                             textView_ShowpersonalInfo.setVisibility(View.GONE);
                             exFABtn.setIconResource(R.drawable.add);
                             exFABtn.extend();
-                            ll_fab.setBackground(getDrawable(R.drawable.fully_transparent_background));
-                            // Gets linearlayout
-                            ViewGroup.LayoutParams params = ll_fab.getLayoutParams();
-                            params.height = 500;
-                            params.width = 600;
-                            ll_fab.setLayoutParams(params);
+                            ll_fab.setVisibility(View.INVISIBLE);
+                            ll_fab.setBackground(getDrawable(R.drawable.transparent_background));
+
+//                            // Gets linearlayout
+//                            ViewGroup.LayoutParams params = ll_fab.getLayoutParams();
+//                            params.height = 5000;
+//                            params.width = 1000;
+//                            ll_fab.setLayoutParams(params);
                             isAllFabsVisible = false;
                         }
 

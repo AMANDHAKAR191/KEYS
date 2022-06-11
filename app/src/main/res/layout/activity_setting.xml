@@ -128,12 +128,6 @@
                 android:drawableStart="@drawable/terms_and_conditions_icon"
                 android:text="\t\Terms &amp; conditions"
                 android:textSize="20dp" />
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/create"
-                android:layout_marginTop="20dp"
-                android:onClick="addwebsite"/>
 
             <Button
                 android:id="@+id/btn_logout"

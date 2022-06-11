@@ -34,8 +34,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/welcome_to_keys"
                 android:layout_marginTop="5dp"
+                android:text="@string/welcome_to_keys"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/texview1" />
 
@@ -62,15 +62,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <SearchView
+        android:id="@+id/search_bar"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:id="@+id/search_bar"
-        android:elevation="8dp"
         android:layout_marginTop="-25dp"
         android:background="@drawable/search_et_background"
+        android:elevation="8dp"
         ads:layout_constraintLeft_toLeftOf="parent"
-        ads:layout_constraintTop_toBottomOf="@+id/toolbar"
-        />
+        ads:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recview"
@@ -95,113 +94,128 @@
     <LinearLayout
         android:id="@+id/ll_fab"
         android:layout_width="match_parent"
-        android:layout_height="1500dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="55dp"
         android:gravity="bottom"
         android:orientation="vertical"
+        android:visibility="gone"
+        android:translationZ="8dp"
         ads:layout_constraintBottom_toTopOf="@+id/bottom_nav"
         ads:layout_constraintRight_toRightOf="parent">
 
-        <LinearLayout
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_fab1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal"
+        android:translationZ="15dp"
+        ads:layout_constraintBottom_toTopOf="@+id/ll_fab2"
+        ads:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/tv_personal_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginBottom="24dp"
-            android:orientation="horizontal">
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:text="Notes"
+            android:textColor="@color/white" />
 
-            <TextView
-                android:id="@+id/tv_personal_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="10dp"
-                android:text="Notes"
-                android:textColor="@color/white" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/show_personal_info_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="@string/FAB_item"
-                android:onClick="Add_Note"
-                app:backgroundTint="?attr/colorSecondary"
-                app:fabSize="normal"
-                app:srcCompat="@drawable/note_add" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/show_personal_info_fab"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginBottom="24dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_pass_gen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="10dp"
-                android:text="@string/password_genrator_tv"
-                android:textColor="@color/white" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_person_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="@string/FAB_item"
-                android:onClick="PasswordGenratorFab"
-                app:backgroundTint="?attr/colorSecondary"
-                app:fabSize="normal"
-                app:srcCompat="@drawable/create" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginBottom="24dp"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tv_add_password"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginRight="10dp"
-                android:text="@string/add_password_tv"
-                android:textColor="@color/white" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/add_alarm_fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:contentDescription="@string/FAB_item"
-                android:onClick="AddPasswordFab"
-                app:backgroundTint="?attr/colorSecondary"
-                app:fabSize="normal"
-                app:srcCompat="@drawable/add" />
-        </LinearLayout>
-
-        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-            android:id="@+id/ExtendedFloatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
+            android:layout_gravity="center"
             android:contentDescription="@string/FAB_item"
-            android:text="@string/item"
-            app:hoveredFocusedTranslationZ="6dp"
-            app:icon="@drawable/add"
-            app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:pressedTranslationZ="12dp" />
-
+            android:onClick="Add_Note"
+            app:backgroundTint="?attr/colorSecondary"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/note_add" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal"
+        android:translationZ="15dp"
+        ads:layout_constraintBottom_toTopOf="@+id/ll_fab3"
+        ads:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/tv_pass_gen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:text="@string/password_genrator_tv"
+            android:textColor="@color/white" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_person_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/FAB_item"
+            android:onClick="PasswordGenratorFab"
+            app:backgroundTint="?attr/colorSecondary"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/create" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_fab3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="24dp"
+        android:orientation="horizontal"
+        android:translationZ="15dp"
+        ads:layout_constraintBottom_toTopOf="@+id/ExtendedFloatingActionButton"
+        ads:layout_constraintRight_toRightOf="parent">
+
+        <TextView
+            android:id="@+id/tv_add_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            android:text="@string/add_password_tv"
+            android:textColor="@color/white" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/add_alarm_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:contentDescription="@string/FAB_item"
+            android:onClick="AddPasswordFab"
+            app:backgroundTint="?attr/colorSecondary"
+            app:fabSize="normal"
+            app:srcCompat="@drawable/add" />
+    </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/ExtendedFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:contentDescription="@string/FAB_item"
+        android:text="@string/item"
+        android:translationZ="15dp"
+        app:icon="@drawable/add"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:pressedTranslationZ="12dp" />
+
 
     <!--    TODO Check 2 Add Personal Info Feature insted of Profile and move Profile to Setting-->
     <com.google.android.material.bottomnavigation.BottomNavigationView
