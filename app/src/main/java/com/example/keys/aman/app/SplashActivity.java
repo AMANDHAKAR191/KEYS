@@ -25,8 +25,9 @@ public class SplashActivity extends AppCompatActivity {
 
         createShortcutOfApp();
 
-        Intent i = new Intent(SplashActivity.this, LogInActivity.class);
-        startActivity(i);
+        Intent intent = new Intent(SplashActivity.this, LogInActivity.class);
+        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"SplashActivity");
+        startActivity(intent);
         finish();
 
         //TODO Check 5: check internet in this Activity also internet stability

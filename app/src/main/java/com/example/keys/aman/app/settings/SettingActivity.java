@@ -30,7 +30,7 @@ public class SettingActivity extends AppCompatActivity {
 
     TextView tv_app_info, tv_contectus, tv_privacy_policy, tv_terms_and_conditions, tv_profile_name;
     ImageView img_back;
-    Switch sw_enable_fingerprint, sw_enable_pin, sw_addpassword_shortcut,sw_addnotes_shortcut;
+    Switch sw_enable_fingerprint, sw_enable_pin;
     SharedPreferences sharedPreferences;
     public static boolean ischecked;
     Button button_logout;
@@ -50,8 +50,6 @@ public class SettingActivity extends AppCompatActivity {
         tv_terms_and_conditions = findViewById(R.id.tv_terms_and_conditions);
         sw_enable_fingerprint = findViewById(R.id.sw_use_finger);
         sw_enable_pin = findViewById(R.id.sw_use_pin);
-        sw_addpassword_shortcut = findViewById(R.id.sw_addpassword_shortcut);
-        sw_addnotes_shortcut = findViewById(R.id.sw_addnotes_shortcut);
         img_back = findViewById(R.id.img_back);
         button_logout = findViewById(R.id.btn_logout);
         img_profile = findViewById(R.id.img_profile);
@@ -89,54 +87,67 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-        String is_use_fingerprint = sharedPreferences.getString(LogInActivity.KEY_USE_FINGERPRINT,"false");
-        String is_use_pin = sharedPreferences.getString(LogInActivity.KEY_USE_PIN,"false");
-        String is_addp_shortcut_created = sharedPreferences.getString(LogInActivity.KEY_CREATE_ADDP_SHORTCUT,"false");
-        String is_addn_shortcut_created = sharedPreferences.getString(LogInActivity.KEY_CREATE_ADDN_SHORTCUT,"false");
-        sw_enable_fingerprint.setChecked(is_use_fingerprint == "true");
+        Boolean is_use_fingerprint = sharedPreferences.getBoolean(LogInActivity.KEY_USE_FINGERPRINT,false);
+        Boolean is_use_pin = sharedPreferences.getBoolean(LogInActivity.KEY_USE_PIN,false);
+//        String is_addp_shortcut_created = sharedPreferences.getString(LogInActivity.KEY_CREATE_ADDP_SHORTCUT,"false");
+//        String is_addn_shortcut_created = sharedPreferences.getString(LogInActivity.KEY_CREATE_ADDN_SHORTCUT,"false");
+        sw_enable_fingerprint.setChecked(is_use_fingerprint);
+        toast("Use FingerPrint " + is_use_fingerprint);
+        sw_enable_pin.setChecked(is_use_pin);
+        toast("Use Pin " + is_use_pin);
 
-        if (is_use_pin == "true"){
-            sw_enable_pin.setChecked(true);
-        }else {
-            sw_enable_pin.setChecked(true);
-        }
-
-        sw_addpassword_shortcut.setChecked(is_addp_shortcut_created == "true");
-
-        sw_addnotes_shortcut.setChecked(is_addn_shortcut_created == "true");
 
         sw_enable_fingerprint.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 sw_enable_fingerprint.setChecked(b);
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+                editor.putBoolean(LogInActivity.KEY_USE_FINGERPRINT, b);
+                editor.apply();
+                if (b){
+                    // TODO : ask user to set pin
+                    toast("ask user to set pin" + sharedPreferences.getBoolean(LogInActivity.KEY_USE_FINGERPRINT,false));
+                }else {
+                    // TODO : Delete old saved pin
+                    toast("Delete old saved pin" + sharedPreferences.getBoolean(LogInActivity.KEY_USE_FINGERPRINT,false));
+                }
             }
         });
         sw_enable_pin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 sw_enable_pin.setChecked(b);
+                SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                editor1.putBoolean(LogInActivity.KEY_USE_PIN, b);
+                editor1.apply();
+                if (b){
+                    // TODO : ask user to set pin
+                    toast("Enable FingerPrintLock" + sharedPreferences.getBoolean(LogInActivity.KEY_USE_PIN,false));
+                }else {
+                    // TODO : Delete old saved pin
+                    toast("Disable FingerPrintLock " + sharedPreferences.getBoolean(LogInActivity.KEY_USE_PIN,false));
+                }
             }
         });
-        sw_addpassword_shortcut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(LogInActivity.KEY_CREATE_ADDP_SHORTCUT, b);
-                editor.apply();
-                sw_addpassword_shortcut.setChecked(b);
-                create_addp_ShortcutOfApp();
-            }
-        });
-        sw_addnotes_shortcut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putBoolean(LogInActivity.KEY_CREATE_ADDN_SHORTCUT, b);
-                editor.apply();
-                sw_addpassword_shortcut.setChecked(b);
-                create_addn_ShortcutOfApp();
-            }
-        });
+
+//        sw_addpassword_shortcut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//
+//                sw_addpassword_shortcut.setChecked(b);
+//                create_addp_ShortcutOfApp();
+//            }
+//        });
+//        sw_addnotes_shortcut.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                SharedPreferences.Editor editor = sharedPreferences.edit();
+//                editor.putBoolean(LogInActivity.KEY_CREATE_ADDN_SHORTCUT, b);
+//                editor.apply();
+//                sw_addpassword_shortcut.setChecked(b);
+//                create_addn_ShortcutOfApp();
+//            }
+//        });
 
 //        button_logout.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -264,6 +275,9 @@ public class SettingActivity extends AppCompatActivity {
         getApplicationContext().sendBroadcast(addIntent);
     }
 
+    public void toast(CharSequence message){
+        Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();
+    }
 
 
 }

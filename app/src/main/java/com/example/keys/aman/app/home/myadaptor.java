@@ -1,6 +1,5 @@
 package com.example.keys.aman.app.home;
 
-import static android.accounts.AccountManager.KEY_PASSWORD;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
@@ -66,17 +65,18 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
             current_date = dataholder.get(position).getDate();
             dlogin = aes.decrypt(dataholder.get(position).getAddDataLogin());
             dpassword = aes.decrypt(dataholder.get(position).getAddDataPassword());
-            holder.dlogin.setText(dlogin);
+            holder.tv_dlogin.setText(dlogin);
 //            dwebsite = aes.decrypt(temp.getAddWebsite());
             dwebsite = temp.getAddWebsite();
             //String Title = website.substring(0, 1).toUpperCase() + website.substring(1, 2);
             String Title = dwebsite.substring(0, 1).toUpperCase() + dwebsite.substring(1);
             holder.tv_img_title.setText(Title);
 
-            holder.dlogin.setOnClickListener(new View.OnClickListener() {
+            holder.tv_dlogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ShowCardviewDataActivity.class);
+                    intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity.myadaptor");
                     intent.putExtra("date", current_date);
                     intent.putExtra("loginname", dlogin);
                     intent.putExtra("loginpassowrd", dpassword);
@@ -91,6 +91,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, ShowCardviewDataActivity.class);
+                    intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity.myadaptor");
                     intent.putExtra("date", current_date);
                     intent.putExtra("loginname", dlogin);
                     intent.putExtra("loginpassowrd", dpassword);
@@ -100,31 +101,30 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                     activity.overridePendingTransition(R.anim.slide_in_down, 0);
                 }
             });
-            holder.cardview_more.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            holder.tb_cardview_more.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.img_copy:
-                            SharedPreferences sharedPreferences;
-                            sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-                            String dp = dpassword;
-                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                            editor.putString(KEY_PASSWORD, dp);
-                            editor.apply();
 
                             ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                            dp = sharedPreferences.getString(KEY_PASSWORD, null);
-                            ClipData clipData = ClipData.newPlainText("Copy_Password", dp);
+
+                            ClipData clipData = ClipData.newPlainText("Copy_Login", dlogin);
                             clipboardManager.setPrimaryClip(clipData);
-                            Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
+
+                            ClipData clipData1 = ClipData.newPlainText("Copy_Password", dpassword);
+                            clipboardManager.setPrimaryClip(clipData1);
+
+                            Toast.makeText(context, "Copied!" + clipData  + " <> " + clipData1, Toast.LENGTH_SHORT).show();
                             return true;
                         case R.id.img_delete:
                             HomeActivity.databaseReference.child(dwebsite).child(current_date).removeValue();
                             Toast.makeText(context, "Deleted !!", Toast.LENGTH_SHORT).show();
                             HomeActivity.adaptor.notifyDataSetChanged();
+                            Intent intent = new  Intent(context, HomeActivity.class);
+                            intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity.myadaptor");
+                            activity.startActivity(intent);
                             activity.finish();
-                            activity.overridePendingTransition(0, 0);
-                            activity.startActivity(new Intent(context, HomeActivity.class));
                             activity.overridePendingTransition(0, 0);
                             return true;
                     }
@@ -194,15 +194,15 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
 
     public static class myviewholder extends RecyclerView.ViewHolder {
 
-        final TextView dlogin;
+        final TextView tv_dlogin;
         final TextView tv_img_title;
-        final Toolbar cardview_more;
+        final Toolbar tb_cardview_more;
         final LinearLayout LLCard;
 
         public myviewholder(@NonNull View itemView) {
             super(itemView);
-            dlogin = itemView.findViewById(R.id.displayname);
-            cardview_more = itemView.findViewById(R.id.cardview_more);
+            tv_dlogin = itemView.findViewById(R.id.displayname);
+            tb_cardview_more = itemView.findViewById(R.id.cardview_more);
             LLCard = itemView.findViewById(R.id.linear_layout_card);
             tv_img_title = itemView.findViewById(R.id.tv_img_title);
         }

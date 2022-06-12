@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.keys.R;
+import com.example.keys.aman.app.signin_login.LogInActivity;
 //import com.example.keys.aman.app.signin_login.SignUpActivity;
 
 public class BiometricActivity extends AppCompatActivity{
@@ -42,7 +43,7 @@ public class BiometricActivity extends AppCompatActivity{
 
         //Hide mobile no and
         Intent intent = getIntent();
-        comingrequestcode = intent.getStringExtra("request_code");
+        comingrequestcode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
         if (comingrequestcode == null){
             comingrequestcode = "this";
         }
@@ -51,6 +52,8 @@ public class BiometricActivity extends AppCompatActivity{
 
         if (comingrequestcode.equals("LogInActivity")) {
             Toast.makeText(BiometricActivity.this,"Coming from " + comingrequestcode,Toast.LENGTH_SHORT).show();
+        } else if (comingrequestcode.equals("this")) {
+            Toast.makeText(BiometricActivity.this,"Coming from " + comingrequestcode,Toast.LENGTH_SHORT).show();
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -58,6 +61,9 @@ public class BiometricActivity extends AppCompatActivity{
             keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
             if (!fingerprintManager.isHardwareDetected()) {
                 tv_result.setText("Fingerprint Scanner not detected in Device");
+                Intent intent3 = new Intent(BiometricActivity.this,pinLockFragment.class);
+                intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
+                startActivity(intent3);
             } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
                 tv_result.setText("Permission not granted to use Fingerprint Scanner");
             } else if (!keyguardManager.isKeyguardSecure()) {
@@ -66,7 +72,7 @@ public class BiometricActivity extends AppCompatActivity{
                 tv_result.setText("You should add atleast 1 Fingerprint to use this Feature");
             } else {
                 tv_result.setText("Place your Finger to Acsess the app");
-                FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this);
+                FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this, BiometricActivity.this ,comingrequestcode);
                 fingerPrintHandler.startAuth(fingerprintManager,null);
             }
 

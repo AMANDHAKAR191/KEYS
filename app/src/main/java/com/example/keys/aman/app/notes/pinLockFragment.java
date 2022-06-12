@@ -18,6 +18,7 @@ import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 import com.example.keys.R;
 import com.example.keys.aman.app.home.HomeActivity;
+import com.example.keys.aman.app.signin_login.LogInActivity;
 //import com.example.keys.aman.app.signin_login.SignUpActivity;
 
 public class pinLockFragment extends AppCompatActivity {
@@ -34,10 +35,14 @@ public class pinLockFragment extends AppCompatActivity {
             if (pin.equals("1234")){
                 Log.d(TAG, "Pin matched");
                 if (comingrequestcode.equals("LogInActivity")) {
-                    startActivity(new Intent(pinLockFragment.this, HomeActivity.class));
+                    Intent intent = new Intent(pinLockFragment.this, HomeActivity.class);
+                    intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"pinLockFragment");
+                    startActivity(intent);
                     finish();
                 }else {
-                    startActivity(new Intent(pinLockFragment.this, secretNotesActivity.class));
+                    Intent intent = new Intent(pinLockFragment.this, secretNotesActivity.class);
+                    intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"pinLockFragment");
+                    startActivity(intent);
                     finish();
                 }
             }else {
@@ -84,7 +89,7 @@ public class pinLockFragment extends AppCompatActivity {
 
         //Hide mobile no and
         Intent intent = getIntent();
-        comingrequestcode = intent.getStringExtra("request_code");
+        comingrequestcode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
         if (comingrequestcode == null){
             comingrequestcode = "this";
         }

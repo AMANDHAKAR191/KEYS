@@ -1,10 +1,12 @@
 package com.example.keys.aman.app.notes;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +32,7 @@ public class secretNotesActivity extends AppCompatActivity {
     TextView tv_NOTE;
     RewardedAd mRewardedAd;
     private String uid;
+    private String comingrequestcode;
 
 
     @Override
@@ -41,6 +44,18 @@ public class secretNotesActivity extends AppCompatActivity {
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         tv_NOTE = findViewById(R.id.tv_NOTE);
+
+        Intent intent = getIntent();
+        comingrequestcode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
+        if (comingrequestcode == null){
+            comingrequestcode = "this";
+        }
+
+        Toast.makeText(secretNotesActivity.this, comingrequestcode, Toast.LENGTH_SHORT).show();
+
+        if (comingrequestcode.equals("LogInActivity")) {
+        }
+
         recyclerviewsetdata();
     }
 

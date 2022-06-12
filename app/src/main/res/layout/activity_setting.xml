@@ -67,39 +67,25 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-
-
-            <RadioGroup
-                android:layout_width="match_parent"
-                android:visibility="gone"
-                android:layout_height="wrap_content">
                 <Switch
                     android:id="@+id/sw_use_pin"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Use Pin for Unlock App"/>
-                <Switch
-                    android:id="@+id/sw_addpassword_shortcut"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Use FingerPrint for Unlock App"/>
-                <Switch
-                    android:id="@+id/sw_addnotes_shortcut"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Create shortcut for add password"/>
+                    android:visibility="gone"
+                    android:text="Use Pin to Unlock App"/>
+
                 <Switch
                     android:id="@+id/sw_use_finger"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Create shortcut for add notes"/>
-            </RadioGroup>
+                    android:visibility="gone"
+                    android:text="Use FingerPrint to Unlock App"/>
 
             <TextView
                 android:id="@+id/tv_app_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="50dp"
                 android:drawableStart="@drawable/app_info"
                 android:text="\t\tApp Info"
                 android:textSize="20dp" />

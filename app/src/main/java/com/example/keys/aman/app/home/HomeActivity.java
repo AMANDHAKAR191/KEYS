@@ -256,11 +256,13 @@ public class HomeActivity extends AppCompatActivity {
                         return true;
                     case R.id.menu_setting:
                         Intent intent1 = new Intent(HomeActivity.this, SettingActivity.class);
+                        intent1.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity");
                         startActivity(intent1);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         return true;
                     case R.id.menu_notes:
                         Intent intent2 = new Intent(HomeActivity.this, notesActivity.class);
+                        intent2.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity");
                         startActivity(intent2);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         return true;
@@ -297,7 +299,6 @@ public class HomeActivity extends AppCompatActivity {
                             dataholder.add(data);
                         }
                     }
-                    //TODO : Sorting is not working properly
                     Collections.sort(dataholder, addDataHelperClass.addDataHelperClassComparator);
                     adaptor.notifyDataSetChanged();
 
@@ -319,7 +320,9 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             Toast.makeText(HomeActivity.this, "The interstitial ad wasn't ready yet.", Toast.LENGTH_LONG).show();
         }
-        startActivity(new Intent(HomeActivity.this, addPasswordData.class));
+        Intent intent = new Intent(HomeActivity.this, addPasswordData.class);
+        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity");
+        startActivity(intent);
         overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
     }
 
@@ -329,15 +332,16 @@ public class HomeActivity extends AppCompatActivity {
         } else {
             Toast.makeText(HomeActivity.this, "The interstitial ad wasn't ready yet.", Toast.LENGTH_LONG).show();
         }
-        String REQUEST_CODE = "HomeActivity";
         Intent intent = new Intent(HomeActivity.this, PassGenActivity.class);
-        intent.putExtra("requestCode", REQUEST_CODE);
+        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity");
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
     }
 
     public void Add_Note(View view) {
-        startActivity(new Intent(HomeActivity.this, addNotesActivity.class));
+        Intent intent = new Intent(HomeActivity.this, addNotesActivity.class);
+        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity");
+        startActivity(intent);
         overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
 
     }

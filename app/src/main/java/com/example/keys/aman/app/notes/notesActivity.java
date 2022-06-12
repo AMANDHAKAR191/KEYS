@@ -129,11 +129,13 @@ public class notesActivity extends AppCompatActivity {
                 switch (item.getItemId()) {
                     case R.id.menu_home:
                         Intent intent1 = new Intent(notesActivity.this, HomeActivity.class);
+                        intent1.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
                         startActivity(intent1);
                         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
                         return true;
                     case R.id.menu_setting:
                         Intent intent2 = new Intent(notesActivity.this, SettingActivity.class);
+                        intent2.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
                         startActivity(intent2);
                         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
                         return true;
@@ -210,6 +212,7 @@ public class notesActivity extends AppCompatActivity {
             Toast.makeText(notesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
         }
         Intent intent = new Intent(notesActivity.this, addNotesActivity.class);
+        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
     }
@@ -224,7 +227,9 @@ public class notesActivity extends AppCompatActivity {
         },1000);
         if (click_counter == 2){
 //            Toast.makeText(notesActivity.this,"Opening Secret Notes", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(notesActivity.this,pinLockFragment.class));
+            Intent intent3 = new Intent(notesActivity.this,pinLockFragment.class);
+            intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
+            startActivity(intent3);
             click_counter = 0;
         }
         click_counter = click_counter + 1;

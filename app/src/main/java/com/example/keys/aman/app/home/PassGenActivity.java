@@ -79,7 +79,7 @@ public class PassGenActivity extends AppCompatActivity {
 //        bt_use.setVisibility(View.VISIBLE);
         //Hide use button
         Intent intent = getIntent();
-        comingrequestcode =  intent.getStringExtra("requestCode");
+        comingrequestcode =  intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
         if (comingrequestcode == null){
             comingrequestcode = "fromAppsShortcut";
         }

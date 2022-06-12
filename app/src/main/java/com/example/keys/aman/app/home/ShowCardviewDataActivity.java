@@ -5,11 +5,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.home.addpassword.addPasswordData;
+import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -19,6 +21,7 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
     TextInputLayout til_displaypassword;
     ImageButton img_back;
     public final String REQUEST_CODE = "ShowCardviewDataActivity";
+    private String comingdate, loginname, loginpassowrd, loginwebsite;
 
 
     @Override
@@ -35,11 +38,16 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
         dis_website = findViewById(R.id.displaywebsite);
         img_back = findViewById(R.id.img_back);
 
-        dis_login.setText(getIntent().getStringExtra("loginname"));
-        tiet_pass.setText(getIntent().getStringExtra("loginpassowrd"));
-        String website = getIntent().getStringExtra("loginwebsite");
-        String Title = website.substring(0,1).toUpperCase() + website.substring(1);
-        dis_website.setText("www." + website + ".com");
+        Intent intent = getIntent();
+        comingdate =  intent.getStringExtra("date");
+        Toast.makeText(this, "comingdate = " + comingdate, Toast.LENGTH_SHORT).show();
+        loginname = getIntent().getStringExtra("loginname");
+        loginpassowrd = getIntent().getStringExtra("loginpassowrd");
+        loginwebsite = getIntent().getStringExtra("loginwebsite");
+        dis_login.setText(loginname);
+        tiet_pass.setText(loginpassowrd);
+        String Title = loginwebsite.substring(0,1).toUpperCase() + loginwebsite.substring(1);
+        dis_website.setText("www." + loginwebsite + ".com");
         tv_img_title.setText(Title);
 
 
@@ -48,10 +56,8 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
 
     public void editdata(View view) {
         Intent intent = new Intent(ShowCardviewDataActivity.this, addPasswordData.class);
-        String loginname = getIntent().getStringExtra("loginname");
-        String loginpassowrd = getIntent().getStringExtra("loginpassowrd");
-        String loginwebsite = getIntent().getStringExtra("loginwebsite");
-        intent.putExtra("request_code",REQUEST_CODE);
+        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"ShowCardviewDataActivity");
+        intent.putExtra("date",comingdate);
         intent.putExtra("loginname",loginname);
         intent.putExtra("loginpassowrd",loginpassowrd);
         intent.putExtra("loginwebsite",loginwebsite);

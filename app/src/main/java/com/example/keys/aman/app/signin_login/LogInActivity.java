@@ -17,6 +17,7 @@ import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
 import com.example.keys.aman.app.home.HomeActivity;
 import com.example.keys.aman.app.home.PassGenActivity;
+import com.example.keys.aman.app.notes.BiometricActivity;
 import com.example.keys.aman.app.settings.AppInfo;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -54,10 +55,10 @@ public class LogInActivity extends AppCompatActivity {
     public static final String KEY_USER_EMAIL = "email";
     public static String KEY_USE_FINGERPRINT;
     public static String KEY_USE_PIN;
-    public static String KEY_CREATE_ADDP_SHORTCUT;
-    public static String KEY_CREATE_ADDN_SHORTCUT;
     public static String ISLOGIN;
     public static String ISFIRST_TIME = "0";
+    public static String REQUEST_CODE_NAME = "request_code";
+    public static String ISAUTHENTICATED;
 
     public static final String TAG = "main Activity";
     private PrograceBar prograce_bar;
@@ -65,6 +66,20 @@ public class LogInActivity extends AppCompatActivity {
     private boolean turn = false;
     private String val = "";
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Check if User is already login then go direct to HomeScreen
+        Boolean islogin = sharedPreferences.getBoolean(ISLOGIN, false);
+        System.out.println(islogin);
+        if (islogin) {
+            Intent intent = new Intent(LogInActivity.this, BiometricActivity.class);
+            intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +92,11 @@ public class LogInActivity extends AppCompatActivity {
         btn_login = findViewById(R.id.btn_login);
 
         // Check if User is already login then go direct to HomeScreen
-        String islogin = sharedPreferences.getString(ISLOGIN, "false");
+        Boolean islogin = sharedPreferences.getBoolean(ISLOGIN, false);
         System.out.println(islogin);
-        if (islogin.equals("true")) {
-            Intent intent = new Intent(LogInActivity.this, HomeActivity.class);
+        if (islogin) {
+            Intent intent = new Intent(LogInActivity.this, BiometricActivity.class);
+            intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
             finish();
@@ -179,7 +195,7 @@ public class LogInActivity extends AppCompatActivity {
                                         SharedPreferences.Editor editor1 = sharedPreferences.edit();
                                         editor1.putString(LogInActivity.AES_KEY, PassGenActivity.generateRandomPassword(22, true, true, true, false) + "==");
                                         editor1.putString(LogInActivity.AES_IV, PassGenActivity.generateRandomPassword(16, true, true, true, false));
-                                        editor1.putString(ISLOGIN, "true");
+                                        editor1.putBoolean(ISLOGIN, true);
                                         editor1.putString(ISFIRST_TIME,"1");
                                         editor1.apply();
                                         System.out.println("ISLOGIN: " + sharedPreferences.getString(ISLOGIN,null));
@@ -187,7 +203,7 @@ public class LogInActivity extends AppCompatActivity {
                                         writeData(user);
                                         turn = false;
                                         Intent intent = new Intent(getApplicationContext(), AppInfo.class);
-                                        intent.putExtra("request_code",147);
+                                        intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
                                         startActivity(intent);
                                     }else {
                                         System.out.println("Getting IV AND KT+EY from database");
@@ -205,7 +221,7 @@ public class LogInActivity extends AppCompatActivity {
                                                 SharedPreferences.Editor editor1 = sharedPreferences.edit();
                                                 editor1.putString(LogInActivity.AES_KEY, aes_key);
                                                 editor1.putString(LogInActivity.AES_IV, aes_iv);
-                                                editor1.putString(ISLOGIN, "true");
+                                                editor1.putBoolean(ISLOGIN, true);
                                                 editor1.putString(ISFIRST_TIME,"1");
                                                 editor1.apply();
                                                 System.out.println("AES KEY" + sharedPreferences.getString(AES_KEY,null));
@@ -230,7 +246,7 @@ public class LogInActivity extends AppCompatActivity {
 
 
                                         Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                                        intent.putExtra("request_code","LogInActivity");
+                                        intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
                                         startActivity(intent);
                                     }
                                 }

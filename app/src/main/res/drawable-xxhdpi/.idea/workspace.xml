@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a80a984d-6d44-4269-9b46-30f2070dae8d" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../drawable/ic_baseline_add_24.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/SplashActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/SplashActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/HomeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/HomeActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/PassGenActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/PassGenActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/ShowCardviewDataActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/ShowCardviewDataActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/addpassword/addPasswordData.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/addpassword/addPasswordData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/myadaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/myadaptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/BiometricActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/BiometricActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/FingerPrintHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/FingerPrintHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/addNotesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/addNotesActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/notesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/notesActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/pinLockFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/pinLockFragment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/secretNotesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/secretNotesActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/settings/ProfileActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/settings/ProfileActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/settings/SettingActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/settings/SettingActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/signin_login/LogInActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/signin_login/LogInActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_home.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_log_in.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_log_in.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_notes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_notes.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_profile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_profile.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_secret_notes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_secret_notes.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_setting.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_setting.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_sign_up.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_sign_up.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/cardview_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/cardview_layout.xml" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../../.." />
+  </component>
+  <component name="ProjectId" id="2AT8CozEHQay6r6YCIXXbf9srtd" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="autoscrollFromSource" value="true" />
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="RunOnceActivity.cidr.known.project.marker" value="true" />
+    <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/Sdk" />
+    <property name="cidr.known.project.marker" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a80a984d-6d44-4269-9b46-30f2070dae8d" name="Default Changelist" comment="" />
+      <created>1655022089405</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1655022089405</updated>
+    </task>
+    <servers />
+  </component>
+</project>

@@ -217,7 +217,7 @@
         app:pressedTranslationZ="12dp" />
 
 
-    <!--    TODO Check 2 Add Personal Info Feature insted of Profile and move Profile to Setting-->
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"

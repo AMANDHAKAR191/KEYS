@@ -22,7 +22,7 @@
             android:background="@drawable/rounded_thems1"
             android:elevation="20dp"
             android:gravity="center"
-            android:hint="Am"
+            android:hint="An"
             android:textSize="20dp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -38,11 +38,11 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/cardview_more"
-                android:layout_width="wrap_content"
+                android:layout_width="39dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                app:menu="@menu/cardview_menu"
-                android:src="@drawable/ic_baseline_more_vert_24" />
+                android:src="@drawable/ic_baseline_more_vert_24"
+                app:menu="@menu/cardview_menu" />
 
             <TextView
                 android:id="@+id/displayname"
@@ -52,7 +52,6 @@
                 android:text="User Login"
                 android:textColor="?attr/colorOnSecondary"
                 android:textSize="20sp" />
-
 
 
         </LinearLayout>

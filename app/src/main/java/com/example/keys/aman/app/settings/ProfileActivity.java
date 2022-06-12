@@ -21,7 +21,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     //Variable
     CircleImageView img_profileimage;
-    TextView textView_signin_name, textView_signin_mobile, textView_signin_password;
+    TextView textView_signin_name, textView_signin_password;
     Button button_logout;
     String mobile, name, email, title_text;
     String dc_name, dc_email;
@@ -39,7 +39,7 @@ public class ProfileActivity extends AppCompatActivity {
         //Link to id
         button_logout = findViewById(R.id.btn_logout);
         textView_signin_name = findViewById(R.id.tv_signin_name);
-        textView_signin_mobile = findViewById(R.id.tv_signin_mobile);
+
         textView_signin_password = findViewById(R.id.tv_sigin_password);
         img_profileimage = findViewById(R.id.img_profile_image);
 
@@ -65,7 +65,6 @@ public class ProfileActivity extends AppCompatActivity {
             Glide.with(this).load(currentUser).into(img_profileimage);
 //            tv_profile_name.setText(currentUserName);
             textView_signin_name.setText("Name: " + currentUserName);
-            textView_signin_mobile.setText("Mobile no.: " + currentUserPhone);
             textView_signin_password.setText("Email: " + currentUserEmail);
 
         }
@@ -88,7 +87,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             if (dc_name != null & mobile != null & dc_email != null) {
                 textView_signin_name.setText("Name: " + dc_name);
-                //TODO Check 3: Remove The password data from profile
+
                 textView_signin_password.setText("Email: " + dc_email);
             }
 

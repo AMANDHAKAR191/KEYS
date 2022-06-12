@@ -62,7 +62,6 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!--        TODO Check1 add country code feature -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_signin_mobile_no"
                 android:layout_width="match_parent"
