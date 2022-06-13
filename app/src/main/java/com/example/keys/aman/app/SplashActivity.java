@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,8 @@ import java.util.Arrays;
 public class SplashActivity extends AppCompatActivity {
 
     private String[] PERMISSIONS;
+    public static boolean isConnected = false;
+    ConnectivityManager connectivityManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,10 +28,12 @@ public class SplashActivity extends AppCompatActivity {
 
         createShortcutOfApp();
 
-        Intent intent = new Intent(SplashActivity.this, LogInActivity.class);
-        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"SplashActivity");
-        startActivity(intent);
-        finish();
+        Intent i = new Intent(SplashActivity.this, LogInActivity.class);
+                startActivity(i);
+                finish();
+
+//        checkInternet();
+
 
         //TODO Check 5: check internet in this Activity also internet stability
         //TODO Check 6: Cehck internet spped in every Activity if speed is low then show Error to user
@@ -73,52 +78,108 @@ public class SplashActivity extends AppCompatActivity {
         shortcutManager.setDynamicShortcuts(Arrays.asList(shortcutInfo));
     }
 
-//    private boolean hasPermissions(Context context, String... permissions) {
-//        if (context != null && PERMISSIONS != null) {
-//            for (String permission : PERMISSIONS) {
-//                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-//                    return false;
-//                }
-//            }
+//    public void checkInternet(){
+//        if (isConnected){
+//            Intent intent = new Intent(SplashActivity.this, LogInActivity.class);
+//            intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"SplashActivity");
+//            startActivity(intent);
+//            finish();
+//        }else {
+//            Intent intent = new Intent(getApplicationContext(),checkInternetFragment.class);
+//            startActivity(intent);
 //        }
-//        return true;
+//    }
+
+//    private void registetNetworkCallBack(){
+//
+//        try {
+//
+//            connectivityManager = (ConnectivityManager) getApplicationContext()
+//                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+//            connectivityManager.registerDefaultNetworkCallback(
+//                    new ConnectivityManager.NetworkCallback(){
+//                        @Override
+//                        public void onAvailable(@NonNull Network network) {
+//                            super.onAvailable(network);
+//                            isConnected = true;
+//                        }
+//
+//                        @Override
+//                        public void onLost(@NonNull Network network) {
+//                            super.onLost(network);
+//                            isConnected = false;
+//                        }
+//                    });
+//
+//
+//
+//        }catch (Exception e){
+//            isConnected = false;
+//        }
 //    }
 //
+//    private void unRegistetNetworkCallBack(){
+//        connectivityManager.unregisterNetworkCallback(
+//                new ConnectivityManager.NetworkCallback());
+//    }
 //
 //    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        if (requestCode == 1) {
-//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-//                Toast.makeText(this, "External Storage Permission GRANTED", Toast.LENGTH_SHORT).show();
-//                Intent i = new Intent(SplashActivity.this, LogInActivity.class);
-//                startActivity(i);
-//                finish();
-//            }else {
-//                Toast.makeText(this, "External Storage Permission DENIED", Toast.LENGTH_SHORT).show();
-//            }
+//    protected void onPostResume() {
+//        super.onPostResume();
+//        registetNetworkCallBack();
+//    }
 //
-////            if (grantResults[1] == PackageManager.PERMISSION_GRANTED){
-////                Toast.makeText(this, "Network Access Permission GRANTED", Toast.LENGTH_SHORT).show();
+////    @Override
+////    protected void onPause() {
+////        super.onPause();
+////        unRegistetNetworkCallBack();
+////    }
+//    //    private boolean hasPermissions(Context context, String... permissions) {
+////        if (context != null && PERMISSIONS != null) {
+////            for (String permission : PERMISSIONS) {
+////                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+////                    return false;
+////                }
+////            }
+////        }
+////        return true;
+////    }
+////
+////
+////    @Override
+////    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+////        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+////        if (requestCode == 1) {
+////            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
+////                Toast.makeText(this, "External Storage Permission GRANTED", Toast.LENGTH_SHORT).show();
 ////                Intent i = new Intent(SplashActivity.this, LogInActivity.class);
 ////                startActivity(i);
 ////                finish();
 ////            }else {
-////                Toast.makeText(this, "Network Access Permission DENIED", Toast.LENGTH_SHORT).show();
+////                Toast.makeText(this, "External Storage Permission DENIED", Toast.LENGTH_SHORT).show();
 ////            }
 ////
-////            if (grantResults[2] == PackageManager.PERMISSION_GRANTED){
-////                Toast.makeText(this, "Biometric Permission GRANTED", Toast.LENGTH_SHORT).show();
-////            }else {
-////                Toast.makeText(this, "Biometric Permission DENIED", Toast.LENGTH_SHORT).show();
-////            }
-////
-////            if (grantResults[3] == PackageManager.PERMISSION_GRANTED){
-////                Toast.makeText(this, "Vibration Permission GRANTED", Toast.LENGTH_SHORT).show();
-////            }else {
-////                Toast.makeText(this, "Vibration Permission DENIED", Toast.LENGTH_SHORT).show();
-////            }
-//        }
-//    }
+//////            if (grantResults[1] == PackageManager.PERMISSION_GRANTED){
+//////                Toast.makeText(this, "Network Access Permission GRANTED", Toast.LENGTH_SHORT).show();
+//////                Intent i = new Intent(SplashActivity.this, LogInActivity.class);
+//////                startActivity(i);
+//////                finish();
+//////            }else {
+//////                Toast.makeText(this, "Network Access Permission DENIED", Toast.LENGTH_SHORT).show();
+//////            }
+//////
+//////            if (grantResults[2] == PackageManager.PERMISSION_GRANTED){
+//////                Toast.makeText(this, "Biometric Permission GRANTED", Toast.LENGTH_SHORT).show();
+//////            }else {
+//////                Toast.makeText(this, "Biometric Permission DENIED", Toast.LENGTH_SHORT).show();
+//////            }
+//////
+//////            if (grantResults[3] == PackageManager.PERMISSION_GRANTED){
+//////                Toast.makeText(this, "Vibration Permission GRANTED", Toast.LENGTH_SHORT).show();
+//////            }else {
+//////                Toast.makeText(this, "Vibration Permission DENIED", Toast.LENGTH_SHORT).show();
+//////            }
+////        }
+////    }
 
 }

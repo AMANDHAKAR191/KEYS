@@ -155,7 +155,6 @@ public class notesActivity extends AppCompatActivity {
 
 
         recyclerView = findViewById(R.id.recview);
-//        String mobile = sharedPreferences.getString(LogInActivity.KEY_USER_MOBILE, null);
 
         reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -226,14 +225,12 @@ public class notesActivity extends AppCompatActivity {
             }
         },1000);
         if (click_counter == 2){
-//            Toast.makeText(notesActivity.this,"Opening Secret Notes", Toast.LENGTH_SHORT).show();
             Intent intent3 = new Intent(notesActivity.this,pinLockFragment.class);
             intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
             startActivity(intent3);
             click_counter = 0;
         }
         click_counter = click_counter + 1;
-//        Toast.makeText(notesActivity.this,"Click counter: " + click_counter, Toast.LENGTH_SHORT).show();
     }
 
 }

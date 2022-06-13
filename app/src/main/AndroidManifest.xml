@@ -56,6 +56,9 @@
             android:name=".aman.app.signin_login.LogInActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".aman.app.checkInternetFragment"
+            android:exported="false" />
 
         <activity
             android:name=".aman.app.home.HomeActivity"

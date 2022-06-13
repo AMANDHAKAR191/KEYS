@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.view.View;
 import android.view.autofill.AutofillManager;
 import android.widget.Button;
@@ -19,8 +18,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.keys.R;
-import com.example.keys.aman.app.home.PassGenActivity;
-import com.example.keys.aman.app.notes.addNotesActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -165,20 +162,20 @@ public class SettingActivity extends AppCompatActivity {
 //        });
 
 
-        button_logout.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                mAutofillManager = getSystemService(AutofillManager.class);
-               if (mAutofillManager.hasEnabledAutofillServices()){
-                   Toast.makeText(SettingActivity.this, "AutoFill Enabled", Toast.LENGTH_SHORT).show();
-               } else {
-                   Intent intent = new Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE);
-                   intent.setData(Uri.parse("package:com.example.android.autofill.service"));
-                   startActivityForResult(intent, 123);
-               }
-                return false;
-            }
-        });
+//        button_logout.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                mAutofillManager = getSystemService(AutofillManager.class);
+//               if (mAutofillManager.hasEnabledAutofillServices()){
+//                   Toast.makeText(SettingActivity.this, "AutoFill Enabled", Toast.LENGTH_SHORT).show();
+//               } else {
+//                   Intent intent = new Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE);
+//                   intent.setData(Uri.parse("package:com.example.android.autofill.service"));
+//                   startActivityForResult(intent, 123);
+//               }
+//                return false;
+//            }
+//        });
     }
 
     @Override
@@ -231,49 +228,7 @@ public class SettingActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    public void addwebsite(View view) {
-        addWebsiteFragment addWebsiteFragment = new addWebsiteFragment();
-        addWebsiteFragment.show(getSupportFragmentManager(), "add_website");
-    }
 
-    public void create_addp_ShortcutOfApp() {
-
-        Intent shortcutIntent = new Intent(getApplicationContext(),
-                PassGenActivity.class);
-        shortcutIntent.setAction(Intent.ACTION_MAIN);
-
-        Intent addIntent = new Intent();
-        addIntent
-                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Genrate password");
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource.fromContext(getApplicationContext(),
-                        R.mipmap.keys_louncher_icon));
-
-        addIntent
-                .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-        addIntent.putExtra("duplicate", false);  //may it's already there so   don't duplicate
-        getApplicationContext().sendBroadcast(addIntent);
-    }
-    public void create_addn_ShortcutOfApp() {
-
-        Intent shortcutIntent = new Intent(getApplicationContext(),
-                addNotesActivity.class);
-        shortcutIntent.setAction(Intent.ACTION_MAIN);
-
-        Intent addIntent = new Intent();
-        addIntent
-                .putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, "Add Notes");
-        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE,
-                Intent.ShortcutIconResource.fromContext(getApplicationContext(),
-                        R.mipmap.keys_louncher_icon));
-
-        addIntent
-                .setAction("com.android.launcher.action.INSTALL_SHORTCUT");
-        addIntent.putExtra("duplicate", false);  //may it's already there so   don't duplicate
-        getApplicationContext().sendBroadcast(addIntent);
-    }
 
     public void toast(CharSequence message){
         Toast.makeText(getApplicationContext(),message,Toast.LENGTH_SHORT).show();

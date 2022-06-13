@@ -29,10 +29,11 @@
             android:text="No Internet Connection"
             android:gravity="center"/>
         <Button
-            android:id="@+id/b_retry"
+            android:id="@+id/btn_retry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="50dp"
+            android:onClick="checkInternetFragment"
             android:textAllCaps="true"
             android:text="Retry"/>
 
