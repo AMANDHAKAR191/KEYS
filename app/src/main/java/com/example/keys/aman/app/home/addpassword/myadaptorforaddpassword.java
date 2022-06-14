@@ -43,21 +43,21 @@ public abstract class myadaptorforaddpassword extends RecyclerView.Adapter<myada
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
 
         final websiteHelper temp = dataholder.get(position);
-        String current_date, dname, dwebsite;
+        String current_date, dwebsiteLink, dwebsitename;
         try {
-            dname = dataholder.get(position).getWebsite_login_url();
-            holder.dname.setText(dname);
-            dwebsite = temp.getWebsite_name();
+            dwebsiteLink = dataholder.get(position).getWebsite_login_url();
+            holder.dname.setText(dwebsiteLink);
+            dwebsitename = temp.getWebsite_name();
             //String Title = website.substring(0, 1).toUpperCase() + website.substring(1, 2);
-            String Title = dwebsite.substring(0,1).toUpperCase() + dwebsite.substring(1);
+            String Title = dwebsitename.substring(0,1).toUpperCase() + dwebsitename.substring(1);
             holder.tv_img_title.setText(Title);
 
-//            holder.dname.setOnClickListener(new View.OnClickListener() {
+//            holder.dwebsiteLink.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
 //                    Intent intent = new Intent(context, addPasswordData.class);
 //                    intent.putExtra("request_code", REQUEST_CODE);
-//                    intent.putExtra("loginname", dname);
+//                    intent.putExtra("loginname", dwebsiteLink);
 //                    intent.putExtra("loginwebsite", dwebsite);
 //                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                    context.startActivity(intent);
@@ -70,7 +70,7 @@ public abstract class myadaptorforaddpassword extends RecyclerView.Adapter<myada
 //                public void onClick(View v) {
 //                    Intent intent = new Intent(context, addPasswordData.class);
 //                    intent.putExtra("request_code", REQUEST_CODE);
-//                    intent.putExtra("loginname", dname);
+//                    intent.putExtra("loginname", dwebsiteLink);
 //                    intent.putExtra("loginwebsite", dwebsite);
 //                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //                    context.startActivity(intent);
@@ -85,7 +85,7 @@ public abstract class myadaptorforaddpassword extends RecyclerView.Adapter<myada
                     return false;
                 }
             });
-            holder.onWebsiteClick(dname,dwebsite);
+            holder.onWebsiteClick(dwebsiteLink,dwebsitename);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -111,11 +111,11 @@ public abstract class myadaptorforaddpassword extends RecyclerView.Adapter<myada
             LLCard = itemView.findViewById(R.id.linear_layout_card);
             tv_img_title = itemView.findViewById(R.id.tv_img_title);
         }
-        public void onWebsiteClick(String dname, String dwebsite){
+        public void onWebsiteClick(String dwebiteLink, String dwebsitename){
             LLCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    onPictureClick(dname,dwebsite);
+                    onPictureClick(dwebiteLink,dwebsitename);
                 }
             });
         }

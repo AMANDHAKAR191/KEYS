@@ -105,17 +105,25 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
-                        case R.id.img_copy:
+                        case R.id.img_copy_username:
 
                             ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
 
                             ClipData clipData = ClipData.newPlainText("Copy_Login", dlogin);
                             clipboardManager.setPrimaryClip(clipData);
 
-                            ClipData clipData1 = ClipData.newPlainText("Copy_Password", dpassword);
-                            clipboardManager.setPrimaryClip(clipData1);
 
-                            Toast.makeText(context, "Copied!" + clipData  + " <> " + clipData1, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Copied! <> " + clipData, Toast.LENGTH_SHORT).show();
+                            return true;
+
+                        case R.id.img_copy_password:
+                            ClipboardManager clipboardManager1 = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+
+
+                            ClipData clipData1 = ClipData.newPlainText("Copy_Password", dpassword);
+                            clipboardManager1.setPrimaryClip(clipData1);
+
+                            Toast.makeText(context, "Copied! <> " + clipData1, Toast.LENGTH_SHORT).show();
                             return true;
                         case R.id.img_delete:
                             HomeActivity.databaseReference.child(dwebsite).child(current_date).removeValue();

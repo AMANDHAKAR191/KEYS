@@ -48,7 +48,7 @@ public class AppInfo extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
             }
         });
-        img_back.setOnClickListener(new View.OnClickListener() {
+        img_next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent1 = new Intent(AppInfo.this, HomeActivity.class);

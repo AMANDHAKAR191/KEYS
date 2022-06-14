@@ -176,6 +176,13 @@ public class SettingActivity extends AppCompatActivity {
 //                return false;
 //            }
 //        });
+
+//        button_logout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                throw new RuntimeException("Test Crash"); // Force a crash
+//            }
+//        });
     }
 
     @Override

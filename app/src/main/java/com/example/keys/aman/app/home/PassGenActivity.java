@@ -218,7 +218,7 @@ public class PassGenActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-    public String genrate_password() {
+    protected String genrate_password() {
         StringBuilder password = new StringBuilder();
         ArrayList<Integer> passSel = new ArrayList<>();
         slider.addOnChangeListener(new Slider.OnChangeListener() {

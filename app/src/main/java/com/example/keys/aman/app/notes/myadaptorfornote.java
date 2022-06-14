@@ -89,7 +89,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
-                        case R.id.img_copy:
+                        case R.id.img_copy_note:
                             ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                             ClipData clipData = ClipData.newPlainText("Copy_Password", tv_note_dc);
                             clipboardManager.setPrimaryClip(clipData);

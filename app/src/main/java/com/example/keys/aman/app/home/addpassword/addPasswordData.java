@@ -55,10 +55,11 @@ public class addPasswordData extends AppCompatActivity {
     String uid;
     String comingrequestcode;
     String coming_date, coming_loginname, coming_loginpassword, coming_loginwebsite;
+    public static String addWebsiteLink;
     private String currentDateandTime;
     public static myadaptorforaddpassword adaptor;
 
-    String s1 = "https://console.firebase.google.com/u/2/project/keyse-9895a/database/keyse-9895a-default-rtdb/data";
+    String s1 = "";
     String s2 = "https://material.io/components/menus/android#theming-menus";
     String s3 = "https://www.youtube.com/feed/history";
     private addDataHelperClass addDataHelperClass;
@@ -165,8 +166,9 @@ public class addPasswordData extends AppCompatActivity {
     private void addData() {
         String addlogin = Objects.requireNonNull(til_login.getEditText()).getText().toString().trim();
         String addpasword = Objects.requireNonNull(til_password.getEditText()).getText().toString();
-        String addwesite = Objects.requireNonNull(til_website.getEditText()).getText().toString().toLowerCase().trim();
-        if (addlogin.equals("") || addpasword.equals("") || addwesite.equals("")) {
+        String addwesitename = Objects.requireNonNull(til_website.getEditText()).getText().toString().toLowerCase().trim();
+
+        if (addlogin.equals("") || addpasword.equals("") || addwesitename.equals("")) {
             tv_error.setVisibility(View.VISIBLE);
             tv_error.setText("Please enter all Fields");
             tv_error.setTextColor(Color.RED);
@@ -174,20 +176,20 @@ public class addPasswordData extends AppCompatActivity {
             String e_addlogin = "", e_addpassword = "", e_addwebsite = "";
 
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference addDataRef = firebaseDatabase.getReference("addpassworddata").child(uid).child(addwesite);
+            DatabaseReference addDataRef = firebaseDatabase.getReference("addpassworddata").child(uid).child(addwesitename);
             AES aes = new AES();
             aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
             try {
                 e_addlogin = aes.encrypt(addlogin);
                 e_addpassword = aes.encrypt(addpasword);
-//                e_addwebsite = aes.encrypt(addwesite);
+//                e_addwebsite = aes.encrypt(addwesitename);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
 
             if (comingrequestcode.equals("ShowCardviewDataActivity")) {
-                addDataHelperClass = new addDataHelperClass(coming_date, e_addlogin, e_addpassword, addwesite);
+                addDataHelperClass = new addDataHelperClass(coming_date, e_addlogin, e_addpassword, addwesitename);
                 addDataRef.child(coming_date).setValue(addDataHelperClass);
                 Log.d(LogInActivity.TAG, "done");
                 Toast.makeText(addPasswordData.this, "Done", Toast.LENGTH_SHORT).show();
@@ -197,12 +199,12 @@ public class addPasswordData extends AppCompatActivity {
                 intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"addPasswordData");
 //                intent.putExtra("resultlogin", addlogin);
 //                intent.putExtra("resultpassword", addpasword);
-//                intent.putExtra("resultwebsite", addwesite);
+//                intent.putExtra("resultwebsite", addwesitename);
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
             }else if (comingrequestcode.equals("HomeActivity")){
-                addDataHelperClass = new addDataHelperClass(currentDateandTime, e_addlogin, e_addpassword, addwesite);
+                addDataHelperClass = new addDataHelperClass(currentDateandTime, e_addlogin, e_addpassword, addwesitename);
                 addDataRef.child(currentDateandTime).setValue(addDataHelperClass);
                 Log.d(LogInActivity.TAG, "done");
                 Toast.makeText(addPasswordData.this, "Done", Toast.LENGTH_SHORT).show();
@@ -237,7 +239,7 @@ public class addPasswordData extends AppCompatActivity {
     }
 
 
-    public void sumbit_or_updatedata(View view) {
+    protected void sumbit_or_updatedata(View view) {
         addData();
     }
 
@@ -267,11 +269,12 @@ public class addPasswordData extends AppCompatActivity {
         dataholder = new ArrayList<>();
         adaptor = new myadaptorforaddpassword(dataholder, getApplicationContext(), this){
             @Override
-            public void onPictureClick(String dname, String dwebsite){
+            public void onPictureClick(String dwebsiteLink, String dwebsitename){
                 Toast.makeText(context, "coming_date = " + coming_date, Toast.LENGTH_SHORT).show();
                 scrollView1.setVisibility(View.INVISIBLE);
                 scrollView2.setVisibility(View.VISIBLE);
-                tiet_addwebsitedata.setText(dwebsite);
+                tiet_addwebsitedata.setText(dwebsitename);
+                addWebsiteLink = dwebsiteLink;
             }
         };
         recyclerView.setAdapter(adaptor);
@@ -312,11 +315,18 @@ public class addPasswordData extends AppCompatActivity {
     }
 
 
-    public String fun(String str) {
+    protected String fun(String str) {
 //        String str= "This#string%contains^special*characters&.";
         String[] str1 = str.split("/");
         System.out.println(str1[2]);
         str = str1[2].replaceAll("[^a-zA-Z0-9]", "_");
+        System.out.println(str);
+        return str;
+    }
+    public static String reverseFun(String str) {
+//        String str= "This#string%contains^special*characters&.";
+
+        str = str.replaceAll("_", ".");
         System.out.println(str);
         return str;
     }

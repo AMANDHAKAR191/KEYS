@@ -86,6 +86,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
+                android:textColor="?attr/colorOnSecondary"
                 android:drawableStart="@drawable/app_info"
                 android:text="\t\tApp Info"
                 android:textSize="20dp" />
@@ -95,6 +96,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:textColor="?attr/colorOnSecondary"
                 android:drawableStart="@drawable/live_help"
                 android:text="\t\Contact us"
                 android:textSize="20dp" />
@@ -103,6 +105,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:textColor="?attr/colorOnSecondary"
                 android:drawableStart="@drawable/privacy_policy"
                 android:text="\t\Privacy Policy"
                 android:textSize="20dp" />
@@ -111,6 +114,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
+                android:textColor="?attr/colorOnSecondary"
                 android:drawableStart="@drawable/terms_and_conditions_icon"
                 android:text="\t\Terms &amp; conditions"
                 android:textSize="20dp" />
@@ -123,6 +127,7 @@
                 android:layout_marginTop="10dp"
                 android:backgroundTint="@color/button_back"
                 android:text="Log out"
+                android:textColor="?attr/colorOnSecondary"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent" />
 

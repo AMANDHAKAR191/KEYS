@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                app:menu="@menu/cardview_menu"
+                app:menu="@menu/cardview_notes_menu"
                 android:src="@drawable/ic_baseline_more_vert_24">
                 <TextView
                     android:id="@+id/tv_date"

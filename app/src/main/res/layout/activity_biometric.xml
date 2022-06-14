@@ -13,6 +13,7 @@
         android:layout_marginTop="20dp"
         android:background="#00000000"
         android:onClick="gocencal"
+
         android:src="@drawable/close"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -33,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:gravity="center"
+        android:textColor="?attr/colorOnSecondary"
         android:text="FingerPrint Authentication"
         android:textSize="25dp"
         app:layout_constraintTop_toBottomOf="@+id/img_logo"/>
@@ -55,6 +57,7 @@
         android:text="Place your Finger on Scanner to Proceed"
         app:layout_constraintLeft_toLeftOf="parent"
         android:gravity="center"
+        android:textColor="?attr/colorOnSecondary"
         android:layout_marginTop="10dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_fingerprint"/>

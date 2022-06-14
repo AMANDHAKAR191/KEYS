@@ -87,6 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
+        android:textColor="?attr/colorOnSecondary"
         android:text="Your saved password will show here"
         android:visibility="invisible" />
 

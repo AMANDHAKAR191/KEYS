@@ -112,6 +112,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:hint="password"
+        android:textColor="?attr/colorOnSecondary"
         android:textIsSelectable="true"
         android:textSize="20sp"
         app:layout_constraintTop_toBottomOf="@+id/slider_pass_lenght" />

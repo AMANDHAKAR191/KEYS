@@ -198,8 +198,8 @@ public class LogInActivity extends AppCompatActivity {
                                         editor1.putBoolean(ISLOGIN, true);
                                         editor1.putString(ISFIRST_TIME,"1");
                                         editor1.apply();
-                                        System.out.println("ISLOGIN: " + sharedPreferences.getString(ISLOGIN,null));
-                                        System.out.println("ISFIRST_TIME: " + sharedPreferences.getString(ISFIRST_TIME,null));
+//                                        System.out.println("ISLOGIN: " + sharedPreferences.getString(ISLOGIN,null));
+//                                        System.out.println("ISFIRST_TIME: " + sharedPreferences.getString(ISFIRST_TIME,null));
                                         writeData(user);
                                         turn = false;
                                         Intent intent = new Intent(getApplicationContext(), AppInfo.class);

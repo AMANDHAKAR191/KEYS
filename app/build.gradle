@@ -11,7 +11,7 @@ android {
         minSdk 27
         targetSdk 32
         versionCode 1
-        versionName "2022.06.12.2"
+        versionName "2022.06.14.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -64,6 +64,7 @@ dependencies {
 
 
     implementation 'com.google.firebase:firebase-inappmessaging-display:20.1.1'
+    implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 //    implementation platform('com.google.firebase:firebase-bom:29.0.4')
 
@@ -88,4 +89,5 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.13.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
 
+    apply plugin: 'com.google.firebase.crashlytics'
 }

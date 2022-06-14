@@ -111,10 +111,4 @@ public class secretNotesActivity extends AppCompatActivity {
         finish();
     }
 
-    public void refrash_activty(View view) {
-        finish();
-        overridePendingTransition(0, 0);
-        startActivity(getIntent());
-        overridePendingTransition(0, 0);
-    }
 }

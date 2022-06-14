@@ -243,6 +243,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void home_bottom_nav() {
+        // TODO : Use Fragment in Home Activity Instead of Activity
         // initialize And Assign Variable
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
         //set Home Selected
