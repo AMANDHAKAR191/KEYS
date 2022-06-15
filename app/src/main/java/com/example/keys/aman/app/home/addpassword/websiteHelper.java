@@ -8,11 +8,12 @@ public class websiteHelper {
     public websiteHelper() {
     }
 
-    public websiteHelper( String website_name, String website_login_url) {
+    public websiteHelper(String website_name, String website_login_url) {
 
         this.website_login_url = website_login_url;
         this.website_name = website_name;
     }
+
     public static Comparator<websiteHelper> addDataHelperClassComparator = new Comparator<websiteHelper>() {
         @Override
         public int compare(websiteHelper a1, websiteHelper a2) {

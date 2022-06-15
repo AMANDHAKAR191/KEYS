@@ -3,11 +3,11 @@ package com.example.keys.aman.app.signin_login;
 public class UserHelperClass {
     String name, mobile, email, aes_key, aes_iv, uid;
 
-    public UserHelperClass(){
+    public UserHelperClass() {
 
     }
 
-    public UserHelperClass(String name, String mobile, String email , String eas_key, String aes_iv, String uid) {
+    public UserHelperClass(String name, String mobile, String email, String eas_key, String aes_iv, String uid) {
         this.name = name;
         this.mobile = mobile;
         this.email = email;

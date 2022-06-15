@@ -1,22 +1,21 @@
 package com.example.keys.aman.app.home.addpassword;
 
-import com.example.keys.aman.app.AES;
-
 import java.util.Comparator;
 
 public class addDataHelperClass {
     String date, addDataLogin, addDataPassword, addWebsite;
-    AES aes = new AES();
+
     public addDataHelperClass() {
     }
 
     public addDataHelperClass(String date, String addDataLogin, String addDataPassword, String addWebsite) {
-            this.date = date;
-            this.addDataLogin = (addDataLogin);
-            this.addDataPassword = (addDataPassword);
-            this.addWebsite = (addWebsite);
+        this.date = date;
+        this.addDataLogin = (addDataLogin);
+        this.addDataPassword = (addDataPassword);
+        this.addWebsite = (addWebsite);
 
     }
+
     public static Comparator<addDataHelperClass> addDataHelperClassComparator = new Comparator<addDataHelperClass>() {
         @Override
         public int compare(addDataHelperClass a1, addDataHelperClass a2) {

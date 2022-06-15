@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.signin_login.LogInActivity;
-import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,7 +28,6 @@ public class secretNotesActivity extends AppCompatActivity {
     private static final String TAG = "notesActivity";
     SharedPreferences sharedPreferences;
     TextView tv_NOTE;
-    RewardedAd mRewardedAd;
     private String uid;
     private String comingrequestcode;
 
@@ -50,8 +47,6 @@ public class secretNotesActivity extends AppCompatActivity {
         if (comingrequestcode == null){
             comingrequestcode = "this";
         }
-
-        Toast.makeText(secretNotesActivity.this, comingrequestcode, Toast.LENGTH_SHORT).show();
 
         if (comingrequestcode.equals("LogInActivity")) {
         }

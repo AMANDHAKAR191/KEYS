@@ -69,9 +69,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
             dlogin = aes.decrypt(dataholder.get(position).getAddDataLogin());
             dpassword = aes.decrypt(dataholder.get(position).getAddDataPassword());
             holder.tv_dlogin.setText(dlogin);
-//            dwebsite = aes.decrypt(temp.getAddWebsite());
             dwebsite = temp.getAddWebsite();
-            //String Title = website.substring(0, 1).toUpperCase() + website.substring(1, 2);
             String Title = dwebsite.substring(0, 1).toUpperCase() + dwebsite.substring(1);
             holder.tv_img_title.setText(Title);
 
@@ -111,22 +109,16 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                         case R.id.img_copy_username:
 
                             ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-
                             ClipData clipData = ClipData.newPlainText("Copy_Login", dlogin);
                             clipboardManager.setPrimaryClip(clipData);
-
-
-                            Toast.makeText(context, "Copied! <> " + clipData, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
                             return true;
 
                         case R.id.img_copy_password:
                             ClipboardManager clipboardManager1 = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-
-
                             ClipData clipData1 = ClipData.newPlainText("Copy_Password", dpassword);
                             clipboardManager1.setPrimaryClip(clipData1);
-
-                            Toast.makeText(context, "Copied! <> " + clipData1, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "Copied! <> ", Toast.LENGTH_SHORT).show();
                             return true;
                         case R.id.img_delete:
                             HomeActivity.databaseReference.child(dwebsite).child(current_date).removeValue();

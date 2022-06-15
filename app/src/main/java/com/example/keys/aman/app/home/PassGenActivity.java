@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -29,13 +30,11 @@ import java.util.Random;
 
 public class PassGenActivity extends AppCompatActivity {
 
-    public static final int REQUEST_DETAIL_CODE = 2001;
     SharedPreferences sharedPreferences;
     private static final String KEY_PASSWORD = "password";
 
     final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     final DatabaseReference myRef = firebaseDatabase.getReference("usedPassword");
-    int initialvalue;
     final String getnumber = "0";
 
     //variable
@@ -53,10 +52,8 @@ public class PassGenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pass_gen);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        //pass_gen_bottom_nav();
-//        String saved_pass = sharedPreferences.getString(KEY_NAME,null);
 
         // Hooks
         switchButton();
@@ -76,22 +73,17 @@ public class PassGenActivity extends AppCompatActivity {
         symbols.setChecked(true);
         MAX_LENGTH = 8;
         genrate_password();
-//        bt_use.setVisibility(View.VISIBLE);
         //Hide use button
         Intent intent = getIntent();
         comingrequestcode =  intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
         if (comingrequestcode == null){
             comingrequestcode = "fromAppsShortcut";
         }
-//        Toast.makeText(PassGenActivity.this,comingrequestcode,Toast.LENGTH_SHORT).show();
         if (comingrequestcode.equals("HomeActivity")){
-//            Toast.makeText(PassGenActivity.this,comingrequestcode,Toast.LENGTH_SHORT).show();
             bt_use.setVisibility(View.INVISIBLE);
         }else if (comingrequestcode.equals("addPasswordData")){
-//            Toast.makeText(PassGenActivity.this,comingrequestcode,Toast.LENGTH_SHORT).show();
             bt_use.setVisibility(View.VISIBLE);
         }else if (comingrequestcode.equals("fromAppsShortcut")){
-//            Toast.makeText(PassGenActivity.this,comingrequestcode,Toast.LENGTH_SHORT).show();
             bt_use.setVisibility(View.INVISIBLE);
         }
 

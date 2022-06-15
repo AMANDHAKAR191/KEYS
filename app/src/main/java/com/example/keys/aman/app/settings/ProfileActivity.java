@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -25,7 +26,6 @@ public class ProfileActivity extends AppCompatActivity {
     Button button_logout;
     String mobile, name, email, title_text;
     String dc_name, dc_email;
-    public final String REQUEST_CODE = "ProfileActivity";
     SharedPreferences sharedPreferences;
 
 
@@ -33,13 +33,12 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
         //Link to id
         button_logout = findViewById(R.id.btn_logout);
         textView_signin_name = findViewById(R.id.tv_signin_name);
-
         textView_signin_password = findViewById(R.id.tv_sigin_password);
         img_profileimage = findViewById(R.id.img_profile_image);
 
@@ -56,14 +55,12 @@ public class ProfileActivity extends AppCompatActivity {
         Uri currentUser = FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl();
         String currentUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        String currentUserPhone = FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber();
         System.out.println(currentUser);
         if (currentUser == null) {
             // No user is signed in
         } else {
             // User logged in
             Glide.with(this).load(currentUser).into(img_profileimage);
-//            tv_profile_name.setText(currentUserName);
             textView_signin_name.setText("Name: " + currentUserName);
             textView_signin_password.setText("Email: " + currentUserEmail);
 
@@ -74,7 +71,6 @@ public class ProfileActivity extends AppCompatActivity {
 
 
         //for signin data
-
         name = sharedPreferences.getString(LogInActivity.KEY_USER_NAME, null);
         email = sharedPreferences.getString(LogInActivity.KEY_USER_EMAIL, null);
 

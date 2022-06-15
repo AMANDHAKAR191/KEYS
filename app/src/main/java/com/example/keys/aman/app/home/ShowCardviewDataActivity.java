@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -31,18 +32,16 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
     TextInputLayout til_displaypassword;
     ImageButton img_back;
     ImageView website_logo;
-    public final String REQUEST_CODE = "ShowCardviewDataActivity";
     private String comingdate, loginname, loginpassowrd, loginwebsite;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_show_cardview_data);
         //Hooks
         tv_img_title = findViewById(R.id.tv_img_title);
-        //dis_title = findViewById(R.id.title);
         dis_login = findViewById(R.id.displaylogin);
         tiet_pass = findViewById(R.id.displaypassword);
         til_displaypassword = findViewById(R.id.til_displaypassword);
@@ -52,7 +51,6 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         comingdate =  intent.getStringExtra("date");
-        Toast.makeText(this, "comingdate = " + comingdate, Toast.LENGTH_SHORT).show();
         loginname = getIntent().getStringExtra("loginname");
         loginpassowrd = getIntent().getStringExtra("loginpassowrd");
         loginwebsite = getIntent().getStringExtra("loginwebsite");
@@ -62,7 +60,7 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
         dis_website.setText(addPasswordData.reverseFun(loginwebsite));
         tv_img_title.setText(Title);
 
-        Toast.makeText(this, "fetching Logo", Toast.LENGTH_SHORT).show();
+        // fetching logo
         website_logo.setImageBitmap(fetchFavicon(Uri.parse(loginwebsite)));
 
 

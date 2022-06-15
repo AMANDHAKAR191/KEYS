@@ -64,12 +64,11 @@ public class addNotesActivity extends AppCompatActivity {
         if (comingrequestcode == null) {
             comingrequestcode = "this";
         }
-        Toast.makeText(addNotesActivity.this, comingrequestcode, Toast.LENGTH_LONG).show();
+
         coming_date = intent.getStringExtra("date");
         boolean coming_cb_hide_note = intent.getBooleanExtra("hide note", false);
         String coming_title = intent.getStringExtra("title");
         String coming_note = intent.getStringExtra("note");
-        Toast.makeText(addNotesActivity.this, "coming_date = " + coming_date, Toast.LENGTH_SHORT).show();
         if (comingrequestcode.equals("notesCardView")) {
             tiet_addtitle.setText(coming_title);
             tiet_addnote.setText(coming_note);
@@ -79,17 +78,14 @@ public class addNotesActivity extends AppCompatActivity {
             til_addnote.setEnabled(false);
             img_save.setVisibility(View.INVISIBLE);
             img_edit.setVisibility(View.VISIBLE);
-            Toast.makeText(addNotesActivity.this,"Date_time: " + currentDateandTime,Toast.LENGTH_LONG).show();
         } else if (comingrequestcode.equals("notesActivity")){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
             currentDateandTime = sdf.format(new Date());
             System.out.println("Dateandtime: " + currentDateandTime);
-            Toast.makeText(addNotesActivity.this,"Date_time: " + currentDateandTime,Toast.LENGTH_LONG).show();
         }else if (comingrequestcode.equals("HomeActivity")){
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
             currentDateandTime = sdf.format(new Date());
             System.out.println("Dateandtime: " + currentDateandTime);
-            Toast.makeText(addNotesActivity.this,"Date_time: " + currentDateandTime,Toast.LENGTH_LONG).show();
         }
 
         cb_hide_note.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -114,7 +110,7 @@ public class addNotesActivity extends AppCompatActivity {
         aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
         try {
             // Double encryption
-            // TODO : in future give two key to user for double encryption
+            // TODO : in future, (if needed) give two key to user for double encryption
             title_dc = aes.encrypt(title);
             title_dc = aes.encrypt(title_dc);
             note_dc = aes.encrypt(note);
@@ -128,14 +124,13 @@ public class addNotesActivity extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         if (comingrequestcode.equals("notesCardView")){
             addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(coming_date,title_dc,note_dc, hide_note);
-            Toast.makeText(addNotesActivity.this,"notesCardView",Toast.LENGTH_SHORT).show();
-            Toast.makeText(addNotesActivity.this, "coming_date = " + coming_date, Toast.LENGTH_SHORT).show();
             reference.child(coming_date).setValue(addDNoteHelper);
+            Toast.makeText(addNotesActivity.this,"saved!",Toast.LENGTH_SHORT).show();
         }else {
             addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(currentDateandTime,title_dc,note_dc, hide_note);
-            Toast.makeText(addNotesActivity.this,"this",Toast.LENGTH_SHORT).show();
-            Toast.makeText(addNotesActivity.this,"Current Date_time: " + currentDateandTime,Toast.LENGTH_LONG).show();
+
             reference.child(currentDateandTime).setValue(addDNoteHelper);
+            Toast.makeText(addNotesActivity.this,"saved!",Toast.LENGTH_SHORT).show();
         }
         Intent intent = new Intent(addNotesActivity.this,notesActivity.class);
         intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"addNotesActivity");

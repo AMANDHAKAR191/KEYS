@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -43,48 +42,15 @@ public abstract class myadaptorforaddpassword extends RecyclerView.Adapter<myada
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
 
         final websiteHelper temp = dataholder.get(position);
-        String current_date, dwebsiteLink, dwebsitename;
+        String dwebsiteLink, dwebsitename;
         try {
             dwebsiteLink = dataholder.get(position).getWebsite_login_url();
             holder.dname.setText(dwebsiteLink);
             dwebsitename = temp.getWebsite_name();
-            //String Title = website.substring(0, 1).toUpperCase() + website.substring(1, 2);
             String Title = dwebsitename.substring(0,1).toUpperCase() + dwebsitename.substring(1);
             holder.tv_img_title.setText(Title);
 
-//            holder.dwebsiteLink.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(context, addPasswordData.class);
-//                    intent.putExtra("request_code", REQUEST_CODE);
-//                    intent.putExtra("loginname", dwebsiteLink);
-//                    intent.putExtra("loginwebsite", dwebsite);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    context.startActivity(intent);
-//                    activity.overridePendingTransition(R.anim.slide_in_down, 0);
-//
-//                }
-//            });
-//            holder.LLCard.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(context, addPasswordData.class);
-//                    intent.putExtra("request_code", REQUEST_CODE);
-//                    intent.putExtra("loginname", dwebsiteLink);
-//                    intent.putExtra("loginwebsite", dwebsite);
-//                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                    context.startActivity(intent);
-//                    activity.overridePendingTransition(R.anim.slide_in_down, 0);
-//                }
-//            });
-            holder.LLCard.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    Toast.makeText(context,"long Clicked", Toast.LENGTH_SHORT).show();
 
-                    return false;
-                }
-            });
             holder.onWebsiteClick(dwebsiteLink,dwebsitename);
         } catch (Exception e) {
             e.printStackTrace();
