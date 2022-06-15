@@ -3,6 +3,7 @@
 
     <string name="login_title">Login</string>
     <string name="keys">KEYS</string>
+    <string name="intertialAdId">ca-app-pub-3752721223259598/1110148878</string>
     <string name="forget_password">forget password</string>
     <string name="register_title">Register</string>
     <string name="home_title">Home</string>
@@ -43,4 +44,5 @@
     <string name="compose_shortcut_short_label1">Gen Password</string>
     <string name="compose_shortcut_long_label1">Open Password Generator Activity</string>
     <string name="compose_disabled_message1">"This is Desabled "</string>
+
 </resources>

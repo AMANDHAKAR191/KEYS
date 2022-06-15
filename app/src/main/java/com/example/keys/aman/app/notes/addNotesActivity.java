@@ -113,8 +113,12 @@ public class addNotesActivity extends AppCompatActivity {
         AES aes = new AES();
         aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
         try {
+            // Double encryption
+            // TODO : in future give two key to user for double encryption
             title_dc = aes.encrypt(title);
+            title_dc = aes.encrypt(title_dc);
             note_dc = aes.encrypt(note);
+            note_dc = aes.encrypt(note_dc);
         } catch (Exception e) {
             e.printStackTrace();
         }

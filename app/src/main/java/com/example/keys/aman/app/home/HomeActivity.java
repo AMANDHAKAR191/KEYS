@@ -3,7 +3,6 @@ package com.example.keys.aman.app.home;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -66,6 +65,7 @@ public class HomeActivity extends AppCompatActivity {
     public static DatabaseReference databaseReference;
     public static myadaptor adaptor;
     private PrograceBar prograce_bar;
+    private final String rewardedAdId = "ca-app-pub-3940256099942544/1033173712";
     String uid;
 
     @Override
@@ -145,27 +145,24 @@ public class HomeActivity extends AppCompatActivity {
     private void showinterstialAd() {
         AdRequest adRequest = new AdRequest.Builder().build();
 
-        InterstitialAd.load(this, "ca-app-pub-3940256099942544/1033173712", adRequest,
+        InterstitialAd.load(this, rewardedAdId, adRequest,
                 new InterstitialAdLoadCallback() {
                     @Override
                     public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                         // The mInterstitialAd reference will be null until
                         // an ad is loaded.
                         mInterstitialAd = interstitialAd;
-                        //Log.i(TAG, "onAdLoaded");
-                        Toast.makeText(HomeActivity.this, "onAdLoaded", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(HomeActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
                         mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdDismissedFullScreenContent() {
                                 // Called when fullscreen content is dismissed.
-                                Log.d("TAG", "The ad was dismissed.");
                                 Toast.makeText(HomeActivity.this, "The ad was dismissed.", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void onAdFailedToShowFullScreenContent(@NonNull AdError adError) {
                                 // Called when fullscreen content failed to show.
-                                Log.d("TAG", "The ad failed to show.");
                                 Toast.makeText(HomeActivity.this, "The ad failed to show.", Toast.LENGTH_SHORT).show();
                             }
 
@@ -175,7 +172,6 @@ public class HomeActivity extends AppCompatActivity {
                                 // Make sure to set your reference to null so you don't
                                 // show it a second time.
                                 mInterstitialAd = null;
-                                Log.d("TAG", "The ad was shown.");
                             }
                         });
                     }
@@ -183,7 +179,6 @@ public class HomeActivity extends AppCompatActivity {
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error
-                        //Log.i(TAG, loadAdError.getMessage());
                         mInterstitialAd = null;
                     }
                 });
@@ -340,6 +335,11 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     public void Add_Note(View view) {
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(HomeActivity.this);
+        } else {
+            Toast.makeText(HomeActivity.this, "The interstitial ad wasn't ready yet.", Toast.LENGTH_LONG).show();
+        }
         Intent intent = new Intent(HomeActivity.this, addNotesActivity.class);
         intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity");
         startActivity(intent);

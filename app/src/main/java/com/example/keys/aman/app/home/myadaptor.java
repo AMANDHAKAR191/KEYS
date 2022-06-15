@@ -49,12 +49,15 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
     public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_layout, parent, false);
+
         return new myviewholder(view);
 
     }
 
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
+
+
 
         sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));

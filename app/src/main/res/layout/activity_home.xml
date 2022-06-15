@@ -27,6 +27,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/aclonica"
                 android:text="@string/home_title"
+                android:textColor="?attr/colorOnSecondary"
                 android:textSize="30sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -36,6 +37,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text="@string/welcome_to_keys"
+                android:textColor="?attr/colorOnSecondary"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/texview1" />
 
@@ -49,7 +51,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-3940256099942544~3347511713"
+        ads:adUnitId="@string/intertialAdId"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -68,6 +70,7 @@
         android:layout_marginTop="-25dp"
         android:background="@drawable/search_et_background"
         android:elevation="8dp"
+        android:visibility="gone"
         ads:layout_constraintLeft_toLeftOf="parent"
         ads:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
@@ -76,8 +79,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="100dp"
-        android:layout_marginBottom="55dp"
+        android:layout_marginBottom="125dp"
         android:clickable="true"
+        android:scrollbarStyle="outsideOverlay"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
@@ -87,8 +91,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:textColor="?attr/colorOnSecondary"
         android:text="Your saved password will show here"
+        android:textColor="?attr/colorOnSecondary"
         android:visibility="invisible" />
 
 
@@ -99,8 +103,8 @@
         android:layout_marginBottom="55dp"
         android:gravity="bottom"
         android:orientation="vertical"
-        android:visibility="gone"
         android:translationZ="8dp"
+        android:visibility="gone"
         ads:layout_constraintBottom_toTopOf="@+id/bottom_nav"
         ads:layout_constraintRight_toRightOf="parent">
 
@@ -216,7 +220,6 @@
         app:layout_constraintBottom_toTopOf="@+id/bottom_nav"
         app:layout_constraintEnd_toEndOf="parent"
         app:pressedTranslationZ="12dp" />
-
 
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

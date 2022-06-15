@@ -63,7 +63,7 @@ public class notesActivity extends AppCompatActivity {
         //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-//        Toast.makeText(notesActivity.this, "UID: " + uid, Toast.LENGTH_LONG).show();
+
 
         //Hooks
         searchView = findViewById(R.id.search_bar);
@@ -94,7 +94,7 @@ public class notesActivity extends AppCompatActivity {
 
         AdRequest adRequest = new AdRequest.Builder().build();
 
-        RewardedAd.load(this, "ca-app-pub-3940256099942544/5224354917",
+        RewardedAd.load(this, "ca-app-pub-3752721223259598/1273800402",
                 adRequest, new RewardedAdLoadCallback() {
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
@@ -217,6 +217,19 @@ public class notesActivity extends AppCompatActivity {
     }
 
     public void open_secret_notes(View view) {
+        if (mRewardedAd != null) {
+            Activity activityContext = notesActivity.this;
+            mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
+                @Override
+                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                    // Handle the reward.
+                    int rewardAmount = rewardItem.getAmount();
+                    String rewardType = rewardItem.getType();
+                }
+            });
+        } else {
+            Toast.makeText(notesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
+        }
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
@@ -224,7 +237,7 @@ public class notesActivity extends AppCompatActivity {
                 click_counter = 0;
             }
         },1000);
-        if (click_counter == 2){
+        if (click_counter == 1){
             Intent intent3 = new Intent(notesActivity.this,pinLockFragment.class);
             intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
             startActivity(intent3);

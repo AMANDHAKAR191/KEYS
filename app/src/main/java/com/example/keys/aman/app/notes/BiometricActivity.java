@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -48,13 +47,12 @@ public class BiometricActivity extends AppCompatActivity{
             comingrequestcode = "this";
         }
 
-        Toast.makeText(BiometricActivity.this, comingrequestcode, Toast.LENGTH_SHORT).show();
 
-        if (comingrequestcode.equals("LogInActivity")) {
-            Toast.makeText(BiometricActivity.this,"Coming from " + comingrequestcode,Toast.LENGTH_SHORT).show();
-        } else if (comingrequestcode.equals("this")) {
-            Toast.makeText(BiometricActivity.this,"Coming from " + comingrequestcode,Toast.LENGTH_SHORT).show();
-        }
+//        if (comingrequestcode.equals("LogInActivity")) {
+//
+//        } else if (comingrequestcode.equals("this")) {
+//
+//        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
@@ -62,7 +60,7 @@ public class BiometricActivity extends AppCompatActivity{
             if (!fingerprintManager.isHardwareDetected()) {
                 tv_result.setText("Fingerprint Scanner not detected in Device");
                 Intent intent3 = new Intent(BiometricActivity.this,pinLockFragment.class);
-                intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
+                intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
                 startActivity(intent3);
             } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
                 tv_result.setText("Permission not granted to use Fingerprint Scanner");
@@ -70,6 +68,9 @@ public class BiometricActivity extends AppCompatActivity{
                 tv_result.setText("Add Lock to your Phone in Setting");
             } else if (!fingerprintManager.hasEnrolledFingerprints()) {
                 tv_result.setText("You should add atleast 1 Fingerprint to use this Feature");
+                Intent intent3 = new Intent(BiometricActivity.this,pinLockFragment.class);
+                intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
+                startActivity(intent3);
             } else {
                 tv_result.setText("Place your Finger to Acsess the app");
                 FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this, BiometricActivity.this ,comingrequestcode);

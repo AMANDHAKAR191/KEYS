@@ -11,7 +11,6 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.os.CancellationSignal;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.home.HomeActivity;
@@ -72,8 +71,7 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
                 SharedPreferences.Editor editor1 = sharedPreferences.edit();
                 editor1.putBoolean(LogInActivity.ISAUTHENTICATED, true);
                 editor1.apply();
-                Toast.makeText(context, "LogInActivity.ISAUTHENTICATED "
-                        + sharedPreferences.getBoolean(LogInActivity.ISAUTHENTICATED,false), Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent(context, HomeActivity.class);
                 intent.putExtra(LogInActivity.REQUEST_CODE_NAME,comingrequestcode);
                 context.startActivity(intent);
@@ -83,8 +81,7 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
                 SharedPreferences.Editor editor1 = sharedPreferences.edit();
                 editor1.putBoolean(LogInActivity.ISAUTHENTICATED, true);
                 editor1.apply();
-                Toast.makeText(context, "LogInActivity.ISAUTHENTICATED "
-                        + sharedPreferences.getBoolean(LogInActivity.ISAUTHENTICATED,false), Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent(context, addPasswordData.class);
                 intent.putExtra(LogInActivity.REQUEST_CODE_NAME,comingrequestcode);
                 context.startActivity(intent);

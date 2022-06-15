@@ -35,7 +35,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 
@@ -48,8 +47,8 @@ public class LogInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private String uid;
     SharedPreferences sharedPreferences;
-    public static String AES_KEY = "aes_key";
-    public static String AES_IV = "aes_iv";
+    public static final String AES_KEY = "aes_key";
+    public static final String AES_IV = "aes_iv";
     public static final String SHARED_PREF_ALL_DATA = "All data";
     public static final String KEY_USER_NAME = "name";
     public static final String KEY_USER_EMAIL = "email";
@@ -66,20 +65,20 @@ public class LogInActivity extends AppCompatActivity {
     private boolean turn = false;
     private String val = "";
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        // Check if User is already login then go direct to HomeScreen
-        Boolean islogin = sharedPreferences.getBoolean(ISLOGIN, false);
-        System.out.println(islogin);
-        if (islogin) {
-            Intent intent = new Intent(LogInActivity.this, BiometricActivity.class);
-            intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        }
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        // Check if User is already login then go direct to HomeScreen
+//        Boolean islogin = sharedPreferences.getBoolean(ISLOGIN, false);
+//        System.out.println(islogin);
+//        if (islogin) {
+//            Intent intent = new Intent(LogInActivity.this, BiometricActivity.class);
+//            intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
+//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent);
+//            finish();
+//        }
+//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +116,6 @@ public class LogInActivity extends AppCompatActivity {
 
 
     private void createRequest() {
-        System.out.println("Creating Request...");
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -138,13 +136,11 @@ public class LogInActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         progressbar();
 
-        System.out.println("getting result from intent");
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
                 // Google Sign In was successful, authenticate with Firebase
-                System.out.println("Authenticating with firebase...");
                 GoogleSignInAccount account = task.getResult(ApiException.class);
                 prograce_bar.dismissbar();
                 firebaseAuthWithGoogle(account);
@@ -159,7 +155,6 @@ public class LogInActivity extends AppCompatActivity {
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
-        System.out.println("Authenticating with firebase...");
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -167,15 +162,13 @@ public class LogInActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
 
-                            System.out.println("Authentication successful with firebase...");
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             uid = user.getUid();
-                            System.out.println("Turn = " + turn);
+//                            System.out.println("Turn = " + turn);
                             checkUser();
 
                             //check user if already signed up
-                            System.out.println("checking User on firebase...");
 
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
@@ -187,11 +180,10 @@ public class LogInActivity extends AppCompatActivity {
                                     }
                                     prograce_bar.dismissbar();
                                     A1 = sharedPreferences.getString(ISFIRST_TIME,"0");
-                                    System.out.println("A1" + A1);
+
                                     if (A1 == "0"){
 
-                                        Toast.makeText(LogInActivity.this, "Generating KEY and IV...", Toast.LENGTH_SHORT).show();
-                                        System.out.println("Generating KEY and IV...");
+
                                         SharedPreferences.Editor editor1 = sharedPreferences.edit();
                                         editor1.putString(LogInActivity.AES_KEY, PassGenActivity.generateRandomPassword(22, true, true, true, false) + "==");
                                         editor1.putString(LogInActivity.AES_IV, PassGenActivity.generateRandomPassword(16, true, true, true, false));
@@ -206,7 +198,7 @@ public class LogInActivity extends AppCompatActivity {
                                         intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
                                         startActivity(intent);
                                     }else {
-                                        System.out.println("Getting IV AND KT+EY from database");
+
                                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(uid);
                                         // Read from the database
                                         reference.addValueEventListener(new ValueEventListener() {
@@ -237,11 +229,11 @@ public class LogInActivity extends AppCompatActivity {
                                                 System.out.println("Not able get data from database");
                                             }
                                         });
-                                        System.out.println("uid: " + uid);
+
 
                                         //readData(uid);
                                         prograce_bar.dismissbar();
-                                        System.out.println("Completed!!\n end");
+                                        System.out.println("Registration Completed!!");
 
 
 
@@ -250,7 +242,7 @@ public class LogInActivity extends AppCompatActivity {
                                         startActivity(intent);
                                     }
                                 }
-                            }, 5000);
+                            }, 10000);
                         } else {
                             Toast.makeText(LogInActivity.this, "Sorry auth failed.", Toast.LENGTH_SHORT).show();
 
@@ -261,7 +253,7 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     private void checkUser() {
-        System.out.println("checking User on firebase1...");
+
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
         reference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -276,12 +268,12 @@ public class LogInActivity extends AppCompatActivity {
 
 
                 if (val != "1"){
-                    System.out.println("User Exist!!");
+
                     SharedPreferences.Editor editor1 = sharedPreferences.edit();
                     editor1.putString(ISFIRST_TIME,"1");
                     editor1.apply();
                     turn = true;
-                    System.out.println("Turn = " + turn);
+
                     return;
                 }else {
                     System.out.println("User Does not Exist!!");
@@ -300,31 +292,31 @@ public class LogInActivity extends AppCompatActivity {
         });
     }
 
-    private void readData(String uid) {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
-
-        Query checkUser = reference.orderByChild("uid").equalTo(uid);
-        System.out.println("<>" + checkUser + uid);
-
-        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println("check /");
-                if (dataSnapshot.exists()) {
-                    System.out.println("check //");
-                    System.out.println(dataSnapshot);
-                } else {
-                    System.out.println("check  ~//");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
+//    private void readData(String uid) {
+//        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
+//
+//        Query checkUser = reference.orderByChild("uid").equalTo(uid);
+//        System.out.println("<>" + checkUser + uid);
+//
+//        checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                System.out.println("check /");
+//                if (dataSnapshot.exists()) {
+//                    System.out.println("check //");
+//                    System.out.println(dataSnapshot);
+//                } else {
+//                    System.out.println("check  ~//");
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//
+//    }
 
     private void writeData(FirebaseUser user) {
         String name, email, mobile, uid;
@@ -333,7 +325,7 @@ public class LogInActivity extends AppCompatActivity {
         mobile = "1234567890";
 
         uid = user.getUid();
-        System.out.println(name + email + mobile + uid);
+
         createEntryonDatabse(name, email, mobile, uid);
 
     }
@@ -349,7 +341,7 @@ public class LogInActivity extends AppCompatActivity {
         aes.initFromStrings(key, iv);
         String e_name, e_mobile, e_email;
         try {
-            Toast.makeText(LogInActivity.this, "Saving Data on DB", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LogInActivity.this, "Creating Data  Entry on DB", Toast.LENGTH_SHORT).show();
             e_name = aes.encrypt(name);
             e_mobile = aes.encrypt(mobile);
             e_email = aes.encrypt(email);

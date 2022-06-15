@@ -58,18 +58,23 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
         sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
         int p = holder.getAdapterPosition();
-        String tv_date, tv_title, tv_note,tv_title_dc, tv_note_dc;
+        String tv_date, tv_title, tv_note,tv_title_dc, tv_note_dc, temp_title_dc, temp_note_dc ;
         boolean cb_hide_note;
         try {
             tv_date = dataholder.get(position).getDate();
             cb_hide_note = dataholder.get(position).isHide_note();
             tv_title = dataholder.get(position).getTitle();
             tv_note = dataholder.get(position).getNote();
+
+            //Double Decryption
             tv_title_dc = aes.decrypt(tv_title);
+            temp_title_dc = aes.decrypt(tv_title_dc);
             tv_note_dc = aes.decrypt(tv_note);
+            temp_note_dc = aes.decrypt(tv_note_dc);
+
             holder.tv_date.setText(tv_date);
-            holder.tv_title.setText(tv_title_dc);
-            holder.tv_note.setText(tv_note_dc);
+            holder.tv_title.setText(temp_title_dc);
+            holder.tv_note.setText(temp_note_dc);
 
             holder.LLCard.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -78,8 +83,8 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
                     intent.putExtra("request_code","notesCardView");
                     intent.putExtra("date", tv_date);
                     intent.putExtra("hide note",cb_hide_note);
-                    intent.putExtra("title", tv_title_dc);
-                    intent.putExtra("note", tv_note_dc);
+                    intent.putExtra("title", temp_title_dc);
+                    intent.putExtra("note", temp_note_dc);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_down, 0);
@@ -91,7 +96,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
                     switch (item.getItemId()) {
                         case R.id.img_copy_note:
                             ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                            ClipData clipData = ClipData.newPlainText("Copy_Password", tv_note_dc);
+                            ClipData clipData = ClipData.newPlainText("Copy_Password", temp_note_dc);
                             clipboardManager.setPrimaryClip(clipData);
                             Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
                             return true;

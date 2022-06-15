@@ -60,8 +60,7 @@ public class addPasswordData extends AppCompatActivity {
     public static myadaptorforaddpassword adaptor;
 
     String s1 = "";
-    String s2 = "https://material.io/components/menus/android#theming-menus";
-    String s3 = "https://www.youtube.com/feed/history";
+
     private addDataHelperClass addDataHelperClass;
     private DatabaseReference databaseReference;
 
@@ -91,8 +90,6 @@ public class addPasswordData extends AppCompatActivity {
         bt_genrate_password.setVisibility(View.GONE);
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        System.out.println("uid: " + uid);
-        Toast.makeText(addPasswordData.this, "Uid: " + uid, Toast.LENGTH_SHORT).show();
 
 
         //Hide mobile no and
@@ -101,18 +98,13 @@ public class addPasswordData extends AppCompatActivity {
         if (comingrequestcode == null) {
             comingrequestcode = "this";
         }
-        Toast.makeText(addPasswordData.this, comingrequestcode, Toast.LENGTH_LONG).show();
         coming_date = intent.getStringExtra("date");
         coming_loginname = intent.getStringExtra("loginname");
         coming_loginpassword = intent.getStringExtra("loginpassowrd");
         coming_loginwebsite = intent.getStringExtra("loginwebsite");
-        Toast.makeText(addPasswordData.this, comingrequestcode, Toast.LENGTH_SHORT).show();
         if (comingrequestcode.equals("ShowCardviewDataActivity")) {
             btn_submit.setText("Update");
-            Toast.makeText(addPasswordData.this, coming_date, Toast.LENGTH_SHORT).show();
-            Toast.makeText(addPasswordData.this, coming_loginname, Toast.LENGTH_SHORT).show();
-            Toast.makeText(addPasswordData.this, coming_loginpassword, Toast.LENGTH_SHORT).show();
-            Toast.makeText(addPasswordData.this, coming_loginwebsite, Toast.LENGTH_SHORT).show();
+
             tiet_addlogindata.setText(coming_loginname);
             tiet_addpassworddata.setText(coming_loginpassword);
             tiet_addwebsitedata.setText(coming_loginwebsite);
@@ -137,15 +129,13 @@ public class addPasswordData extends AppCompatActivity {
             scrollView2.setVisibility(View.GONE);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
             currentDateandTime = sdf.format(new Date());
-            System.out.println("Dateandtime: " + currentDateandTime);
-            Toast.makeText(addPasswordData.this, "Date_time: " + currentDateandTime, Toast.LENGTH_LONG).show();
+
         }else if (comingrequestcode.equals("HomeActivity")) {
             scrollView1.setVisibility(View.VISIBLE);
             scrollView2.setVisibility(View.GONE);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
             currentDateandTime = sdf.format(new Date());
-            System.out.println("Dateandtime: " + currentDateandTime);
-            Toast.makeText(addPasswordData.this, "Date_time: " + currentDateandTime, Toast.LENGTH_LONG).show();
+
         }
 
 
@@ -230,9 +220,8 @@ public class addPasswordData extends AppCompatActivity {
         if (requestCode == REQUEST_DETAIL_CODE) {
             // TODO : Check Point
 //            if(resultCode == 1){
-            System.err.println("requestCode: " + requestCode + "resultCode: " + resultCode);
+
             String resultdata = data.getStringExtra("saved_Password");
-            System.err.println("result: " + resultdata);
             tiet_addpassworddata.setText(resultdata);
 //            }
         }
