@@ -236,11 +236,17 @@ public class notesActivity extends AppCompatActivity {
             }
         },1000);
         if (click_counter == 1){
-            Intent intent3 = new Intent(notesActivity.this,pinLockFragment.class);
-            intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
-            intent3.putExtra("title","Enter Pin");
-            startActivity(intent3);
-            click_counter = 0;
+            boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.ISPIN_SET,false);
+            if (ispin_set){
+                Intent intent3 = new Intent(notesActivity.this,pinLockFragment.class);
+                intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
+                intent3.putExtra("title","Enter Pin");
+                startActivity(intent3);
+                click_counter = 0;
+            }else {
+                Toast.makeText(this, "please set pin", Toast.LENGTH_SHORT).show();
+            }
+
         }
         click_counter = click_counter + 1;
     }

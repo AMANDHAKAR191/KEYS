@@ -59,9 +59,6 @@ public class pinLockFragment extends AppCompatActivity {
 
                 } else {
                     vibrator.vibrate(200);
-                    Intent intent = new Intent(pinLockFragment.this, secretNotesActivity.class);
-                    intent.putExtra("result","no");
-                    setResult(RESULT_OK,intent);
                     finish();
                 }
 
@@ -96,8 +93,6 @@ public class pinLockFragment extends AppCompatActivity {
 
                 } else {
                     vibrator.vibrate(200);
-                    Intent intent = new Intent(pinLockFragment.this, secretNotesActivity.class);
-                    startActivity(intent);
                     finish();
                 }
 
