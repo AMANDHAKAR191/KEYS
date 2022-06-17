@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +16,7 @@ import com.example.keys.R;
 
 
 public class contactUsFragment extends DialogFragment {
-    ImageButton img_gmail, img_facebook, img_instagram;
+    ImageView img_gmail, img_facebook, img_instagram;
 
     @Nullable
     @Override
@@ -29,7 +29,7 @@ public class contactUsFragment extends DialogFragment {
         img_gmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent openemail = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:amandhaker191@gmail.com"));
+                Intent openemail = new Intent(Intent.ACTION_VIEW, Uri.parse("mailto:amandhakar.keys@gmail.com"));
                 startActivity(openemail);
             }
         });

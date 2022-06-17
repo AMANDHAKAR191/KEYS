@@ -7,7 +7,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.autofill.AutofillManager;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.keys.R;
+import com.example.keys.aman.app.notes.pinLockFragment;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -29,6 +32,7 @@ public class SettingActivity extends AppCompatActivity {
     public static boolean ischecked;
     Button button_logout;
     CircleImageView img_profile;
+    Switch sw_use_pin;
     AutofillManager mAutofillManager;
     private static final int REQUEST_CODE_SET_DEFAULT = 1;
 
@@ -42,6 +46,7 @@ public class SettingActivity extends AppCompatActivity {
         tv_contectus = findViewById(R.id.tv_contectus);
         tv_privacy_policy = findViewById(R.id.tv_privacy_policy);
         tv_terms_and_conditions = findViewById(R.id.tv_terms_and_conditions);
+        sw_use_pin = findViewById(R.id.sw_use_pin);
 
         img_back = findViewById(R.id.img_back);
         button_logout = findViewById(R.id.btn_logout);
@@ -50,6 +55,13 @@ public class SettingActivity extends AppCompatActivity {
         //TODO Check: add Security textview in this
         //TODO Check: let user choose weather user want to use fingerprint lock or not
         //TODO Check: ask user to use biometric info in this Activity only
+
+        boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.ISPIN_SET,false);
+        if (ispin_set){
+            sw_use_pin.setChecked(true);
+        }else {
+            sw_use_pin.setChecked(false);
+        }
 
         tv_app_info.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,6 +89,18 @@ public class SettingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent open_terms_conditions = new Intent(Intent.ACTION_VIEW, Uri.parse("https://amandhakar.blogspot.com/2022/02/terms-conditions-keys.html"));
                 startActivity(open_terms_conditions);
+            }
+        });
+
+        sw_use_pin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b){
+                    Intent intent = new Intent(getApplicationContext(), pinLockFragment.class);
+                    intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"setpin");
+                    intent.putExtra("title","Set Pin");
+                    startActivityForResult(intent,123);
+                }
             }
         });
 
@@ -125,6 +149,13 @@ public class SettingActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            String result = data.getStringExtra("result");
+            if (result.equals("yes")) {
+                sw_use_pin.setChecked(true);
+            }
+        }
+
         switch (requestCode) {
             case REQUEST_CODE_SET_DEFAULT:
                 onDefaultServiceSet(resultCode);

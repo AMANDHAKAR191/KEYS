@@ -38,7 +38,7 @@
 <!--        android:visibility="visible" />-->
 
     <TextView
-        android:id="@+id/profile_name"
+        android:id="@+id/tv_title_name"
         android:layout_width="256dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/profile_image"
@@ -46,16 +46,14 @@
         android:layout_marginTop="36dp"
         android:fontFamily="@font/aclonica"
         android:gravity="center"
-        android:maxLines="1"
-        android:text="Welcome"
         android:textColor="@color/white"
-        android:textSize="34sp" />
+        android:textSize="20sp" />
 
     <com.andrognito.pinlockview.IndicatorDots
         android:id="@+id/indicator_dots"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/profile_name"
+        android:layout_below="@id/tv_title_name"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="36dp" />
 
@@ -67,6 +65,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         app:keypadButtonSize="72dp"
+        app:pinLength="6"
+        app:dotFilledBackground="@color/white"
+        app:dotEmptyBackground="@color/gray"
         app:keypadShowDeleteButton="true"
         app:keypadTextColor="@color/white"
         app:keypadTextSize="18dp" />

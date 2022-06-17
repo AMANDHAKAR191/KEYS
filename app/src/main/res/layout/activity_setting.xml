@@ -74,8 +74,8 @@
                 android:id="@+id/sw_use_pin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Use Pin to Unlock App"
-                android:visibility="gone" />
+                android:text="Use Pin"
+                android:visibility="visible" />
 
             <Switch
                 android:id="@+id/sw_use_finger"

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,8 +30,7 @@ public class AppInfo extends AppCompatActivity {
         if (comingrequestcode == null) {
             comingrequestcode = "this";
         }
-
-        Toast.makeText(AppInfo.this, comingrequestcode, Toast.LENGTH_SHORT).show();
+        
         if (comingrequestcode.equals("LogInActivity")) {
             img_next.setVisibility(View.VISIBLE);
             img_back.setVisibility(View.INVISIBLE);

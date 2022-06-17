@@ -24,7 +24,6 @@ import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.home.HomeActivity;
 import com.example.keys.aman.app.home.PassGenActivity;
-import com.example.keys.aman.app.notes.BiometricActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -118,19 +117,21 @@ public class addPasswordData extends AppCompatActivity {
             scrollView1.setVisibility(View.GONE);
             scrollView2.setVisibility(View.VISIBLE);
             tiet_addwebsitedata.setText(website);
-        } else if (comingrequestcode.equals("this")) {
-            Intent intent2 = new Intent(addPasswordData.this, BiometricActivity.class);
-            intent2.putExtra(LogInActivity.REQUEST_CODE_NAME,"this");
-            intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent2);
         }
-        else if (comingrequestcode.equals("BiometricActivity")) {
-            scrollView1.setVisibility(View.VISIBLE);
-            scrollView2.setVisibility(View.GONE);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-            currentDateandTime = sdf.format(new Date());
-
-        }else if (comingrequestcode.equals("HomeActivity")) {
+//        else if (comingrequestcode.equals("this")) {
+//            Intent intent2 = new Intent(addPasswordData.this, pinLockFragment.class);
+//            intent2.putExtra(LogInActivity.REQUEST_CODE_NAME,"this");
+//            intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//            startActivity(intent2);
+//        }
+//        else if (comingrequestcode.equals("BiometricActivity")) {
+//            scrollView1.setVisibility(View.VISIBLE);
+//            scrollView2.setVisibility(View.GONE);
+//            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+//            currentDateandTime = sdf.format(new Date());
+//
+//        }
+        else if (comingrequestcode.equals("HomeActivity")) {
             scrollView1.setVisibility(View.VISIBLE);
             scrollView2.setVisibility(View.GONE);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
@@ -228,7 +229,7 @@ public class addPasswordData extends AppCompatActivity {
     }
 
 
-    protected void sumbit_or_updatedata(View view) {
+    public void sumbit_or_updatedata(View view) {
         addData();
     }
 

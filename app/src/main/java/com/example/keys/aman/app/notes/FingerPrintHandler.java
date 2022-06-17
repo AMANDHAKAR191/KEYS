@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.home.HomeActivity;
-import com.example.keys.aman.app.home.addpassword.addPasswordData;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 
 public class FingerPrintHandler extends FingerprintManager.AuthenticationCallback {
@@ -61,7 +60,7 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
         ImageView img_fingerprint = ((Activity)context).findViewById(R.id.img_fingerprint);
         paralable.setText(s);
 
-        if (b == false){
+        if (!b){
             paralable.setTextColor(Color.RED);
         }else {
             paralable.setTextColor(Color.BLACK);
@@ -76,13 +75,13 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
                 intent.putExtra(LogInActivity.REQUEST_CODE_NAME,comingrequestcode);
                 context.startActivity(intent);
                 activity.finish();
-            }else if (comingrequestcode.equals("this")){
+            }else if (comingrequestcode.equals("notesActivity")){
                 comingrequestcode = "BiometricActivity";
                 SharedPreferences.Editor editor1 = sharedPreferences.edit();
                 editor1.putBoolean(LogInActivity.ISAUTHENTICATED, true);
                 editor1.apply();
 
-                Intent intent = new Intent(context, addPasswordData.class);
+                Intent intent = new Intent(context, secretNotesActivity.class);
                 intent.putExtra(LogInActivity.REQUEST_CODE_NAME,comingrequestcode);
                 context.startActivity(intent);
                 activity.finish();

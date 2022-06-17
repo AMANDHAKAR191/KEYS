@@ -21,8 +21,8 @@
 
         <service
             android:name=".aman.app.MyAutofillService"
-            android:label="KEYS"
             android:exported="true"
+            android:label="KEYS"
             android:permission="android.permission.BIND_AUTOFILL_SERVICE">
             <intent-filter>
                 <action android:name="android.service.autofill.AutofillService" />
@@ -49,9 +49,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
-                android:resource="@xml/shortcuts" />
         </activity>
+
         <activity
             android:name=".aman.app.signin_login.LogInActivity"
             android:exported="true"
@@ -62,15 +61,15 @@
 
         <activity
             android:name=".aman.app.home.HomeActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".aman.app.home.ShowCardviewDataActivity"
             android:exported="false" />
         <activity
             android:name=".aman.app.notes.notesActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".aman.app.home.PassGenActivity"
             android:exported="false" />
@@ -81,13 +80,13 @@
             android:name=".aman.app.home.addpassword.addPasswordData"
             android:exported="true"
             android:icon="@drawable/ic_baseline_add_24"
-            android:roundIcon="@drawable/group_1final_keys_logo"
-            android:label="Add Password">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            android:label="Add Password"
+            android:roundIcon="@drawable/group_1final_keys_logo">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".aman.app.settings.SettingActivity"
@@ -97,7 +96,8 @@
             android:exported="false" />
         <activity
             android:name=".aman.app.notes.pinLockFragment"
-            android:exported="false" />
+            android:exported="false">
+        </activity>
 
         <meta-data
             android:name="preloaded_fonts"

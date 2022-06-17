@@ -66,6 +66,9 @@ public class BiometricActivity extends AppCompatActivity{
                 tv_result.setText("Permission not granted to use Fingerprint Scanner");
             } else if (!keyguardManager.isKeyguardSecure()) {
                 tv_result.setText("Add Lock to your Phone in Setting");
+                Intent intent3 = new Intent(BiometricActivity.this,pinLockFragment.class);
+                intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
+                startActivity(intent3);
             } else if (!fingerprintManager.hasEnrolledFingerprints()) {
                 tv_result.setText("You should add atleast 1 Fingerprint to use this Feature");
                 Intent intent3 = new Intent(BiometricActivity.this,pinLockFragment.class);

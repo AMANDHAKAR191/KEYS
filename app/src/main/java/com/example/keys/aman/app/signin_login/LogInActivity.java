@@ -18,7 +18,6 @@ import com.example.keys.aman.app.PrograceBar;
 import com.example.keys.aman.app.home.HomeActivity;
 import com.example.keys.aman.app.home.PassGenActivity;
 import com.example.keys.aman.app.notes.BiometricActivity;
-import com.example.keys.aman.app.settings.AppInfo;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -52,33 +51,21 @@ public class LogInActivity extends AppCompatActivity {
     public static final String SHARED_PREF_ALL_DATA = "All data";
     public static final String KEY_USER_NAME = "name";
     public static final String KEY_USER_EMAIL = "email";
-    public static String KEY_USE_FINGERPRINT;
-    public static String KEY_USE_PIN;
-    public static String ISLOGIN;
+    public static String ISLOGIN = "islogin";
     public static String ISFIRST_TIME = "0";
     public static String REQUEST_CODE_NAME = "request_code";
-    public static String ISAUTHENTICATED;
+    public static String ISAUTHENTICATED = "isauthenticated";
+    public static String MASTER_PIN = "master_pin";
+    public static String ISPIN_SET = "ispin_set";
 
     public static final String TAG = "main Activity";
     private PrograceBar prograce_bar;
     private String A1;
     private boolean turn = false;
     private String val = "";
+    public static DatabaseReference myRef;
+    private FirebaseDatabase firebaseDatabase;
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        // Check if User is already login then go direct to HomeScreen
-//        Boolean islogin = sharedPreferences.getBoolean(ISLOGIN, false);
-//        System.out.println(islogin);
-//        if (islogin) {
-//            Intent intent = new Intent(LogInActivity.this, BiometricActivity.class);
-//            intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
-//            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-//            startActivity(intent);
-//            finish();
-//        }
-//    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +77,7 @@ public class LogInActivity extends AppCompatActivity {
         //Hooks
         btn_login = findViewById(R.id.btn_login);
 
-        // Check if User is already login then go direct to HomeScreen
+//         Check if User is already login then go direct to HomeScreen
         Boolean islogin = sharedPreferences.getBoolean(ISLOGIN, false);
         System.out.println(islogin);
         if (islogin) {
@@ -177,13 +164,12 @@ public class LogInActivity extends AppCompatActivity {
                                     while (!turn){
                                         progressbar();
                                         System.out.println("checking User on firebase...");
+//                                        Snackbar.make(getCurrentFocus(),"Your internet is slow.\n please wait or try again!!", BaseTransientBottomBar.LENGTH_LONG).show();
                                     }
                                     prograce_bar.dismissbar();
                                     A1 = sharedPreferences.getString(ISFIRST_TIME,"0");
 
                                     if (A1 == "0"){
-
-
                                         SharedPreferences.Editor editor1 = sharedPreferences.edit();
                                         editor1.putString(LogInActivity.AES_KEY, PassGenActivity.generateRandomPassword(22, true, true, true, false) + "==");
                                         editor1.putString(LogInActivity.AES_IV, PassGenActivity.generateRandomPassword(16, true, true, true, false));
@@ -194,7 +180,7 @@ public class LogInActivity extends AppCompatActivity {
 //                                        System.out.println("ISFIRST_TIME: " + sharedPreferences.getString(ISFIRST_TIME,null));
                                         writeData(user);
                                         turn = false;
-                                        Intent intent = new Intent(getApplicationContext(), AppInfo.class);
+                                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                                         intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
                                         startActivity(intent);
                                     }else {
@@ -208,7 +194,6 @@ public class LogInActivity extends AppCompatActivity {
                                                 // whenever data at this location is updated.
                                                 String aes_iv = dataSnapshot.child("aes_iv").getValue(String.class);
                                                 String aes_key= dataSnapshot.child("aes_key").getValue(String.class);
-                                                System.out.println("AES_IV: " + aes_iv + "AES_KEY: " + aes_key);
 
                                                 SharedPreferences.Editor editor1 = sharedPreferences.edit();
                                                 editor1.putString(LogInActivity.AES_KEY, aes_key);
@@ -216,8 +201,6 @@ public class LogInActivity extends AppCompatActivity {
                                                 editor1.putBoolean(ISLOGIN, true);
                                                 editor1.putString(ISFIRST_TIME,"1");
                                                 editor1.apply();
-                                                System.out.println("AES KEY" + sharedPreferences.getString(AES_KEY,null));
-                                                System.out.println("AES IV" + sharedPreferences.getString(AES_IV,null));
                                                 turn = false;
 
 
@@ -331,8 +314,8 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     public void createEntryonDatabse(String name, String email, String mobile, String uid) {
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = firebaseDatabase.getReference("signupdata");
+        firebaseDatabase = FirebaseDatabase.getInstance();
+        myRef = firebaseDatabase.getReference("signupdata");
 
         //progressbar();
         AES aes = new AES();

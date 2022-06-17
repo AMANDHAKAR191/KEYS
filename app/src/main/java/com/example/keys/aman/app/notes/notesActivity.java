@@ -76,7 +76,6 @@ public class notesActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                System.out.println("onQueryTextChange...");
                 adaptor.getFilter().filter(s);
 
                 adaptor.notifyDataSetChanged();
@@ -99,7 +98,6 @@ public class notesActivity extends AppCompatActivity {
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error.
-                        Log.d(TAG, loadAdError.getMessage());
                         Toast.makeText(notesActivity.this, loadAdError.getMessage(), Toast.LENGTH_LONG).show();
                         mRewardedAd = null;
                     }
@@ -240,6 +238,7 @@ public class notesActivity extends AppCompatActivity {
         if (click_counter == 1){
             Intent intent3 = new Intent(notesActivity.this,pinLockFragment.class);
             intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
+            intent3.putExtra("title","Enter Pin");
             startActivity(intent3);
             click_counter = 0;
         }

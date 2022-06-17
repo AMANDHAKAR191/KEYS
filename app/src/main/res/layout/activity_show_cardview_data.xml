@@ -26,23 +26,23 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
 
-        <ImageButton
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/img_back"
             android:src="@drawable/arrow_back"
             android:onClick="goback"
-            android:background="?attr/colorOnPrimary"
+            android:background="@drawable/fully_transparent_background"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="20dp"/>
-        <ImageButton
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/img_edit"
             android:src="@drawable/create"
-            android:background="?attr/colorOnPrimary"
+            android:background="@drawable/fully_transparent_background"
             android:onClick="editdata"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
@@ -73,14 +73,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:endIconMode="password_toggle"
+                android:clickable="false"
                 android:hint="Password">
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/displaypassword"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    android:inputType="textWebPassword"
                     android:textSize="20sp"
+                    android:inputType="textWebPassword"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
