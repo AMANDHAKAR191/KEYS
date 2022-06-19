@@ -58,7 +58,19 @@ public class addPasswordData extends AppCompatActivity {
     private String currentDateandTime;
     public static myadaptorforaddpassword adaptor;
 
-    String s1 = "";
+    String s1 = "https://github.com/";
+    String s2 = "https://www.linkedin.com/";
+    String s3 = "https://account.microsoft.com/account?lang=en-us";
+    String s4 = "https://www.amazon.in/ap/signin?openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.in%2F%3Fref_%3Dnav_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=inflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&";
+    String s5 = "https://technophilia.in/my-account/";
+    String s6 = "https://vitap.codetantra.com/login.jsp";
+    String s7 = "https://vtop2.vitap.ac.in/vtop/initialProcess";
+    String s8 = "https://www.flipkart.com/";
+    String s9 = "https://www.netflix.com/in/login?nextpage=https%3A%2F%2Fwww.netflix.com%2FYourAccount";
+    String s10 = "https://www.pearson.com/store/en-us/login";
+    String s11 = "https://sparkfun.com/";
+    String s12 = "https://www.faceprep.in/login/?rurl=edge/";
+
 
     private addDataHelperClass addDataHelperClass;
     private DatabaseReference databaseReference;
@@ -140,7 +152,6 @@ public class addPasswordData extends AppCompatActivity {
         }
 
 
-
         tiet_addpassworddata.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -187,14 +198,14 @@ public class addPasswordData extends AppCompatActivity {
 
 
                 Intent intent = new Intent(addPasswordData.this, HomeActivity.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"addPasswordData");
+                intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "addPasswordData");
 //                intent.putExtra("resultlogin", addlogin);
 //                intent.putExtra("resultpassword", addpasword);
 //                intent.putExtra("resultwebsite", addwesitename);
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-            }else if (comingrequestcode.equals("HomeActivity")){
+            } else if (comingrequestcode.equals("HomeActivity")) {
                 addDataHelperClass = new addDataHelperClass(currentDateandTime, e_addlogin, e_addpassword, addwesitename);
                 addDataRef.child(currentDateandTime).setValue(addDataHelperClass);
                 Log.d(LogInActivity.TAG, "done");
@@ -203,7 +214,7 @@ public class addPasswordData extends AppCompatActivity {
 
 
             Intent intent1 = new Intent(addPasswordData.this, HomeActivity.class);
-            intent1.putExtra(LogInActivity.REQUEST_CODE_NAME,"addPasswordData");
+            intent1.putExtra(LogInActivity.REQUEST_CODE_NAME, "addPasswordData");
             startActivity(intent1);
             finish();
             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
@@ -257,9 +268,9 @@ public class addPasswordData extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         dataholder = new ArrayList<>();
-        adaptor = new myadaptorforaddpassword(dataholder, getApplicationContext(), this){
+        adaptor = new myadaptorforaddpassword(dataholder, getApplicationContext(), this) {
             @Override
-            public void onPictureClick(String dwebsiteLink, String dwebsitename){
+            public void onPictureClick(String dwebsiteLink, String dwebsitename) {
                 Toast.makeText(context, "coming_date = " + coming_date, Toast.LENGTH_SHORT).show();
                 scrollView1.setVisibility(View.INVISIBLE);
                 scrollView2.setVisibility(View.VISIBLE);
@@ -277,8 +288,8 @@ public class addPasswordData extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            websiteHelper data = ds.getValue(websiteHelper.class);
-                            dataholder.add(data);
+                        websiteHelper data = ds.getValue(websiteHelper.class);
+                        dataholder.add(data);
 
                     }
                     Collections.sort(dataholder, websiteHelper.addDataHelperClassComparator);
@@ -295,13 +306,46 @@ public class addPasswordData extends AppCompatActivity {
         });
 
 
-
-
     }
 
     private void addWebsiteList(DatabaseReference databaseReference) {
-        websiteHelper data = new websiteHelper(fun(s1),s1);
-        databaseReference.child(data.getWebsite_name()).setValue(data);
+        websiteHelper data1 = new websiteHelper(fun(s1), s1);
+        databaseReference.child(data1.getWebsite_name()).setValue(data1);
+
+        websiteHelper data2 = new websiteHelper(fun(s2), s2);
+        databaseReference.child(data2.getWebsite_name()).setValue(data2);
+
+        websiteHelper data3 = new websiteHelper(fun(s3), s3);
+        databaseReference.child(data3.getWebsite_name()).setValue(data3);
+
+        websiteHelper data4 = new websiteHelper(fun(s4), s4);
+        databaseReference.child(data4.getWebsite_name()).setValue(data4);
+
+        websiteHelper data5 = new websiteHelper(fun(s5), s5);
+        databaseReference.child(data5.getWebsite_name()).setValue(data5);
+
+        websiteHelper data6 = new websiteHelper(fun(s6), s6);
+        databaseReference.child(data6.getWebsite_name()).setValue(data6);
+
+        websiteHelper data7 = new websiteHelper(fun(s7), s7);
+        databaseReference.child(data7.getWebsite_name()).setValue(data7);
+
+        websiteHelper data8 = new websiteHelper(fun(s8), s8);
+        databaseReference.child(data8.getWebsite_name()).setValue(data8);
+
+        websiteHelper data9 = new websiteHelper(fun(s9), s9);
+        databaseReference.child(data9.getWebsite_name()).setValue(data9);
+
+        websiteHelper data10 = new websiteHelper(fun(s10), s10);
+        databaseReference.child(data10.getWebsite_name()).setValue(data10);
+
+        websiteHelper data11 = new websiteHelper(fun(s11), s11);
+        databaseReference.child(data11.getWebsite_name()).setValue(data11);
+
+        websiteHelper data12 = new websiteHelper(fun(s12), s12);
+        databaseReference.child(data12.getWebsite_name()).setValue(data12);
+
+
     }
 
 
@@ -313,6 +357,7 @@ public class addPasswordData extends AppCompatActivity {
         System.out.println(str);
         return str;
     }
+
     public static String reverseFun(String str) {
 //        String str= "This#string%contains^special*characters&.";
 

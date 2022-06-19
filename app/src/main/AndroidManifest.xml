@@ -12,7 +12,7 @@
 
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/keys_louncher_icon"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/keys_louncher_icon_round"
@@ -78,15 +78,10 @@
             android:exported="false" />
         <activity
             android:name=".aman.app.home.addpassword.addPasswordData"
-            android:exported="true"
+            android:exported="false"
             android:icon="@drawable/ic_baseline_add_24"
             android:label="Add Password"
             android:roundIcon="@drawable/group_1final_keys_logo">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
         </activity>
         <activity
             android:name=".aman.app.settings.SettingActivity"

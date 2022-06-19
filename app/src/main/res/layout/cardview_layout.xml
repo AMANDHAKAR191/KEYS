@@ -51,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text="User Login"
+                android:maxLength="11"
                 android:textColor="?attr/colorOnSecondary"
                 android:textSize="20sp" />
 
