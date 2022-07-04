@@ -64,10 +64,10 @@
         <activity
             android:name=".aman.app.home.ShowCardviewDataActivity"
             android:exported="false" />
-        <activity
-            android:name=".aman.app.notes.notesActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustPan" />
+<!--        <activity-->
+<!--            android:name=".aman.app.notes.notesActivity"-->
+<!--            android:exported="false"-->
+<!--            android:windowSoftInputMode="adjustPan" />-->
         <activity
             android:name=".aman.app.home.PassGenActivity"
             android:exported="false" />

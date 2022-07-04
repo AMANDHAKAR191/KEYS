@@ -96,7 +96,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:contentDescription="@string/FAB_item"
-            android:onClick="Add_Note"
             app:backgroundTint="?attr/colorSecondary"
             app:fabSize="normal"
             app:srcCompat="@drawable/note_add" />
@@ -129,7 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:contentDescription="@string/FAB_item"
-            android:onClick="PasswordGenratorFab"
+
             app:backgroundTint="?attr/colorSecondary"
             app:fabSize="normal"
             app:srcCompat="@drawable/create" />
@@ -162,7 +161,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:contentDescription="@string/FAB_item"
-            android:onClick="AddPasswordFab"
             app:backgroundTint="?attr/colorSecondary"
             app:fabSize="normal"
             app:srcCompat="@drawable/add" />
