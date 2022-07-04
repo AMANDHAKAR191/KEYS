@@ -2,6 +2,7 @@ package com.example.keys.aman.app.signin_login;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -15,9 +16,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
-import com.example.keys.aman.app.home.HomeActivity;
 import com.example.keys.aman.app.home.PassGenActivity;
 import com.example.keys.aman.app.notes.BiometricActivity;
+import com.example.keys.aman.app.notes.pinLockFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -58,6 +59,8 @@ public class LogInActivity extends AppCompatActivity {
     public static String MASTER_PIN = "master_pin";
     public static String ISPIN_SET = "ispin_set";
 
+    public static String DEVICE_NAME = "device_name";
+
     public static final String TAG = "main Activity";
     private PrograceBar prograce_bar;
     private String A1;
@@ -81,6 +84,7 @@ public class LogInActivity extends AppCompatActivity {
         Boolean islogin = sharedPreferences.getBoolean(ISLOGIN, false);
         System.out.println(islogin);
         if (islogin) {
+
             Intent intent = new Intent(LogInActivity.this, BiometricActivity.class);
             intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -171,26 +175,32 @@ public class LogInActivity extends AppCompatActivity {
                                     A1 = sharedPreferences.getString(ISFIRST_TIME,"0");
 
                                     if (A1 == "0"){
+                                        String device_name = Build.MANUFACTURER + " | " + Build.DEVICE;
                                         SharedPreferences.Editor editor1 = sharedPreferences.edit();
                                         editor1.putString(LogInActivity.AES_KEY, PassGenActivity.generateRandomPassword(22, true, true, true, false) + "==");
                                         editor1.putString(LogInActivity.AES_IV, PassGenActivity.generateRandomPassword(16, true, true, true, false));
                                         editor1.putBoolean(ISLOGIN, true);
                                         editor1.putString(ISFIRST_TIME,"1");
+                                        editor1.putString(DEVICE_NAME, device_name);
                                         editor1.apply();
+                                        Toast.makeText(LogInActivity.this, "Device Name: " + device_name, Toast.LENGTH_SHORT).show();
+
 //                                        System.out.println("ISLOGIN: " + sharedPreferences.getString(ISLOGIN,null));
 //                                        System.out.println("ISFIRST_TIME: " + sharedPreferences.getString(ISFIRST_TIME,null));
                                         writeData(user);
                                         turn = false;
-                                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                                        intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
+                                        Intent intent = new Intent(getApplicationContext(), pinLockFragment.class);
+                                        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"setpin");
+                                        intent.putExtra("title","Set Pin");
                                         startActivity(intent);
                                     }else {
+
 
                                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(uid);
                                         // Read from the database
                                         reference.addValueEventListener(new ValueEventListener() {
                                             @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                                 // This method is called once with the initial value and again
                                                 // whenever data at this location is updated.
                                                 String aes_iv = dataSnapshot.child("aes_iv").getValue(String.class);
@@ -208,7 +218,7 @@ public class LogInActivity extends AppCompatActivity {
                                             }
 
                                             @Override
-                                            public void onCancelled(DatabaseError error) {
+                                            public void onCancelled(@NonNull DatabaseError error) {
                                                 // Failed to read value
                                                 System.out.println("Not able get data from database");
                                             }
@@ -221,8 +231,9 @@ public class LogInActivity extends AppCompatActivity {
 
 
 
-                                        Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-                                        intent.putExtra(REQUEST_CODE_NAME,"LogInActivity");
+                                        Intent intent = new Intent(getApplicationContext(), pinLockFragment.class);
+                                        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"setpin");
+                                        intent.putExtra("title","Set Pin");
                                         startActivity(intent);
                                     }
                                 }
@@ -258,13 +269,11 @@ public class LogInActivity extends AppCompatActivity {
                     editor1.apply();
                     turn = true;
 
-                    return;
                 }else {
-                    System.out.println("User Does not Exist!!");
-                    System.out.println("Creating new User!!");
+//                    System.out.println("User Does not Exist!!");
+//                    System.out.println("Creating new User!!");
                     turn = true;
-                    System.out.println("Turn = " + turn);
-                    return;
+//                    System.out.println("Turn = " + turn);
                 }
             }
 
@@ -329,7 +338,7 @@ public class LogInActivity extends AppCompatActivity {
             e_name = aes.encrypt(name);
             e_mobile = aes.encrypt(mobile);
             e_email = aes.encrypt(email);
-            UserHelperClass userHelperClass = new UserHelperClass(e_name, e_mobile, e_email, key, iv, uid);
+            UserHelperClass userHelperClass = new UserHelperClass(e_name, e_email, key, iv, uid);
 
 
             myRef.child(uid).setValue(userHelperClass);

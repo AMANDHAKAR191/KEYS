@@ -29,11 +29,21 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title1"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:textColor="?attr/colorOnSecondary"
+        android:text="Password Length"/>
+
     <com.google.android.material.slider.Slider
         android:id="@+id/slider_pass_lenght"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="40dp"
         app:thumbColor="?attr/colorSecondary"
         app:tickColor="#C16565"
         app:trackColor="?attr/colorSecondary"
@@ -106,16 +116,28 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_password" />
 
     <TextView
+        android:id="@+id/tv_password_strength"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:text="Strength"
+        android:textColor="?attr/colorOnSecondary"
+        android:textIsSelectable="true"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/slider_pass_lenght" />
+
+    <TextView
         android:id="@+id/tv_password"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
-        android:hint="password"
+        android:text="password"
         android:textColor="?attr/colorOnSecondary"
         android:textIsSelectable="true"
         android:textSize="20sp"
-        app:layout_constraintTop_toBottomOf="@+id/slider_pass_lenght" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_password_strength" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

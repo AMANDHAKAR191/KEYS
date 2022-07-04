@@ -90,6 +90,48 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
                     activity.overridePendingTransition(R.anim.slide_in_down, 0);
                 }
             });
+            holder.tv_date.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, addNotesActivity.class);
+                    intent.putExtra("request_code","notesCardView");
+                    intent.putExtra("date", tv_date);
+                    intent.putExtra("hide note",cb_hide_note);
+                    intent.putExtra("title", temp_title_dc);
+                    intent.putExtra("note", temp_note_dc);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.slide_in_down, 0);
+                }
+            });
+            holder.tv_title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, addNotesActivity.class);
+                    intent.putExtra("request_code","notesCardView");
+                    intent.putExtra("date", tv_date);
+                    intent.putExtra("hide note",cb_hide_note);
+                    intent.putExtra("title", temp_title_dc);
+                    intent.putExtra("note", temp_note_dc);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.slide_in_down, 0);
+                }
+            });
+            holder.tv_note.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, addNotesActivity.class);
+                    intent.putExtra("request_code","notesCardView");
+                    intent.putExtra("date", tv_date);
+                    intent.putExtra("hide note",cb_hide_note);
+                    intent.putExtra("title", temp_title_dc);
+                    intent.putExtra("note", temp_note_dc);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.slide_in_down, 0);
+                }
+            });
             holder.cardview_more.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {

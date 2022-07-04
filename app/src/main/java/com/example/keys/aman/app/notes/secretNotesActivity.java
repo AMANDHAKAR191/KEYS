@@ -1,11 +1,15 @@
 package com.example.keys.aman.app.notes;
 
+import static com.example.keys.aman.app.SplashActivity.mRewardedAd;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.signin_login.LogInActivity;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
+import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,6 +55,19 @@ public class secretNotesActivity extends AppCompatActivity {
         }
 
         if (comingrequestcode.equals("LogInActivity")) {
+        }
+        if (mRewardedAd != null) {
+            Activity activityContext = secretNotesActivity.this;
+            mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
+                @Override
+                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                    // Handle the reward.
+                    int rewardAmount = rewardItem.getAmount();
+                    String rewardType = rewardItem.getType();
+                }
+            });
+        } else {
+            Toast.makeText(secretNotesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
         }
 
         recyclerviewsetdata();

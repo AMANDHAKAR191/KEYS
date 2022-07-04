@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 public class basicService extends AutofillService {
-    private int NUMBER_DATASETS = 4;
+    private final int NUMBER_DATASETS = 4;
 
     @Override
     public void onFillRequest(@NonNull FillRequest request, @NonNull CancellationSignal cancellationSignal, @NonNull FillCallback fillCallback) {

@@ -1,11 +1,13 @@
 package com.example.keys.aman.app.home;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -21,17 +23,31 @@ import androidx.appcompat.widget.SwitchCompat;
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.signin_login.LogInActivity;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.slider.Slider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PassGenActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
     private static final String KEY_PASSWORD = "password";
+
+    public static RewardedAd mRewardedAd;
+    private final String rewardedAdId = "ca-app-pub-3752721223259598/1273800402";
 
     final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     final DatabaseReference myRef = firebaseDatabase.getReference("usedPassword");
@@ -41,7 +57,7 @@ public class PassGenActivity extends AppCompatActivity {
     SwitchCompat capitalLetter, lowercaseLetter, numbers, symbols;
     public Button bt_use, bt_copy;
     ImageButton img_back;
-    TextView tv_password;
+    TextView tv_password, tv_password_strength;
     String saved_pass;
     String comingrequestcode;
     Slider slider;
@@ -58,6 +74,7 @@ public class PassGenActivity extends AppCompatActivity {
         // Hooks
         switchButton();
         tv_password = findViewById(R.id.tv_password);
+        tv_password_strength = findViewById(R.id.tv_password_strength);
         //tv_pass.setText("Password: ");
         slider = findViewById(R.id.slider_pass_lenght);
         bt_use = findViewById(R.id.bt_use);
@@ -125,6 +142,21 @@ public class PassGenActivity extends AppCompatActivity {
         bt_copy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (mRewardedAd != null) {
+                    Activity activityContext = PassGenActivity.this;
+                    mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
+                        @Override
+                        public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                            // Handle the reward.
+
+                            int rewardAmount = rewardItem.getAmount();
+                            String rewardType = rewardItem.getType();
+                        }
+                    });
+                } else {
+                    Toast.makeText(PassGenActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
+                }
+
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(KEY_PASSWORD, pass);
                 editor.apply();
@@ -136,6 +168,14 @@ public class PassGenActivity extends AppCompatActivity {
                 Toast.makeText(PassGenActivity.this, "Copied!", Toast.LENGTH_SHORT).show();
             }
         });
+
+        showRewardedAd();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        showRewardedAd();
     }
 
     private void switchButton() {
@@ -169,7 +209,32 @@ public class PassGenActivity extends AppCompatActivity {
         });
     }
 
+    private void showRewardedAd() {
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
 
+            }
+        });
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        RewardedAd.load(this, rewardedAdId,
+                adRequest, new RewardedAdLoadCallback() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error.
+                        Toast.makeText(PassGenActivity.this, loadAdError.getMessage(), Toast.LENGTH_LONG).show();
+                        mRewardedAd = null;
+                    }
+
+                    @Override
+                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+                        mRewardedAd = rewardedAd;
+                        Toast.makeText(PassGenActivity.this, "Ad was loaded.", Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
 
 
     public static String generateRandomPassword(int max_length, boolean upperCase, boolean lowerCase, boolean numbers, boolean specialCharacters) {
@@ -223,14 +288,76 @@ public class PassGenActivity extends AppCompatActivity {
 
         pass = generateRandomPassword(MAX_LENGTH, capitalLetter.isChecked(), lowercaseLetter.isChecked(), numbers.isChecked(), symbols.isChecked());
         tv_password.setText("Password: " + pass);
-        try {
-            AES aes = new AES();
-            aes.initFromStrings(LogInActivity.AES_KEY, LogInActivity.AES_IV);
-            String encryptedMessage = aes.encrypt(pass);
-            String decryptedMessage = aes.decrypt(encryptedMessage);
-        } catch (Exception e) {
-            e.printStackTrace();
+
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9]");
+        Pattern pattern1 = Pattern.compile("[^a-zA-Z0-9]");
+        Matcher matcher = pattern.matcher(pass);
+        Matcher matcher1 = pattern1.matcher(pass);
+        boolean matchFound = matcher.find();
+        boolean matchFound1 = matcher1.find();
+
+        if (matchFound & !matchFound1){
+            if (pass.length() < 8){
+                tv_password_strength.setText("Strength: Very week");
+                tv_password_strength.setTextColor(Color.RED);
+
+            }else {
+                if (pass.length() < 12){
+                    tv_password_strength.setText("Strength: week");
+                    tv_password_strength.setTextColor(Color.YELLOW);
+                }else {
+                    if (pass.length() > 12){
+                        tv_password_strength.setText("Strength: strong");
+                        tv_password_strength.setTextColor(Color.GREEN);
+                    }
+                }
+            }
+
+        }else if (!matchFound & matchFound1){
+            if (pass.length() < 8){
+                tv_password_strength.setText("Strength: week");
+                tv_password_strength.setTextColor(Color.RED);
+
+            }else {
+                if (pass.length() < 12){
+                    tv_password_strength.setText("Strength: strong");
+                    tv_password_strength.setTextColor(Color.YELLOW);
+                }else {
+                    if (pass.length() > 12){
+                        tv_password_strength.setText("Strength: strong");
+                        tv_password_strength.setTextColor(Color.GREEN);
+                    }
+                }
+            }
+        }else {
+            if (pass.length() < 8){
+                tv_password_strength.setText("Strength: strong");
+                tv_password_strength.setTextColor(Color.RED);
+
+            }else {
+                if (pass.length() < 12){
+                    tv_password_strength.setText("Strength: very strong");
+                    tv_password_strength.setTextColor(Color.YELLOW);
+                }else {
+                    if (pass.length() > 12){
+                        tv_password_strength.setText("Strength: very strong");
+                        tv_password_strength.setTextColor(Color.GREEN);
+                    }
+                }
+            }
         }
+
+
+
+            try {
+                AES aes = new AES();
+                aes.initFromStrings(LogInActivity.AES_KEY, LogInActivity.AES_IV);
+                String encryptedMessage = aes.encrypt(pass);
+                String decryptedMessage = aes.decrypt(encryptedMessage);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
         return pass;
     }
 

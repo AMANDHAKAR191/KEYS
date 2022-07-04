@@ -45,10 +45,11 @@ public abstract class myadaptorforaddpassword extends RecyclerView.Adapter<myada
         String dwebsiteLink, dwebsitename;
         try {
             dwebsiteLink = dataholder.get(position).getWebsite_login_url();
-            holder.dname.setText(dwebsiteLink);
             dwebsitename = temp.getWebsite_name();
             String Title = dwebsitename.substring(0,1).toUpperCase() + dwebsitename.substring(1);
-            holder.tv_img_title.setText(Title);
+
+//            holder.tv_img_title.setText(Title);
+            holder.dname.setText(Title.replace("_","."));
 
 
             holder.onWebsiteClick(dwebsiteLink,dwebsitename);
@@ -68,14 +69,14 @@ public abstract class myadaptorforaddpassword extends RecyclerView.Adapter<myada
     public class myviewholder extends RecyclerView.ViewHolder {
 
         final TextView dname;
-        final TextView tv_img_title;
+//        final TextView tv_img_title;
         final LinearLayout LLCard;
 
         public myviewholder(@NonNull View itemView) {
             super(itemView);
             dname = itemView.findViewById(R.id.displayname);
             LLCard = itemView.findViewById(R.id.linear_layout_card);
-            tv_img_title = itemView.findViewById(R.id.tv_img_title);
+//            tv_img_title = itemView.findViewById(R.id.tv_img_title);
         }
         public void onWebsiteClick(String dwebiteLink, String dwebsitename){
             LLCard.setOnClickListener(new View.OnClickListener() {

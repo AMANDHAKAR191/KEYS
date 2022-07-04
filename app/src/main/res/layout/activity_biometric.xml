@@ -5,18 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".aman.app.notes.BiometricActivity">
-    <ImageButton
-        android:id="@+id/img_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:background="#00000000"
-        android:onClick="gocencal"
-
-        android:src="@drawable/close"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/img_logo"

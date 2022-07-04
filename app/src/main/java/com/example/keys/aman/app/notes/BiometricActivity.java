@@ -10,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,6 +30,8 @@ public class BiometricActivity extends AppCompatActivity{
     private KeyguardManager keyguardManager;
     private String comingrequestcode;
     private SharedPreferences sharedPreferences;
+    private boolean isHardwareDetected;
+    private boolean hasEnrolledFingerprints;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,19 +64,31 @@ public class BiometricActivity extends AppCompatActivity{
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
             keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
-            if (!fingerprintManager.isHardwareDetected()) {
+            try {
+                isHardwareDetected = fingerprintManager.isHardwareDetected();
+                hasEnrolledFingerprints = fingerprintManager.hasEnrolledFingerprints();
+
+            }catch (NullPointerException e){
+
+            }
+
+
+            if (!isHardwareDetected) {
                 tv_result.setText("Fingerprint Scanner not detected in Device");
                 boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.ISPIN_SET,false);
                 if (ispin_set){
                     Intent intent3 = new Intent(BiometricActivity.this,pinLockFragment.class);
-                    intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
+                    intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     intent3.putExtra("title","Enter Pin");
+                    Toast.makeText(this, "isHardwareDetected: " + isHardwareDetected, Toast.LENGTH_SHORT).show();
                     startActivity(intent3);
+                    finish();
                 }else {
                     Toast.makeText(this, "Fingerprint Scanner not detected in Device. please set pin", Toast.LENGTH_SHORT).show();
                     Intent intent3 = new Intent(BiometricActivity.this, HomeActivity.class);
                     intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     startActivity(intent3);
+                    finish();
                 }
             } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
                 tv_result.setText("Permission not granted to use Fingerprint Scanner");
@@ -87,13 +100,15 @@ public class BiometricActivity extends AppCompatActivity{
                     intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     intent3.putExtra("title","Enter Pin");
                     startActivity(intent3);
+                    finish();
                 }else {
                     Toast.makeText(this, "Pin is set yet! please set pin", Toast.LENGTH_SHORT).show();
                     Intent intent3 = new Intent(BiometricActivity.this, HomeActivity.class);
                     intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     startActivity(intent3);
+                    finish();
                 }
-            } else if (!fingerprintManager.hasEnrolledFingerprints()) {
+            } else if (!hasEnrolledFingerprints) {
                 tv_result.setText("You should add atleast 1 Fingerprint to use this Feature");
                 boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.ISPIN_SET,false);
                 Toast.makeText(this, "ispin_set" + ispin_set, Toast.LENGTH_SHORT).show();
@@ -102,11 +117,13 @@ public class BiometricActivity extends AppCompatActivity{
                     intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     intent3.putExtra("title","Enter Pin");
                     startActivity(intent3);
+                    finish();
                 }else {
                     Toast.makeText(this, "Pin is set yet! please set pin", Toast.LENGTH_SHORT).show();
                     Intent intent3 = new Intent(BiometricActivity.this,HomeActivity.class);
                     intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     startActivity(intent3);
+                    finish();
                 }
             } else {
                 tv_result.setText("Place your Finger to Acsess the app");
@@ -117,7 +134,4 @@ public class BiometricActivity extends AppCompatActivity{
         }
     }
 
-    public void gocencal(View view) {
-        finish();
-    }
 }

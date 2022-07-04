@@ -1,5 +1,8 @@
 package com.example.keys.aman.app.notes;
 
+import static com.example.keys.aman.app.SplashActivity.mRewardedAd;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,11 +13,14 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.signin_login.LogInActivity;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
+import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -96,6 +102,19 @@ public class addNotesActivity extends AppCompatActivity {
         });
 
 
+        if (mRewardedAd != null) {
+            Activity activityContext = addNotesActivity.this;
+            mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
+                @Override
+                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                    // Handle the reward.
+                    int rewardAmount = rewardItem.getAmount();
+                    String rewardType = rewardItem.getType();
+                }
+            });
+        } else {
+            Toast.makeText(addNotesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void gocencal(View view) {
@@ -119,8 +138,6 @@ public class addNotesActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         if (comingrequestcode.equals("notesCardView")){
             addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(coming_date,title_dc,note_dc, hide_note);
@@ -128,7 +145,6 @@ public class addNotesActivity extends AppCompatActivity {
             Toast.makeText(addNotesActivity.this,"saved!",Toast.LENGTH_SHORT).show();
         }else {
             addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(currentDateandTime,title_dc,note_dc, hide_note);
-
             reference.child(currentDateandTime).setValue(addDNoteHelper);
             Toast.makeText(addNotesActivity.this,"saved!",Toast.LENGTH_SHORT).show();
         }
@@ -138,7 +154,6 @@ public class addNotesActivity extends AppCompatActivity {
         finish();
         overridePendingTransition(0, R.anim.slide_out_down);
     }
-
     public void goedit(View view) {
         img_save.setVisibility(View.VISIBLE);
         img_edit.setVisibility(View.INVISIBLE);

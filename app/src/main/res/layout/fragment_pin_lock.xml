@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/mine_shaft"
+    android:background="?attr/colorOnPrimary"
     tools:context=".aman.app.notes.pinLockFragment">
     <ImageButton
         android:id="@+id/img_back"
@@ -13,7 +13,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:onClick="gocencal"
-        android:background="@color/mine_shaft"
+        android:background="?attr/colorOnPrimary"
         android:src="@drawable/close"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,8 +22,9 @@
         android:layout_width="84dp"
         android:layout_height="84dp"
         android:layout_centerHorizontal="true"
+        android:elevation="8dp"
         android:layout_marginTop="104dp"
-        android:src="@drawable/profile" />
+        android:src="@drawable/group_1final_keys_logo" />
 
 <!--    <TextView-->
 <!--        android:id="@+id/tv_use_biometrix"-->
@@ -66,10 +67,10 @@
         android:layout_marginTop="16dp"
         app:keypadButtonSize="72dp"
         app:pinLength="6"
-        app:dotFilledBackground="@color/white"
-        app:dotEmptyBackground="@color/gray"
+        app:dotFilledBackground="?attr/colorOnSecondary"
+        app:dotEmptyBackground="?attr/colorOnSecondary"
         app:keypadShowDeleteButton="true"
-        app:keypadTextColor="@color/white"
+        app:keypadTextColor="?attr/colorOnSecondary"
         app:keypadTextSize="18dp" />
 
 </RelativeLayout>

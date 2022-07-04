@@ -60,6 +60,7 @@
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_show_cardview_data.xml" value="0.20390625" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_sign_up.xml" value="0.271875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_splash.xml" value="0.271875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_tab_layout.xml" value="0.2" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/simple_service_auth_activity.xml" value="0.283984375" />
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_add_notes.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_add_password_data.xml" value="0.1875" />
@@ -74,13 +75,16 @@
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_show_cardview_data.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_sign_up.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_splash.xml" value="0.1875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_tab_layout.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_add_notes.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_add_password_data.xml" value="0.22" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_app_info.xml" value="0.25" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_ask_email.xml" value="0.1875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_base.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_biometric.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_change_password.xml" value="0.17552083333333332" />
-        <entry key="..\:/KEYS/app/src/main/res/layout/activity_home.xml" value="0.16" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_email_suggestion.xml" value="0.1875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_home.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_log_in.xml" value="0.184375" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_login1.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_main.xml" value="0.1" />
@@ -99,10 +103,12 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_sign_up.xml" value="0.22" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_signupwithgoogle.xml" value="0.184375" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_splash.xml" value="0.1" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_tab_layout.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/cardview_layout.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/check_internet_dialog.xml" value="0.14666666666666667" />
         <entry key="..\:/KEYS/app/src/main/res/layout/dialogdbtakinglongtime.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_add_website.xml" value="0.1875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/fragment_base.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_check_internet.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_contact_us.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_o_t_p_verification.xml" value="0.17552083333333332" />

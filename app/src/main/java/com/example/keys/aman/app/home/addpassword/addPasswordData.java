@@ -1,10 +1,13 @@
 package com.example.keys.aman.app.home.addpassword;
 
+import static com.example.keys.aman.app.SplashActivity.mInterstitialAd;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
+import com.example.keys.aman.app.PrograceBar;
 import com.example.keys.aman.app.home.HomeActivity;
 import com.example.keys.aman.app.home.PassGenActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
@@ -44,8 +48,8 @@ import java.util.Objects;
 public class addPasswordData extends AppCompatActivity {
 
     private static final int REQUEST_DETAIL_CODE = 1;
-    TextInputLayout til_login, til_password, til_website;
-    TextInputEditText tiet_addlogindata, tiet_addpassworddata, tiet_addwebsitedata;
+    TextInputLayout til_login, til_password, til_website, til_websitelink;
+    TextInputEditText tiet_addlogindata, tiet_addpassworddata, tiet_addwebsitedata, tiet_addwebsitelinkdata;
     Button btn_submit, bt_genrate_password;
     ImageView img_back;
     TextView tv_error;
@@ -53,8 +57,8 @@ public class addPasswordData extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     String uid;
     String comingrequestcode;
-    String coming_date, coming_loginname, coming_loginpassword, coming_loginwebsite;
-    public static String addWebsiteLink;
+    String coming_date, coming_loginname, coming_loginpassword, coming_loginwebsite_name, coming_loginwebsite_link;
+//    public static String addWebsiteLink;
     private String currentDateandTime;
     public static myadaptorforaddpassword adaptor;
 
@@ -63,17 +67,17 @@ public class addPasswordData extends AppCompatActivity {
     String s3 = "https://account.microsoft.com/account?lang=en-us";
     String s4 = "https://www.amazon.in/ap/signin?openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.in%2F%3Fref_%3Dnav_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=inflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0&";
     String s5 = "https://technophilia.in/my-account/";
-    String s6 = "https://vitap.codetantra.com/login.jsp";
-    String s7 = "https://vtop2.vitap.ac.in/vtop/initialProcess";
-    String s8 = "https://www.flipkart.com/";
-    String s9 = "https://www.netflix.com/in/login?nextpage=https%3A%2F%2Fwww.netflix.com%2FYourAccount";
-    String s10 = "https://www.pearson.com/store/en-us/login";
-    String s11 = "https://sparkfun.com/";
-    String s12 = "https://www.faceprep.in/login/?rurl=edge/";
+    String s6 = "https://www.flipkart.com/";
+    String s7 = "https://www.netflix.com/in/login?nextpage=https%3A%2F%2Fwww.netflix.com%2FYourAccount";
+    String s8 = "https://accounts.google.com/AddSession/identifier?service=accountsettings&continue=https%3A%2F%2Fmyaccount.google.com%2F%3Futm_source%3Dsign_in_no_continue%26pli%3D1&ec=GAlAwAE&flowName=GlifWebSignIn&flowEntry=AddSession";
+    String s9 = "https://www.facebook.com/";
+    String s10 = "https://www.instagram.com/";
+    String s11 = "other";
 
 
     private addDataHelperClass addDataHelperClass;
     private DatabaseReference databaseReference;
+    private PrograceBar prograce_bar;
 
 
     @Override
@@ -87,12 +91,14 @@ public class addPasswordData extends AppCompatActivity {
         til_login = findViewById(R.id.til_addlogindata);
         til_password = findViewById(R.id.til_addpassworddata);
         til_website = findViewById(R.id.til_addwebsitedata);
+        til_websitelink = findViewById(R.id.til_addwebsitelinkdata);
         btn_submit = findViewById(R.id.btn_submit);
         btn_submit.setText("Submit");
         img_back = findViewById(R.id.img_back);
         tiet_addlogindata = findViewById(R.id.tiet_addlogindata);
         tiet_addpassworddata = findViewById(R.id.tiet_addpassworddata);
         tiet_addwebsitedata = findViewById(R.id.tiet_addwebsitedata);
+        tiet_addwebsitelinkdata = findViewById(R.id.tiet_addwebsitelinkdata);
         bt_genrate_password = findViewById(R.id.bt_genrate_password);
         tv_error = findViewById(R.id.tv_error);
         scrollView1 = findViewById(R.id.scrollview1);
@@ -112,13 +118,19 @@ public class addPasswordData extends AppCompatActivity {
         coming_date = intent.getStringExtra("date");
         coming_loginname = intent.getStringExtra("loginname");
         coming_loginpassword = intent.getStringExtra("loginpassowrd");
-        coming_loginwebsite = intent.getStringExtra("loginwebsite");
+        coming_loginwebsite_name = intent.getStringExtra("loginwebsite_name");
+        coming_loginwebsite_link = intent.getStringExtra("loginwebsite_link");
         if (comingrequestcode.equals("ShowCardviewDataActivity")) {
+            if (coming_loginwebsite_link.equals("")){
+                tiet_addwebsitelinkdata.setEnabled(true);
+            }else {
+                tiet_addwebsitelinkdata.setEnabled(false);
+            }
             btn_submit.setText("Update");
-
             tiet_addlogindata.setText(coming_loginname);
             tiet_addpassworddata.setText(coming_loginpassword);
-            tiet_addwebsitedata.setText(coming_loginwebsite);
+            tiet_addwebsitedata.setText(coming_loginwebsite_name);
+            tiet_addwebsitelinkdata.setText(coming_loginwebsite_link);
             tiet_addwebsitedata.setEnabled(false);
             scrollView1.setVisibility(View.GONE);
             scrollView2.setVisibility(View.VISIBLE);
@@ -163,12 +175,23 @@ public class addPasswordData extends AppCompatActivity {
 
         recyclerviewsetdata();
 
+        if (mInterstitialAd != null) {
+            mInterstitialAd.show(addPasswordData.this);
+        } else {
+            Toast.makeText(addPasswordData.this, "The interstitial ad wasn't ready yet.", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void addData() {
         String addlogin = Objects.requireNonNull(til_login.getEditText()).getText().toString().trim();
         String addpasword = Objects.requireNonNull(til_password.getEditText()).getText().toString();
         String addwesitename = Objects.requireNonNull(til_website.getEditText()).getText().toString().toLowerCase().trim();
+        String addwebsitelink = Objects.requireNonNull(til_websitelink.getEditText()).getText().toString().toLowerCase().trim();
+
+        if (addwebsitelink.equals("")){
+            addwebsitelink = "aman";
+        }
+
 
         if (addlogin.equals("") || addpasword.equals("") || addwesitename.equals("")) {
             tv_error.setVisibility(View.VISIBLE);
@@ -182,8 +205,12 @@ public class addPasswordData extends AppCompatActivity {
             AES aes = new AES();
             aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
             try {
+                // Double encryption
+                // TODO : in future, (if needed) give two key to user for double encryption
                 e_addlogin = aes.encrypt(addlogin);
+                e_addlogin = aes.encrypt(e_addlogin);
                 e_addpassword = aes.encrypt(addpasword);
+                e_addpassword = aes.encrypt(e_addpassword);
 //                e_addwebsite = aes.encrypt(addwesitename);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -191,10 +218,9 @@ public class addPasswordData extends AppCompatActivity {
 
 
             if (comingrequestcode.equals("ShowCardviewDataActivity")) {
-                addDataHelperClass = new addDataHelperClass(coming_date, e_addlogin, e_addpassword, addwesitename);
+                addDataHelperClass = new addDataHelperClass(coming_date, e_addlogin, e_addpassword, addwesitename,coming_loginwebsite_link);
                 addDataRef.child(coming_date).setValue(addDataHelperClass);
-                Log.d(LogInActivity.TAG, "done");
-                Toast.makeText(addPasswordData.this, "Done", Toast.LENGTH_SHORT).show();
+                Toast.makeText(addPasswordData.this, "Done + ShowCardviewDataActivity", Toast.LENGTH_SHORT).show();
 
 
                 Intent intent = new Intent(addPasswordData.this, HomeActivity.class);
@@ -206,10 +232,10 @@ public class addPasswordData extends AppCompatActivity {
                 finish();
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
             } else if (comingrequestcode.equals("HomeActivity")) {
-                addDataHelperClass = new addDataHelperClass(currentDateandTime, e_addlogin, e_addpassword, addwesitename);
+                Toast.makeText(this, "addWebsiteLink " + addwebsitelink, Toast.LENGTH_SHORT).show();
+                addDataHelperClass = new addDataHelperClass(currentDateandTime, e_addlogin, e_addpassword, addwesitename, addwebsitelink);
                 addDataRef.child(currentDateandTime).setValue(addDataHelperClass);
-                Log.d(LogInActivity.TAG, "done");
-                Toast.makeText(addPasswordData.this, "Done", Toast.LENGTH_SHORT).show();
+                Toast.makeText(addPasswordData.this, "Done + HomeActivity", Toast.LENGTH_SHORT).show();
             }
 
 
@@ -257,7 +283,10 @@ public class addPasswordData extends AppCompatActivity {
     }
 
     public void recyclerviewsetdata() {
+        progressbar();
         databaseReference = FirebaseDatabase.getInstance().getReference("website_list");
+
+//        addWebsiteList(databaseReference);
 
 
         RecyclerView recyclerView;
@@ -275,13 +304,17 @@ public class addPasswordData extends AppCompatActivity {
                 scrollView1.setVisibility(View.INVISIBLE);
                 scrollView2.setVisibility(View.VISIBLE);
                 tiet_addwebsitedata.setText(dwebsitename);
-                addWebsiteLink = dwebsiteLink;
+//                addWebsiteLink = dwebsiteLink;
+                if (!dwebsitename.equals("other")){
+                    tiet_addwebsitelinkdata.setText(dwebsiteLink);
+                    tiet_addwebsitelinkdata.setEnabled(false);
+                }
             }
         };
         recyclerView.setAdapter(adaptor);
         recyclerView.hasFixedSize();
 
-//        addWebsiteList(databaseReference);
+
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -295,7 +328,6 @@ public class addPasswordData extends AppCompatActivity {
                     Collections.sort(dataholder, websiteHelper.addDataHelperClassComparator);
                     adaptor.notifyDataSetChanged();
 
-                } else {
                 }
             }
 
@@ -309,49 +341,70 @@ public class addPasswordData extends AppCompatActivity {
     }
 
     private void addWebsiteList(DatabaseReference databaseReference) {
-        websiteHelper data1 = new websiteHelper(fun(s1), s1);
+        Bitmap website_logo1 = null,website_logo2 = null, website_logo3 = null, website_logo4 = null, website_logo5 = null,
+                website_logo6 = null, website_logo7 = null,
+                website_logo8 = null, website_logo9 = null,
+                website_logo10 = null, website_logo11 = null;
+
+
+
+        websiteHelper data1 = new websiteHelper(fun(s1), s1, website_logo1);
         databaseReference.child(data1.getWebsite_name()).setValue(data1);
 
-        websiteHelper data2 = new websiteHelper(fun(s2), s2);
+
+        websiteHelper data2 = new websiteHelper(fun(s2), s2, website_logo2);
         databaseReference.child(data2.getWebsite_name()).setValue(data2);
 
-        websiteHelper data3 = new websiteHelper(fun(s3), s3);
+
+        websiteHelper data3 = new websiteHelper(fun(s3), s3, website_logo3);
         databaseReference.child(data3.getWebsite_name()).setValue(data3);
 
-        websiteHelper data4 = new websiteHelper(fun(s4), s4);
+
+        websiteHelper data4 = new websiteHelper(fun(s4), s4, website_logo4);
         databaseReference.child(data4.getWebsite_name()).setValue(data4);
 
-        websiteHelper data5 = new websiteHelper(fun(s5), s5);
+
+        websiteHelper data5 = new websiteHelper(fun(s5), s5, website_logo5);
         databaseReference.child(data5.getWebsite_name()).setValue(data5);
 
-        websiteHelper data6 = new websiteHelper(fun(s6), s6);
+
+        websiteHelper data6 = new websiteHelper(fun(s6), s6, website_logo6);
         databaseReference.child(data6.getWebsite_name()).setValue(data6);
 
-        websiteHelper data7 = new websiteHelper(fun(s7), s7);
+
+        websiteHelper data7 = new websiteHelper(fun(s7), s7, website_logo7);
         databaseReference.child(data7.getWebsite_name()).setValue(data7);
 
-        websiteHelper data8 = new websiteHelper(fun(s8), s8);
+
+        websiteHelper data8 = new websiteHelper(fun(s8), s8, website_logo8);
         databaseReference.child(data8.getWebsite_name()).setValue(data8);
 
-        websiteHelper data9 = new websiteHelper(fun(s9), s9);
+
+        websiteHelper data9 = new websiteHelper(fun(s9), s9, website_logo9);
         databaseReference.child(data9.getWebsite_name()).setValue(data9);
 
-        websiteHelper data10 = new websiteHelper(fun(s10), s10);
+
+        websiteHelper data10 = new websiteHelper(fun(s10), s10, website_logo10);
         databaseReference.child(data10.getWebsite_name()).setValue(data10);
 
-        websiteHelper data11 = new websiteHelper(fun(s11), s11);
+        websiteHelper data11 = new websiteHelper(fun(s11), s11, website_logo11);
         databaseReference.child(data11.getWebsite_name()).setValue(data11);
-
-        websiteHelper data12 = new websiteHelper(fun(s12), s12);
-        databaseReference.child(data12.getWebsite_name()).setValue(data12);
+        prograce_bar.dismissbar();
+        Toast.makeText(addPasswordData.this, "website added successfully!!", Toast.LENGTH_SHORT).show();
 
 
     }
 
 
+
+
     protected String fun(String str) {
 //        String str= "This#string%contains^special*characters&.";
-        String[] str1 = str.split("/");
+        if (str.equals("other")){
+            return str;
+        }
+        System.out.println(str);
+        String[] str1 = str.split("/",4);
         System.out.println(str1[2]);
         str = str1[2].replaceAll("[^a-zA-Z0-9]", "_");
         System.out.println(str);
@@ -364,5 +417,17 @@ public class addPasswordData extends AppCompatActivity {
         str = str.replaceAll("_", ".");
         System.out.println(str);
         return str;
+    }
+
+    public void progressbar() {
+        prograce_bar = new PrograceBar(addPasswordData.this);
+        prograce_bar.showDialog();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
+            }
+        }, 500);
     }
 }

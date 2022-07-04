@@ -1,36 +1,30 @@
 package com.example.keys.aman.app.notes;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.home.HomeActivity;
-import com.example.keys.aman.app.settings.SettingActivity;
+import com.example.keys.aman.app.PrograceBar;
 import com.example.keys.aman.app.signin_login.LogInActivity;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.OnUserEarnedRewardListener;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.rewarded.RewardItem;
-import com.google.android.gms.ads.rewarded.RewardedAd;
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -41,124 +35,89 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class notesActivity extends AppCompatActivity {
+public class notesActivity extends Fragment {
+
+    Context context;
+    Activity activity;
+
+    public notesActivity(Context context, Activity activity) {
+        this.context = context;
+        this.activity = activity;
+    }
 
     private static final String TAG = "notesActivity";
     SharedPreferences sharedPreferences;
     public static DatabaseReference reference;
     public static myadaptorfornote adaptor;
-
-
+    private boolean turn = false;
     TextView tv_NOTE;
     SearchView searchView;
-    RewardedAd mRewardedAd;
-    private int click_counter = 0;
+    ExtendedFloatingActionButton extendedFloatingActionButton;
     private String uid;
+    private PrograceBar prograce_bar;
 
-
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notes);
-        //getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_notes,container,false);
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
 
         //Hooks
-        searchView = findViewById(R.id.search_bar);
+        searchView = view.findViewById(R.id.search_bar);
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String s) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String s) {
+//                adaptor.getFilter().filter(s);
+//
+//                adaptor.notifyDataSetChanged();
+//
+//                return false;
+//            }
+//        });
 
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        tv_NOTE = view.findViewById(R.id.tv_NOTE);
+        extendedFloatingActionButton = view.findViewById(R.id.ExtendedFloatingActionButton);
+//        Handler handler = new Handler();
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        },5000);
+        recyclerview_data_from_online_DB(view);
+        extendedFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                adaptor.getFilter().filter(s);
-
-                adaptor.notifyDataSetChanged();
-
-                return false;
+            public void onClick(View view) {
+                Intent intent = new Intent(context, addNotesActivity.class);
+                intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
+                startActivity(intent);
+                activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
         });
-
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
-
-            }
-        });
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        RewardedAd.load(this, "ca-app-pub-3752721223259598/1273800402",
-                adRequest, new RewardedAdLoadCallback() {
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error.
-                        Toast.makeText(notesActivity.this, loadAdError.getMessage(), Toast.LENGTH_LONG).show();
-                        mRewardedAd = null;
-                    }
-
-                    @Override
-                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
-                        mRewardedAd = rewardedAd;
-                        Toast.makeText(notesActivity.this, "Ad was loaded.", Toast.LENGTH_LONG).show();
-                    }
-                });
-
-
-        tv_NOTE = findViewById(R.id.tv_NOTE);
-        home_bottom_nav();
-        recyclerviewsetdata();
+        return view;
     }
 
-    public void home_bottom_nav() {
-        // initialize And Assign Variable
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav);
-        //set Home Selected
-        bottomNavigationView.setSelectedItemId(R.id.menu_notes);
-        //Perform ItemSelectorListener
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.menu_home:
-                        Intent intent1 = new Intent(notesActivity.this, HomeActivity.class);
-                        intent1.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
-                        startActivity(intent1);
-                        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
-                        return true;
-                    case R.id.menu_setting:
-                        Intent intent2 = new Intent(notesActivity.this, SettingActivity.class);
-                        intent2.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
-                        startActivity(intent2);
-                        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-                        return true;
-                    case R.id.menu_notes:
-
-                        return true;
-                }
-                return false;
-            }
-        });
-    }
-
-    public void recyclerviewsetdata() {
+    public void recyclerview_data_from_online_DB(View view) {
         RecyclerView recyclerView;
 
         ArrayList<addDNoteHelperClass> dataholder;
 
 
-        recyclerView = findViewById(R.id.recview);
+        recyclerView = view.findViewById(R.id.recview);
 
         reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         dataholder = new ArrayList<>();
-        adaptor = new myadaptorfornote(dataholder, getApplicationContext(), this);
+        adaptor = new myadaptorfornote(dataholder, context, activity);
         recyclerView.setAdapter(adaptor);
 
         reference.addValueEventListener(new ValueEventListener() {
@@ -189,66 +148,19 @@ public class notesActivity extends AppCompatActivity {
         });
         recyclerView.setAdapter(adaptor);
 
-
     }
 
 
-    public void addNotes(View view) {
-        if (mRewardedAd != null) {
-            Activity activityContext = notesActivity.this;
-            mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
-                @Override
-                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                    // Handle the reward.
-                    Log.d(TAG, "The user earned the reward.");
-                    int rewardAmount = rewardItem.getAmount();
-                    String rewardType = rewardItem.getType();
-                }
-            });
-        } else {
-            Toast.makeText(notesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
-        }
-        Intent intent = new Intent(notesActivity.this, addNotesActivity.class);
-        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
-        startActivity(intent);
-        overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
-    }
-
-    public void open_secret_notes(View view) {
-        if (mRewardedAd != null) {
-            Activity activityContext = notesActivity.this;
-            mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
-                @Override
-                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                    // Handle the reward.
-                    int rewardAmount = rewardItem.getAmount();
-                    String rewardType = rewardItem.getType();
-                }
-            });
-        } else {
-            Toast.makeText(notesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
-        }
+    public void progressbar() {
+        prograce_bar = new PrograceBar(activity);
+        prograce_bar.showDialog();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                click_counter = 0;
-            }
-        },1000);
-        if (click_counter == 1){
-            boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.ISPIN_SET,false);
-            if (ispin_set){
-                Intent intent3 = new Intent(notesActivity.this,pinLockFragment.class);
-                intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
-                intent3.putExtra("title","Enter Pin");
-                startActivity(intent3);
-                click_counter = 0;
-            }else {
-                Toast.makeText(this, "please set pin", Toast.LENGTH_SHORT).show();
-            }
 
-        }
-        click_counter = click_counter + 1;
+            }
+        }, 500);
     }
 
 }

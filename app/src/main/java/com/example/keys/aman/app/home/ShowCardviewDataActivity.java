@@ -1,10 +1,14 @@
 package com.example.keys.aman.app.home;
 
+import static com.example.keys.aman.app.SplashActivity.mRewardedAd;
+
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
@@ -12,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +24,8 @@ import com.example.keys.R;
 import com.example.keys.aman.app.home.addpassword.addPasswordData;
 import com.example.keys.aman.app.notes.pinLockFragment;
 import com.example.keys.aman.app.signin_login.LogInActivity;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
+import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -33,8 +40,9 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
     TextInputEditText tiet_pass;
     TextInputLayout til_displaypassword;
     ImageView img_back;
-    ImageView website_logo;
-    private String comingdate, loginname, loginpassowrd, loginwebsite;
+    ImageView website_logo, open_website;
+    private String comingdate, loginname, loginpassowrd, loginwebsite_name, loginwebsite_link;
+    private Bitmap website_logo1;
 
 
     @Override
@@ -50,17 +58,19 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
         dis_website = findViewById(R.id.displaywebsite);
         img_back = findViewById(R.id.img_back);
         website_logo = findViewById(R.id.website_logo);
+        open_website = findViewById(R.id.open_website);
 
         Intent intent = getIntent();
         comingdate = intent.getStringExtra("date");
         loginname = getIntent().getStringExtra("loginname");
         loginpassowrd = getIntent().getStringExtra("loginpassowrd");
-        loginwebsite = getIntent().getStringExtra("loginwebsite");
+        loginwebsite_name = getIntent().getStringExtra("loginwebsite_name");
+        loginwebsite_link = getIntent().getStringExtra("loginwebsite_link");
         dis_login.setText(loginname);
         tiet_pass.setText(loginpassowrd);
-        String Title = loginwebsite.substring(0, 1).toUpperCase() + loginwebsite.substring(1);
-        dis_website.setText(addPasswordData.reverseFun(loginwebsite));
-        tv_img_title.setText(Title);
+        String Title = loginwebsite_name.substring(0, 1).toUpperCase() + loginwebsite_name.substring(1);
+        dis_website.setText(loginwebsite_link);
+        tv_img_title.setText(Title.replace("_","."));
 
         til_displaypassword.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,6 +83,19 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
                             InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
                 } else {
+                    if (mRewardedAd != null) {
+                        Activity activityContext = ShowCardviewDataActivity.this;
+                        mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
+                            @Override
+                            public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                                // Handle the reward.
+                                int rewardAmount = rewardItem.getAmount();
+                                String rewardType = rewardItem.getType();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(ShowCardviewDataActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
+                    }
                     Intent intent1 = new Intent(getApplicationContext(), pinLockFragment.class);
                     intent1.putExtra(LogInActivity.REQUEST_CODE_NAME, "ShowCardviewDataActivity");
                     intent1.putExtra("title", "Enter Pin");
@@ -84,11 +107,22 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
 
             }
         });
+        
+        website_logo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("website_logo1 " +  website_logo1);
+                Toast.makeText(ShowCardviewDataActivity.this, "logo fetched!!" + website_logo1, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        cardViewDataThreadRunnable dataThreadRunnable = new cardViewDataThreadRunnable(loginwebsite_link);
+        new Thread(dataThreadRunnable).start();
 
 
-        // fetching logo
-        website_logo.setImageBitmap(fetchFavicon(Uri.parse(loginwebsite)));
-
+//        if (addPasswordData.addWebsiteLink.equals("")){
+//            open_website.setVisibility(View.INVISIBLE);
+//        }
 
     }
 
@@ -109,23 +143,23 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
         intent.putExtra("date", comingdate);
         intent.putExtra("loginname", loginname);
         intent.putExtra("loginpassowrd", loginpassowrd);
-        intent.putExtra("loginwebsite", loginwebsite);
+        intent.putExtra("loginwebsite_name", loginwebsite_name);
+        intent.putExtra("loginwebsite_link", loginwebsite_link);
         startActivity(intent);
     }
 
     public void goback(View view) {
-        startActivity(new Intent(ShowCardviewDataActivity.this, HomeActivity.class));
         finish();
         overridePendingTransition(0, R.anim.slide_out_down);
     }
 
-    public void openWebsite(View view) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(addPasswordData.addWebsiteLink));
-        Toast.makeText(this, "Opening Website", Toast.LENGTH_SHORT).show();
-        startActivity(intent);
-    }
+//    public void openWebsite(View view) {
+//        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(addPasswordData.addWebsiteLink));
+//        Toast.makeText(this, "Opening Website", Toast.LENGTH_SHORT).show();
+//        startActivity(intent);
+//    }
 
-    private Bitmap fetchFavicon(Uri uri) {
+    private static Bitmap fetchFavicon(Uri uri) {
         final Uri iconUri = uri.buildUpon().path("favicon.ico").build();
 
         InputStream is = null;
@@ -140,4 +174,28 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
             return null;
         }
     }
+
+    public class cardViewDataThreadRunnable implements Runnable {
+
+        private String loginwebsite_link1;
+
+        public cardViewDataThreadRunnable (String loginwebsite_link){
+            this.loginwebsite_link1 = loginwebsite_link;
+        }
+
+        Handler handler = new Handler();
+        @Override
+        public void run() {
+            website_logo1 = fetchFavicon(Uri.parse(loginwebsite_link1));
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+
+                    website_logo.setImageBitmap(website_logo1);
+                }
+            });
+        }
+    }
+
+
 }

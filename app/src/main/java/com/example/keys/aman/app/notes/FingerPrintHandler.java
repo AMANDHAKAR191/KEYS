@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.home.HomeActivity;
+import com.example.keys.aman.app.base.tabLayoutActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 
 public class FingerPrintHandler extends FingerprintManager.AuthenticationCallback {
@@ -38,6 +38,10 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
     @Override
     public void onAuthenticationError(int errorCode, CharSequence errString) {
         this.update("There was an Auth Error. " + errString,false);
+        Intent intent = new Intent(context,BiometricActivity.class);
+        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
+        activity.startActivity(intent);
+        activity.finish();
     }
 
     @Override
@@ -65,28 +69,35 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
         }else {
             paralable.setTextColor(Color.BLACK);
             img_fingerprint.setImageResource(R.mipmap.done_icon);
-            if (comingrequestcode.equals("LogInActivity")){
+            switch (comingrequestcode){
+                case "LogInActivity":
+                    SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                    editor1.putBoolean(LogInActivity.ISAUTHENTICATED, true);
+                    editor1.apply();
 
-                SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                editor1.putBoolean(LogInActivity.ISAUTHENTICATED, true);
-                editor1.apply();
+                    Intent intent = new Intent(context, tabLayoutActivity.class);
+                    intent.putExtra(LogInActivity.REQUEST_CODE_NAME,comingrequestcode);
+                    context.startActivity(intent);
+                    activity.finish();
+                    break;
+                case "notesActivity":
+                    comingrequestcode = "BiometricActivity";
+                    SharedPreferences.Editor editor2 = sharedPreferences.edit();
+                    editor2.putBoolean(LogInActivity.ISAUTHENTICATED, true);
+                    editor2.apply();
 
-                Intent intent = new Intent(context, HomeActivity.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME,comingrequestcode);
-                context.startActivity(intent);
-                activity.finish();
-            }else if (comingrequestcode.equals("notesActivity")){
-                comingrequestcode = "BiometricActivity";
-                SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                editor1.putBoolean(LogInActivity.ISAUTHENTICATED, true);
-                editor1.apply();
-
-                Intent intent = new Intent(context, secretNotesActivity.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME,comingrequestcode);
-                context.startActivity(intent);
-                activity.finish();
+                    Intent intent1 = new Intent(context, secretNotesActivity.class);
+                    intent1.putExtra(LogInActivity.REQUEST_CODE_NAME,comingrequestcode);
+                    context.startActivity(intent1);
+                    activity.finish();
+                    break;
+                case "HomeActivity":
+                    Intent intent2 = new Intent(context, tabLayoutActivity.class);
+                    intent2.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity");
+                    context.startActivity(intent2);
+                    activity.finish();
+                    break;
             }
-
         }
 
     }

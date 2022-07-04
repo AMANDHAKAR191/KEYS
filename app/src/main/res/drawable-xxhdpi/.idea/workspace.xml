@@ -5,8 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a80a984d-6d44-4269-9b46-30f2070dae8d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/../drawable/ic_baseline_add_24.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/base/tabLayoutActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/base/viewPagerAdaptor.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../layout/activity_tab_layout.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../values-land/dimens.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../values-w1240dp/dimens.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../values-w600dp/dimens.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../values-w820dp/dimens.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../values/dimens.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../.idea/gradle.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../../../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../../../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../AndroidManifest.xml" afterDir="false" />
@@ -14,25 +21,39 @@
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/HomeActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/HomeActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/PassGenActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/PassGenActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/ShowCardviewDataActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/ShowCardviewDataActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/addpassword/addDataHelperClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/addpassword/addDataHelperClass.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/addpassword/addPasswordData.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/addpassword/addPasswordData.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/addpassword/myadaptorforaddpassword.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/addpassword/myadaptorforaddpassword.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/addpassword/websiteHelper.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/addpassword/websiteHelper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/myadaptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/home/myadaptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/BiometricActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/BiometricActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/FingerPrintHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/FingerPrintHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/addNotesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/addNotesActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/myadaptorfornote.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/myadaptorfornote.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/notesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/notesActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/pinLockFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/pinLockFragment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/secretNotesActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/notes/secretNotesActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/service/basicService.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/service/basicService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/settings/OTPVerification.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/settings/ProfileActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/settings/ProfileActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/settings/SettingActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/settings/SettingActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/signin_login/LogInActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/signin_login/LogInActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/signin_login/UserHelperClass.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../java/com/example/keys/aman/app/signin_login/UserHelperClass.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drawable/close.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../drawable/close.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../drawable/save.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../drawable/save.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout-land/simple_service_auth_activity.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_add_notes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_add_notes.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_add_password_data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_add_password_data.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../layout/activity_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_home.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../layout/activity_log_in.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_log_in.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../layout/activity_notes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_notes.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../layout/activity_profile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_profile.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_otpverification.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_pass_gen.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_pass_gen.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../layout/activity_secret_notes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_secret_notes.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../layout/activity_setting.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_setting.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../layout/activity_sign_up.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_sign_up.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/activity_show_cardview_data.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/activity_show_cardview_data.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../layout/cardview_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/cardview_layout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../layout/website_cardview_layout.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../layout/website_cardview_layout.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../values/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../values/themes.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

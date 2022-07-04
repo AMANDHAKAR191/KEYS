@@ -44,5 +44,8 @@
     <string name="compose_shortcut_short_label1">Gen Password</string>
     <string name="compose_shortcut_long_label1">Open Password Generator Activity</string>
     <string name="compose_disabled_message1">"This is Desabled "</string>
+    <string name="title_activity_base">baseActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
 
 </resources>

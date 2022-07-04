@@ -18,4 +18,13 @@
         <item name="android:windowEnterTransition">@transition/left_trans_anim</item>
         <item name="android:windowExitTransition">@transition/left_trans_anim</item>
     </style>
+
+    <style name="Theme.KEYS.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.KEYS.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.KEYS.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
