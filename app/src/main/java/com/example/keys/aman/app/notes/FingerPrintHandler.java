@@ -19,14 +19,14 @@ import com.example.keys.aman.app.signin_login.LogInActivity;
 public class FingerPrintHandler extends FingerprintManager.AuthenticationCallback {
     private final Context context;
     private FingerprintManager fingerprintManager;
-    String comingrequestcode;
+    String comingRequestCode;
     Activity activity;
     public SharedPreferences sharedPreferences;
 
-    public FingerPrintHandler(Context context, Activity activity ,String comingrequestcode) {
+    public FingerPrintHandler(Context context, Activity activity ,String comingrRequestCode) {
         this.context = context;
         this.activity = activity;
-        this.comingrequestcode = comingrequestcode;
+        this.comingRequestCode = comingrRequestCode;
         sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
     }
 
@@ -69,25 +69,25 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
         }else {
             paralable.setTextColor(Color.BLACK);
             img_fingerprint.setImageResource(R.mipmap.done_icon);
-            switch (comingrequestcode){
+            switch (comingRequestCode){
                 case "LogInActivity":
                     SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                    editor1.putBoolean(LogInActivity.ISAUTHENTICATED, true);
+                    editor1.putBoolean(LogInActivity.IS_AUTHENTICATED, true);
                     editor1.apply();
 
                     Intent intent = new Intent(context, tabLayoutActivity.class);
-                    intent.putExtra(LogInActivity.REQUEST_CODE_NAME,comingrequestcode);
+                    intent.putExtra(LogInActivity.REQUEST_CODE_NAME, comingRequestCode);
                     context.startActivity(intent);
                     activity.finish();
                     break;
                 case "notesActivity":
-                    comingrequestcode = "BiometricActivity";
+                    comingRequestCode = "BiometricActivity";
                     SharedPreferences.Editor editor2 = sharedPreferences.edit();
-                    editor2.putBoolean(LogInActivity.ISAUTHENTICATED, true);
+                    editor2.putBoolean(LogInActivity.IS_AUTHENTICATED, true);
                     editor2.apply();
 
                     Intent intent1 = new Intent(context, secretNotesActivity.class);
-                    intent1.putExtra(LogInActivity.REQUEST_CODE_NAME,comingrequestcode);
+                    intent1.putExtra(LogInActivity.REQUEST_CODE_NAME, comingRequestCode);
                     context.startActivity(intent1);
                     activity.finish();
                     break;

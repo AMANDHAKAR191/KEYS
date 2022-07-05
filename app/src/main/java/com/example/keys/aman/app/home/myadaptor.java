@@ -46,7 +46,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
     Activity activity;
     AES aes = new AES();
     private SharedPreferences sharedPreferences;
-    public static Bitmap website_logo1;
+    public static Bitmap bmWebsiteLogo;
 
     public myadaptor(ArrayList<addDataHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
@@ -67,11 +67,11 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
 
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
-        myadaptorThreadRunnable threadRunnable = new myadaptorThreadRunnable(position,holder);
+        myAdaptorThreadRunnable threadRunnable = new myAdaptorThreadRunnable(position,holder);
         new Thread(threadRunnable).start();
     }
 
-    public class myadaptorThreadRunnable implements Runnable {
+    public class myAdaptorThreadRunnable implements Runnable {
 
         private int position;
         myviewholder holder;
@@ -79,7 +79,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
         String[] title1;
         String current_date, dlogin, dpassword, dwebsite_name, temp_dlogin, temp_dpassword;
 
-        public myadaptorThreadRunnable (int position1, myviewholder holder1){
+        public myAdaptorThreadRunnable(int position1, myviewholder holder1){
             this.position = position1;
             this.holder = holder1;
         }
@@ -113,18 +113,18 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                 e.printStackTrace();
             }
 
-            website_logo1 = myadaptor.fetchFavicon(Uri.parse(dwebsite_link));
+            bmWebsiteLogo = myadaptor.fetchFavicon(Uri.parse(dwebsite_link));
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    holder.tv_dlogin.setText(temp_dlogin);
+                    holder.tvLogin.setText(temp_dlogin);
                     if (title1.length == 3){
-                        holder.tv_dwebsitename.setText(title1[1]);
+                        holder.tvWebsiteName.setText(title1[1]);
                     }else if (title1.length == 2){
-                        holder.tv_dwebsitename.setText(title1[0]);
+                        holder.tvWebsiteName.setText(title1[0]);
                     }
 
-                    holder.img_logo.setOnClickListener(new View.OnClickListener() {
+                    holder.imgWebsiteLogo.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(context, ShowCardviewDataActivity.class);
@@ -140,7 +140,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
 
                         }
                     });
-                    holder.tv_dlogin.setOnClickListener(new View.OnClickListener() {
+                    holder.tvLogin.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(context, ShowCardviewDataActivity.class);
@@ -156,7 +156,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
 
                         }
                     });
-                    holder.tv_dwebsitename.setOnClickListener(new View.OnClickListener() {
+                    holder.tvWebsiteName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             Intent intent = new Intent(context, ShowCardviewDataActivity.class);
@@ -187,7 +187,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                             activity.overridePendingTransition(R.anim.slide_in_down, 0);
                         }
                     });
-                    holder.tb_cardview_more.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+                    holder.tbcvMore.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
@@ -220,7 +220,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                         }
                     });
 
-                    holder.img_logo.setImageBitmap(website_logo1);
+                    holder.imgWebsiteLogo.setImageBitmap(bmWebsiteLogo);
                 }
             });
         }
@@ -298,20 +298,19 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
 
     public static class myviewholder extends RecyclerView.ViewHolder {
 
-        final TextView tv_dlogin, tv_dwebsitename;
-        final TextView tv_img_title;
-        final ImageView img_logo;
-        final Toolbar tb_cardview_more;
+        final TextView tvLogin, tvWebsiteName, tvWebsiteTitle;
+        final ImageView imgWebsiteLogo;
+        final Toolbar tbcvMore;
         final LinearLayout LLCard;
 
         public myviewholder(@NonNull View itemView) {
             super(itemView);
-            tv_dlogin = itemView.findViewById(R.id.displayname);
-            tv_dwebsitename = itemView.findViewById(R.id.displaywebsite);
-            tb_cardview_more = itemView.findViewById(R.id.cardview_more);
+            tvLogin = itemView.findViewById(R.id.displayname);
+            tvWebsiteName = itemView.findViewById(R.id.displaywebsite);
+            tbcvMore = itemView.findViewById(R.id.cardview_more);
             LLCard = itemView.findViewById(R.id.linear_layout_card);
-            tv_img_title = itemView.findViewById(R.id.tv_img_title);
-            img_logo = itemView.findViewById(R.id.img_logo);
+            tvWebsiteTitle = itemView.findViewById(R.id.tv_img_title);
+            imgWebsiteLogo = itemView.findViewById(R.id.img_logo);
         }
 
     }

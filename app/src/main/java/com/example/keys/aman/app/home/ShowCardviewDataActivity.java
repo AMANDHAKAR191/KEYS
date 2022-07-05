@@ -36,13 +36,13 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class ShowCardviewDataActivity extends AppCompatActivity {
-    TextView /*dis_title*/ dis_login, dis_website, tv_img_title;
-    TextInputEditText tiet_pass;
-    TextInputLayout til_displaypassword;
-    ImageView img_back;
-    ImageView website_logo, open_website;
-    private String comingdate, loginname, loginpassowrd, loginwebsite_name, loginwebsite_link;
-    private Bitmap website_logo1;
+    TextView tvDisplayLogin, tvDisplayWebsite, tvTitle;
+    TextInputEditText tietDisplayPassword;
+    TextInputLayout tilDisplayPassword;
+    ImageView imgBack;
+    ImageView imgWebsiteLogo, imgOpenWebsite;
+    private String comingDate, comingLoginName, comingLoginPassword, comingLoginWebsiteName, comingLoginWebsiteLink;
+    private Bitmap bmWebsiteLogo;
 
 
     @Override
@@ -51,35 +51,35 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_show_cardview_data);
         //Hooks
-        tv_img_title = findViewById(R.id.tv_img_title);
-        dis_login = findViewById(R.id.displaylogin);
-        tiet_pass = findViewById(R.id.displaypassword);
-        til_displaypassword = findViewById(R.id.til_displaypassword);
-        dis_website = findViewById(R.id.displaywebsite);
-        img_back = findViewById(R.id.img_back);
-        website_logo = findViewById(R.id.website_logo);
-        open_website = findViewById(R.id.open_website);
+        tvTitle = findViewById(R.id.tv_img_title);
+        tvDisplayLogin = findViewById(R.id.displaylogin);
+        tietDisplayPassword = findViewById(R.id.displaypassword);
+        tilDisplayPassword = findViewById(R.id.til_displaypassword);
+        tvDisplayWebsite = findViewById(R.id.displaywebsite);
+        imgBack = findViewById(R.id.img_back);
+        imgWebsiteLogo = findViewById(R.id.website_logo);
+        imgOpenWebsite = findViewById(R.id.open_website);
 
         Intent intent = getIntent();
-        comingdate = intent.getStringExtra("date");
-        loginname = getIntent().getStringExtra("loginname");
-        loginpassowrd = getIntent().getStringExtra("loginpassowrd");
-        loginwebsite_name = getIntent().getStringExtra("loginwebsite_name");
-        loginwebsite_link = getIntent().getStringExtra("loginwebsite_link");
-        dis_login.setText(loginname);
-        tiet_pass.setText(loginpassowrd);
-        String Title = loginwebsite_name.substring(0, 1).toUpperCase() + loginwebsite_name.substring(1);
-        dis_website.setText(loginwebsite_link);
-        tv_img_title.setText(Title.replace("_","."));
+        comingDate = intent.getStringExtra("date");
+        comingLoginName = getIntent().getStringExtra("loginname");
+        comingLoginPassword = getIntent().getStringExtra("loginpassowrd");
+        comingLoginWebsiteName = getIntent().getStringExtra("loginwebsite_name");
+        comingLoginWebsiteLink = getIntent().getStringExtra("loginwebsite_link");
+        tvDisplayLogin.setText(comingLoginName);
+        tietDisplayPassword.setText(comingLoginPassword);
+        String Title = comingLoginWebsiteName.substring(0, 1).toUpperCase() + comingLoginWebsiteName.substring(1);
+        tvDisplayWebsite.setText(comingLoginWebsiteLink);
+        tvTitle.setText(Title.replace("_","."));
 
-        til_displaypassword.setEndIconOnClickListener(new View.OnClickListener() {
+        tilDisplayPassword.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println(tiet_pass.getInputType());
-                if (tiet_pass.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
+                System.out.println(tietDisplayPassword.getInputType());
+                if (tietDisplayPassword.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
 
 
-                    tiet_pass.setInputType(InputType.TYPE_CLASS_TEXT |
+                    tietDisplayPassword.setInputType(InputType.TYPE_CLASS_TEXT |
                             InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
                 } else {
@@ -103,27 +103,21 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
 
 
                 }
-                tiet_pass.setSelection(tiet_pass.getText().length());
+                tietDisplayPassword.setSelection(tietDisplayPassword.getText().length());
 
             }
         });
         
-        website_logo.setOnClickListener(new View.OnClickListener() {
+        imgWebsiteLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("website_logo1 " +  website_logo1);
-                Toast.makeText(ShowCardviewDataActivity.this, "logo fetched!!" + website_logo1, Toast.LENGTH_SHORT).show();
+                System.out.println("website_logo1 " + bmWebsiteLogo);
+                Toast.makeText(ShowCardviewDataActivity.this, "logo fetched!!" + bmWebsiteLogo, Toast.LENGTH_SHORT).show();
             }
         });
 
-        cardViewDataThreadRunnable dataThreadRunnable = new cardViewDataThreadRunnable(loginwebsite_link);
+        cardViewDataThreadRunnable dataThreadRunnable = new cardViewDataThreadRunnable(comingLoginWebsiteLink);
         new Thread(dataThreadRunnable).start();
-
-
-//        if (addPasswordData.addWebsiteLink.equals("")){
-//            open_website.setVisibility(View.INVISIBLE);
-//        }
-
     }
 
     @Override
@@ -132,7 +126,7 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             String result = data.getStringExtra("result");
             if (result.equals("yes")) {
-                tiet_pass.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                tietDisplayPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
             }
         }
     }
@@ -140,25 +134,22 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
     public void editdata(View view) {
         Intent intent = new Intent(ShowCardviewDataActivity.this, addPasswordData.class);
         intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "ShowCardviewDataActivity");
-        intent.putExtra("date", comingdate);
-        intent.putExtra("loginname", loginname);
-        intent.putExtra("loginpassowrd", loginpassowrd);
-        intent.putExtra("loginwebsite_name", loginwebsite_name);
-        intent.putExtra("loginwebsite_link", loginwebsite_link);
+        intent.putExtra("date", comingDate);
+        intent.putExtra("loginname", comingLoginName);
+        intent.putExtra("loginpassowrd", comingLoginPassword);
+        intent.putExtra("loginwebsite_name", comingLoginWebsiteName);
+        intent.putExtra("loginwebsite_link", comingLoginWebsiteLink);
         startActivity(intent);
     }
-
-    public void goback(View view) {
+    public void goBack(View view) {
         finish();
         overridePendingTransition(0, R.anim.slide_out_down);
     }
-
 //    public void openWebsite(View view) {
 //        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(addPasswordData.addWebsiteLink));
 //        Toast.makeText(this, "Opening Website", Toast.LENGTH_SHORT).show();
 //        startActivity(intent);
 //    }
-
     private static Bitmap fetchFavicon(Uri uri) {
         final Uri iconUri = uri.buildUpon().path("favicon.ico").build();
 
@@ -174,24 +165,22 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
             return null;
         }
     }
-
     public class cardViewDataThreadRunnable implements Runnable {
 
-        private String loginwebsite_link1;
+        private String tempLoginWebsiteLink;
 
-        public cardViewDataThreadRunnable (String loginwebsite_link){
-            this.loginwebsite_link1 = loginwebsite_link;
+        public cardViewDataThreadRunnable (String loginWebsiteLink){
+            this.tempLoginWebsiteLink = loginWebsiteLink;
         }
 
         Handler handler = new Handler();
         @Override
         public void run() {
-            website_logo1 = fetchFavicon(Uri.parse(loginwebsite_link1));
+            bmWebsiteLogo = fetchFavicon(Uri.parse(tempLoginWebsiteLink));
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-
-                    website_logo.setImageBitmap(website_logo1);
+                    imgWebsiteLogo.setImageBitmap(bmWebsiteLogo);
                 }
             });
         }

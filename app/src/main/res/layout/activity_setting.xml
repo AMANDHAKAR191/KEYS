@@ -56,7 +56,7 @@
                 android:id="@+id/tv_use_pin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Use Pin"
+                android:text="Chnage Pin"
                 android:textSize="18dp"
                 android:textColor="?attr/colorOnSecondary"
                 android:layout_marginTop="40dp"
@@ -163,21 +163,6 @@
                 android:textColor="?attr/colorOnSecondary"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent" />
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:endIconMode="clear_text"
-                android:visibility="gone"
-                app:endIconDrawable="@drawable/save"
-                android:id="@+id/save_website_link">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter website Link"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
 
         </LinearLayout>
     </ScrollView>

@@ -56,95 +56,95 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
 
         sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
+        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
         int p = holder.getAdapterPosition();
-        String tv_date, tv_title, tv_note,tv_title_dc, tv_note_dc, temp_title_dc, temp_note_dc ;
-        boolean cb_hide_note;
+        String noteDate, noteTitle, noteBody, decryptedNoteTitle, decryptedNoteBody, doubleDecryptedNoteTitle, doubleDecryptedNoteBody;
+        boolean isHideNote;
         try {
-            tv_date = dataholder.get(position).getDate();
-            cb_hide_note = dataholder.get(position).isHide_note();
-            tv_title = dataholder.get(position).getTitle();
-            tv_note = dataholder.get(position).getNote();
+            noteDate = dataholder.get(position).getDate();
+            isHideNote = dataholder.get(position).isHideNote();
+            noteTitle = dataholder.get(position).getTitle();
+            noteBody = dataholder.get(position).getNote();
 
             //Double Decryption
-            tv_title_dc = aes.decrypt(tv_title);
-            temp_title_dc = aes.decrypt(tv_title_dc);
-            tv_note_dc = aes.decrypt(tv_note);
-            temp_note_dc = aes.decrypt(tv_note_dc);
+            decryptedNoteTitle = aes.decrypt(noteTitle);
+            doubleDecryptedNoteTitle = aes.decrypt(decryptedNoteTitle);
+            decryptedNoteBody = aes.decrypt(noteBody);
+            doubleDecryptedNoteBody = aes.decrypt(decryptedNoteBody);
 
-            holder.tv_date.setText(tv_date);
-            holder.tv_title.setText(temp_title_dc);
-            holder.tv_note.setText(temp_note_dc);
+            holder.tvDate.setText(noteDate);
+            holder.tvTitle.setText(doubleDecryptedNoteTitle);
+            holder.tvNote.setText(doubleDecryptedNoteBody);
 
-            holder.LLCard.setOnClickListener(new View.OnClickListener() {
+            holder.llCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, addNotesActivity.class);
-                    intent.putExtra("request_code","notesCardView");
-                    intent.putExtra("date", tv_date);
-                    intent.putExtra("hide note",cb_hide_note);
-                    intent.putExtra("title", temp_title_dc);
-                    intent.putExtra("note", temp_note_dc);
+                    intent.putExtra("request_code", "notesCardView");
+                    intent.putExtra("date", noteDate);
+                    intent.putExtra("hide note", isHideNote);
+                    intent.putExtra("title", doubleDecryptedNoteTitle);
+                    intent.putExtra("note", doubleDecryptedNoteBody);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_down, 0);
                 }
             });
-            holder.tv_date.setOnClickListener(new View.OnClickListener() {
+            holder.tvDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, addNotesActivity.class);
-                    intent.putExtra("request_code","notesCardView");
-                    intent.putExtra("date", tv_date);
-                    intent.putExtra("hide note",cb_hide_note);
-                    intent.putExtra("title", temp_title_dc);
-                    intent.putExtra("note", temp_note_dc);
+                    intent.putExtra("request_code", "notesCardView");
+                    intent.putExtra("date", noteDate);
+                    intent.putExtra("hide note", isHideNote);
+                    intent.putExtra("title", doubleDecryptedNoteTitle);
+                    intent.putExtra("note", doubleDecryptedNoteBody);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_down, 0);
                 }
             });
-            holder.tv_title.setOnClickListener(new View.OnClickListener() {
+            holder.tvTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, addNotesActivity.class);
-                    intent.putExtra("request_code","notesCardView");
-                    intent.putExtra("date", tv_date);
-                    intent.putExtra("hide note",cb_hide_note);
-                    intent.putExtra("title", temp_title_dc);
-                    intent.putExtra("note", temp_note_dc);
+                    intent.putExtra("request_code", "notesCardView");
+                    intent.putExtra("date", noteDate);
+                    intent.putExtra("hide note", isHideNote);
+                    intent.putExtra("title", doubleDecryptedNoteTitle);
+                    intent.putExtra("note", doubleDecryptedNoteBody);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_down, 0);
                 }
             });
-            holder.tv_note.setOnClickListener(new View.OnClickListener() {
+            holder.tvNote.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(context, addNotesActivity.class);
-                    intent.putExtra("request_code","notesCardView");
-                    intent.putExtra("date", tv_date);
-                    intent.putExtra("hide note",cb_hide_note);
-                    intent.putExtra("title", temp_title_dc);
-                    intent.putExtra("note", temp_note_dc);
+                    intent.putExtra("request_code", "notesCardView");
+                    intent.putExtra("date", noteDate);
+                    intent.putExtra("hide note", isHideNote);
+                    intent.putExtra("title", doubleDecryptedNoteTitle);
+                    intent.putExtra("note", doubleDecryptedNoteBody);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_down, 0);
                 }
             });
-            holder.cardview_more.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            holder.tbcvMore.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                 @Override
                 public boolean onMenuItemClick(MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.img_copy_note:
                             ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                            ClipData clipData = ClipData.newPlainText("Copy_Password", temp_note_dc);
+                            ClipData clipData = ClipData.newPlainText("Copy_Password", doubleDecryptedNoteBody);
                             clipboardManager.setPrimaryClip(clipData);
                             Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
                             return true;
                         case R.id.img_delete:
-                            notesActivity.reference.child(tv_date).removeValue();
-                            Toast.makeText(context,"Deleted !!", Toast.LENGTH_SHORT).show();
+                            notesActivity.reference.child(noteDate).removeValue();
+                            Toast.makeText(context, "Deleted !!", Toast.LENGTH_SHORT).show();
                             notesActivity.adaptor.notifyDataSetChanged();
                             activity.finish();
                             activity.overridePendingTransition(0, 0);
@@ -159,7 +159,6 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
 
     }
@@ -179,15 +178,15 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
         protected FilterResults performFiltering(CharSequence charSequence) {
             ArrayList<addDNoteHelperClass> filteredDataList = new ArrayList<>();
 
-            if (charSequence == null || charSequence.length() == 0){
+            if (charSequence == null || charSequence.length() == 0) {
                 filteredDataList.addAll(dataholder);
-            }else {
+            } else {
                 String filterPattern = charSequence.toString().toLowerCase().trim();
 
-                for (addDNoteHelperClass addDNoteHelperClass : dataholder){
+                for (addDNoteHelperClass addDNoteHelperClass : dataholder) {
                     try {
                         String a1 = aes.decrypt(addDNoteHelperClass.getTitle());
-                        if (a1.toLowerCase().contains(filterPattern)){
+                        if (a1.toLowerCase().contains(filterPattern)) {
                             filteredDataList.add(addDNoteHelperClass);
                             try {
                                 System.out.println("Filtered data: " + aes.decrypt(addDNoteHelperClass.getTitle()));
@@ -212,26 +211,26 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
 
             dataholderfilter.clear();
-            dataholderfilter.addAll((ArrayList)filterResults.values);
+            dataholderfilter.addAll((ArrayList) filterResults.values);
             notifyDataSetChanged();
         }
     };
 
     public static class myviewholder extends RecyclerView.ViewHolder {
 
-        final TextView tv_date;
-        final TextView tv_title;
-        final TextView tv_note;
-        final Toolbar cardview_more;
-        final LinearLayout LLCard;
+        final TextView tvDate;
+        final TextView tvTitle;
+        final TextView tvNote;
+        final Toolbar tbcvMore;
+        final LinearLayout llCard;
 
         public myviewholder(@NonNull View itemView) {
             super(itemView);
-            tv_date = itemView.findViewById(R.id.tv_date);
-            tv_title = itemView.findViewById(R.id.tv_title);
-            tv_note = itemView.findViewById(R.id.tv_note);
-            cardview_more = itemView.findViewById(R.id.cardview_more);
-            LLCard = itemView.findViewById(R.id.lenear_layout_card);
+            tvDate = itemView.findViewById(R.id.tv_date);
+            tvTitle = itemView.findViewById(R.id.tv_title);
+            tvNote = itemView.findViewById(R.id.tv_note);
+            tbcvMore = itemView.findViewById(R.id.cardview_more);
+            llCard = itemView.findViewById(R.id.lenear_layout_card);
         }
 
     }

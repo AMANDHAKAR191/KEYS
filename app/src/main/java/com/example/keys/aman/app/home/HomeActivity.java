@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -27,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.PrograceBar;
 import com.example.keys.aman.app.home.addpassword.addDataHelperClass;
 import com.example.keys.aman.app.home.addpassword.addPasswordData;
 import com.example.keys.aman.app.notes.addNotesActivity;
@@ -57,27 +54,20 @@ public class HomeActivity extends Fragment {
         this.activity = activity;
     }
 
-    //    public static InterstitialAd mInterstitialAd;
     ScrollView scrollView;
     ExtendedFloatingActionButton exFABtn;
-    FloatingActionButton AddPasswordFab, PasswordGenratorFab, AddNotefab;
-    TextView textView_addpassword, textView_passgen, textView_ShowpersonalInfo, tv_NOTE;
+    FloatingActionButton fabAddPassword, fabPasswordGenrator, fabAddNote;
+    TextView tvAddPassword, tvPasswordGenrator, tvShowPersonalInfo, tvNOTE;
     Boolean isAllFabsVisible;
     RecyclerView recview;
-    LinearLayout ll_fab;
+    LinearLayout llFab;
     SearchView searchView;
     SwipeRefreshLayout swipeRefreshLayout;
-
-    //Shared Preference
     SharedPreferences sharedPreferences;
     public static DatabaseReference databaseReference;
     public static myadaptor adaptor;
-    private PrograceBar prograce_bar;
-    RecyclerView recyclerView;
     ArrayList<addDataHelperClass> dataholder;
-//    private final String mInterstitialAdId = "ca-app-pub-3752721223259598/1110148878";
     String uid;
-    ArrayList<addDataHelperClass> offlineDataholder;
 
     @Nullable
     @Override
@@ -85,23 +75,23 @@ public class HomeActivity extends Fragment {
         View view = inflater.inflate(R.layout.activity_home,container,false);
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         //Hooks
-        recyclerView = view.findViewById(R.id.recview);
         exFABtn = view.findViewById(R.id.ExtendedFloatingActionButton);
-        AddPasswordFab = view.findViewById(R.id.add_password_fab);
-        textView_addpassword = view.findViewById(R.id.tv_add_password);
-        PasswordGenratorFab = view.findViewById(R.id.password_gen_fab);
-        textView_passgen = view.findViewById(R.id.tv_pass_gen);
-        AddNotefab = view.findViewById(R.id.add_note_fab);
-        textView_ShowpersonalInfo = view.findViewById(R.id.tv_personal_info);
-        tv_NOTE = view.findViewById(R.id.tv_NOTE);
+        fabAddPassword = view.findViewById(R.id.add_password_fab);
+        tvAddPassword = view.findViewById(R.id.tv_add_password);
+        fabPasswordGenrator = view.findViewById(R.id.password_gen_fab);
+        tvPasswordGenrator = view.findViewById(R.id.tv_pass_gen);
+        fabAddNote = view.findViewById(R.id.add_note_fab);
+        tvShowPersonalInfo = view.findViewById(R.id.tv_personal_info);
+        tvNOTE = view.findViewById(R.id.tv_NOTE);
         scrollView = view.findViewById(R.id.scrollView);
         recview = view.findViewById(R.id.recview);
-        ll_fab = view.findViewById(R.id.ll_fab);
+        llFab = view.findViewById(R.id.ll_fab);
         searchView = view.findViewById(R.id.search_bar);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+
+        uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
 //        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 //            @Override
@@ -119,19 +109,19 @@ public class HomeActivity extends Fragment {
 //                return false;
 //            }
 //        });
-        ll_fab.setOnClickListener(new View.OnClickListener() {
+        llFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddPasswordFab.hide();
-                PasswordGenratorFab.hide();
-                AddNotefab.hide();
-                textView_addpassword.setVisibility(View.GONE);
-                textView_passgen.setVisibility(View.GONE);
-                textView_ShowpersonalInfo.setVisibility(View.GONE);
+                fabAddPassword.hide();
+                fabPasswordGenrator.hide();
+                fabAddNote.hide();
+                tvAddPassword.setVisibility(View.GONE);
+                tvPasswordGenrator.setVisibility(View.GONE);
+                tvShowPersonalInfo.setVisibility(View.GONE);
                 exFABtn.setIconResource(R.drawable.add);
                 exFABtn.extend();
-                ll_fab.setBackground(activity.getDrawable(R.drawable.fully_transparent_background));
-                ll_fab.setVisibility(View.INVISIBLE);
+                llFab.setBackground(activity.getDrawable(R.drawable.fully_transparent_background));
+                llFab.setVisibility(View.INVISIBLE);
 //                // Gets linearlayout
 //                ViewGroup.LayoutParams params = ll_fab.getLayoutParams();
 //                params.height = 240;
@@ -140,18 +130,7 @@ public class HomeActivity extends Fragment {
                 isAllFabsVisible = false;
             }
         });
-        recview.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
-        AddPasswordFab.setOnClickListener(new View.OnClickListener() {
+        fabAddPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, addPasswordData.class);
@@ -160,7 +139,7 @@ public class HomeActivity extends Fragment {
                 activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
         });
-        PasswordGenratorFab.setOnClickListener(new View.OnClickListener() {
+        fabPasswordGenrator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, PassGenActivity.class);
@@ -169,7 +148,7 @@ public class HomeActivity extends Fragment {
                 activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
         });
-        AddNotefab.setOnClickListener(new View.OnClickListener() {
+        fabAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, addNotesActivity.class);
@@ -187,19 +166,12 @@ public class HomeActivity extends Fragment {
             }
         });
 
-
         MobileAds.initialize(context);
 
         threadRunnable threadRunnable = new threadRunnable(view);
         new Thread(threadRunnable).start();
 
         setfabVisblity();
-
-
-        String device_name = Build.MANUFACTURER + " | " + Build.DEVICE ;
-        Toast.makeText(context, "Device Name: " + device_name, Toast.LENGTH_SHORT).show();
-
-
         return view;
     }
 
@@ -221,70 +193,59 @@ public class HomeActivity extends Fragment {
             });
         }
     }
-
     private void setfabVisblity() {
         isAllFabsVisible = false;
-
-        AddPasswordFab.setVisibility(View.GONE);
-        textView_addpassword.setVisibility(View.GONE);
-        PasswordGenratorFab.setVisibility(View.GONE);
-        textView_passgen.setVisibility(View.GONE);
-        AddNotefab.setVisibility(View.GONE);
-        textView_ShowpersonalInfo.setVisibility(View.GONE);
-
-
+        fabAddPassword.setVisibility(View.GONE);
+        tvAddPassword.setVisibility(View.GONE);
+        fabPasswordGenrator.setVisibility(View.GONE);
+        tvPasswordGenrator.setVisibility(View.GONE);
+        fabAddNote.setVisibility(View.GONE);
+        tvShowPersonalInfo.setVisibility(View.GONE);
         exFABtn.extend();
         exFABtn.setOnClickListener(
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         if (!isAllFabsVisible) {
-                            AddPasswordFab.show();
-                            PasswordGenratorFab.show();
-                            AddNotefab.show();
-                            textView_addpassword.setVisibility(View.VISIBLE);
-                            textView_passgen.setVisibility(View.VISIBLE);
-                            textView_ShowpersonalInfo.setVisibility(View.VISIBLE);
+                            fabAddPassword.show();
+                            fabPasswordGenrator.show();
+                            fabAddNote.show();
+                            tvAddPassword.setVisibility(View.VISIBLE);
+                            tvPasswordGenrator.setVisibility(View.VISIBLE);
+                            tvShowPersonalInfo.setVisibility(View.VISIBLE);
                             exFABtn.shrink();
                             exFABtn.setIconResource(R.drawable.close);
                             exFABtn.setTranslationZ(1000);
-                            ll_fab.setBackground(activity.getDrawable(R.drawable.transparent_background));
-                            ll_fab.setVisibility(View.VISIBLE);
+                            llFab.setBackground(activity.getDrawable(R.drawable.transparent_background));
+                            llFab.setVisibility(View.VISIBLE);
                             isAllFabsVisible = true;
                         } else {
-                            AddPasswordFab.hide();
-                            PasswordGenratorFab.hide();
-                            AddNotefab.hide();
-                            textView_addpassword.setVisibility(View.GONE);
-                            textView_passgen.setVisibility(View.GONE);
-                            textView_ShowpersonalInfo.setVisibility(View.GONE);
+                            fabAddPassword.hide();
+                            fabPasswordGenrator.hide();
+                            fabAddNote.hide();
+                            tvAddPassword.setVisibility(View.GONE);
+                            tvPasswordGenrator.setVisibility(View.GONE);
+                            tvShowPersonalInfo.setVisibility(View.GONE);
                             exFABtn.setIconResource(R.drawable.add);
                             exFABtn.extend();
-                            ll_fab.setVisibility(View.INVISIBLE);
-                            ll_fab.setBackground(activity.getDrawable(R.drawable.transparent_background));
-
-//                            // Gets linearlayout
-//                            ViewGroup.LayoutParams params = ll_fab.getLayoutParams();
-//                            params.height = 5000;
-//                            params.width = 1000;
-//                            ll_fab.setLayoutParams(params);
+                            llFab.setVisibility(View.INVISIBLE);
+                            llFab.setBackground(activity.getDrawable(R.drawable.transparent_background));
                             isAllFabsVisible = false;
                         }
 
                     }
                 });
     }
-
     public void recyclerviewsetdata() {
 
         databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata")
                 .child(uid);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
+        recview.setLayoutManager(new LinearLayoutManager(context));
 
         dataholder = new ArrayList<>();
         adaptor = new myadaptor(dataholder, context, activity);
-        recyclerView.setAdapter(adaptor);
-        recyclerView.hasFixedSize();
+        recview.setAdapter(adaptor);
+        recview.hasFixedSize();
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -302,7 +263,7 @@ public class HomeActivity extends Fragment {
                     adaptor.notifyDataSetChanged();
 
                 } else {
-                    tv_NOTE.setVisibility(View.VISIBLE);
+                    tvNOTE.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -312,5 +273,4 @@ public class HomeActivity extends Fragment {
             }
         });
     }
-
 }

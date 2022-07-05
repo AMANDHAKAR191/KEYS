@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.PrograceBar;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,11 +48,10 @@ public class notesActivity extends Fragment {
     public static DatabaseReference reference;
     public static myadaptorfornote adaptor;
     private boolean turn = false;
-    TextView tv_NOTE;
+    TextView tvNote;
     SearchView searchView;
-    ExtendedFloatingActionButton extendedFloatingActionButton;
+    ExtendedFloatingActionButton exFABtn;
     private String uid;
-    private PrograceBar prograce_bar;
 
     @Nullable
     @Override
@@ -62,11 +59,13 @@ public class notesActivity extends Fragment {
         View view = inflater.inflate(R.layout.activity_notes,container,false);
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-
 
         //Hooks
         searchView = view.findViewById(R.id.search_bar);
+        tvNote = view.findViewById(R.id.tv_NOTE);
+        exFABtn = view.findViewById(R.id.ExtendedFloatingActionButton);
+
+        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 //        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 //            @Override
 //            public boolean onQueryTextSubmit(String s) {
@@ -82,18 +81,7 @@ public class notesActivity extends Fragment {
 //                return false;
 //            }
 //        });
-
-        tv_NOTE = view.findViewById(R.id.tv_NOTE);
-        extendedFloatingActionButton = view.findViewById(R.id.ExtendedFloatingActionButton);
-//        Handler handler = new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        },5000);
-        recyclerview_data_from_online_DB(view);
-        extendedFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+        exFABtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, addNotesActivity.class);
@@ -102,24 +90,21 @@ public class notesActivity extends Fragment {
                 activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
         });
+
+        recyclerViewSetData(view);
         return view;
     }
 
-    public void recyclerview_data_from_online_DB(View view) {
+    public void recyclerViewSetData(View view) {
         RecyclerView recyclerView;
-
         ArrayList<addDNoteHelperClass> dataholder;
-
-
         recyclerView = view.findViewById(R.id.recview);
 
         reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
-
         dataholder = new ArrayList<>();
         adaptor = new myadaptorfornote(dataholder, context, activity);
         recyclerView.setAdapter(adaptor);
-
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -127,7 +112,7 @@ public class notesActivity extends Fragment {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         addDNoteHelperClass data = ds.getValue(addDNoteHelperClass.class);
                         assert data != null;
-                        if (data.isHide_note()){
+                        if (data.isHideNote()){
 
                         }else {
                             dataholder.add(data);
@@ -137,7 +122,7 @@ public class notesActivity extends Fragment {
                     Collections.sort(dataholder,addDNoteHelperClass.addDNoteHelperClassComparator);
                     adaptor.notifyDataSetChanged();
                 } else {
-                    tv_NOTE.setVisibility(View.VISIBLE);
+                    tvNote.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -148,19 +133,6 @@ public class notesActivity extends Fragment {
         });
         recyclerView.setAdapter(adaptor);
 
-    }
-
-
-    public void progressbar() {
-        prograce_bar = new PrograceBar(activity);
-        prograce_bar.showDialog();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }, 500);
     }
 
 }

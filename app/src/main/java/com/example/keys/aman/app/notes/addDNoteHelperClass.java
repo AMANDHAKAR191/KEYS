@@ -4,16 +4,16 @@ import java.util.Comparator;
 
 public class addDNoteHelperClass {
     String date, title, note;
-    boolean hide_note;
+    boolean isHideNote;
 
     public addDNoteHelperClass() {
     }
 
-    public addDNoteHelperClass(String date, String title, String note, Boolean hide_note) {
+    public addDNoteHelperClass(String date, String title, String note, Boolean isHideNote) {
         this.date = date;
         this.title = title;
         this.note = note;
-        this.hide_note = hide_note;
+        this.isHideNote = isHideNote;
 
     }
     public static Comparator<addDNoteHelperClass> addDNoteHelperClassComparator = new Comparator<addDNoteHelperClass>() {
@@ -47,11 +47,11 @@ public class addDNoteHelperClass {
         this.note = note;
     }
 
-    public boolean isHide_note() {
-        return hide_note;
+    public boolean isHideNote() {
+        return isHideNote;
     }
 
-    public void setHide_note(boolean hide_note) {
-        this.hide_note = hide_note;
+    public void setHideNote(boolean isHideNote) {
+        this.isHideNote = isHideNote;
     }
 }

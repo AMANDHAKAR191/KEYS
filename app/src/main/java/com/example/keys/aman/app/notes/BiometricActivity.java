@@ -24,8 +24,8 @@ import com.example.keys.aman.app.signin_login.LogInActivity;
 
 public class BiometricActivity extends AppCompatActivity{
 
-    TextView tv_result;
-    ImageView img_fingerprint;
+    TextView tvDisplayMessage;
+    ImageView imgFingerPrint;
     private FingerprintManager fingerprintManager;
     private KeyguardManager keyguardManager;
     private String comingrequestcode;
@@ -38,8 +38,10 @@ public class BiometricActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biometric);
         sharedPreferences = getSharedPreferences(SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        tv_result = findViewById(R.id.tv_result);
-        img_fingerprint = findViewById(R.id.img_fingerprint);
+
+        //Hooks
+        tvDisplayMessage = findViewById(R.id.tv_result);
+        imgFingerPrint = findViewById(R.id.img_fingerprint);
 
         // Check 1: Android version should be greater or equal to Marshmallow
         // Check 2: Device has Fingerprint Scanner
@@ -54,13 +56,6 @@ public class BiometricActivity extends AppCompatActivity{
             comingrequestcode = "this";
         }
 
-
-//        if (comingrequestcode.equals("LogInActivity")) {
-//
-//        } else if (comingrequestcode.equals("this")) {
-//
-//        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
             keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
@@ -74,8 +69,8 @@ public class BiometricActivity extends AppCompatActivity{
 
 
             if (!isHardwareDetected) {
-                tv_result.setText("Fingerprint Scanner not detected in Device");
-                boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.ISPIN_SET,false);
+                tvDisplayMessage.setText("Fingerprint Scanner not detected in Device");
+                boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.IS_PIN_SET,false);
                 if (ispin_set){
                     Intent intent3 = new Intent(BiometricActivity.this,pinLockFragment.class);
                     intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
@@ -91,10 +86,11 @@ public class BiometricActivity extends AppCompatActivity{
                     finish();
                 }
             } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
-                tv_result.setText("Permission not granted to use Fingerprint Scanner");
-            } else if (!keyguardManager.isKeyguardSecure()) {
-                tv_result.setText("Add Lock to your Phone in Setting");
-                boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.ISPIN_SET,false);
+                tvDisplayMessage.setText("Permission not granted to use Fingerprint Scanner");
+            }
+            else if (!keyguardManager.isKeyguardSecure()) {
+                tvDisplayMessage.setText("Add Lock to your Phone in Setting");
+                boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.IS_PIN_SET,false);
                 if (ispin_set){
                     Intent intent3 = new Intent(BiometricActivity.this,pinLockFragment.class);
                     intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
@@ -109,8 +105,8 @@ public class BiometricActivity extends AppCompatActivity{
                     finish();
                 }
             } else if (!hasEnrolledFingerprints) {
-                tv_result.setText("You should add atleast 1 Fingerprint to use this Feature");
-                boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.ISPIN_SET,false);
+                tvDisplayMessage.setText("You should add atleast 1 Fingerprint to use this Feature");
+                boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.IS_PIN_SET,false);
                 Toast.makeText(this, "ispin_set" + ispin_set, Toast.LENGTH_SHORT).show();
                 if (ispin_set){
                     Intent intent3 = new Intent(BiometricActivity.this,pinLockFragment.class);
@@ -126,7 +122,7 @@ public class BiometricActivity extends AppCompatActivity{
                     finish();
                 }
             } else {
-                tv_result.setText("Place your Finger to Acsess the app");
+                tvDisplayMessage.setText("Place your Finger to Acsess the app");
                 FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this, BiometricActivity.this ,comingrequestcode);
                 fingerPrintHandler.startAuth(fingerprintManager,null);
             }

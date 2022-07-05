@@ -6,7 +6,6 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -21,7 +20,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
@@ -43,23 +41,18 @@ import java.util.regex.Pattern;
 
 public class PassGenActivity extends AppCompatActivity {
 
-    SharedPreferences sharedPreferences;
-    private static final String KEY_PASSWORD = "password";
-
     public static RewardedAd mRewardedAd;
     private final String rewardedAdId = "ca-app-pub-3752721223259598/1273800402";
 
     final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     final DatabaseReference myRef = firebaseDatabase.getReference("usedPassword");
-    final String getnumber = "0";
 
     //variable
-    SwitchCompat capitalLetter, lowercaseLetter, numbers, symbols;
-    public Button bt_use, bt_copy;
-    ImageButton img_back;
-    TextView tv_password, tv_password_strength;
-    String saved_pass;
-    String comingrequestcode;
+    SwitchCompat swCapitalCaseLetter, swLowerCaseLetter, swNumbers, swSymbols;
+    public Button btnUsePassword, btnCopyPassword;
+    ImageButton imgBack;
+    TextView tvPassword, tvPasswordStrength;
+    String comingRequestCode;
     Slider slider;
     int MAX_LENGTH = 0;
     private String pass;
@@ -68,40 +61,39 @@ public class PassGenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pass_gen);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
         // Hooks
         switchButton();
-        tv_password = findViewById(R.id.tv_password);
-        tv_password_strength = findViewById(R.id.tv_password_strength);
+        tvPassword = findViewById(R.id.tv_password);
+        tvPasswordStrength = findViewById(R.id.tv_password_strength);
         //tv_pass.setText("Password: ");
         slider = findViewById(R.id.slider_pass_lenght);
-        bt_use = findViewById(R.id.bt_use);
-        bt_copy = findViewById(R.id.bt_copy);
-        img_back = findViewById(R.id.img_back);
+        btnUsePassword = findViewById(R.id.bt_use);
+        btnCopyPassword = findViewById(R.id.bt_copy);
+        imgBack = findViewById(R.id.img_back);
         //TODO Check: show all used password in a list
         //TODO Check: add feature to see last 10 or 20 used password and give button to clear used password
 
         // set default value of checkbox
-        capitalLetter.setChecked(true);
-        lowercaseLetter.setChecked(true);
-        numbers.setChecked(true);
-        symbols.setChecked(true);
+        swCapitalCaseLetter.setChecked(true);
+        swLowerCaseLetter.setChecked(true);
+        swNumbers.setChecked(true);
+        swSymbols.setChecked(true);
         MAX_LENGTH = 8;
         genrate_password();
         //Hide use button
         Intent intent = getIntent();
-        comingrequestcode =  intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
-        if (comingrequestcode == null){
-            comingrequestcode = "fromAppsShortcut";
+        comingRequestCode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
+        if (comingRequestCode == null) {
+            comingRequestCode = "fromAppsShortcut";
         }
-        if (comingrequestcode.equals("HomeActivity")){
-            bt_use.setVisibility(View.INVISIBLE);
-        }else if (comingrequestcode.equals("addPasswordData")){
-            bt_use.setVisibility(View.VISIBLE);
-        }else if (comingrequestcode.equals("fromAppsShortcut")){
-            bt_use.setVisibility(View.INVISIBLE);
+        if (comingRequestCode.equals("HomeActivity")) {
+            btnUsePassword.setVisibility(View.INVISIBLE);
+        } else if (comingRequestCode.equals("addPasswordData")) {
+            btnUsePassword.setVisibility(View.VISIBLE);
+        } else if (comingRequestCode.equals("fromAppsShortcut")) {
+            btnUsePassword.setVisibility(View.INVISIBLE);
         }
 
         //Slider
@@ -119,27 +111,17 @@ public class PassGenActivity extends AppCompatActivity {
             }
         });
 
-        bt_use.setOnClickListener(new View.OnClickListener() {
+        btnUsePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String textViewpassword = tv_password.getText().toString();
-
-
-                myRef.child("0").setValue(textViewpassword);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(KEY_PASSWORD, getnumber);
-                editor.apply();
-                Toast.makeText(PassGenActivity.this, "Used!", Toast.LENGTH_SHORT).show();
-
-                saved_pass = sharedPreferences.getString(KEY_PASSWORD, null);
-                System.err.println("Your Saved Password: " + pass);
+                String textViewpassword = tvPassword.getText().toString();
                 Intent intentresult = getIntent();
                 intentresult.putExtra("saved_Password", pass);
                 setResult(RESULT_OK, intentresult);
                 finish();
             }
         });
-        bt_copy.setOnClickListener(new View.OnClickListener() {
+        btnCopyPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mRewardedAd != null) {
@@ -157,13 +139,8 @@ public class PassGenActivity extends AppCompatActivity {
                     Toast.makeText(PassGenActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
                 }
 
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(KEY_PASSWORD, pass);
-                editor.apply();
-
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                saved_pass = sharedPreferences.getString(KEY_PASSWORD, null);
-                ClipData clipData = ClipData.newPlainText("Copy_Password", saved_pass);
+                ClipData clipData = ClipData.newPlainText("Copy_Password", pass);
                 clipboardManager.setPrimaryClip(clipData);
                 Toast.makeText(PassGenActivity.this, "Copied!", Toast.LENGTH_SHORT).show();
             }
@@ -179,29 +156,29 @@ public class PassGenActivity extends AppCompatActivity {
     }
 
     private void switchButton() {
-        capitalLetter = findViewById(R.id.checkBox1);
-        lowercaseLetter = findViewById(R.id.checkBox2);
-        numbers = findViewById(R.id.checkBox3);
-        symbols = findViewById(R.id.checkBox4);
-        capitalLetter.setOnClickListener(new View.OnClickListener() {
+        swCapitalCaseLetter = findViewById(R.id.checkBox1);
+        swLowerCaseLetter = findViewById(R.id.checkBox2);
+        swNumbers = findViewById(R.id.checkBox3);
+        swSymbols = findViewById(R.id.checkBox4);
+        swCapitalCaseLetter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 genrate_password();
             }
         });
-        lowercaseLetter.setOnClickListener(new View.OnClickListener() {
+        swLowerCaseLetter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 genrate_password();
             }
         });
-        numbers.setOnClickListener(new View.OnClickListener() {
+        swNumbers.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 genrate_password();
             }
         });
-        symbols.setOnClickListener(new View.OnClickListener() {
+        swSymbols.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 genrate_password();
@@ -286,8 +263,8 @@ public class PassGenActivity extends AppCompatActivity {
             }
         });
 
-        pass = generateRandomPassword(MAX_LENGTH, capitalLetter.isChecked(), lowercaseLetter.isChecked(), numbers.isChecked(), symbols.isChecked());
-        tv_password.setText("Password: " + pass);
+        pass = generateRandomPassword(MAX_LENGTH, swCapitalCaseLetter.isChecked(), swLowerCaseLetter.isChecked(), swNumbers.isChecked(), swSymbols.isChecked());
+        tvPassword.setText("Password: " + pass);
 
         Pattern pattern = Pattern.compile("[a-zA-Z0-9]");
         Pattern pattern1 = Pattern.compile("[^a-zA-Z0-9]");
@@ -296,75 +273,61 @@ public class PassGenActivity extends AppCompatActivity {
         boolean matchFound = matcher.find();
         boolean matchFound1 = matcher1.find();
 
-        if (matchFound & !matchFound1){
-            if (pass.length() < 8){
-                tv_password_strength.setText("Strength: Very week");
-                tv_password_strength.setTextColor(Color.RED);
+        if (matchFound & !matchFound1) {
+            if (pass.length() < 8) {
+                tvPasswordStrength.setText("Strength: Very week");
+                tvPasswordStrength.setTextColor(Color.RED);
 
-            }else {
-                if (pass.length() < 12){
-                    tv_password_strength.setText("Strength: week");
-                    tv_password_strength.setTextColor(Color.YELLOW);
-                }else {
-                    if (pass.length() > 12){
-                        tv_password_strength.setText("Strength: strong");
-                        tv_password_strength.setTextColor(Color.GREEN);
+            } else {
+                if (pass.length() < 12) {
+                    tvPasswordStrength.setText("Strength: week");
+                    tvPasswordStrength.setTextColor(Color.YELLOW);
+                } else {
+                    if (pass.length() > 12) {
+                        tvPasswordStrength.setText("Strength: strong");
+                        tvPasswordStrength.setTextColor(Color.GREEN);
                     }
                 }
             }
 
-        }else if (!matchFound & matchFound1){
-            if (pass.length() < 8){
-                tv_password_strength.setText("Strength: week");
-                tv_password_strength.setTextColor(Color.RED);
+        } else if (!matchFound & matchFound1) {
+            if (pass.length() < 8) {
+                tvPasswordStrength.setText("Strength: week");
+                tvPasswordStrength.setTextColor(Color.RED);
 
-            }else {
-                if (pass.length() < 12){
-                    tv_password_strength.setText("Strength: strong");
-                    tv_password_strength.setTextColor(Color.YELLOW);
-                }else {
-                    if (pass.length() > 12){
-                        tv_password_strength.setText("Strength: strong");
-                        tv_password_strength.setTextColor(Color.GREEN);
+            } else {
+                if (pass.length() < 12) {
+                    tvPasswordStrength.setText("Strength: strong");
+                    tvPasswordStrength.setTextColor(Color.YELLOW);
+                } else {
+                    if (pass.length() > 12) {
+                        tvPasswordStrength.setText("Strength: strong");
+                        tvPasswordStrength.setTextColor(Color.GREEN);
                     }
                 }
             }
-        }else {
-            if (pass.length() < 8){
-                tv_password_strength.setText("Strength: strong");
-                tv_password_strength.setTextColor(Color.RED);
+        } else {
+            if (pass.length() < 8) {
+                tvPasswordStrength.setText("Strength: strong");
+                tvPasswordStrength.setTextColor(Color.RED);
 
-            }else {
-                if (pass.length() < 12){
-                    tv_password_strength.setText("Strength: very strong");
-                    tv_password_strength.setTextColor(Color.YELLOW);
-                }else {
-                    if (pass.length() > 12){
-                        tv_password_strength.setText("Strength: very strong");
-                        tv_password_strength.setTextColor(Color.GREEN);
+            } else {
+                if (pass.length() < 12) {
+                    tvPasswordStrength.setText("Strength: very strong");
+                    tvPasswordStrength.setTextColor(Color.YELLOW);
+                } else {
+                    if (pass.length() > 12) {
+                        tvPasswordStrength.setText("Strength: very strong");
+                        tvPasswordStrength.setTextColor(Color.GREEN);
                     }
                 }
             }
         }
 
-
-
-            try {
-                AES aes = new AES();
-                aes.initFromStrings(LogInActivity.AES_KEY, LogInActivity.AES_IV);
-                String encryptedMessage = aes.encrypt(pass);
-                String decryptedMessage = aes.decrypt(encryptedMessage);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
         return pass;
     }
 
-
-
-
-    public void goback(View view) {
+    public void goBack(View view) {
         finish();
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
     }

@@ -31,30 +31,32 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class secretNotesActivity extends AppCompatActivity {
-    private static final String TAG = "notesActivity";
+
     SharedPreferences sharedPreferences;
-    TextView tv_NOTE;
+    TextView tvNote;
     private String uid;
-    private String comingrequestcode;
+    private String comingRequestCode;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_secret_notes);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+
+        //Hooks
+        tvNote = findViewById(R.id.tv_NOTE);
+
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        tv_NOTE = findViewById(R.id.tv_NOTE);
-
         Intent intent = getIntent();
-        comingrequestcode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
-        if (comingrequestcode == null){
-            comingrequestcode = "this";
+        comingRequestCode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
+        if (comingRequestCode == null){
+            comingRequestCode = "this";
         }
 
-        if (comingrequestcode.equals("LogInActivity")) {
+        if (comingRequestCode.equals("LogInActivity")) {
         }
         if (mRewardedAd != null) {
             Activity activityContext = secretNotesActivity.this;
@@ -70,12 +72,11 @@ public class secretNotesActivity extends AppCompatActivity {
             Toast.makeText(secretNotesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
         }
 
-        recyclerviewsetdata();
+        recyclerViewSetData();
     }
 
-    public void recyclerviewsetdata() {
+    public void recyclerViewSetData() {
         RecyclerView recyclerView;
-        DatabaseReference databaseReference;
         myadaptorfornote adaptor;
         ArrayList<addDNoteHelperClass> dataholder;
 
@@ -97,7 +98,7 @@ public class secretNotesActivity extends AppCompatActivity {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         addDNoteHelperClass data = ds.getValue(addDNoteHelperClass.class);
                         assert data != null;
-                        if (data.isHide_note()){
+                        if (data.isHideNote()){
                             dataholder.add(data);
                         }else {
 
@@ -107,7 +108,7 @@ public class secretNotesActivity extends AppCompatActivity {
                     Collections.sort(dataholder,addDNoteHelperClass.addDNoteHelperClassComparator);
                     adaptor.notifyDataSetChanged();
                 } else {
-                    tv_NOTE.setVisibility(View.VISIBLE);
+                    tvNote.setVisibility(View.VISIBLE);
                 }
             }
 

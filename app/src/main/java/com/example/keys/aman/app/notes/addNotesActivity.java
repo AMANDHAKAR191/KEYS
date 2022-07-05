@@ -33,14 +33,12 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class addNotesActivity extends AppCompatActivity {
-    String currentDateandTime, mobile, title, note, title_dc, note_dc;
-    boolean hide_note;
+    String currentDateAndTime, title, note, title_dc, note_dc;
+    boolean isHideNote;
     SharedPreferences sharedPreferences;
-    TextInputLayout til_addtitle, til_addnote;
-    TextInputEditText tiet_addtitle, tiet_addnote;
-    CheckBox cb_hide_note;
-
-    private static final int PICK_IMAGE_REQUEST = 1;
+    TextInputLayout tilAddNoteTitle, tilAddNoteBody;
+    TextInputEditText tietAddNoteTitle, tietAddNoteBody;
+    CheckBox cbHideNote;
 
     ImageButton img_save, img_edit;
     private String comingrequestcode;
@@ -51,16 +49,16 @@ public class addNotesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notes);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         //Hooks
-        til_addtitle = findViewById(R.id.til_addtitle);
-        til_addnote = findViewById(R.id.til_addnote);
-        tiet_addtitle = findViewById(R.id.tiet_addtitle);
-        tiet_addnote = findViewById(R.id.tiet_addnote);
-        cb_hide_note = findViewById(R.id.cb_hide_note);
+        tilAddNoteTitle = findViewById(R.id.til_addtitle);
+        tilAddNoteBody = findViewById(R.id.til_addnote);
+        tietAddNoteTitle = findViewById(R.id.tiet_addtitle);
+        tietAddNoteBody = findViewById(R.id.tiet_addnote);
+        cbHideNote = findViewById(R.id.cb_hide_note);
         img_save = findViewById(R.id.img_save);
         img_edit = findViewById(R.id.img_edit);
 
@@ -76,28 +74,28 @@ public class addNotesActivity extends AppCompatActivity {
         String coming_title = intent.getStringExtra("title");
         String coming_note = intent.getStringExtra("note");
         if (comingrequestcode.equals("notesCardView")) {
-            tiet_addtitle.setText(coming_title);
-            tiet_addnote.setText(coming_note);
-            cb_hide_note.setChecked(coming_cb_hide_note);
-            cb_hide_note.setEnabled(false);
-            til_addtitle.setEnabled(false);
-            til_addnote.setEnabled(false);
+            tietAddNoteTitle.setText(coming_title);
+            tietAddNoteBody.setText(coming_note);
+            cbHideNote.setChecked(coming_cb_hide_note);
+            cbHideNote.setEnabled(false);
+            tilAddNoteTitle.setEnabled(false);
+            tilAddNoteBody.setEnabled(false);
             img_save.setVisibility(View.INVISIBLE);
             img_edit.setVisibility(View.VISIBLE);
-        } else if (comingrequestcode.equals("notesActivity")){
+        } else if (comingrequestcode.equals("notesActivity")) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-            currentDateandTime = sdf.format(new Date());
-            System.out.println("Dateandtime: " + currentDateandTime);
-        }else if (comingrequestcode.equals("HomeActivity")){
+            currentDateAndTime = sdf.format(new Date());
+            System.out.println("Dateandtime: " + currentDateAndTime);
+        } else if (comingrequestcode.equals("HomeActivity")) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-            currentDateandTime = sdf.format(new Date());
-            System.out.println("Dateandtime: " + currentDateandTime);
+            currentDateAndTime = sdf.format(new Date());
+            System.out.println("Dateandtime: " + currentDateAndTime);
         }
 
-        cb_hide_note.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        cbHideNote.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                hide_note = b;
+                isHideNote = b;
             }
         });
 
@@ -123,10 +121,10 @@ public class addNotesActivity extends AppCompatActivity {
     }
 
     public void gosave(View view) {
-        title = Objects.requireNonNull(til_addtitle.getEditText()).getText().toString();
-        note = Objects.requireNonNull(til_addnote.getEditText()).getText().toString();
+        title = Objects.requireNonNull(tilAddNoteTitle.getEditText()).getText().toString();
+        note = Objects.requireNonNull(tilAddNoteBody.getEditText()).getText().toString();
         AES aes = new AES();
-        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY,null),sharedPreferences.getString(LogInActivity.AES_IV,null));
+        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
         try {
             // Double encryption
             // TODO : in future, (if needed) give two key to user for double encryption
@@ -139,26 +137,27 @@ public class addNotesActivity extends AppCompatActivity {
         }
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
-        if (comingrequestcode.equals("notesCardView")){
-            addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(coming_date,title_dc,note_dc, hide_note);
+        if (comingrequestcode.equals("notesCardView")) {
+            addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(coming_date, title_dc, note_dc, isHideNote);
             reference.child(coming_date).setValue(addDNoteHelper);
-            Toast.makeText(addNotesActivity.this,"saved!",Toast.LENGTH_SHORT).show();
-        }else {
-            addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(currentDateandTime,title_dc,note_dc, hide_note);
-            reference.child(currentDateandTime).setValue(addDNoteHelper);
-            Toast.makeText(addNotesActivity.this,"saved!",Toast.LENGTH_SHORT).show();
+            Toast.makeText(addNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
+        } else {
+            addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(currentDateAndTime, title_dc, note_dc, isHideNote);
+            reference.child(currentDateAndTime).setValue(addDNoteHelper);
+            Toast.makeText(addNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
         }
-        Intent intent = new Intent(addNotesActivity.this,notesActivity.class);
-        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"addNotesActivity");
+        Intent intent = new Intent(addNotesActivity.this, notesActivity.class);
+        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "addNotesActivity");
         startActivity(intent);
         finish();
         overridePendingTransition(0, R.anim.slide_out_down);
     }
+
     public void goedit(View view) {
         img_save.setVisibility(View.VISIBLE);
         img_edit.setVisibility(View.INVISIBLE);
-        cb_hide_note.setEnabled(true);
-        til_addtitle.setEnabled(true);
-        til_addnote.setEnabled(true);
+        cbHideNote.setEnabled(true);
+        tilAddNoteTitle.setEnabled(true);
+        tilAddNoteBody.setEnabled(true);
     }
 }

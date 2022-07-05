@@ -105,7 +105,7 @@ public class tabLayoutActivity extends AppCompatActivity {
                         }
                     },1000);
                     if (click_counter == 1){
-                        boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.ISPIN_SET,false);
+                        boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.IS_PIN_SET,false);
                         if (ispin_set){
                             Intent intent3 = new Intent(getApplicationContext(), pinLockFragment.class);
                             intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");

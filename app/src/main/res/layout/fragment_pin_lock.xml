@@ -4,16 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorOnPrimary"
+    android:background="@color/mine_shaft"
     tools:context=".aman.app.notes.pinLockFragment">
+
     <ImageButton
         android:id="@+id/img_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
-        android:onClick="gocencal"
-        android:background="?attr/colorOnPrimary"
+        android:background="@color/mine_shaft"
+        android:onClick="goBack"
         android:src="@drawable/close"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -65,12 +66,12 @@
         android:layout_below="@id/indicator_dots"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
+        app:dotEmptyBackground="@color/gray"
+        app:dotFilledBackground="@color/white"
         app:keypadButtonSize="72dp"
-        app:pinLength="6"
-        app:dotFilledBackground="?attr/colorOnSecondary"
-        app:dotEmptyBackground="?attr/colorOnSecondary"
         app:keypadShowDeleteButton="true"
-        app:keypadTextColor="?attr/colorOnSecondary"
-        app:keypadTextSize="18dp" />
+        app:keypadTextColor="@color/white"
+        app:keypadTextSize="18dp"
+        app:pinLength="6" />
 
 </RelativeLayout>
