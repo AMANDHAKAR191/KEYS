@@ -134,5 +134,5 @@ public class notesActivity extends Fragment {
         recyclerView.setAdapter(adaptor);
 
     }
-
+    
 }

@@ -48,6 +48,7 @@ public class SettingActivity extends Fragment {
     private static final int REQUEST_CODE_SET_DEFAULT = 1;
     private String s1;
 
+
     public SettingActivity(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;

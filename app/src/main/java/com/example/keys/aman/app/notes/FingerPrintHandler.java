@@ -22,6 +22,8 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
     String comingRequestCode;
     Activity activity;
     public SharedPreferences sharedPreferences;
+    TextView paralable;
+    CancellationSignal cancellationSignal;
 
     public FingerPrintHandler(Context context, Activity activity ,String comingrRequestCode) {
         this.context = context;
@@ -31,22 +33,27 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
     }
 
     public void startAuth(FingerprintManager fingerprintManager, FingerprintManager.CryptoObject cryptoObject){
-        CancellationSignal cancellationSignal = new CancellationSignal();
+        cancellationSignal = new CancellationSignal();
         fingerprintManager.authenticate(cryptoObject,cancellationSignal ,0,this,null);
     }
 
     @Override
     public void onAuthenticationError(int errorCode, CharSequence errString) {
         this.update("There was an Auth Error. " + errString,false);
-        Intent intent = new Intent(context,BiometricActivity.class);
-        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
-        activity.startActivity(intent);
-        activity.finish();
+//        Intent intent = new Intent(context,BiometricActivity.class);
+//        intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
+//        activity.startActivity(intent);
+//        activity.finish();
     }
 
     @Override
     public void onAuthenticationFailed() {
         this.update("Auth Failed ",false);
+    }
+    public void stopFingerAuth(){
+        if(cancellationSignal != null && !cancellationSignal.isCanceled()){
+            cancellationSignal.cancel();
+        }
     }
 
     @Override
@@ -60,7 +67,7 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
     }
 
     private void update(String s, boolean b) {
-        TextView paralable = ((Activity)context).findViewById(R.id.tv_result);
+        paralable = ((Activity)context).findViewById(R.id.tv_result);
         ImageView img_fingerprint = ((Activity)context).findViewById(R.id.img_fingerprint);
         paralable.setText(s);
 

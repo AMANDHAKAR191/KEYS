@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.home.HomeActivity;
+import com.example.keys.aman.app.base.tabLayoutActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 //import com.example.keys.aman.app.signin_login.SignUpActivity;
 
@@ -80,7 +80,7 @@ public class BiometricActivity extends AppCompatActivity{
                     finish();
                 }else {
                     Toast.makeText(this, "Fingerprint Scanner not detected in Device. please set pin", Toast.LENGTH_SHORT).show();
-                    Intent intent3 = new Intent(BiometricActivity.this, HomeActivity.class);
+                    Intent intent3 = new Intent(BiometricActivity.this, tabLayoutActivity.class);
                     intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     startActivity(intent3);
                     finish();
@@ -99,7 +99,7 @@ public class BiometricActivity extends AppCompatActivity{
                     finish();
                 }else {
                     Toast.makeText(this, "Pin is set yet! please set pin", Toast.LENGTH_SHORT).show();
-                    Intent intent3 = new Intent(BiometricActivity.this, HomeActivity.class);
+                    Intent intent3 = new Intent(BiometricActivity.this, tabLayoutActivity.class);
                     intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     startActivity(intent3);
                     finish();
@@ -116,7 +116,7 @@ public class BiometricActivity extends AppCompatActivity{
                     finish();
                 }else {
                     Toast.makeText(this, "Pin is set yet! please set pin", Toast.LENGTH_SHORT).show();
-                    Intent intent3 = new Intent(BiometricActivity.this,HomeActivity.class);
+                    Intent intent3 = new Intent(BiometricActivity.this,tabLayoutActivity.class);
                     intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     startActivity(intent3);
                     finish();

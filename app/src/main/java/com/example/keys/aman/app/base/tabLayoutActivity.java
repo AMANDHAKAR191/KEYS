@@ -46,10 +46,13 @@ public class tabLayoutActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
 
 
+
+
+
         viewPagerAdaptor viewPagerAdaptor = new viewPagerAdaptor(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        viewPagerAdaptor.addFragment(new HomeActivity(getApplicationContext(),tabLayoutActivity.this),"Home");
-        viewPagerAdaptor.addFragment(new notesActivity(getApplicationContext(),tabLayoutActivity.this),"Notes");
-        viewPagerAdaptor.addFragment(new SettingActivity(getApplicationContext(),tabLayoutActivity.this),"Setting");
+        viewPagerAdaptor.addFragment(new HomeActivity(getApplicationContext(),tabLayoutActivity.this));
+        viewPagerAdaptor.addFragment(new notesActivity(getApplicationContext(),tabLayoutActivity.this));
+        viewPagerAdaptor.addFragment(new SettingActivity(getApplicationContext(),tabLayoutActivity.this));
         viewPager.setAdapter(viewPagerAdaptor);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.home);
@@ -126,6 +129,5 @@ public class tabLayoutActivity extends AppCompatActivity {
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.button_back));
 
     }
-
 
 }

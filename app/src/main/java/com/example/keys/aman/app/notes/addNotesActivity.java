@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
+import com.example.keys.aman.app.base.tabLayoutActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.rewarded.RewardItem;
@@ -146,7 +147,7 @@ public class addNotesActivity extends AppCompatActivity {
             reference.child(currentDateAndTime).setValue(addDNoteHelper);
             Toast.makeText(addNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
         }
-        Intent intent = new Intent(addNotesActivity.this, notesActivity.class);
+        Intent intent = new Intent(addNotesActivity.this, tabLayoutActivity.class);
         intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "addNotesActivity");
         startActivity(intent);
         finish();

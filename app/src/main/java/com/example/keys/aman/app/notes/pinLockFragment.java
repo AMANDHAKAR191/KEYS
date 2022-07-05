@@ -5,6 +5,7 @@ import static com.example.keys.aman.app.signin_login.LogInActivity.SHARED_PREF_A
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Vibrator;
 import android.view.View;
 import android.view.Window;
@@ -30,7 +31,7 @@ public class pinLockFragment extends AppCompatActivity {
     private IndicatorDots mIndicatorDots;
     private Vibrator vibrator;
     private String comingRequestCode;
-    TextView tvTitle;
+    TextView tvTitle, tvErrorMessage;
     private String PIN = "";
     String setPin, confirmPin;
     int temp = 0;
@@ -50,6 +51,16 @@ public class pinLockFragment extends AppCompatActivity {
 
                     } else {
                         vibrator.vibrate(200);
+                        tvTitle.setText("Wrong Pin");
+                        wrongePin();
+                        Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvTitle.setText("Enter Pin Again");
+                                mPinLockView.resetPinLockView();
+                            }
+                        },400);
                     }
                     break;
                 case "ShowCardviewDataActivity":
@@ -61,7 +72,7 @@ public class pinLockFragment extends AppCompatActivity {
 
                     } else {
                         vibrator.vibrate(200);
-                        finish();
+                        wrongePin();
                     }
                     break;
                 case "setpin":
@@ -97,6 +108,7 @@ public class pinLockFragment extends AppCompatActivity {
                         tvTitle.setText("Wrong Pin");
                         mPinLockView.resetPinLockView();
                         vibrator.vibrate(200);
+                        wrongePin();
                     }
                     break;
                 case "notesActivity":
@@ -106,8 +118,10 @@ public class pinLockFragment extends AppCompatActivity {
                         finish();
 
                     } else {
+                        tvTitle.setText("Wrong Pin");
                         vibrator.vibrate(200);
-                        finish();
+                        mPinLockView.resetPinLockView();
+                        wrongePin();
                     }
                     break;
             }
@@ -122,6 +136,7 @@ public class pinLockFragment extends AppCompatActivity {
         public void onPinChange(int pinLength, String intermediatePin) {
         }
     };
+    private int count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +152,7 @@ public class pinLockFragment extends AppCompatActivity {
         mPinLockView = findViewById(R.id.pin_lock_view);
         mIndicatorDots = findViewById(R.id.indicator_dots);
         tvTitle = findViewById(R.id.tv_title_name);
+        tvErrorMessage = findViewById(R.id.tv_error_message);
         //properties
         mPinLockView.attachIndicatorDots(mIndicatorDots);
         mPinLockView.setPinLockListener(mPinLockListener);
@@ -156,6 +172,7 @@ public class pinLockFragment extends AppCompatActivity {
 
         if (comingRequestCode.equals("LogInActivity")) {
             PIN = sharedPreferences.getString(LogInActivity.MASTER_PIN, "no");
+            tvTitle.setText("Enter Pin");
         } else if (comingRequestCode.equals("ShowCardviewDataActivity")) {
             PIN = sharedPreferences.getString(LogInActivity.MASTER_PIN, "no");
             String title = intent.getStringExtra("title");
@@ -176,5 +193,25 @@ public class pinLockFragment extends AppCompatActivity {
 
     public void goBack(View view) {
         finish();
+    }
+
+    public void wrongePin(){
+        count =  count + 1;
+        if (count >= 3){
+            SharedPreferences.Editor editor1 = sharedPreferences.edit();
+            editor1.putBoolean(LogInActivity.IS_USER_RESTRICTED, true);
+            editor1.apply();
+            tvErrorMessage.setVisibility(View.VISIBLE);
+            mPinLockView.setVisibility(View.INVISIBLE);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tvErrorMessage.setVisibility(View.INVISIBLE);
+                    mPinLockView.setVisibility(View.VISIBLE);
+                    count = 0;
+                }
+            },5000);
+        }
     }
 }

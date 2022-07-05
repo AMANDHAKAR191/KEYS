@@ -18,13 +18,14 @@
         android:src="@drawable/close"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/profile_image"
-        android:layout_width="84dp"
-        android:layout_height="84dp"
+        android:layout_width="168dp"
+        android:layout_height="168dp"
         android:layout_centerHorizontal="true"
-        android:elevation="8dp"
         android:layout_marginTop="104dp"
+        android:elevation="8dp"
         android:src="@drawable/group_1final_keys_logo" />
 
 <!--    <TextView-->
@@ -50,18 +51,6 @@
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="20sp" />
-    <TextView
-        android:id="@+id/tv_error_message"
-        android:layout_width="256dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/profile_image"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="96dp"
-        android:gravity="center"
-        android:visibility="invisible"
-        android:text="Too many attempts. Try again, after 5 seconds later."
-        android:textColor="@color/design_default_color_error"
-        android:textSize="12sp" />
 
     <com.andrognito.pinlockview.IndicatorDots
         android:id="@+id/indicator_dots"
@@ -69,7 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_title_name"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="106dp" />
+        android:layout_marginTop="36dp" />
 
     <com.andrognito.pinlockview.PinLockView
         android:id="@+id/pin_lock_view"
@@ -80,10 +69,10 @@
         android:layout_marginTop="16dp"
         app:dotEmptyBackground="@color/gray"
         app:dotFilledBackground="@color/white"
-        app:keypadButtonSize="72dp"
+        app:keypadButtonSize="144dp"
         app:keypadShowDeleteButton="true"
         app:keypadTextColor="@color/white"
-        app:keypadTextSize="18dp"
+        app:keypadTextSize="25dp"
         app:pinLength="6" />
 
 </RelativeLayout>

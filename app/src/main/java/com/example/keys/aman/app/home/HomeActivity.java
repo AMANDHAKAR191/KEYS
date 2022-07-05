@@ -91,6 +91,7 @@ public class HomeActivity extends Fragment {
         searchView = view.findViewById(R.id.search_bar);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
 
+
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
 //        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

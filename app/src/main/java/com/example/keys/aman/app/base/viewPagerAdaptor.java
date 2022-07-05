@@ -11,7 +11,6 @@ public class viewPagerAdaptor extends FragmentPagerAdapter {
 
 
     private final ArrayList<Fragment> fragmentarraylist = new ArrayList<>();
-    private final ArrayList<String> fragmenttitles = new ArrayList<>();
 
     public viewPagerAdaptor(@NonNull FragmentManager fm, int behavior) {
         super(fm, behavior);
@@ -28,8 +27,7 @@ public class viewPagerAdaptor extends FragmentPagerAdapter {
         return fragmentarraylist.size();
     }
 
-    public void addFragment(Fragment fragment, String title){
+    public void addFragment(Fragment fragment){
         fragmentarraylist.add(fragment);
-        fragmenttitles.add(title);
     }
 }

@@ -58,6 +58,7 @@ public class LogInActivity extends AppCompatActivity {
     public static String IS_AUTHENTICATED = "isauthenticated";
     public static String MASTER_PIN = "master_pin";
     public static String IS_PIN_SET = "ispin_set";
+    public static String IS_USER_RESTRICTED = "is_user_restricted";
 
 
     private boolean turn = false;
