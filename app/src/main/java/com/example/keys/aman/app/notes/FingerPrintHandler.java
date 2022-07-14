@@ -2,6 +2,7 @@ package com.example.keys.aman.app.notes;
 
 import static android.content.Context.MODE_PRIVATE;
 
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.keys.R;
+import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.base.tabLayoutActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 
@@ -76,6 +78,7 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
         }else {
             paralable.setTextColor(Color.BLACK);
             img_fingerprint.setImageResource(R.mipmap.done_icon);
+            SplashActivity.isForeground = true;
             switch (comingRequestCode){
                 case "LogInActivity":
                     SharedPreferences.Editor editor1 = sharedPreferences.edit();
@@ -102,6 +105,10 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
                     Intent intent2 = new Intent(context, tabLayoutActivity.class);
                     intent2.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity");
                     context.startActivity(intent2);
+                    activity.finish();
+                    break;
+                case "LockBackGroundApp":
+                    SplashActivity.isBackground = false;
                     activity.finish();
                     break;
             }

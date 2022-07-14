@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
+import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.home.PassGenActivity;
 import com.example.keys.aman.app.notes.BiometricActivity;
 import com.example.keys.aman.app.notes.pinLockFragment;
@@ -72,6 +73,7 @@ public class LogInActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_log_in);
         sharedPreferences = getSharedPreferences(SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        SplashActivity.isForeground = false;
 
         //Hooks
         btnLogin = findViewById(R.id.btn_login);
@@ -80,7 +82,7 @@ public class LogInActivity extends AppCompatActivity {
         Boolean islogin = sharedPreferences.getBoolean(IS_LOGIN, false);
         System.out.println(islogin);
         if (islogin) {
-
+            SplashActivity.isForeground = true;
             Intent intent = new Intent(LogInActivity.this, BiometricActivity.class);
             intent.putExtra(REQUEST_CODE_NAME, "LogInActivity");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -95,6 +97,7 @@ public class LogInActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SplashActivity.isForeground = true;
                 progressBar();
                 signIn();
             }
@@ -104,21 +107,24 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        progressBar();
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            if (task.isSuccessful()) {
+                prograceBar.dismissbar();
+            } else {
+                prograceBar.dismissbar();
+            }
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                prograceBar.dismissbar();
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
                 // ...
                 Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                prograceBar.dismissbar();
+
             }
         }
     }
@@ -149,16 +155,19 @@ public class LogInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-
+                            progressBar();
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             uid = user.getUid();
-                            //check user if already signed up
-                            checkUser();
+                            //check user if already signed up in background
+                            threadRunnable threadRunnable = new threadRunnable();
+                            new Thread(threadRunnable).start();
+
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
+                                    Toast.makeText(LogInActivity.this, "before while Loop...", Toast.LENGTH_SHORT).show();
                                     while (!turn) {
                                         progressBar();
                                     }
@@ -176,13 +185,13 @@ public class LogInActivity extends AppCompatActivity {
 
                                         writeData(user);
                                         turn = false;
+                                        Toast.makeText(LogInActivity.this, "Registration Completed!!", Toast.LENGTH_SHORT).show();
+                                        SplashActivity.isForeground = true;
                                         Intent intent = new Intent(getApplicationContext(), pinLockFragment.class);
                                         intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
                                         intent.putExtra("title", "Set Pin");
                                         startActivity(intent);
                                     } else {
-
-
                                         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(uid);
                                         // Read from the database
                                         reference.addValueEventListener(new ValueEventListener() {
@@ -200,8 +209,7 @@ public class LogInActivity extends AppCompatActivity {
                                                 editor1.putString(IS_FIRST_TIME, "1");
                                                 editor1.apply();
                                                 turn = false;
-
-
+                                                Toast.makeText(LogInActivity.this, "SignIn Completed!!", Toast.LENGTH_SHORT).show();
                                             }
 
                                             @Override
@@ -210,11 +218,7 @@ public class LogInActivity extends AppCompatActivity {
                                                 System.out.println("Not able get data from database");
                                             }
                                         });
-
-                                        prograceBar.dismissbar();
-                                        Toast.makeText(LogInActivity.this, "Registration Completed!!", Toast.LENGTH_SHORT).show();
-
-
+                                        SplashActivity.isForeground = true;
                                         Intent intent = new Intent(getApplicationContext(), pinLockFragment.class);
                                         intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
                                         intent.putExtra("title", "Set Pin");
@@ -232,17 +236,14 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     private void checkUser() {
-
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
         reference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                System.out.println(dataSnapshot.getValue());
                 String temp;
                 try {
                     temp = dataSnapshot.getValue().toString();
                 } catch (Exception e) {
-                    System.out.println("Exception: " + e.getMessage());
                     temp = "1";
                 }
 
@@ -267,6 +268,24 @@ public class LogInActivity extends AppCompatActivity {
         });
     }
 
+    public class threadRunnable implements Runnable {
+        Handler handler = new Handler();
+        View view;
+
+        public threadRunnable() {
+        }
+
+        @Override
+        public void run() {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    checkUser();
+                }
+            });
+        }
+    }
+    
     private void writeData(FirebaseUser user) {
         String name, email, uid;
         name = user.getDisplayName();
@@ -309,5 +328,33 @@ public class LogInActivity extends AppCompatActivity {
 
             }
         }, 500);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (SplashActivity.isBackground){
+            Intent intent = new Intent(LogInActivity.this, BiometricActivity.class);
+            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
+            startActivity(intent);
+        }
+        if (SplashActivity.isForeground){
+            SplashActivity.isForeground = false;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Toast.makeText(this, "tabLayoutActivity.isForeground: " + SplashActivity.isForeground, Toast.LENGTH_SHORT).show();
+        if (!SplashActivity.isForeground){
+            SplashActivity.isBackground = true;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        SplashActivity.isForeground = true;
     }
 }

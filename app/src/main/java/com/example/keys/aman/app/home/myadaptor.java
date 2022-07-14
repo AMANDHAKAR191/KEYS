@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
+import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.home.addpassword.addDataHelperClass;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 
@@ -47,6 +48,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
     AES aes = new AES();
     private SharedPreferences sharedPreferences;
     public static Bitmap bmWebsiteLogo;
+    private Bitmap emptyBitmap;
 
     public myadaptor(ArrayList<addDataHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
@@ -113,7 +115,13 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                 e.printStackTrace();
             }
 
-            bmWebsiteLogo = myadaptor.fetchFavicon(Uri.parse(dwebsite_link));
+            try {
+                bmWebsiteLogo = myadaptor.fetchFavicon(Uri.parse(dwebsite_link));
+                emptyBitmap = Bitmap.createBitmap(bmWebsiteLogo.getWidth(),bmWebsiteLogo.getHeight(),bmWebsiteLogo.getConfig());
+
+            }catch (NullPointerException e){
+
+            }
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -123,10 +131,28 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                     }else if (title1.length == 2){
                         holder.tvWebsiteName.setText(title1[0]);
                     }
+                    try {
+                        if (bmWebsiteLogo.sameAs(emptyBitmap)){
+
+                        }
+                    }catch (NullPointerException e){
+                        if (title1.length == 3){
+                            holder.imgWebsiteLogo.setVisibility(View.GONE);
+                            holder.tvImageTitle.setVisibility(View.VISIBLE);
+                            holder.tvImageTitle.setText(title1[1]);
+                            holder.tvWebsiteName.setText(title1[1]);
+                        }else if (title1.length == 2){
+                            holder.imgWebsiteLogo.setVisibility(View.GONE);
+                            holder.tvImageTitle.setVisibility(View.VISIBLE);
+                            holder.tvImageTitle.setText(title1[0]);
+                            holder.tvWebsiteName.setText(title1[0]);
+                        }
+                    }
 
                     holder.imgWebsiteLogo.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            SplashActivity.isForeground = true;
                             Intent intent = new Intent(context, ShowCardviewDataActivity.class);
                             intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity.myadaptor");
                             intent.putExtra("date", current_date);
@@ -143,6 +169,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                     holder.tvLogin.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            SplashActivity.isForeground = true;
                             Intent intent = new Intent(context, ShowCardviewDataActivity.class);
                             intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity.myadaptor");
                             intent.putExtra("date", current_date);
@@ -159,6 +186,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                     holder.tvWebsiteName.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            SplashActivity.isForeground = true;
                             Intent intent = new Intent(context, ShowCardviewDataActivity.class);
                             intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity.myadaptor");
                             intent.putExtra("date", current_date);
@@ -175,6 +203,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                     holder.LLCard.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            SplashActivity.isForeground = true;
                             Intent intent = new Intent(context, ShowCardviewDataActivity.class);
                             intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity.myadaptor");
                             intent.putExtra("date", current_date);
@@ -207,13 +236,8 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                                     return true;
                                 case R.id.img_delete:
                                     HomeActivity.databaseReference.child(dwebsite_name).child(current_date).removeValue();
-                                    Toast.makeText(context, "Deleted !!", Toast.LENGTH_SHORT).show();
                                     HomeActivity.adaptor.notifyDataSetChanged();
-                                    Intent intent = new Intent(context, HomeActivity.class);
-                                    intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity.myadaptor");
-                                    activity.startActivity(intent);
-                                    activity.finish();
-                                    activity.overridePendingTransition(0, 0);
+                                    holder.resetAdaptorCall();
                                     return true;
                             }
                             return false;
@@ -296,9 +320,9 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
         }
     };
 
-    public static class myviewholder extends RecyclerView.ViewHolder {
+    public class myviewholder extends RecyclerView.ViewHolder {
 
-        final TextView tvLogin, tvWebsiteName, tvWebsiteTitle;
+        final TextView tvLogin, tvWebsiteName, tvWebsiteTitle, tvImageTitle;
         final ImageView imgWebsiteLogo;
         final Toolbar tbcvMore;
         final LinearLayout LLCard;
@@ -310,8 +334,15 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
             tbcvMore = itemView.findViewById(R.id.cardview_more);
             LLCard = itemView.findViewById(R.id.linear_layout_card);
             tvWebsiteTitle = itemView.findViewById(R.id.tv_img_title);
+            tvImageTitle = itemView.findViewById(R.id.tv_img_title);
             imgWebsiteLogo = itemView.findViewById(R.id.img_logo);
         }
+        public void resetAdaptorCall(){
+            resetAdaptor();
+        }
 
+    }
+    //create new abstract method
+    public void resetAdaptor() {
     }
 }

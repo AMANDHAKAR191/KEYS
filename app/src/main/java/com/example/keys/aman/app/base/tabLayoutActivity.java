@@ -1,5 +1,7 @@
 package com.example.keys.aman.app.base;
 
+import static com.example.keys.aman.app.signin_login.LogInActivity.REQUEST_CODE_NAME;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,7 +16,9 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.example.keys.R;
+import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.home.HomeActivity;
+import com.example.keys.aman.app.notes.BiometricActivity;
 import com.example.keys.aman.app.notes.notesActivity;
 import com.example.keys.aman.app.notes.pinLockFragment;
 import com.example.keys.aman.app.settings.SettingActivity;
@@ -31,17 +35,22 @@ public class tabLayoutActivity extends AppCompatActivity {
 
     private int click_counter = 0;
     private SharedPreferences sharedPreferences;
+    public static int pauseCounter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_layout);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+
+        SplashActivity.isForeground = false;
 
         tabLayout = findViewById(R.id.tablayout);
         viewPager = findViewById(R.id.viewpager);
         img_keys_icon = findViewById(R.id.img_keys_icon);
         tv_title = findViewById(R.id.tv_title);
+        
 
         tabLayout.setupWithViewPager(viewPager);
 
@@ -110,8 +119,9 @@ public class tabLayoutActivity extends AppCompatActivity {
                     if (click_counter == 1){
                         boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.IS_PIN_SET,false);
                         if (ispin_set){
+                            SplashActivity.isForeground = true;
                             Intent intent3 = new Intent(getApplicationContext(), pinLockFragment.class);
-                            intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
+                            intent3.putExtra(REQUEST_CODE_NAME,"notesActivity");
                             intent3.putExtra("title","Enter Pin");
                             startActivity(intent3);
                             click_counter = 0;
@@ -129,5 +139,30 @@ public class tabLayoutActivity extends AppCompatActivity {
         tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.button_back));
 
     }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (SplashActivity.isBackground){
+            Intent intent = new Intent(tabLayoutActivity.this, BiometricActivity.class);
+            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
+            startActivity(intent);
+        }
+        if (SplashActivity.isForeground){
+            SplashActivity.isForeground = false;
+        }
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!SplashActivity.isForeground){
+            SplashActivity.isBackground = true;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        SplashActivity.isForeground = true;
+    }
 }

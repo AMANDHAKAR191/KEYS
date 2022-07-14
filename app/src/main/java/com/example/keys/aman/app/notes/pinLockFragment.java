@@ -36,6 +36,7 @@ public class pinLockFragment extends AppCompatActivity {
     String setPin, confirmPin;
     int temp = 0;
     private SharedPreferences sharedPreferences;
+    Handler handler = new Handler();
 
     private final PinLockListener mPinLockListener = new PinLockListener() {
         @Override
@@ -53,7 +54,6 @@ public class pinLockFragment extends AppCompatActivity {
                         vibrator.vibrate(200);
                         tvTitle.setText("Wrong Pin");
                         wrongePin();
-                        Handler handler = new Handler();
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -71,8 +71,17 @@ public class pinLockFragment extends AppCompatActivity {
                         finish();
 
                     } else {
+                        tvTitle.setText("Wrong Pin");
                         vibrator.vibrate(200);
+                        mPinLockView.resetPinLockView();
                         wrongePin();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvTitle.setText("Enter Pin Again");
+                                mPinLockView.resetPinLockView();
+                            }
+                        },400);
                     }
                     break;
                 case "setpin":
@@ -83,18 +92,29 @@ public class pinLockFragment extends AppCompatActivity {
                         temp = 1;
                     } else {
                         confirmPin = pin;
-                        tvTitle.setText("Pin Matched");
-                        SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                        editor1.putBoolean(LogInActivity.IS_PIN_SET, true);
-                        editor1.putString(LogInActivity.MASTER_PIN, confirmPin);
-                        editor1.apply();
+                        if (confirmPin.equals(setPin)){
+                            tvTitle.setText("Pin Matched");
+                            SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                            editor1.putBoolean(LogInActivity.IS_PIN_SET, true);
+                            editor1.putString(LogInActivity.MASTER_PIN, confirmPin);
+                            editor1.apply();
 
-                        Toast.makeText(pinLockFragment.this, "Pin Set", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(pinLockFragment.this, "Pin Set", Toast.LENGTH_SHORT).show();
 
-                        Intent intent = new Intent(getApplicationContext(), tabLayoutActivity.class);
-                        intent.putExtra("result", "yes");
-                        startActivity(intent);
-                        finish();
+                            Intent intent = new Intent(getApplicationContext(), tabLayoutActivity.class);
+                            intent.putExtra("result", "yes");
+                            startActivity(intent);
+                            finish();
+                        }else {
+                            tvTitle.setText("Wrong Pin");
+                            mPinLockView.resetPinLockView();
+                            vibrator.vibrate(200);
+                            Intent intent = new Intent(pinLockFragment.this, pinLockFragment.class);
+                            intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
+                            intent.putExtra("title", "Set Pin");
+                            startActivity(intent);
+                            finish();
+                        }
                     }
                     break;
                 case "changepin":
@@ -122,6 +142,13 @@ public class pinLockFragment extends AppCompatActivity {
                         vibrator.vibrate(200);
                         mPinLockView.resetPinLockView();
                         wrongePin();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvTitle.setText("Enter Pin Again");
+                                mPinLockView.resetPinLockView();
+                            }
+                        },400);
                     }
                     break;
             }
@@ -213,5 +240,11 @@ public class pinLockFragment extends AppCompatActivity {
                 }
             },5000);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

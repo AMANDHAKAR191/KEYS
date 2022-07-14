@@ -1,5 +1,8 @@
 package com.example.keys.aman.app.home;
 
+
+import static com.example.keys.aman.app.signin_login.LogInActivity.REQUEST_CODE_NAME;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
@@ -9,7 +12,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -20,7 +22,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.signin_login.LogInActivity;
+import com.example.keys.aman.app.SplashActivity;
+import com.example.keys.aman.app.notes.BiometricActivity;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
@@ -61,7 +64,9 @@ public class PassGenActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pass_gen);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
+        SplashActivity.isForeground = false;
 
         // Hooks
         switchButton();
@@ -84,7 +89,7 @@ public class PassGenActivity extends AppCompatActivity {
         genrate_password();
         //Hide use button
         Intent intent = getIntent();
-        comingRequestCode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
+        comingRequestCode = intent.getStringExtra(REQUEST_CODE_NAME);
         if (comingRequestCode == null) {
             comingRequestCode = "fromAppsShortcut";
         }
@@ -149,11 +154,11 @@ public class PassGenActivity extends AppCompatActivity {
         showRewardedAd();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        showRewardedAd();
-    }
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        showRewardedAd();
+//    }
 
     private void switchButton() {
         swCapitalCaseLetter = findViewById(R.id.checkBox1);
@@ -328,6 +333,36 @@ public class PassGenActivity extends AppCompatActivity {
     }
 
     public void goBack(View view) {
+        SplashActivity.isForeground = true;
+        finish();
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (SplashActivity.isBackground){
+            Intent intent = new Intent(PassGenActivity.this, BiometricActivity.class);
+            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
+            startActivity(intent);
+        }
+        if (SplashActivity.isForeground){
+            SplashActivity.isForeground = false;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!SplashActivity.isForeground){
+            SplashActivity.isBackground = true;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        SplashActivity.isForeground = true;
         finish();
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
     }

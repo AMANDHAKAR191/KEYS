@@ -1,6 +1,7 @@
 package com.example.keys.aman.app.home;
 
 import static com.example.keys.aman.app.SplashActivity.mRewardedAd;
+import static com.example.keys.aman.app.signin_login.LogInActivity.REQUEST_CODE_NAME;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +21,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
+import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.home.addpassword.addPasswordData;
+import com.example.keys.aman.app.notes.BiometricActivity;
 import com.example.keys.aman.app.notes.pinLockFragment;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
@@ -36,20 +38,22 @@ import java.net.URL;
 import java.net.URLConnection;
 
 public class ShowCardviewDataActivity extends AppCompatActivity {
-    TextView tvDisplayLogin, tvDisplayWebsite, tvTitle;
+    TextView tvDisplayLogin, tvDisplayWebsite, tvTitle, tvWebsiteTitle;
     TextInputEditText tietDisplayPassword;
     TextInputLayout tilDisplayPassword;
     ImageView imgBack;
     ImageView imgWebsiteLogo, imgOpenWebsite;
     private String comingDate, comingLoginName, comingLoginPassword, comingLoginWebsiteName, comingLoginWebsiteLink;
     private Bitmap bmWebsiteLogo;
+    private Bitmap emptyBitmap;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         setContentView(R.layout.activity_show_cardview_data);
+        SplashActivity.isForeground = false;
         //Hooks
         tvTitle = findViewById(R.id.tv_img_title);
         tvDisplayLogin = findViewById(R.id.displaylogin);
@@ -57,7 +61,8 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
         tilDisplayPassword = findViewById(R.id.til_displaypassword);
         tvDisplayWebsite = findViewById(R.id.displaywebsite);
         imgBack = findViewById(R.id.img_back);
-        imgWebsiteLogo = findViewById(R.id.website_logo);
+        imgWebsiteLogo = findViewById(R.id.img_website_logo);
+        tvWebsiteTitle = findViewById(R.id.tv_website_title);
         imgOpenWebsite = findViewById(R.id.open_website);
 
         Intent intent = getIntent();
@@ -77,12 +82,11 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
             public void onClick(View view) {
                 System.out.println(tietDisplayPassword.getInputType());
                 if (tietDisplayPassword.getInputType() == InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD) {
-
-
                     tietDisplayPassword.setInputType(InputType.TYPE_CLASS_TEXT |
                             InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
                 } else {
+                    SplashActivity.isForeground = true;
                     if (mRewardedAd != null) {
                         Activity activityContext = ShowCardviewDataActivity.this;
                         mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
@@ -116,7 +120,7 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
             }
         });
 
-        cardViewDataThreadRunnable dataThreadRunnable = new cardViewDataThreadRunnable(comingLoginWebsiteLink);
+        cardViewDataThreadRunnable dataThreadRunnable = new cardViewDataThreadRunnable(comingLoginWebsiteLink,comingLoginWebsiteName);
         new Thread(dataThreadRunnable).start();
     }
 
@@ -142,6 +146,7 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
         startActivity(intent);
     }
     public void goBack(View view) {
+        SplashActivity.isForeground = true;
         finish();
         overridePendingTransition(0, R.anim.slide_out_down);
     }
@@ -167,24 +172,76 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
     }
     public class cardViewDataThreadRunnable implements Runnable {
 
-        private String tempLoginWebsiteLink;
+        private String tempLoginWebsiteLink, tempLoginWebsiteName;
 
-        public cardViewDataThreadRunnable (String loginWebsiteLink){
+        public cardViewDataThreadRunnable (String loginWebsiteLink, String loginWebsiteName){
             this.tempLoginWebsiteLink = loginWebsiteLink;
+            this.tempLoginWebsiteName = loginWebsiteName;
         }
 
         Handler handler = new Handler();
         @Override
         public void run() {
-            bmWebsiteLogo = fetchFavicon(Uri.parse(tempLoginWebsiteLink));
+            try {
+                bmWebsiteLogo = fetchFavicon(Uri.parse(tempLoginWebsiteLink));
+                emptyBitmap = Bitmap.createBitmap(bmWebsiteLogo.getWidth(),bmWebsiteLogo.getHeight(),bmWebsiteLogo.getConfig());
+
+            }catch (NullPointerException e){
+                
+            }
+            
+            String[] title1 = tempLoginWebsiteName.split("_",3);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
                     imgWebsiteLogo.setImageBitmap(bmWebsiteLogo);
+                    try {
+                        if (bmWebsiteLogo.sameAs(emptyBitmap)){
+
+                        }
+                    }catch (NullPointerException e){
+                        if (title1.length == 3){
+                            imgWebsiteLogo.setVisibility(View.INVISIBLE);
+                            tvWebsiteTitle.setVisibility(View.VISIBLE);
+                            tvWebsiteTitle.setText(title1[1]);
+                        }else if (title1.length == 2){
+                            imgWebsiteLogo.setVisibility(View.INVISIBLE);
+                            tvWebsiteTitle.setVisibility(View.VISIBLE);
+                            tvWebsiteTitle.setText(title1[0]);
+                        }
+                    }
                 }
             });
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (SplashActivity.isBackground){
+            Intent intent = new Intent(ShowCardviewDataActivity.this, BiometricActivity.class);
+            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
+            startActivity(intent);
+        }
+        if (SplashActivity.isForeground){
+            SplashActivity.isForeground = false;
+        }
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (!SplashActivity.isForeground){
+            SplashActivity.isBackground = true;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        SplashActivity.isForeground = true;
+        finish();
+        overridePendingTransition(0, R.anim.slide_out_down);
+    }
 }

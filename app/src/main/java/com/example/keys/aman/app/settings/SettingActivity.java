@@ -26,6 +26,7 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.example.keys.R;
+import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.notes.pinLockFragment;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -128,6 +129,7 @@ public class SettingActivity extends Fragment {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SplashActivity.isForeground = true;
                 FirebaseAuth.getInstance().signOut();
 
                 SharedPreferences.Editor editor1 = sharedPreferences.edit();
@@ -202,4 +204,5 @@ public class SettingActivity extends Fragment {
             tvProfileEmail.setText(currentUserEmail);
         }
     }
+
 }

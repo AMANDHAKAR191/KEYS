@@ -10,9 +10,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
+import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -57,7 +58,6 @@ public class notesActivity extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_notes,container,false);
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
         //Hooks
@@ -84,6 +84,7 @@ public class notesActivity extends Fragment {
         exFABtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SplashActivity.isForeground = true;
                 Intent intent = new Intent(context, addNotesActivity.class);
                 intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
                 startActivity(intent);
@@ -103,7 +104,13 @@ public class notesActivity extends Fragment {
         reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
         dataholder = new ArrayList<>();
-        adaptor = new myadaptorfornote(dataholder, context, activity);
+        adaptor = new myadaptorfornote(dataholder, context, activity){
+            @Override
+            public void resetAdaptor(){
+                dataholder.clear();
+                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+            }
+        };
         recyclerView.setAdapter(adaptor);
         reference.addValueEventListener(new ValueEventListener() {
             @Override

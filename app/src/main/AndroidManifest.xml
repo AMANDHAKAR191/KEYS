@@ -73,13 +73,7 @@
             android:exported="false" />
         <activity
             android:name=".aman.app.home.addpassword.addPasswordData"
-            android:exported="false"
-            android:icon="@drawable/ic_baseline_add_24"
-            android:label="Add Password"
-            android:roundIcon="@drawable/group_1final_keys_logo" />
-<!--        <activity-->
-<!--            android:name=".aman.app.settings.SettingActivity"-->
-<!--            android:exported="false" />-->
+            android:exported="false"/>
         <activity
             android:name=".aman.app.base.tabLayoutActivity"
             android:exported="false" />

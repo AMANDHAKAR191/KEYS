@@ -11,11 +11,11 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.keys.R;
+import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.home.addpassword.addDataHelperClass;
 import com.example.keys.aman.app.home.addpassword.addPasswordData;
 import com.example.keys.aman.app.notes.addNotesActivity;
@@ -62,7 +63,7 @@ public class HomeActivity extends Fragment {
     RecyclerView recview;
     LinearLayout llFab;
     SearchView searchView;
-    SwipeRefreshLayout swipeRefreshLayout;
+    public static SwipeRefreshLayout swipeRefreshLayout;
     SharedPreferences sharedPreferences;
     public static DatabaseReference databaseReference;
     public static myadaptor adaptor;
@@ -72,8 +73,7 @@ public class HomeActivity extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_home,container,false);
-        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+        View view = inflater.inflate(R.layout.activity_home, container, false);
         sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
         //Hooks
@@ -123,19 +123,15 @@ public class HomeActivity extends Fragment {
                 exFABtn.extend();
                 llFab.setBackground(activity.getDrawable(R.drawable.fully_transparent_background));
                 llFab.setVisibility(View.INVISIBLE);
-//                // Gets linearlayout
-//                ViewGroup.LayoutParams params = ll_fab.getLayoutParams();
-//                params.height = 240;
-//                params.width = 260;
-//                ll_fab.setLayoutParams(params);
                 isAllFabsVisible = false;
             }
         });
         fabAddPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SplashActivity.isForeground = true;
                 Intent intent = new Intent(context, addPasswordData.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity");
+                intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity");
                 startActivity(intent);
                 activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -143,8 +139,9 @@ public class HomeActivity extends Fragment {
         fabPasswordGenrator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SplashActivity.isForeground = true;
                 Intent intent = new Intent(context, PassGenActivity.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity");
+                intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity");
                 startActivity(intent);
                 activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -152,8 +149,9 @@ public class HomeActivity extends Fragment {
         fabAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SplashActivity.isForeground = true;
                 Intent intent = new Intent(context, addNotesActivity.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"HomeActivity");
+                intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity");
                 startActivity(intent);
                 activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -176,7 +174,7 @@ public class HomeActivity extends Fragment {
         return view;
     }
 
-    public class threadRunnable implements Runnable{
+    public class threadRunnable implements Runnable {
         Handler handler = new Handler();
         View view;
 
@@ -194,6 +192,7 @@ public class HomeActivity extends Fragment {
             });
         }
     }
+
     private void setfabVisblity() {
         isAllFabsVisible = false;
         fabAddPassword.setVisibility(View.GONE);
@@ -237,6 +236,7 @@ public class HomeActivity extends Fragment {
                     }
                 });
     }
+
     public void recyclerviewsetdata() {
 
         databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata")
@@ -244,7 +244,13 @@ public class HomeActivity extends Fragment {
         recview.setLayoutManager(new LinearLayoutManager(context));
 
         dataholder = new ArrayList<>();
-        adaptor = new myadaptor(dataholder, context, activity);
+        adaptor = new myadaptor(dataholder, context, activity){
+            @Override
+            public void resetAdaptor() {
+                dataholder.clear();
+                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+            }
+        };
         recview.setAdapter(adaptor);
         recview.hasFixedSize();
 

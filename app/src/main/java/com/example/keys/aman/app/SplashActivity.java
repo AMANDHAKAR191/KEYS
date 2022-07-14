@@ -39,6 +39,8 @@ public class SplashActivity extends AppCompatActivity {
     private String[] PERMISSIONS;
     public static boolean isConnected = false;
     ConnectivityManager connectivityManager;
+    public static boolean isForeground = false;
+    public static boolean isBackground = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                isForeground = true;
                 Intent i = new Intent(SplashActivity.this, LogInActivity.class);
                 startActivity(i);
                 finish();
@@ -81,6 +84,13 @@ public class SplashActivity extends AppCompatActivity {
                     public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                         mRewardedAd = rewardedAd;
                         Toast.makeText(SplashActivity.this, "Ad was loaded.", Toast.LENGTH_LONG).show();
+                        mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                super.onAdDismissedFullScreenContent();
+                                SplashActivity.isForeground = true;
+                            }
+                        });
                     }
                 });
     }
@@ -96,6 +106,7 @@ public class SplashActivity extends AppCompatActivity {
                         // an ad is loaded.
                         mInterstitialAd = interstitialAd;
                         Toast.makeText(SplashActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
+                        SplashActivity.isForeground = true;
                         mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdDismissedFullScreenContent() {
@@ -142,4 +153,6 @@ public class SplashActivity extends AppCompatActivity {
                 build();
         shortcutManager.setDynamicShortcuts(Arrays.asList(shortcutInfo));
     }
+
+
 }

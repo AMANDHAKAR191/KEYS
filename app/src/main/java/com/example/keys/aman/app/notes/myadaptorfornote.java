@@ -24,11 +24,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
+import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 
 import java.util.ArrayList;
 
-public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myviewholder> implements Filterable {
+public abstract class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myviewholder> implements Filterable {
     final ArrayList<addDNoteHelperClass> dataholder;
     final ArrayList<addDNoteHelperClass> dataholderfilter;
     final Context context;
@@ -79,6 +80,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
             holder.llCard.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    SplashActivity.isForeground = true;
                     Intent intent = new Intent(context, addNotesActivity.class);
                     intent.putExtra("request_code", "notesCardView");
                     intent.putExtra("date", noteDate);
@@ -93,6 +95,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
             holder.tvDate.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    SplashActivity.isForeground = true;
                     Intent intent = new Intent(context, addNotesActivity.class);
                     intent.putExtra("request_code", "notesCardView");
                     intent.putExtra("date", noteDate);
@@ -107,6 +110,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
             holder.tvTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    SplashActivity.isForeground = true;
                     Intent intent = new Intent(context, addNotesActivity.class);
                     intent.putExtra("request_code", "notesCardView");
                     intent.putExtra("date", noteDate);
@@ -121,6 +125,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
             holder.tvNote.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    SplashActivity.isForeground = true;
                     Intent intent = new Intent(context, addNotesActivity.class);
                     intent.putExtra("request_code", "notesCardView");
                     intent.putExtra("date", noteDate);
@@ -144,12 +149,8 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
                             return true;
                         case R.id.img_delete:
                             notesActivity.reference.child(noteDate).removeValue();
-                            Toast.makeText(context, "Deleted !!", Toast.LENGTH_SHORT).show();
                             notesActivity.adaptor.notifyDataSetChanged();
-                            activity.finish();
-                            activity.overridePendingTransition(0, 0);
-                            activity.startActivity(new Intent(context, notesActivity.class));
-                            activity.overridePendingTransition(0, 0);
+                            holder.resetAdaptorCall();
                             return true;
                     }
                     return false;
@@ -216,7 +217,8 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
         }
     };
 
-    public static class myviewholder extends RecyclerView.ViewHolder {
+
+    public class myviewholder extends RecyclerView.ViewHolder {
 
         final TextView tvDate;
         final TextView tvTitle;
@@ -232,6 +234,13 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
             tbcvMore = itemView.findViewById(R.id.cardview_more);
             llCard = itemView.findViewById(R.id.lenear_layout_card);
         }
+        public void resetAdaptorCall(){
+            resetAdaptor();
+        }
 
+    }
+
+    //create new abstract method
+    public void resetAdaptor() {
     }
 }

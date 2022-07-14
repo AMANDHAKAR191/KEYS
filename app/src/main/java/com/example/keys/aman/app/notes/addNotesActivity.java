@@ -1,13 +1,14 @@
 package com.example.keys.aman.app.notes;
 
 import static com.example.keys.aman.app.SplashActivity.mRewardedAd;
+import static com.example.keys.aman.app.signin_login.LogInActivity.REQUEST_CODE_NAME;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -18,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
+import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.base.tabLayoutActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
@@ -50,9 +52,10 @@ public class addNotesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notes);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        SplashActivity.isForeground = false;
 
         //Hooks
         tilAddNoteTitle = findViewById(R.id.til_addtitle);
@@ -65,7 +68,7 @@ public class addNotesActivity extends AppCompatActivity {
 
         //Hide mobile no and
         Intent intent = getIntent();
-        comingrequestcode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
+        comingrequestcode = intent.getStringExtra(REQUEST_CODE_NAME);
         if (comingrequestcode == null) {
             comingrequestcode = "this";
         }
@@ -100,23 +103,32 @@ public class addNotesActivity extends AppCompatActivity {
             }
         });
 
-
-        if (mRewardedAd != null) {
-            Activity activityContext = addNotesActivity.this;
-            mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
-                @Override
-                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                    // Handle the reward.
-                    int rewardAmount = rewardItem.getAmount();
-                    String rewardType = rewardItem.getType();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mRewardedAd != null) {
+                    Activity activityContext = addNotesActivity.this;
+                    SplashActivity.isForeground = true;
+                    mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
+                        @Override
+                        public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                            // Handle the reward.
+                            int rewardAmount = rewardItem.getAmount();
+                            String rewardType = rewardItem.getType();
+                        }
+                    });
+                } else {
+                    Toast.makeText(addNotesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
                 }
-            });
-        } else {
-            Toast.makeText(addNotesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
-        }
+            }
+        },1000);
+
+
     }
 
     public void gocencal(View view) {
+        SplashActivity.isForeground = true;
         finish();
         overridePendingTransition(0, R.anim.slide_out_down);
     }
@@ -147,8 +159,9 @@ public class addNotesActivity extends AppCompatActivity {
             reference.child(currentDateAndTime).setValue(addDNoteHelper);
             Toast.makeText(addNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
         }
+        SplashActivity.isForeground = true;
         Intent intent = new Intent(addNotesActivity.this, tabLayoutActivity.class);
-        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "addNotesActivity");
+        intent.putExtra(REQUEST_CODE_NAME, "addNotesActivity");
         startActivity(intent);
         finish();
         overridePendingTransition(0, R.anim.slide_out_down);
@@ -160,5 +173,34 @@ public class addNotesActivity extends AppCompatActivity {
         cbHideNote.setEnabled(true);
         tilAddNoteTitle.setEnabled(true);
         tilAddNoteBody.setEnabled(true);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (SplashActivity.isBackground){
+            Intent intent = new Intent(addNotesActivity.this, BiometricActivity.class);
+            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
+            startActivity(intent);
+        }
+        if (SplashActivity.isForeground){
+            SplashActivity.isForeground = false;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!SplashActivity.isForeground){
+            SplashActivity.isBackground = true;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        SplashActivity.isForeground = true;
+        finish();
+        overridePendingTransition(0, R.anim.slide_out_down);
     }
 }

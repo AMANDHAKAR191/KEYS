@@ -1,6 +1,7 @@
 package com.example.keys.aman.app.home.addpassword;
 
 import static com.example.keys.aman.app.SplashActivity.mInterstitialAd;
+import static com.example.keys.aman.app.signin_login.LogInActivity.REQUEST_CODE_NAME;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,7 +10,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -25,9 +25,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.PrograceBar;
+import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.base.tabLayoutActivity;
 import com.example.keys.aman.app.home.HomeActivity;
 import com.example.keys.aman.app.home.PassGenActivity;
+import com.example.keys.aman.app.notes.BiometricActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -84,8 +86,9 @@ public class addPasswordData extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_password_data);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        SplashActivity.isForeground = false;
 
 
         tilLogin = findViewById(R.id.til_addlogindata);
@@ -161,11 +164,21 @@ public class addPasswordData extends AppCompatActivity {
 
         recyclerViewSetData();
 
-        if (mInterstitialAd != null) {
-            mInterstitialAd.show(addPasswordData.this);
-        } else {
-            Toast.makeText(addPasswordData.this, "The interstitial ad wasn't ready yet.", Toast.LENGTH_LONG).show();
-        }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mInterstitialAd != null) {
+                    SplashActivity.isForeground = true;
+                    mInterstitialAd.show(addPasswordData.this);
+                } else {
+                    Toast.makeText(addPasswordData.this, "The interstitial ad wasn't ready yet.", Toast.LENGTH_LONG).show();
+                }
+            }
+        },1000);
+
+
+
     }
 
 
@@ -240,7 +253,7 @@ public class addPasswordData extends AppCompatActivity {
                 Toast.makeText(addPasswordData.this, "Done + HomeActivity", Toast.LENGTH_SHORT).show();
             }
 
-
+            SplashActivity.isForeground = true;
             Intent intent1 = new Intent(addPasswordData.this, tabLayoutActivity.class);
             intent1.putExtra(LogInActivity.REQUEST_CODE_NAME, "addPasswordData");
             startActivity(intent1);
@@ -254,6 +267,7 @@ public class addPasswordData extends AppCompatActivity {
         addData();
     }
     public void goBack(View view) {
+        SplashActivity.isForeground = true;
         finish();
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
     }
@@ -317,8 +331,7 @@ public class addPasswordData extends AppCompatActivity {
 
             }
         });
-
-
+        prograceBar.dismissbar();
     }
     private void addWebsiteList(DatabaseReference databaseReference) {
 
@@ -399,5 +412,34 @@ public class addPasswordData extends AppCompatActivity {
 
             }
         }, 500);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (SplashActivity.isBackground){
+            Intent intent = new Intent(addPasswordData.this, BiometricActivity.class);
+            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
+            startActivity(intent);
+        }
+        if (SplashActivity.isForeground){
+            SplashActivity.isForeground = false;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (!SplashActivity.isForeground){
+            SplashActivity.isBackground = true;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        SplashActivity.isForeground = true;
+        finish();
+        overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
     }
 }
