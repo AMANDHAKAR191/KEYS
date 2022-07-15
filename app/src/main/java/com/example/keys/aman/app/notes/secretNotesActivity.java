@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -61,19 +62,28 @@ public class secretNotesActivity extends AppCompatActivity {
 
         if (comingRequestCode.equals("LogInActivity")) {
         }
-        if (mRewardedAd != null) {
-            Activity activityContext = secretNotesActivity.this;
-            mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
-                @Override
-                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                    // Handle the reward.
-                    int rewardAmount = rewardItem.getAmount();
-                    String rewardType = rewardItem.getType();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mRewardedAd != null) {
+                    Activity activityContext = secretNotesActivity.this;
+                    SplashActivity.isForeground = true;
+                    mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
+                        @Override
+                        public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                            // Handle the reward.
+                            int rewardAmount = rewardItem.getAmount();
+                            String rewardType = rewardItem.getType();
+                        }
+                    });
+                } else {
+                    Toast.makeText(secretNotesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
                 }
-            });
-        } else {
-            Toast.makeText(secretNotesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
-        }
+            }
+        },1000);
+
 
         recyclerViewSetData();
     }

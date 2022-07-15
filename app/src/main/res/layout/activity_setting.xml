@@ -38,8 +38,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:hint="Profile Name "
+                    android:hint="Profile Name"
                     android:layout_marginLeft="10dp"
+                    android:textSize="20dp"
                     android:textColor="?attr/colorOnSecondary" />
             </LinearLayout>
 
@@ -50,6 +51,7 @@
                 android:showDividers="end"
                 android:layout_gravity="start"
                 android:hint="Profile Email "
+                android:textSize="20dp"
                 android:textColor="?attr/colorOnSecondary" />
 
             <TextView
@@ -57,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Chnage Pin"
-                android:textSize="18dp"
+                android:textSize="20dp"
                 android:textColor="?attr/colorOnSecondary"
                 android:layout_marginTop="40dp"
                 android:visibility="visible" />
@@ -66,7 +68,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Devices"
-                android:textSize="18dp"
+                android:textSize="20dp"
                 android:textColor="?attr/colorOnSecondary"
                 android:layout_marginTop="20dp"
                 android:visibility="visible" />
@@ -128,7 +130,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:drawableStart="@drawable/live_help"
-                android:text="\t\Contact us"
+                android:text="\t\tContact us"
                 android:textColor="?attr/colorOnSecondary"
                 android:textSize="20dp" />
 
@@ -138,7 +140,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:drawableStart="@drawable/privacy_policy"
-                android:text="\t\Privacy Policy"
+                android:text="\t\tPrivacy Policy"
                 android:textColor="?attr/colorOnSecondary"
                 android:textSize="20dp" />
 
@@ -148,7 +150,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:drawableStart="@drawable/terms_and_conditions_icon"
-                android:text="\t\Terms &amp; conditions"
+                android:text="\t\tTerms &amp; conditions"
                 android:textColor="?attr/colorOnSecondary"
                 android:textSize="20dp" />
 

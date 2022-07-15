@@ -29,7 +29,7 @@ import com.example.keys.aman.app.signin_login.LogInActivity;
 
 import java.util.ArrayList;
 
-public abstract class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myviewholder> implements Filterable {
+public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myviewholder> implements Filterable {
     final ArrayList<addDNoteHelperClass> dataholder;
     final ArrayList<addDNoteHelperClass> dataholderfilter;
     final Context context;
@@ -58,7 +58,7 @@ public abstract class myadaptorfornote extends RecyclerView.Adapter<myadaptorfor
 
         sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
-        int p = holder.getAdapterPosition();
+//        int p = holder.getAdapterPosition();
         String noteDate, noteTitle, noteBody, decryptedNoteTitle, decryptedNoteBody, doubleDecryptedNoteTitle, doubleDecryptedNoteBody;
         boolean isHideNote;
         try {
