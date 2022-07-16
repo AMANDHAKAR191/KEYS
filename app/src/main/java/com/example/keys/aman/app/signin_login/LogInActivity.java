@@ -91,6 +91,7 @@ public class LogInActivity extends AppCompatActivity {
         }
 
 
+
         mAuth = FirebaseAuth.getInstance();
         createRequest();
 

@@ -218,10 +218,6 @@ public class pinLockFragment extends AppCompatActivity {
         }
     }
 
-    public void goBack(View view) {
-        finish();
-    }
-
     public void wrongePin(){
         count =  count + 1;
         if (count >= 3){
