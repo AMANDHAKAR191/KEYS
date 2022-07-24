@@ -119,8 +119,13 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                 bmWebsiteLogo = myadaptor.fetchFavicon(Uri.parse(dwebsite_link));
                 emptyBitmap = Bitmap.createBitmap(bmWebsiteLogo.getWidth(),bmWebsiteLogo.getHeight(),bmWebsiteLogo.getConfig());
 
-            }catch (NullPointerException e){
-
+            }catch (Exception e){
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        holder.tvWebsiteName.setText(dwebsite_name);
+                    }
+                });
             }
             handler.post(new Runnable() {
                 @Override
@@ -131,19 +136,21 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                     }else if (title1.length == 2){
                         holder.tvWebsiteName.setText(title1[0]);
                     }
+
                     try {
                         if (bmWebsiteLogo.sameAs(emptyBitmap)){
 
                         }
                     }catch (NullPointerException e){
+                        holder.imgWebsiteLogo.setVisibility(View.GONE);
+                        holder.tvImageTitle.setVisibility(View.VISIBLE);
                         if (title1.length == 3){
-                            holder.imgWebsiteLogo.setVisibility(View.GONE);
-                            holder.tvImageTitle.setVisibility(View.VISIBLE);
                             holder.tvImageTitle.setText(title1[1]);
                             holder.tvWebsiteName.setText(title1[1]);
                         }else if (title1.length == 2){
-                            holder.imgWebsiteLogo.setVisibility(View.GONE);
-                            holder.tvImageTitle.setVisibility(View.VISIBLE);
+                            holder.tvImageTitle.setText(title1[0]);
+                            holder.tvWebsiteName.setText(title1[0]);
+                        }else if (title1.length == 1){
                             holder.tvImageTitle.setText(title1[0]);
                             holder.tvWebsiteName.setText(title1[0]);
                         }

@@ -7,6 +7,8 @@ import android.graphics.drawable.Icon;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,11 +43,15 @@ public class SplashActivity extends AppCompatActivity {
     ConnectivityManager connectivityManager;
     public static boolean isForeground = false;
     public static boolean isBackground = false;
+    ImageView imageView, imageView1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
+        imageView = findViewById(R.id.imageView);
+        imageView1 = findViewById(R.id.imageView1);
 
         createShortcutOfApp();
         showinterstialAd();
@@ -53,12 +59,20 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                isForeground = true;
-                Intent i = new Intent(SplashActivity.this, LogInActivity.class);
-                startActivity(i);
-                finish();
+                imageView.setVisibility(View.INVISIBLE);
+                imageView1.setVisibility(View.VISIBLE);
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        isForeground = true;
+                        Intent i = new Intent(SplashActivity.this, LogInActivity.class);
+                        startActivity(i);
+                        finish();
+                    }
+                }, 1000);
             }
         }, 1000);
+
     }
 
     private void showRewardedAd() {

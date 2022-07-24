@@ -58,7 +58,7 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            android:src="@drawable/group_1final_keys_logo"/>
+            android:src="@drawable/keys_app_inside_icon_new"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,15 +72,5 @@ we have added 4 layers of security for your data."/>
 
 
     </LinearLayout>
-    <ImageButton
-        android:id="@+id/img_next"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_margin="20dp"
-        android:background="@color/Activity_theme"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:src="@drawable/save" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

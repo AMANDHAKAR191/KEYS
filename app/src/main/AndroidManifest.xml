@@ -12,9 +12,9 @@
 
     <application
         android:allowBackup="false"
-        android:icon="@mipmap/keys_louncher_icon"
+        android:icon="@mipmap/keys_louncher_icon_new1"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/keys_louncher_icon_round"
+        android:roundIcon="@mipmap/keys_louncher_icon_new1_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KEYS">
 

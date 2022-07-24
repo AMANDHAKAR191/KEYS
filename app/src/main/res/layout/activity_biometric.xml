@@ -15,7 +15,7 @@
         app:layout_constraintRight_toRightOf="parent"
         android:layout_marginTop="50sp"
         android:contentDescription="@string/keys_logo"
-        android:src="@drawable/group_1final_keys_logo" />
+        android:src="@drawable/keys_app_inside_icon_new" />
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"

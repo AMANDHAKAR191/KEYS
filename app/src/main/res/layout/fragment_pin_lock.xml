@@ -9,12 +9,12 @@
 
     <ImageView
         android:id="@+id/profile_image"
-        android:layout_width="84dp"
-        android:layout_height="84dp"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
         android:elevation="8dp"
-        android:layout_marginTop="104dp"
-        android:src="@drawable/group_1final_keys_logo" />
+        android:src="@drawable/keys_app_inside_icon_new" />
 
 <!--    <TextView-->
 <!--        android:id="@+id/tv_use_biometrix"-->

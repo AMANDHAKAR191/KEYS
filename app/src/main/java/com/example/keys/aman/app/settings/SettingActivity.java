@@ -83,6 +83,7 @@ public class SettingActivity extends Fragment {
         tvAppInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SplashActivity.isForeground = true;
                 startActivity(new Intent(context, AppInfo.class));
                 activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
             }
@@ -204,5 +205,7 @@ public class SettingActivity extends Fragment {
             tvProfileEmail.setText(currentUserEmail);
         }
     }
+
+
 
 }

@@ -115,6 +115,16 @@
                 android:visibility="gone" />
 
             <TextView
+                android:id="@+id/tv_tutorial"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:drawableStart="@drawable/app_info"
+                android:text="\t\tTutorials"
+                android:textColor="?attr/colorOnSecondary"
+                android:textSize="20dp" />
+
+            <TextView
                 android:id="@+id/tv_app_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

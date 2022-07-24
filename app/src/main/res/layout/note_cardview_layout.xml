@@ -45,7 +45,6 @@
             android:textColor="?attr/colorOnSecondary"
             android:text="Title"/>
 
-
         <TextView
             android:id="@+id/tv_note"
             android:layout_width="match_parent"

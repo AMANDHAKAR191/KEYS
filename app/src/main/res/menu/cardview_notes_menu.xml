@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="Copy Note"
+        android:id="@+id/item_edit"
+        android:enabled="true"
+        app:showAsAction="always"
+        android:icon="@drawable/create1" />
     <item android:title="Copy Note"
         android:id="@+id/img_copy_note"
         android:enabled="true"

@@ -87,8 +87,9 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
                     editor1.apply();
 
                     String masterPin = sharedPreferences.getString(LogInActivity.MASTER_PIN, "");
+                    boolean ispinset = sharedPreferences.getBoolean(LogInActivity.IS_PIN_SET,false);
 
-                    if (masterPin == "") {
+                    if (!ispinset) {
                         SplashActivity.isForeground = true;
                         Intent intent = new Intent(context, pinLockFragment.class);
                         intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");

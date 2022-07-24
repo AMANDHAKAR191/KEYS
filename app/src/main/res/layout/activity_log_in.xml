@@ -60,7 +60,7 @@
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:layout_marginTop="10dp"
-            android:src="@drawable/group_1final_keys_logo" />
+            android:src="@drawable/keys_app_inside_icon_new" />
 
     </LinearLayout>
 

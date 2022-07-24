@@ -7,18 +7,6 @@
     android:background="@color/mine_shaft"
     tools:context=".aman.app.notes.pinLockFragment">
 
-    <ImageButton
-        android:id="@+id/img_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/mine_shaft"
-        android:onClick="goBack"
-        android:src="@drawable/close"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <ImageView
         android:id="@+id/profile_image"
         android:layout_width="168dp"
@@ -26,7 +14,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="104dp"
         android:elevation="8dp"
-        android:src="@drawable/group_1final_keys_logo" />
+        android:src="@drawable/keys_app_inside_icon" />
 
 <!--    <TextView-->
 <!--        android:id="@+id/tv_use_biometrix"-->

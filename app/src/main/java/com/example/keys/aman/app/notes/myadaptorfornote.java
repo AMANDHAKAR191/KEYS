@@ -27,7 +27,10 @@ import com.example.keys.aman.app.AES;
 import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myviewholder> implements Filterable {
     final ArrayList<addDNoteHelperClass> dataholder;
@@ -73,7 +76,11 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
             decryptedNoteBody = aes.decrypt(noteBody);
             doubleDecryptedNoteBody = aes.decrypt(decryptedNoteBody);
 
-            holder.tvDate.setText(noteDate);
+            
+            DateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy / hh:mm", Locale.getDefault());
+            DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+            String dateAndTime1 = sdf.format(inputsdf.parse(noteDate));
+            holder.tvDate.setText(dateAndTime1);
             holder.tvTitle.setText(doubleDecryptedNoteTitle);
             holder.tvNote.setText(doubleDecryptedNoteBody);
 

@@ -20,7 +20,6 @@ import androidx.core.content.ContextCompat;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.SplashActivity;
-import com.example.keys.aman.app.base.tabLayoutActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 //import com.example.keys.aman.app.signin_login.SignUpActivity;
 
@@ -84,10 +83,11 @@ public class BiometricActivity extends AppCompatActivity{
                     finish();
                 }else {
                     SplashActivity.isForeground = true;
-                    Toast.makeText(this, "Fingerprint Scanner not detected in Device. please set pin", Toast.LENGTH_SHORT).show();
-                    Intent intent3 = new Intent(BiometricActivity.this, tabLayoutActivity.class);
-                    intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
-                    startActivity(intent3);
+                    Intent intent3 = new Intent(getApplicationContext(), pinLockFragment.class);
+                    intent3.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
+                    intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent3.putExtra("title", "Set Pin");
+                    startActivity(intent);
                     finish();
                 }
             } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
@@ -105,10 +105,11 @@ public class BiometricActivity extends AppCompatActivity{
                     finish();
                 }else {
                     SplashActivity.isForeground = true;
-                    Toast.makeText(this, "Pin is set yet! please set pin", Toast.LENGTH_SHORT).show();
-                    Intent intent3 = new Intent(BiometricActivity.this, tabLayoutActivity.class);
-                    intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
-                    startActivity(intent3);
+                    Intent intent3 = new Intent(getApplicationContext(), pinLockFragment.class);
+                    intent3.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
+                    intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent3.putExtra("title", "Set Pin");
+                    startActivity(intent);
                     finish();
                 }
             } else if (!hasEnrolledFingerprints) {
@@ -124,10 +125,11 @@ public class BiometricActivity extends AppCompatActivity{
                     finish();
                 }else {
                     SplashActivity.isForeground = true;
-                    Toast.makeText(this, "Pin is set yet! please set pin", Toast.LENGTH_SHORT).show();
-                    Intent intent3 = new Intent(BiometricActivity.this,tabLayoutActivity.class);
-                    intent3.putExtra(LogInActivity.REQUEST_CODE_NAME,"LogInActivity");
-                    startActivity(intent3);
+                    Intent intent3 = new Intent(getApplicationContext(), pinLockFragment.class);
+                    intent3.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
+                    intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent3.putExtra("title", "Set Pin");
+                    startActivity(intent);
                     finish();
                 }
             } else {
