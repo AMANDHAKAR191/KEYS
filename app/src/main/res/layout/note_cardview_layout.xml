@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:background="@drawable/rounded_thems2"
+        android:background="@drawable/rounded_thems1"
         android:id="@+id/lenear_layout_card"
         android:elevation="5dp"
         android:padding="10dp"

@@ -6,8 +6,6 @@ import android.content.pm.ShortcutManager;
 import android.graphics.drawable.Icon;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -56,22 +54,26 @@ public class SplashActivity extends AppCompatActivity {
         createShortcutOfApp();
         showinterstialAd();
         showRewardedAd();
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                imageView.setVisibility(View.INVISIBLE);
-                imageView1.setVisibility(View.VISIBLE);
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        isForeground = true;
-                        Intent i = new Intent(SplashActivity.this, LogInActivity.class);
-                        startActivity(i);
-                        finish();
-                    }
-                }, 1000);
-            }
-        }, 1000);
+        isForeground = true;
+        Intent i = new Intent(SplashActivity.this, LogInActivity.class);
+        startActivity(i);
+        finish();
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                imageView.setVisibility(View.INVISIBLE);
+//                imageView1.setVisibility(View.VISIBLE);
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        isForeground = true;
+//                        Intent i = new Intent(SplashActivity.this, LogInActivity.class);
+//                        startActivity(i);
+//                        finish();
+//                    }
+//                }, 1000);
+//            }
+//        }, 1000);
 
     }
 
@@ -90,14 +92,13 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error.
-                        Toast.makeText(SplashActivity.this, loadAdError.getMessage(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(SplashActivity.this, "Slow Internet or No connection. Please Wait!", Toast.LENGTH_LONG).show();
                         mRewardedAd = null;
                     }
 
                     @Override
                     public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                         mRewardedAd = rewardedAd;
-                        Toast.makeText(SplashActivity.this, "Ad was loaded.", Toast.LENGTH_LONG).show();
                         mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdDismissedFullScreenContent() {
@@ -119,13 +120,12 @@ public class SplashActivity extends AppCompatActivity {
                         // The mInterstitialAd reference will be null until
                         // an ad is loaded.
                         mInterstitialAd = interstitialAd;
-                        Toast.makeText(SplashActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
+
                         SplashActivity.isForeground = true;
                         mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
                             @Override
                             public void onAdDismissedFullScreenContent() {
                                 // Called when fullscreen content is dismissed.
-                                Toast.makeText(SplashActivity.this, "The ad was dismissed.", Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
@@ -147,7 +147,7 @@ public class SplashActivity extends AppCompatActivity {
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                         // Handle the error
-                        Toast.makeText(SplashActivity.this, "Ad Loaded", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SplashActivity.this, "Slow Internet or No connection. Please Wait!", Toast.LENGTH_LONG).show();
                         mInterstitialAd = null;
                     }
                 });

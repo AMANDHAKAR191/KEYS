@@ -2,15 +2,15 @@
     <!-- Base application theme. -->
     <style name="Theme.KEYS" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/Activity_theme</item>
-        <item name="colorPrimaryVariant">@color/button_back</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimary">@color/primary_light</item>
+        <item name="colorPrimaryVariant">@color/primary_dark</item>
+        <item name="colorOnPrimary">@color/primary_text</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/button_back</item>
-        <item name="colorSecondaryVariant">@color/Activity_theme_background</item>
-        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorSecondary">@color/accent</item>
+        <item name="colorSecondaryVariant">@color/divider</item>
+        <item name="colorOnSecondary">@color/secondary_text</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorSecondaryVariant</item>
+        <item name="android:statusBarColor" tools:targetApi="l">@color/primary_dark</item>
         <!-- Customize your theme here. -->
 
 
@@ -19,12 +19,28 @@
         <item name="android:windowExitTransition">@transition/left_trans_anim</item>
     </style>
 
-    <style name="Theme.KEYS.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+<!--    <style name="Theme.KEYS" parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">-->
+<!--        &lt;!&ndash; Primary brand color. &ndash;&gt;-->
+<!--        <item name="colorPrimary">@color/primary_light</item>-->
+<!--        <item name="colorPrimaryVariant">@color/primary_dark</item>-->
+<!--        <item name="colorOnPrimary">@color/primary_text</item>-->
+<!--        &lt;!&ndash; Secondary brand color. &ndash;&gt;-->
+<!--        <item name="colorSecondary">@color/accent</item>-->
+<!--        <item name="colorSecondaryVariant">@color/divider</item>-->
+<!--        <item name="colorOnSecondary">@color/secondary_text</item>-->
+<!--        &lt;!&ndash; Status bar color. &ndash;&gt;-->
+<!--        <item name="android:statusBarColor" tools:targetApi="l">@color/primary_dark</item>-->
+<!--        &lt;!&ndash; Customize your theme here. &ndash;&gt;-->
+
+
+<!--        <item name="android:windowActivityTransitions">true</item>-->
+<!--        <item name="android:windowEnterTransition">@transition/left_trans_anim</item>-->
+<!--        <item name="android:windowExitTransition">@transition/left_trans_anim</item>-->
+<!--    </style>-->
+
+    <style name="SplashTheme"
+        parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+        <item name="android:windowBackground">@drawable/splash_drawable</item>
     </style>
 
-    <style name="Theme.KEYS.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="Theme.KEYS.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

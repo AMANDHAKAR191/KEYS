@@ -11,27 +11,26 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:background="@color/Activity_theme"
         android:orientation="vertical">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Welcome"
-            android:textColor="?attr/colorOnSecondary"
+            style="@style/Widget.MaterialComponents.TextView"
             android:textStyle="bold"
             android:textSize="25dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="To"
-            android:textColor="?attr/colorOnSecondary"
+            style="@style/Widget.MaterialComponents.TextView"
             android:textStyle="bold"
             android:textSize="20dp"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="KEYS"
-            android:textColor="?attr/colorOnSecondary"
+            style="@style/Widget.MaterialComponents.TextView"
             android:textStyle="bold"
             android:fontFamily="@font/aclonica"
             android:textSize="25dp"/>
@@ -41,8 +40,6 @@
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:backgroundTint="@color/button_back"
-            android:textColor="?attr/colorOnSecondary"
             android:layout_marginTop="100dp"
             android:text="Log in"
             android:textSize="25dp"/>

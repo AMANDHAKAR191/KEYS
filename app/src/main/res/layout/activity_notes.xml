@@ -38,17 +38,6 @@
         android:visibility="invisible" />
 
 
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/ExtendedFloatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:backgroundTint="@color/button_back"
-        android:contentDescription="@string/FAB_item"
-        android:text="@string/Notes"
-        app:hoveredFocusedTranslationZ="6dp"
-        app:icon="@drawable/add"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:pressedTranslationZ="12dp" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

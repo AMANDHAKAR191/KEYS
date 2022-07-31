@@ -67,7 +67,7 @@
         android:layout_below="@id/indicator_dots"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
-        app:dotEmptyBackground="@color/gray"
+        app:dotEmptyBackground="@color/divider"
         app:dotFilledBackground="@color/white"
         app:keypadButtonSize="72dp"
         app:keypadShowDeleteButton="true"

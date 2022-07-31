@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="90dp"
         android:layout_margin="10dp"
-        android:background="@drawable/rounded_thems2"
         android:elevation="10dp"
         android:orientation="horizontal">
 
@@ -20,30 +19,31 @@
             android:layout_height="70dp"
             android:layout_margin="10dp"
             android:background="@drawable/rounded_thems1"
-            android:padding="10dp"
             android:elevation="20dp"
             android:gravity="center"
             android:hint="An"
+            android:padding="10dp"
             android:textSize="18dp"
             android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/tv_img_title"
+            style="@style/Widget.MaterialComponents.TextView"
             android:layout_width="100dp"
             android:layout_height="70dp"
             android:layout_margin="10dp"
             android:background="@drawable/rounded_thems1"
-            android:padding="5dp"
             android:elevation="20dp"
             android:gravity="center"
             android:hint="An"
             android:maxLines="1"
-            android:visibility="gone"
+            android:padding="5dp"
             android:textSize="14dp"
-            android:textColor="@color/white"
             android:textStyle="bold"
+            android:visibility="gone"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -51,8 +51,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/cardview_more"
@@ -60,14 +60,15 @@
                 android:layout_height="30dp"
                 android:layout_gravity="end"
                 android:src="@drawable/ic_baseline_more_vert_24"
-                app:menu="@menu/cardview_menu" >
+                app:menu="@menu/cardview_menu">
+
                 <TextView
                     android:id="@+id/displaywebsite"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="?attr/colorOnSecondary"
                     android:textSize="18sp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
             </androidx.appcompat.widget.Toolbar>
 

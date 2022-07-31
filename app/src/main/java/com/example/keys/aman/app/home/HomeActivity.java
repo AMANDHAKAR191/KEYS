@@ -4,14 +4,12 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -25,14 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.home.addpassword.addDataHelperClass;
-import com.example.keys.aman.app.home.addpassword.addPasswordData;
-import com.example.keys.aman.app.notes.addNotesActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -56,12 +49,8 @@ public class HomeActivity extends Fragment {
     }
 
     ScrollView scrollView;
-    ExtendedFloatingActionButton exFABtn;
-    FloatingActionButton fabAddPassword, fabPasswordGenrator, fabAddNote;
-    TextView tvAddPassword, tvPasswordGenrator, tvShowPersonalInfo, tvNOTE;
-    Boolean isAllFabsVisible;
+    TextView tvNOTE;
     RecyclerView recview;
-    LinearLayout llFab;
     SearchView searchView;
     public static SwipeRefreshLayout swipeRefreshLayout;
     SharedPreferences sharedPreferences;
@@ -77,19 +66,13 @@ public class HomeActivity extends Fragment {
         sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
         //Hooks
-        exFABtn = view.findViewById(R.id.ExtendedFloatingActionButton);
-        fabAddPassword = view.findViewById(R.id.add_password_fab);
-        tvAddPassword = view.findViewById(R.id.tv_add_password);
-        fabPasswordGenrator = view.findViewById(R.id.password_gen_fab);
-        tvPasswordGenrator = view.findViewById(R.id.tv_pass_gen);
-        fabAddNote = view.findViewById(R.id.add_note_fab);
-        tvShowPersonalInfo = view.findViewById(R.id.tv_personal_info);
-        tvNOTE = view.findViewById(R.id.tv_NOTE);
+
         scrollView = view.findViewById(R.id.scrollView);
         recview = view.findViewById(R.id.recview);
-        llFab = view.findViewById(R.id.ll_fab);
         searchView = view.findViewById(R.id.search_bar);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        tvNOTE = view.findViewById(R.id.tv_NOTE);
+
 
 
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
@@ -110,52 +93,7 @@ public class HomeActivity extends Fragment {
 //                return false;
 //            }
 //        });
-        llFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                fabAddPassword.hide();
-                fabPasswordGenrator.hide();
-                fabAddNote.hide();
-                tvAddPassword.setVisibility(View.GONE);
-                tvPasswordGenrator.setVisibility(View.GONE);
-                tvShowPersonalInfo.setVisibility(View.GONE);
-                exFABtn.setIconResource(R.drawable.add);
-                exFABtn.extend();
-                llFab.setBackground(activity.getDrawable(R.drawable.fully_transparent_background));
-                llFab.setVisibility(View.INVISIBLE);
-                isAllFabsVisible = false;
-            }
-        });
-        fabAddPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SplashActivity.isForeground = true;
-                Intent intent = new Intent(context, addPasswordData.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity");
-                startActivity(intent);
-                activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
-            }
-        });
-        fabPasswordGenrator.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SplashActivity.isForeground = true;
-                Intent intent = new Intent(context, PassGenActivity.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity");
-                startActivity(intent);
-                activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
-            }
-        });
-        fabAddNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SplashActivity.isForeground = true;
-                Intent intent = new Intent(context, addNotesActivity.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity");
-                startActivity(intent);
-                activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
-            }
-        });
+
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -170,7 +108,6 @@ public class HomeActivity extends Fragment {
         threadRunnable threadRunnable = new threadRunnable(view);
         new Thread(threadRunnable).start();
 
-        setfabVisblity();
         return view;
     }
 
@@ -193,49 +130,7 @@ public class HomeActivity extends Fragment {
         }
     }
 
-    private void setfabVisblity() {
-        isAllFabsVisible = false;
-        fabAddPassword.setVisibility(View.GONE);
-        tvAddPassword.setVisibility(View.GONE);
-        fabPasswordGenrator.setVisibility(View.GONE);
-        tvPasswordGenrator.setVisibility(View.GONE);
-        fabAddNote.setVisibility(View.GONE);
-        tvShowPersonalInfo.setVisibility(View.GONE);
-        exFABtn.extend();
-        exFABtn.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (!isAllFabsVisible) {
-                            fabAddPassword.show();
-                            fabPasswordGenrator.show();
-                            fabAddNote.show();
-                            tvAddPassword.setVisibility(View.VISIBLE);
-                            tvPasswordGenrator.setVisibility(View.VISIBLE);
-                            tvShowPersonalInfo.setVisibility(View.VISIBLE);
-                            exFABtn.shrink();
-                            exFABtn.setIconResource(R.drawable.close);
-                            exFABtn.setTranslationZ(1000);
-                            llFab.setBackground(activity.getDrawable(R.drawable.transparent_background));
-                            llFab.setVisibility(View.VISIBLE);
-                            isAllFabsVisible = true;
-                        } else {
-                            fabAddPassword.hide();
-                            fabPasswordGenrator.hide();
-                            fabAddNote.hide();
-                            tvAddPassword.setVisibility(View.GONE);
-                            tvPasswordGenrator.setVisibility(View.GONE);
-                            tvShowPersonalInfo.setVisibility(View.GONE);
-                            exFABtn.setIconResource(R.drawable.add);
-                            exFABtn.extend();
-                            llFab.setVisibility(View.INVISIBLE);
-                            llFab.setBackground(activity.getDrawable(R.drawable.transparent_background));
-                            isAllFabsVisible = false;
-                        }
 
-                    }
-                });
-    }
 
     public void recyclerviewsetdata() {
 

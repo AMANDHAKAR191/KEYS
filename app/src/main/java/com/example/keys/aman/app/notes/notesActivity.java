@@ -51,7 +51,7 @@ public class notesActivity extends Fragment {
     private boolean turn = false;
     TextView tvNote;
     SearchView searchView;
-    ExtendedFloatingActionButton exFABtn;
+
     private String uid;
 
     @Nullable
@@ -63,7 +63,7 @@ public class notesActivity extends Fragment {
         //Hooks
         searchView = view.findViewById(R.id.search_bar);
         tvNote = view.findViewById(R.id.tv_NOTE);
-        exFABtn = view.findViewById(R.id.ExtendedFloatingActionButton);
+
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
 //        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -81,16 +81,7 @@ public class notesActivity extends Fragment {
 //                return false;
 //            }
 //        });
-        exFABtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SplashActivity.isForeground = true;
-                Intent intent = new Intent(context, addNotesActivity.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
-                startActivity(intent);
-                activity.overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
-            }
-        });
+
 
         recyclerViewSetData(view);
         return view;
@@ -135,7 +126,6 @@ public class notesActivity extends Fragment {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
             }
         });
         recyclerView.setAdapter(adaptor);

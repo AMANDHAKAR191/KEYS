@@ -60,34 +60,25 @@ public class basicService extends AutofillService {
             for (Map.Entry<String, AutofillId> field : fields.entrySet()) {
                 String hint = field.getKey();
                 AutofillId id = field.getValue();
-                Collection<AutofillId> ids = fields.values();
-                AutofillId[] requiredIds = new AutofillId[ids.size()];
-                ids.toArray(requiredIds);
                 String value = i + "-" + hint;
                 // We're simple - our dataset values are hardcoded as "N-hint" (for example,
                 // "1-username", "2-username") and they're displayed as such, except if they're a
                 // password
                 String displayValue = hint.contains("password") ? "password for #" + i : value;
                 RemoteViews presentation = newDatasetPresentation(packageName, displayValue);
-                response.addDataset(new Dataset.Builder()
+                response.addDataset(dataset
                                 .setValue(id, AutofillValue.forText(value), presentation)
-                                .build())
-                        .setSaveInfo(new SaveInfo.Builder(
-                                SaveInfo.SAVE_DATA_TYPE_USERNAME | SaveInfo.SAVE_DATA_TYPE_PASSWORD,
-                                requiredIds)
-                                .build())
-                        .build();
-                dataset.setValue(id, AutofillValue.forText(value), presentation);
+                                .build());
             }
         }
 
 //        // 2.Add save info
-//        Collection<AutofillId> ids = fields.values();
-//        AutofillId[] requiredIds = new AutofillId[ids.size()];
-//        ids.toArray(requiredIds);
-//        response.setSaveInfo(
-//                // We're simple, so we're generic
-//                new SaveInfo.Builder(SaveInfo.SAVE_DATA_TYPE_GENERIC, requiredIds).build());
+        Collection<AutofillId> ids = fields.values();
+        AutofillId[] requiredIds = new AutofillId[ids.size()];
+        ids.toArray(requiredIds);
+        response.setSaveInfo(
+                // We're simple, so we're generic
+                new SaveInfo.Builder(SaveInfo.SAVE_DATA_TYPE_GENERIC, requiredIds).build());
 
         // 3.Profit!
         fillCallback.onSuccess(response.build());
@@ -150,8 +141,6 @@ public class basicService extends AutofillService {
     public void onSaveRequest(@NonNull SaveRequest saveRequest, @NonNull SaveCallback saveCallback) {
         System.out.println("onSaveRequest()");
         toast("Save not supported");
-
-
         saveCallback.onSuccess();
     }
 

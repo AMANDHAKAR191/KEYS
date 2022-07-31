@@ -43,7 +43,8 @@
             android:exported="false" />
         <activity
             android:name=".aman.app.SplashActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -76,7 +77,8 @@
             android:exported="false"/>
         <activity
             android:name=".aman.app.base.tabLayoutActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.KEYS"/>
         <activity
             android:name=".aman.app.settings.AppInfo"
             android:exported="false" />
