@@ -38,7 +38,8 @@ public class SettingActivity extends Fragment {
     Context context;
     Activity activity;
 
-    TextView tvAppInfo, tvContactUs, tvPrivacyPolicy, tvTermsAndConditions, tvProfileName, tvProfileEmail, tvChangePin, tvDevicesList;
+    TextView tvAppInfo, tvContactUs, tvPrivacyPolicy, tvTermsAndConditions,
+            tvProfileName, tvProfileEmail, tvChangePin, tvDevicesList, tvTutorial;
     ImageView imgBack;
     LinearLayout llDeviceList;
     TextView tvDevice1, tvDevice2, tvDevice3;
@@ -78,6 +79,7 @@ public class SettingActivity extends Fragment {
         cimgProfile = view.findViewById(R.id.img_profile);
         tvProfileName = view.findViewById(R.id.tv_profile_name);
         tvProfileEmail = view.findViewById(R.id.tv_profile_email);
+        tvTutorial = view.findViewById(R.id.tv_tutorial);
 
 
         tvAppInfo.setOnClickListener(new View.OnClickListener() {
@@ -91,8 +93,8 @@ public class SettingActivity extends Fragment {
         tvContactUs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                contactUsFragment contactUs = new contactUsFragment();
-//                contactUs.show(getSupportFragmentManager(), "contact_us");
+                contactUsFragment contactUs = new contactUsFragment();
+                contactUs.show(getFragmentManager(), "contact_us");
             }
         });
         tvPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
@@ -139,6 +141,13 @@ public class SettingActivity extends Fragment {
                 System.out.println(sharedPreferences.getBoolean(LogInActivity.IS_LOGIN, false));
 
                 Intent intent = new Intent(context, LogInActivity.class);
+                startActivity(intent);
+            }
+        });
+        tvTutorial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context,TutorialActivity.class);
                 startActivity(intent);
             }
         });

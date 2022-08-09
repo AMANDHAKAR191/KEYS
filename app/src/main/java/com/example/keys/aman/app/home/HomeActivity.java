@@ -18,6 +18,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -144,6 +146,17 @@ public class HomeActivity extends Fragment {
             public void resetAdaptor() {
                 dataholder.clear();
                 Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void showCardViewFragment(String currentDate, String tempLogin, String tempPassword,
+                                             String dWebsiteName, String dWebsiteLink) {
+                
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fl_container,new ShowCardviewDataActivity(context,activity, currentDate,tempLogin,
+                        tempPassword,dWebsiteName,dWebsiteLink));
+                fragmentTransaction.commit();
             }
         };
         recview.setAdapter(adaptor);

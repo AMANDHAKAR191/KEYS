@@ -32,7 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myviewholder> implements Filterable {
+public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPinnedNote.myviewholder> implements Filterable {
     final ArrayList<addDNoteHelperClass> dataholder;
     final ArrayList<addDNoteHelperClass> dataholderfilter;
     final Context context;
@@ -40,7 +40,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
     private SharedPreferences sharedPreferences;
     AES aes = new AES();
 
-    public myadaptorfornote(ArrayList<addDNoteHelperClass> dataholder, Context context, Activity activity) {
+    public myAdaptorForPinnedNote(ArrayList<addDNoteHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
         this.context = context;
         this.activity = activity;
@@ -51,7 +51,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
     @Override
     public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_cardview_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.pinned_note_cardview_layout, parent, false);
         return new myviewholder(view);
 
     }
@@ -84,10 +84,10 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
             String dateAndTime1 = sdf.format(inputsdf.parse(noteDate));
             String ispin = String.valueOf(isPinned);
             String ishide = String.valueOf(isHideNote);
-            holder.tvDate.setText(ispin);
-//            holder.tvDate.setText(dateAndTime1);
-            holder.tvTitle.setText(ishide);
-//            holder.tvTitle.setText(doubleDecryptedNoteTitle);
+//            holder.tvDate.setText(ispin);
+            holder.tvDate.setText(dateAndTime1);
+//            holder.tvTitle.setText(ishide);
+            holder.tvTitle.setText(doubleDecryptedNoteTitle);
             holder.tvNote.setText(doubleDecryptedNoteBody);
 
             holder.llCard.setOnClickListener(new View.OnClickListener() {
@@ -166,7 +166,7 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
                             holder.resetAdaptorCall();
                             return true;
                         case R.id.item_pin:
-                            notesActivity.reference.child(noteDate).child("pinned").setValue(true);
+                            notesActivity.reference.child(noteDate).child("pinned").setValue(false);
                             holder.refreshRecViewCall();
 
                     }

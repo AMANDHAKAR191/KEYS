@@ -4,18 +4,19 @@ import java.util.Comparator;
 
 public class addDNoteHelperClass {
     String date, title, note;
-    boolean isHideNote;
+    boolean isHideNote, isPinned;
 
     public addDNoteHelperClass() {
     }
 
-    public addDNoteHelperClass(String date, String title, String note, Boolean isHideNote) {
+    public addDNoteHelperClass(String date, String title, String note, boolean isHideNote, boolean isPinned) {
         this.date = date;
         this.title = title;
         this.note = note;
         this.isHideNote = isHideNote;
-
+        this.isPinned = isPinned;
     }
+
     public static Comparator<addDNoteHelperClass> addDNoteHelperClassComparator = new Comparator<addDNoteHelperClass>() {
         @Override
         public int compare(addDNoteHelperClass a1, addDNoteHelperClass a2) {
@@ -51,7 +52,15 @@ public class addDNoteHelperClass {
         return isHideNote;
     }
 
-    public void setHideNote(boolean isHideNote) {
-        this.isHideNote = isHideNote;
+    public void setHideNote(boolean hideNote) {
+        isHideNote = hideNote;
+    }
+
+    public boolean isPinned() {
+        return isPinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        isPinned = pinned;
     }
 }

@@ -17,6 +17,9 @@
         android:roundIcon="@mipmap/keys_louncher_icon_new1_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KEYS">
+        <activity
+            android:name=".aman.app.settings.TutorialActivity"
+            android:exported="false" />
 
         <service
             android:name=".aman.app.MyAutofillService"
@@ -53,32 +56,24 @@
         </activity>
         <activity
             android:name=".aman.app.signin_login.LogInActivity"
-            android:exported="true"
+            android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".aman.app.checkInternetFragment"
-            android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".aman.app.home.HomeActivity"-->
-<!--            android:exported="false"-->
-<!--            android:windowSoftInputMode="adjustPan" />-->
-        <activity
-            android:name=".aman.app.home.ShowCardviewDataActivity"
-            android:exported="false" />
-<!--        <activity-->
-<!--            android:name=".aman.app.notes.notesActivity"-->
-<!--            android:exported="false"-->
-<!--            android:windowSoftInputMode="adjustPan" />-->
+            android:exported="false" /> <!-- <activity -->
+        <!-- android:name=".aman.app.home.HomeActivity" -->
+        <!-- android:exported="false" -->
+        <!-- android:windowSoftInputMode="adjustPan" /> -->
         <activity
             android:name=".aman.app.home.PassGenActivity"
             android:exported="false" />
         <activity
             android:name=".aman.app.home.addpassword.addPasswordData"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".aman.app.base.tabLayoutActivity"
             android:exported="false"
-            android:theme="@style/Theme.KEYS"/>
+            android:theme="@style/Theme.KEYS" />
         <activity
             android:name=".aman.app.settings.AppInfo"
             android:exported="false" />

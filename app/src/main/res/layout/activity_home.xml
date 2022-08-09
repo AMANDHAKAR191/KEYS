@@ -57,123 +57,14 @@
         android:visibility="invisible" />
     
 
-<!--    <LinearLayout-->
-<!--        android:id="@+id/ll_fab"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="match_parent"-->
-<!--        android:gravity="bottom"-->
-<!--        android:orientation="vertical"-->
-<!--        android:translationZ="8dp"-->
-<!--        android:visibility="gone"-->
-<!--        ads:layout_constraintBottom_toBottomOf="parent"-->
-<!--        ads:layout_constraintRight_toRightOf="parent">-->
-
-<!--    </LinearLayout>-->
-
-<!--    <LinearLayout-->
-<!--        android:id="@+id/ll_fab1"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="end"-->
-<!--        android:layout_marginBottom="24dp"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:translationZ="15dp"-->
-<!--        ads:layout_constraintBottom_toTopOf="@+id/ll_fab2"-->
-<!--        ads:layout_constraintRight_toRightOf="parent">-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/tv_personal_info"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:layout_marginRight="10dp"-->
-<!--            android:text="Notes"-->
-<!--            android:textColor="@color/white" />-->
-
-<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--            android:id="@+id/add_note_fab"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:contentDescription="@string/FAB_item"-->
-<!--            app:fabSize="normal"-->
-<!--            app:srcCompat="@drawable/note_add" />-->
-
-<!--    </LinearLayout>-->
-
-<!--    <LinearLayout-->
-<!--        android:id="@+id/ll_fab2"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="end"-->
-<!--        android:layout_marginBottom="24dp"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:translationZ="15dp"-->
-<!--        ads:layout_constraintBottom_toTopOf="@+id/ll_fab3"-->
-<!--        ads:layout_constraintRight_toRightOf="parent">-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/tv_pass_gen"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:layout_marginRight="10dp"-->
-<!--            android:text="@string/password_genrator_tv"-->
-<!--            android:textColor="@color/white" />-->
-
-<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--            android:id="@+id/password_gen_fab"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:contentDescription="@string/FAB_item"-->
-<!--            app:fabSize="normal"-->
-<!--            app:srcCompat="@drawable/create" />-->
-
-<!--    </LinearLayout>-->
-
-<!--    <LinearLayout-->
-<!--        android:id="@+id/ll_fab3"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="end"-->
-<!--        android:layout_marginBottom="24dp"-->
-<!--        android:orientation="horizontal"-->
-<!--        android:translationZ="15dp"-->
-<!--        ads:layout_constraintBottom_toTopOf="@+id/ExtendedFloatingActionButton"-->
-<!--        ads:layout_constraintRight_toRightOf="parent">-->
-
-<!--        <TextView-->
-<!--            android:id="@+id/tv_add_password"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:layout_marginRight="10dp"-->
-<!--            android:text="@string/add_password_tv"-->
-<!--            android:textColor="@color/white" />-->
-
-<!--        <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--            android:id="@+id/add_password_fab"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:contentDescription="@string/FAB_item"-->
-<!--            app:fabSize="normal"-->
-<!--            app:srcCompat="@drawable/add" />-->
-<!--    </LinearLayout>-->
-
-<!--    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
-<!--        android:id="@+id/ExtendedFloatingActionButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="end"-->
-<!--        android:contentDescription="@string/FAB_item"-->
-<!--        android:text="@string/item"-->
-<!--        android:translationZ="15dp"-->
-<!--        app:icon="@drawable/add"-->
-<!--        ads:layout_constraintBottom_toBottomOf="parent"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:pressedTranslationZ="12dp" />-->
+    <FrameLayout
+        android:id="@+id/fl_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:translationZ="50dp"
+        android:elevation="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

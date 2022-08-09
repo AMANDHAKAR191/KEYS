@@ -42,6 +42,7 @@ public class tabLayoutActivity extends AppCompatActivity {
     FloatingActionButton fabAddPassword, fabPasswordGenrator, fabAddNote;
     TextView tvAddPassword, tvPasswordGenrator, tvShowPersonalInfo;
     LinearLayout llFab;
+    LinearLayout llToolBar;
     int selectedTab = 0;
     Boolean isAllFabsVisible;
     private int click_counter = 0;
@@ -71,6 +72,7 @@ public class tabLayoutActivity extends AppCompatActivity {
         tvShowPersonalInfo = findViewById(R.id.tv_personal_info);
         llFab = findViewById(R.id.ll_fab);
         tabLayout.setupWithViewPager(viewPager);
+        llToolBar = findViewById(R.id.ll_toolbar);
 
         llFab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -131,9 +133,9 @@ public class tabLayoutActivity extends AppCompatActivity {
 
 
         viewPagerAdaptor viewPagerAdaptor = new viewPagerAdaptor(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        viewPagerAdaptor.addFragment(new HomeActivity(getApplicationContext(),tabLayoutActivity.this));
-        viewPagerAdaptor.addFragment(new notesActivity(getApplicationContext(),tabLayoutActivity.this));
-        viewPagerAdaptor.addFragment(new SettingActivity(getApplicationContext(),tabLayoutActivity.this));
+        viewPagerAdaptor.addFragment(new HomeActivity(tabLayoutActivity.this,tabLayoutActivity.this));
+        viewPagerAdaptor.addFragment(new notesActivity(tabLayoutActivity.this,tabLayoutActivity.this));
+        viewPagerAdaptor.addFragment(new SettingActivity(tabLayoutActivity.this,tabLayoutActivity.this));
         viewPager.setAdapter(viewPagerAdaptor);
 
         tabLayout.getTabAt(0).setIcon(R.drawable.home);
@@ -150,21 +152,18 @@ public class tabLayoutActivity extends AppCompatActivity {
                     case 0:
                         selectedTab = 1;
                         exFABtn.setVisibility(View.VISIBLE);
-                        exFABtn_notes.setVisibility(View.INVISIBLE);
                         tabLayout.getTabAt(position).setText("Home");
                         tv_title.setText("HOME");
                         break;
                     case 1:
                         selectedTab = 2;
-                        exFABtn.setVisibility(View.INVISIBLE);
                         exFABtn_notes.setVisibility(View.VISIBLE);
                         tabLayout.getTabAt(position).setText("Notes");
                         tv_title.setText("NOTES");
                         break;
                     case 2:
                         selectedTab = 3;
-                        exFABtn.setVisibility(View.INVISIBLE);
-                        exFABtn_notes.setVisibility(View.INVISIBLE);
+                        llToolBar.setVisibility(View.GONE);
                         tabLayout.getTabAt(position).setText("Setting");
                         tv_title.setText("SETTING");
                         break;
@@ -175,6 +174,18 @@ public class tabLayoutActivity extends AppCompatActivity {
             public void onTabUnselected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
                 tabLayout.getTabAt(position).setText("");
+
+                switch (position){
+                    case 0:
+                        exFABtn.setVisibility(View.INVISIBLE);
+                        break;
+                    case 1:
+                        exFABtn_notes.setVisibility(View.INVISIBLE);
+                        break;
+                    case 2:
+                        llToolBar.setVisibility(View.VISIBLE);
+                        break;
+                }
             }
 
             @Override

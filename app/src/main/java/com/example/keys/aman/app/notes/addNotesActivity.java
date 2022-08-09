@@ -152,11 +152,11 @@ public class addNotesActivity extends AppCompatActivity {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         if (comingrequestcode.equals("notesCardView")) {
-            addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(coming_date, title_dc, note_dc, isHideNote);
+            addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(coming_date, title_dc, note_dc, isHideNote, false);
             reference.child(coming_date).setValue(addDNoteHelper);
             Toast.makeText(addNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
         } else {
-            addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(currentDateAndTime, title_dc, note_dc, isHideNote);
+            addDNoteHelperClass addDNoteHelper = new addDNoteHelperClass(currentDateAndTime, title_dc, note_dc, isHideNote, true);
             reference.child(currentDateAndTime).setValue(addDNoteHelper);
             Toast.makeText(addNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
         }

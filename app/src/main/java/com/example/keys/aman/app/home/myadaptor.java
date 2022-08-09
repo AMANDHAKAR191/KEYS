@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,7 +28,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.AES;
-import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.home.addpassword.addDataHelperClass;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 
@@ -69,7 +67,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
 
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
-        myAdaptorThreadRunnable threadRunnable = new myAdaptorThreadRunnable(position,holder);
+        myAdaptorThreadRunnable threadRunnable = new myAdaptorThreadRunnable(position, holder);
         new Thread(threadRunnable).start();
     }
 
@@ -81,12 +79,13 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
         String[] title1;
         String current_date, dlogin, dpassword, dwebsite_name, temp_dlogin, temp_dpassword;
 
-        public myAdaptorThreadRunnable(int position1, myviewholder holder1){
+        public myAdaptorThreadRunnable(int position1, myviewholder holder1) {
             this.position = position1;
             this.holder = holder1;
         }
 
         Handler handler = new Handler();
+
         @Override
         public void run() {
             sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
@@ -107,8 +106,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                 dwebsite_link = temp.getAddWebsite_link();
 
                 Title = dwebsite_name.substring(0, 1).toUpperCase() + dwebsite_name.substring(1);
-                title1 = Title.split("_",3);
-
+                title1 = Title.split("_", 3);
 
 
             } catch (Exception e) {
@@ -117,9 +115,9 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
 
             try {
                 bmWebsiteLogo = myadaptor.fetchFavicon(Uri.parse(dwebsite_link));
-                emptyBitmap = Bitmap.createBitmap(bmWebsiteLogo.getWidth(),bmWebsiteLogo.getHeight(),bmWebsiteLogo.getConfig());
+                emptyBitmap = Bitmap.createBitmap(bmWebsiteLogo.getWidth(), bmWebsiteLogo.getHeight(), bmWebsiteLogo.getConfig());
 
-            }catch (Exception e){
+            } catch (Exception e) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -131,98 +129,33 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                 @Override
                 public void run() {
                     holder.tvLogin.setText(temp_dlogin);
-                    if (title1.length == 3){
+                    if (title1.length == 3) {
                         holder.tvWebsiteName.setText(title1[1]);
-                    }else if (title1.length == 2){
+                    } else if (title1.length == 2) {
                         holder.tvWebsiteName.setText(title1[0]);
                     }
 
                     try {
-                        if (bmWebsiteLogo.sameAs(emptyBitmap)){
+                        if (bmWebsiteLogo.sameAs(emptyBitmap)) {
 
                         }
-                    }catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         holder.imgWebsiteLogo.setVisibility(View.GONE);
                         holder.tvImageTitle.setVisibility(View.VISIBLE);
-                        if (title1.length == 3){
+                        if (title1.length == 3) {
                             holder.tvImageTitle.setText(title1[1]);
                             holder.tvWebsiteName.setText(title1[1]);
-                        }else if (title1.length == 2){
+                        } else if (title1.length == 2) {
                             holder.tvImageTitle.setText(title1[0]);
                             holder.tvWebsiteName.setText(title1[0]);
-                        }else if (title1.length == 1){
+                        } else if (title1.length == 1) {
                             holder.tvImageTitle.setText(title1[0]);
                             holder.tvWebsiteName.setText(title1[0]);
                         }
                     }
 
-                    holder.imgWebsiteLogo.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            SplashActivity.isForeground = true;
-                            Intent intent = new Intent(context, ShowCardviewDataActivity.class);
-                            intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity.myadaptor");
-                            intent.putExtra("date", current_date);
-                            intent.putExtra("loginname", temp_dlogin);
-                            intent.putExtra("loginpassowrd", temp_dpassword);
-                            intent.putExtra("loginwebsite_name", dwebsite_name);
-                            intent.putExtra("loginwebsite_link", dwebsite_link);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);
-                            activity.overridePendingTransition(R.anim.slide_in_down, 0);
+                    holder.showCardViewFragmentCall(current_date, temp_dlogin, temp_dpassword, dwebsite_name, dwebsite_link);
 
-                        }
-                    });
-                    holder.tvLogin.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            SplashActivity.isForeground = true;
-                            Intent intent = new Intent(context, ShowCardviewDataActivity.class);
-                            intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity.myadaptor");
-                            intent.putExtra("date", current_date);
-                            intent.putExtra("loginname", temp_dlogin);
-                            intent.putExtra("loginpassowrd", temp_dpassword);
-                            intent.putExtra("loginwebsite_name", dwebsite_name);
-                            intent.putExtra("loginwebsite_link", dwebsite_link);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);
-                            activity.overridePendingTransition(R.anim.slide_in_down, 0);
-
-                        }
-                    });
-                    holder.tvWebsiteName.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            SplashActivity.isForeground = true;
-                            Intent intent = new Intent(context, ShowCardviewDataActivity.class);
-                            intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity.myadaptor");
-                            intent.putExtra("date", current_date);
-                            intent.putExtra("loginname", temp_dlogin);
-                            intent.putExtra("loginpassowrd", temp_dpassword);
-                            intent.putExtra("loginwebsite_name", dwebsite_name);
-                            intent.putExtra("loginwebsite_link", dwebsite_link);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);
-                            activity.overridePendingTransition(R.anim.slide_in_down, 0);
-
-                        }
-                    });
-                    holder.LLCard.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            SplashActivity.isForeground = true;
-                            Intent intent = new Intent(context, ShowCardviewDataActivity.class);
-                            intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity.myadaptor");
-                            intent.putExtra("date", current_date);
-                            intent.putExtra("loginname", temp_dlogin);
-                            intent.putExtra("loginpassowrd", temp_dpassword);
-                            intent.putExtra("loginwebsite_name", dwebsite_name);
-                            intent.putExtra("loginwebsite_link", dwebsite_link);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            context.startActivity(intent);
-                            activity.overridePendingTransition(R.anim.slide_in_down, 0);
-                        }
-                    });
                     holder.tbcvMore.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
                         @Override
                         public boolean onMenuItemClick(MenuItem item) {
@@ -344,12 +277,49 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
             tvImageTitle = itemView.findViewById(R.id.tv_img_title);
             imgWebsiteLogo = itemView.findViewById(R.id.img_logo);
         }
-        public void resetAdaptorCall(){
+
+        public void resetAdaptorCall() {
             resetAdaptor();
         }
 
+        public void showCardViewFragmentCall(String currentDate, String tempLogin, String tempPassword,
+                                             String dWebsiteName, String dWebsiteLink) {
+            imgWebsiteLogo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showCardViewFragment(currentDate, tempLogin, tempPassword, dWebsiteName, dWebsiteLink);
+
+
+                }
+            });
+            tvLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showCardViewFragment(currentDate, tempLogin, tempPassword, dWebsiteName, dWebsiteLink);
+                }
+            });
+            tvWebsiteName.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showCardViewFragment(currentDate, tempLogin, tempPassword, dWebsiteName, dWebsiteLink);
+
+                }
+            });
+            LLCard.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showCardViewFragment(currentDate, tempLogin, tempPassword, dWebsiteName, dWebsiteLink);
+                }
+            });
+        }
+
     }
+
     //create new abstract method
+    public void showCardViewFragment(String currentDate, String tempLogin, String tempPassword,
+                                     String dWebsiteName, String dWebsiteLink) {
+    }
+
     public void resetAdaptor() {
     }
 }

@@ -1,61 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="?attr/selectableItemBackgroundBorderless"
-    android:layout_height="wrap_content">
+    android:layout_width="200dp"
+    android:layout_height="match_parent"
+    android:background="?attr/selectableItemBackgroundBorderless">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:background="@drawable/rounded_thems1"
         android:id="@+id/lenear_layout_card"
-        android:elevation="5dp"
-        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_margin="10dp"
-        android:orientation="vertical">
+        android:background="@drawable/rounded_thems1"
+        android:elevation="5dp"
+        android:orientation="vertical"
+        android:padding="5dp">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/cardview_more"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                app:menu="@menu/cardview_notes_menu"
-                android:src="@drawable/ic_baseline_more_vert_24">
+                android:src="@drawable/ic_baseline_more_vert_24"
+                app:menu="@menu/cardview_pinned_notes_menu">
+
                 <TextView
                     android:id="@+id/tv_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18dp"
-                    android:textStyle="bold"
                     android:layout_marginLeft="15dp"
-                    android:textIsSelectable="true"
+                    android:text="Title"
+                    android:maxLines="1"
                     android:textColor="?attr/colorOnSecondary"
-                    android:text="Title"/>
+                    android:textIsSelectable="true"
+                    android:textSize="18dp"
+                    android:textStyle="bold" />
             </androidx.appcompat.widget.Toolbar>
         </LinearLayout>
+
         <TextView
             android:id="@+id/tv_note"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
             android:maxLines="3"
-            android:textColor="?attr/colorOnSecondary"
-            android:text="Note"/>
+            android:text="Note"
+            android:textColor="?attr/colorOnSecondary" />
+
         <TextView
             android:id="@+id/tv_date"
             android:layout_width="match_parent"
             android:layout_height="20dp"
             android:gravity="end"
-            android:textSize="12dp"
+            android:text="Date"
             android:textColor="?attr/colorOnSecondary"
-            android:text="Date"/>
+            android:textSize="12dp" />
 
     </LinearLayout>
-
 
 
 </androidx.cardview.widget.CardView>

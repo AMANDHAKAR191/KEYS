@@ -4,7 +4,6 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,9 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.signin_login.LogInActivity;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,6 +35,9 @@ public class notesActivity extends Fragment {
 
     Context context;
     Activity activity;
+    //    private SwipeRefreshLayout swipeRefreshLayout;
+    public ArrayList<addDNoteHelperClass> dataHolderPinned, dataHolderUnpinned;
+    RecyclerView recyclerViewPinned, recyclerViewUnpinned;
 
     public notesActivity(Context context, Activity activity) {
         this.context = context;
@@ -47,22 +47,27 @@ public class notesActivity extends Fragment {
     private static final String TAG = "notesActivity";
     SharedPreferences sharedPreferences;
     public static DatabaseReference reference;
-    public static myadaptorfornote adaptor;
+    public static myadaptorfornote adaptorUnpinned;
+    public static myAdaptorForPinnedNote adaptorPinned;
     private boolean turn = false;
     TextView tvNote;
     SearchView searchView;
+    public static boolean ispin = false;
 
     private String uid;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_notes,container,false);
+        View view = inflater.inflate(R.layout.activity_notes, container, false);
         sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
         //Hooks
         searchView = view.findViewById(R.id.search_bar);
         tvNote = view.findViewById(R.id.tv_NOTE);
+//        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        recyclerViewPinned = view.findViewById(R.id.recview_pinned);
+        recyclerViewUnpinned = view.findViewById(R.id.recview_unpinned);
 
 
         uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
@@ -82,27 +87,39 @@ public class notesActivity extends Fragment {
 //            }
 //        });
 
+//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                dataHolder.clear();
+//                recyclerViewSetData();
+//                swipeRefreshLayout.setRefreshing(false);
+//            }
+//        });
 
-        recyclerViewSetData(view);
+        recyclerViewSetPinnedData();
+        recyclerViewSetData();
         return view;
     }
 
-    public void recyclerViewSetData(View view) {
-        RecyclerView recyclerView;
-        ArrayList<addDNoteHelperClass> dataholder;
-        recyclerView = view.findViewById(R.id.recview);
-
+    public void recyclerViewSetData() {
         reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context));
-        dataholder = new ArrayList<>();
-        adaptor = new myadaptorfornote(dataholder, context, activity){
+        recyclerViewUnpinned.setLayoutManager(new LinearLayoutManager(context));
+
+        dataHolderUnpinned = new ArrayList<>();
+        adaptorUnpinned = new myadaptorfornote(dataHolderUnpinned, context, activity) {
             @Override
-            public void resetAdaptor(){
-                dataholder.clear();
+            public void resetAdaptor() {
+                dataHolderUnpinned.clear();
                 Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
             }
+
+            @Override
+            public void refreshRecView() {
+                dataHolderUnpinned.clear();
+                dataHolderPinned.clear();
+            }
         };
-        recyclerView.setAdapter(adaptor);
+        recyclerViewUnpinned.setAdapter(adaptorUnpinned);
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -110,15 +127,19 @@ public class notesActivity extends Fragment {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         addDNoteHelperClass data = ds.getValue(addDNoteHelperClass.class);
                         assert data != null;
-                        if (data.isHideNote()){
+                        if (data.isHideNote()) {
 
-                        }else {
-                            dataholder.add(data);
+                        } else {
+                            if (data.isPinned()) {
+
+                            } else {
+                                dataHolderUnpinned.add(data);
+                            }
                         }
 
                     }
-                    Collections.sort(dataholder,addDNoteHelperClass.addDNoteHelperClassComparator);
-                    adaptor.notifyDataSetChanged();
+                    Collections.sort(dataHolderUnpinned, addDNoteHelperClass.addDNoteHelperClassComparator);
+                    adaptorUnpinned.notifyDataSetChanged();
                 } else {
                     tvNote.setVisibility(View.VISIBLE);
                 }
@@ -128,8 +149,61 @@ public class notesActivity extends Fragment {
             public void onCancelled(@NonNull DatabaseError error) {
             }
         });
-        recyclerView.setAdapter(adaptor);
+        recyclerViewUnpinned.setAdapter(adaptorUnpinned);
 
     }
-    
+
+    public void recyclerViewSetPinnedData() {
+        reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
+        recyclerViewPinned.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+
+        dataHolderPinned = new ArrayList<>();
+        adaptorPinned = new myAdaptorForPinnedNote(dataHolderPinned, context, activity) {
+            @Override
+            public void resetAdaptor() {
+                dataHolderUnpinned.clear();
+                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void refreshRecView() {
+                dataHolderPinned.clear();
+                dataHolderUnpinned.clear();
+            }
+        };
+        recyclerViewPinned.setAdapter(adaptorPinned);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        addDNoteHelperClass data = ds.getValue(addDNoteHelperClass.class);
+                        assert data != null;
+                        if (data.isHideNote()) {
+
+                        } else {
+                            if (data.isPinned()) {
+                                dataHolderPinned.add(data);
+                            } else {
+
+                            }
+
+                        }
+
+                    }
+                    Collections.sort(dataHolderPinned, addDNoteHelperClass.addDNoteHelperClassComparator);
+                    adaptorPinned.notifyDataSetChanged();
+                } else {
+                    tvNote.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+        recyclerViewPinned.setAdapter(adaptorPinned);
+
+    }
+
 }

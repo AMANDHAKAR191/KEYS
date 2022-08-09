@@ -1,9 +1,10 @@
 package com.example.keys.aman.app.home;
 
+import static android.app.Activity.RESULT_OK;
 import static com.example.keys.aman.app.SplashActivity.mRewardedAd;
-import static com.example.keys.aman.app.signin_login.LogInActivity.REQUEST_CODE_NAME;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -11,7 +12,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -19,12 +23,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.fragment.app.Fragment;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.SplashActivity;
-import com.example.keys.aman.app.home.addpassword.addPasswordData;
-import com.example.keys.aman.app.notes.BiometricActivity;
 import com.example.keys.aman.app.notes.pinLockFragment;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
@@ -38,46 +41,76 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class ShowCardviewDataActivity extends AppCompatActivity {
+public class ShowCardviewDataActivity extends Fragment {
     TextView tvDisplayLogin, tvDisplayWebsite, tvTitle, tvWebsiteTitle;
     TextInputEditText tietDisplayPassword;
     TextInputLayout tilDisplayPassword;
     ImageView imgBack;
+    ConstraintLayout clBackground;
     ImageView imgWebsiteLogo, imgOpenWebsite;
-    private String comingDate, comingLoginName, comingLoginPassword, comingLoginWebsiteName, comingLoginWebsiteLink;
+    String comingDate, comingLoginName, comingLoginPassword, comingLoginWebsiteName, comingLoginWebsiteLink;
     private Bitmap bmWebsiteLogo;
     private Bitmap emptyBitmap;
+    Context context;
+    Activity activity;
 
+    public ShowCardviewDataActivity(Context context, Activity activity, String currentDate, String tempLogin, String tempPassword,
+                                    String dWebsiteName, String dWebsiteLink) {
+        this.context = context;
+        this.activity = activity;
+        this.comingDate = currentDate;
+        this.comingLoginName = tempLogin;
+        this.comingLoginPassword = tempPassword;
+        this.comingLoginWebsiteName = dWebsiteName;
+        this.comingLoginWebsiteLink = dWebsiteLink;
+    }
+    public ShowCardviewDataActivity() {
+    }
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        setContentView(R.layout.activity_show_cardview_data);
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.activity_show_cardview_data,container,false);
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         SplashActivity.isForeground = false;
         //Hooks
-        tvTitle = findViewById(R.id.tv_img_title);
-        tvDisplayLogin = findViewById(R.id.displaylogin);
-        tietDisplayPassword = findViewById(R.id.displaypassword);
-        tilDisplayPassword = findViewById(R.id.til_displaypassword);
-        tvDisplayWebsite = findViewById(R.id.displaywebsite);
-        imgBack = findViewById(R.id.img_back);
-        imgWebsiteLogo = findViewById(R.id.img_website_logo);
-        tvWebsiteTitle = findViewById(R.id.tv_website_title);
-        imgOpenWebsite = findViewById(R.id.open_website);
+        tvTitle = view.findViewById(R.id.tv_img_title);
+        tvDisplayLogin = view.findViewById(R.id.displaylogin);
+        tietDisplayPassword = view.findViewById(R.id.displaypassword);
+        tilDisplayPassword = view.findViewById(R.id.til_displaypassword);
+        tvDisplayWebsite = view.findViewById(R.id.displaywebsite);
+        imgBack = view.findViewById(R.id.img_back);
+        clBackground = view.findViewById(R.id.cl_background);
+        imgWebsiteLogo = view.findViewById(R.id.img_website_logo);
+        tvWebsiteTitle = view.findViewById(R.id.tv_website_title);
+        imgOpenWebsite = view.findViewById(R.id.open_website);
 
-        Intent intent = getIntent();
-        comingDate = intent.getStringExtra("date");
-        comingLoginName = getIntent().getStringExtra("loginname");
-        comingLoginPassword = getIntent().getStringExtra("loginpassowrd");
-        comingLoginWebsiteName = getIntent().getStringExtra("loginwebsite_name");
-        comingLoginWebsiteLink = getIntent().getStringExtra("loginwebsite_link");
         tvDisplayLogin.setText(comingLoginName);
         tietDisplayPassword.setText(comingLoginPassword);
         String Title = comingLoginWebsiteName.substring(0, 1).toUpperCase() + comingLoginWebsiteName.substring(1);
         tvDisplayWebsite.setText(comingLoginWebsiteLink);
         tvTitle.setText(Title.replace("_","."));
 
+        clBackground.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                goBack();
+                return false;
+            }
+        });
+        clBackground.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goBack();
+            }
+        });
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goBack();
+            }
+        });
         tilDisplayPassword.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,7 +122,7 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
                 } else {
                     SplashActivity.isForeground = true;
                     if (mRewardedAd != null) {
-                        Activity activityContext = ShowCardviewDataActivity.this;
+                        Activity activityContext = activity;
                         mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
                             @Override
                             public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
@@ -99,9 +132,9 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        Toast.makeText(ShowCardviewDataActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
                     }
-                    Intent intent1 = new Intent(getApplicationContext(), pinLockFragment.class);
+                    Intent intent1 = new Intent(context, pinLockFragment.class);
                     intent1.putExtra(LogInActivity.REQUEST_CODE_NAME, "ShowCardviewDataActivity");
                     intent1.putExtra("title", "Enter Pin");
                     startActivityForResult(intent1, 123);
@@ -112,21 +145,23 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
 
             }
         });
-        
+
         imgWebsiteLogo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 System.out.println("website_logo1 " + bmWebsiteLogo);
-                Toast.makeText(ShowCardviewDataActivity.this, "logo fetched!!" + bmWebsiteLogo, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "logo fetched!!" + bmWebsiteLogo, Toast.LENGTH_SHORT).show();
             }
         });
 
         cardViewDataThreadRunnable dataThreadRunnable = new cardViewDataThreadRunnable(comingLoginWebsiteLink,comingLoginWebsiteName);
         new Thread(dataThreadRunnable).start();
+        return view;
     }
 
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             String result = data.getStringExtra("result");
@@ -136,20 +171,18 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
         }
     }
 
-    public void editdata(View view) {
-        Intent intent = new Intent(ShowCardviewDataActivity.this, addPasswordData.class);
-        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "ShowCardviewDataActivity");
-        intent.putExtra("date", comingDate);
-        intent.putExtra("loginname", comingLoginName);
-        intent.putExtra("loginpassowrd", comingLoginPassword);
-        intent.putExtra("loginwebsite_name", comingLoginWebsiteName);
-        intent.putExtra("loginwebsite_link", comingLoginWebsiteLink);
-        startActivity(intent);
-    }
-    public void goBack(View view) {
-        SplashActivity.isForeground = true;
-        finish();
-        overridePendingTransition(0, R.anim.slide_out_down);
+//    public void editdata(View view) {
+//        Intent intent = new Intent(context, addPasswordData.class);
+//        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "ShowCardviewDataActivity");
+//        intent.putExtra("date", comingDate);
+//        intent.putExtra("loginname", comingLoginName);
+//        intent.putExtra("loginpassowrd", comingLoginPassword);
+//        intent.putExtra("loginwebsite_name", comingLoginWebsiteName);
+//        intent.putExtra("loginwebsite_link", comingLoginWebsiteLink);
+//        startActivity(intent);
+//    }
+    public void goBack() {
+        getFragmentManager().beginTransaction().remove(ShowCardviewDataActivity.this).commit();
     }
 //    public void openWebsite(View view) {
 //        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(addPasswordData.addWebsiteLink));
@@ -214,35 +247,5 @@ public class ShowCardviewDataActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (SplashActivity.isBackground){
-            Intent intent = new Intent(ShowCardviewDataActivity.this, BiometricActivity.class);
-            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
-            startActivity(intent);
-        }
-        if (SplashActivity.isForeground){
-            SplashActivity.isForeground = false;
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (!SplashActivity.isForeground){
-            SplashActivity.isBackground = true;
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        SplashActivity.isForeground = true;
-        finish();
-        overridePendingTransition(0, R.anim.slide_out_down);
     }
 }

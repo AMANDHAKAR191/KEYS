@@ -5,7 +5,7 @@
         android:id="@+id/item_pin"
         android:enabled="true"
         app:showAsAction="always"
-        android:icon="@drawable/ic_baseline_push_pin_24" />
+        android:icon="@drawable/ic_pin_icon" />
     <item android:title="Copy Note"
         android:id="@+id/img_copy_note"
         android:enabled="true"
