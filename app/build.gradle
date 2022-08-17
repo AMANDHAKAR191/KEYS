@@ -11,7 +11,7 @@ android {
         minSdk 27
         targetSdk 32
         versionCode 1
-        versionName "2022.07.3"
+        versionName "2022.08.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -74,6 +74,8 @@ dependencies {
     // pinview lock
     implementation 'com.andrognito.pinlockview:pinlockview:2.1.0'
     implementation 'de.hdodenhof:circleimageview:1.2.1'
+
+    
 
     // Import the BoM for the Firebase platform
     // Declare the dependency for the Firebase Authentication library

@@ -55,7 +55,7 @@ public class addNotesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_notes);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         SplashActivity.isForeground = false;
 
         //Hooks

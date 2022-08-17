@@ -1,6 +1,5 @@
 package com.example.keys.aman.app.home;
 
-import static android.app.Activity.RESULT_OK;
 import static com.example.keys.aman.app.SplashActivity.mRewardedAd;
 
 import android.app.Activity;
@@ -21,6 +20,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -28,6 +31,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.keys.R;
 import com.example.keys.aman.app.SplashActivity;
+import com.example.keys.aman.app.home.addpassword.addPasswordData;
 import com.example.keys.aman.app.notes.pinLockFragment;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
@@ -40,12 +44,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Objects;
 
 public class ShowCardviewDataActivity extends Fragment {
     TextView tvDisplayLogin, tvDisplayWebsite, tvTitle, tvWebsiteTitle;
     TextInputEditText tietDisplayPassword;
     TextInputLayout tilDisplayPassword;
-    ImageView imgBack;
+    ImageView imgBack, imgEdit;
     ConstraintLayout clBackground;
     ImageView imgWebsiteLogo, imgOpenWebsite;
     String comingDate, comingLoginName, comingLoginPassword, comingLoginWebsiteName, comingLoginWebsiteLink;
@@ -53,6 +58,7 @@ public class ShowCardviewDataActivity extends Fragment {
     private Bitmap emptyBitmap;
     Context context;
     Activity activity;
+    ActivityResultLauncher<Intent> getResult;
 
     public ShowCardviewDataActivity(Context context, Activity activity, String currentDate, String tempLogin, String tempPassword,
                                     String dWebsiteName, String dWebsiteLink) {
@@ -81,6 +87,7 @@ public class ShowCardviewDataActivity extends Fragment {
         tilDisplayPassword = view.findViewById(R.id.til_displaypassword);
         tvDisplayWebsite = view.findViewById(R.id.displaywebsite);
         imgBack = view.findViewById(R.id.img_back);
+        imgEdit = view.findViewById(R.id.img_edit);
         clBackground = view.findViewById(R.id.cl_background);
         imgWebsiteLogo = view.findViewById(R.id.img_website_logo);
         tvWebsiteTitle = view.findViewById(R.id.tv_website_title);
@@ -111,6 +118,14 @@ public class ShowCardviewDataActivity extends Fragment {
                 goBack();
             }
         });
+        imgEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SplashActivity.isForeground = true;
+                editdata();
+                goBack();
+            }
+        });
         tilDisplayPassword.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,11 +152,11 @@ public class ShowCardviewDataActivity extends Fragment {
                     Intent intent1 = new Intent(context, pinLockFragment.class);
                     intent1.putExtra(LogInActivity.REQUEST_CODE_NAME, "ShowCardviewDataActivity");
                     intent1.putExtra("title", "Enter Pin");
-                    startActivityForResult(intent1, 123);
+                    getResult.launch(intent1);
 
 
                 }
-                tietDisplayPassword.setSelection(tietDisplayPassword.getText().length());
+                tietDisplayPassword.setSelection(Objects.requireNonNull(tietDisplayPassword.getText()).length());
 
             }
         });
@@ -154,35 +169,38 @@ public class ShowCardviewDataActivity extends Fragment {
             }
         });
 
+        getResult = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        Intent data = result.getData();
+                        String tempResult = Objects.requireNonNull(data).getStringExtra("result");
+                        if (tempResult.equals("yes")) {
+                            tietDisplayPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        }
+                    }
+                }
+        );
+
         cardViewDataThreadRunnable dataThreadRunnable = new cardViewDataThreadRunnable(comingLoginWebsiteLink,comingLoginWebsiteName);
         new Thread(dataThreadRunnable).start();
         return view;
     }
 
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            String result = data.getStringExtra("result");
-            if (result.equals("yes")) {
-                tietDisplayPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-            }
-        }
+    public void editdata() {
+        Intent intent = new Intent(context, addPasswordData.class);
+        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "ShowCardviewDataActivity");
+        intent.putExtra("date", comingDate);
+        intent.putExtra("loginname", comingLoginName);
+        intent.putExtra("loginpassowrd", comingLoginPassword);
+        intent.putExtra("loginwebsite_name", comingLoginWebsiteName);
+        intent.putExtra("loginwebsite_link", comingLoginWebsiteLink);
+        startActivity(intent);
     }
-
-//    public void editdata(View view) {
-//        Intent intent = new Intent(context, addPasswordData.class);
-//        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "ShowCardviewDataActivity");
-//        intent.putExtra("date", comingDate);
-//        intent.putExtra("loginname", comingLoginName);
-//        intent.putExtra("loginpassowrd", comingLoginPassword);
-//        intent.putExtra("loginwebsite_name", comingLoginWebsiteName);
-//        intent.putExtra("loginwebsite_link", comingLoginWebsiteLink);
-//        startActivity(intent);
-//    }
     public void goBack() {
-        getFragmentManager().beginTransaction().remove(ShowCardviewDataActivity.this).commit();
+//        getFragmentManager().beginTransaction().remove(ShowCardviewDataActivity.this).commit();
+        getParentFragmentManager().beginTransaction().remove(ShowCardviewDataActivity.this).commit();
     }
 //    public void openWebsite(View view) {
 //        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(addPasswordData.addWebsiteLink));
@@ -206,7 +224,8 @@ public class ShowCardviewDataActivity extends Fragment {
     }
     public class cardViewDataThreadRunnable implements Runnable {
 
-        private String tempLoginWebsiteLink, tempLoginWebsiteName;
+        private final String tempLoginWebsiteLink;
+        private final String tempLoginWebsiteName;
 
         public cardViewDataThreadRunnable (String loginWebsiteLink, String loginWebsiteName){
             this.tempLoginWebsiteLink = loginWebsiteLink;
@@ -218,7 +237,7 @@ public class ShowCardviewDataActivity extends Fragment {
         public void run() {
             try {
                 bmWebsiteLogo = fetchFavicon(Uri.parse(tempLoginWebsiteLink));
-                emptyBitmap = Bitmap.createBitmap(bmWebsiteLogo.getWidth(),bmWebsiteLogo.getHeight(),bmWebsiteLogo.getConfig());
+                emptyBitmap = Bitmap.createBitmap(Objects.requireNonNull(bmWebsiteLogo).getWidth(),bmWebsiteLogo.getHeight(),bmWebsiteLogo.getConfig());
 
             }catch (NullPointerException e){
                 

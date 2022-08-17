@@ -31,10 +31,8 @@ import java.util.Arrays;
 
 public class SplashActivity extends AppCompatActivity {
     public static InterstitialAd mInterstitialAd;
-    private final String mInterstitialAdId = "ca-app-pub-3752721223259598/1110148878";
 
     public static RewardedAd mRewardedAd;
-    private final String rewardedAdId = "ca-app-pub-3752721223259598/1273800402";
 
     private String[] PERMISSIONS;
     public static boolean isConnected = false;
@@ -87,6 +85,7 @@ public class SplashActivity extends AppCompatActivity {
 
         AdRequest adRequest = new AdRequest.Builder().build();
 
+        String rewardedAdId = "ca-app-pub-3752721223259598/1273800402";
         RewardedAd.load(this, rewardedAdId,
                 adRequest, new RewardedAdLoadCallback() {
                     @Override
@@ -113,6 +112,7 @@ public class SplashActivity extends AppCompatActivity {
     private void showinterstialAd() {
         AdRequest adRequest = new AdRequest.Builder().build();
 
+        String mInterstitialAdId = "ca-app-pub-3752721223259598/1110148878";
         InterstitialAd.load(this, mInterstitialAdId, adRequest,
                 new InterstitialAdLoadCallback() {
                     @Override

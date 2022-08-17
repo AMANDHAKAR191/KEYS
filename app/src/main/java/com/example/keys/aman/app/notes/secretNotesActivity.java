@@ -32,13 +32,13 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 public class secretNotesActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences;
     TextView tvNote;
     private String uid;
-    private String comingRequestCode;
 
 
     @Override
@@ -52,10 +52,10 @@ public class secretNotesActivity extends AppCompatActivity {
         //Hooks
         tvNote = findViewById(R.id.tv_NOTE);
 
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         Intent intent = getIntent();
-        comingRequestCode = intent.getStringExtra(REQUEST_CODE_NAME);
+        String comingRequestCode = intent.getStringExtra(REQUEST_CODE_NAME);
         if (comingRequestCode == null){
             comingRequestCode = "this";
         }

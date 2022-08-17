@@ -19,7 +19,6 @@ import com.example.keys.aman.app.notes.BiometricActivity;
 public class AppInfo extends AppCompatActivity {
     TextView tv_app_version;
     ImageView img_back;
-    private String comingrequestcode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +28,7 @@ public class AppInfo extends AppCompatActivity {
         img_back = findViewById(R.id.img_back);
 
         Intent intent = getIntent();
-        comingrequestcode = intent.getStringExtra("request_code");
+        String comingrequestcode = intent.getStringExtra("request_code");
         if (comingrequestcode == null) {
             comingrequestcode = "this";
         }

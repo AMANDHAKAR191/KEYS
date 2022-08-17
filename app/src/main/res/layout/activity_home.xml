@@ -5,6 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:elevation="40dp"
+    android:translationZ="50dp"
     tools:context=".aman.app.home.HomeActivity">
 
     <com.google.android.gms.ads.AdView
@@ -27,24 +29,23 @@
         android:elevation="8dp"
         android:visibility="gone"
         ads:layout_constraintLeft_toLeftOf="parent"
-        ads:layout_constraintTop_toTopOf="parent"/>
+        ads:layout_constraintTop_toTopOf="parent" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/swipeRefreshLayout">
+        ads:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintStart_toStartOf="parent">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clickable="true"
-            android:scrollbarStyle="outsideOverlay"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            ads:layout_constraintTop_toTopOf="parent"/>
+            android:scrollbarStyle="outsideOverlay" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
 
 
     <TextView
@@ -55,14 +56,14 @@
         android:text="Your saved password will show here"
         android:textColor="?attr/colorOnSecondary"
         android:visibility="invisible" />
-    
+
 
     <FrameLayout
         android:id="@+id/fl_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:translationZ="50dp"
         android:elevation="20dp"
+        android:translationZ="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

@@ -32,10 +32,11 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
+import java.util.Objects;
+
 public class tabLayoutActivity extends AppCompatActivity {
 
     private TabLayout tabLayout;
-    private ViewPager viewPager;
     ImageView img_keys_icon;
     TextView tv_title;
     ExtendedFloatingActionButton exFABtn, exFABtn_notes;
@@ -59,7 +60,7 @@ public class tabLayoutActivity extends AppCompatActivity {
         SplashActivity.isForeground = false;
 
         tabLayout = findViewById(R.id.tablayout);
-        viewPager = findViewById(R.id.viewpager);
+        ViewPager viewPager = findViewById(R.id.viewpager);
         img_keys_icon = findViewById(R.id.img_keys_icon);
         tv_title = findViewById(R.id.tv_title);
         exFABtn = findViewById(R.id.ExtendedFloatingActionButton);
@@ -125,7 +126,7 @@ public class tabLayoutActivity extends AppCompatActivity {
             public void onClick(View view) {
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), addNotesActivity.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME,"notesActivity");
+                intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "notesActivity");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -133,38 +134,38 @@ public class tabLayoutActivity extends AppCompatActivity {
 
 
         viewPagerAdaptor viewPagerAdaptor = new viewPagerAdaptor(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
-        viewPagerAdaptor.addFragment(new HomeActivity(tabLayoutActivity.this,tabLayoutActivity.this));
-        viewPagerAdaptor.addFragment(new notesActivity(tabLayoutActivity.this,tabLayoutActivity.this));
-        viewPagerAdaptor.addFragment(new SettingActivity(tabLayoutActivity.this,tabLayoutActivity.this));
+        viewPagerAdaptor.addFragment(new HomeActivity(tabLayoutActivity.this, tabLayoutActivity.this));
+        viewPagerAdaptor.addFragment(new notesActivity(tabLayoutActivity.this, tabLayoutActivity.this));
+        viewPagerAdaptor.addFragment(new SettingActivity(tabLayoutActivity.this, tabLayoutActivity.this));
         viewPager.setAdapter(viewPagerAdaptor);
 
-        tabLayout.getTabAt(0).setIcon(R.drawable.home);
-        tabLayout.getTabAt(1).setIcon(R.drawable.notes);
-        tabLayout.getTabAt(2).setIcon(R.drawable.settings);
-        tabLayout.getTabAt(0).setText("Home");
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.home);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.notes);
+        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.settings);
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setText("Home");
         tabLayout.setUnboundedRipple(true);
 
-        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
-                switch (position){
+                switch (position) {
                     case 0:
                         selectedTab = 1;
                         exFABtn.setVisibility(View.VISIBLE);
-                        tabLayout.getTabAt(position).setText("Home");
+                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Home");
                         tv_title.setText("HOME");
                         break;
                     case 1:
                         selectedTab = 2;
                         exFABtn_notes.setVisibility(View.VISIBLE);
-                        tabLayout.getTabAt(position).setText("Notes");
+                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Notes");
                         tv_title.setText("NOTES");
                         break;
                     case 2:
                         selectedTab = 3;
                         llToolBar.setVisibility(View.GONE);
-                        tabLayout.getTabAt(position).setText("Setting");
+                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Setting");
                         tv_title.setText("SETTING");
                         break;
                 }
@@ -173,9 +174,9 @@ public class tabLayoutActivity extends AppCompatActivity {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
-                tabLayout.getTabAt(position).setText("");
+                Objects.requireNonNull(tabLayout.getTabAt(position)).setText("");
 
-                switch (position){
+                switch (position) {
                     case 0:
                         exFABtn.setVisibility(View.INVISIBLE);
                         break;
@@ -197,24 +198,24 @@ public class tabLayoutActivity extends AppCompatActivity {
         img_keys_icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (selectedTab == 2){
+                if (selectedTab == 2) {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             click_counter = 0;
                         }
-                    },1000);
-                    if (click_counter == 1){
-                        boolean ispin_set =  sharedPreferences.getBoolean(LogInActivity.IS_PIN_SET,false);
-                        if (ispin_set){
+                    }, 1000);
+                    if (click_counter == 1) {
+                        boolean ispin_set = sharedPreferences.getBoolean(LogInActivity.IS_PIN_SET, false);
+                        if (ispin_set) {
                             SplashActivity.isForeground = true;
                             Intent intent3 = new Intent(getApplicationContext(), pinLockFragment.class);
-                            intent3.putExtra(REQUEST_CODE_NAME,"notesActivity");
-                            intent3.putExtra("title","Enter Pin");
+                            intent3.putExtra(REQUEST_CODE_NAME, "notesActivity");
+                            intent3.putExtra("title", "Enter Pin");
                             startActivity(intent3);
                             click_counter = 0;
-                        }else {
+                        } else {
                             Toast.makeText(getApplicationContext(), "please set pin", Toast.LENGTH_SHORT).show();
                         }
 
@@ -278,12 +279,12 @@ public class tabLayoutActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (SplashActivity.isBackground){
+        if (SplashActivity.isBackground) {
             Intent intent = new Intent(tabLayoutActivity.this, BiometricActivity.class);
             intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
             startActivity(intent);
         }
-        if (SplashActivity.isForeground){
+        if (SplashActivity.isForeground) {
             SplashActivity.isForeground = false;
         }
     }
@@ -291,7 +292,7 @@ public class tabLayoutActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!SplashActivity.isForeground){
+        if (!SplashActivity.isForeground) {
             SplashActivity.isBackground = true;
         }
     }

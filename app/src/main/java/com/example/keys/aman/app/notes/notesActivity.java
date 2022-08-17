@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,6 +31,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 public class notesActivity extends Fragment {
 
@@ -49,8 +51,8 @@ public class notesActivity extends Fragment {
     public static DatabaseReference reference;
     public static myadaptorfornote adaptorUnpinned;
     public static myAdaptorForPinnedNote adaptorPinned;
-    private boolean turn = false;
-    TextView tvNote;
+    private final boolean turn = false;
+    TextView tvNote, tvPinned, tvUnpinned;
     SearchView searchView;
     public static boolean ispin = false;
 
@@ -65,12 +67,41 @@ public class notesActivity extends Fragment {
         //Hooks
         searchView = view.findViewById(R.id.search_bar);
         tvNote = view.findViewById(R.id.tv_NOTE);
+        tvPinned = view.findViewById(R.id.tv_pinned);
+        tvUnpinned = view.findViewById(R.id.tv_unpinned);
 //        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         recyclerViewPinned = view.findViewById(R.id.recview_pinned);
         recyclerViewUnpinned = view.findViewById(R.id.recview_unpinned);
+        recyclerViewUnpinned.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+                Log.d("RecyclerViewDebug"," | " + i3);
+                if (i3 > 20){
+                    recyclerViewPinned.setVisibility(View.VISIBLE);
+                    tvPinned.setVisibility(View.VISIBLE);
+                }else if (i3 < -20){
+                    recyclerViewPinned.setVisibility(View.GONE);
+                    tvPinned.setVisibility(View.GONE);
+
+                }
+            }
+        });
+        recyclerViewUnpinned.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+//                System.out.println(" | " + newState);
+//                Log.d("RecyclerViewDebug"," | " + newState);
+//                if (newState == 0){
+////                    recyclerViewPinned.setVisibility(View.VISIBLE);
+//                }else {
+//                    recyclerViewPinned.setVisibility(View.GONE);
+//                }
+            }
+        });
 
 
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 //        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 //            @Override
 //            public boolean onQueryTextSubmit(String s) {
@@ -110,6 +141,7 @@ public class notesActivity extends Fragment {
             @Override
             public void resetAdaptor() {
                 dataHolderUnpinned.clear();
+                dataHolderPinned.clear();
                 Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
             }
 
@@ -160,7 +192,8 @@ public class notesActivity extends Fragment {
         dataHolderPinned = new ArrayList<>();
         adaptorPinned = new myAdaptorForPinnedNote(dataHolderPinned, context, activity) {
             @Override
-            public void resetAdaptor() {
+            public void resetPinnedAdaptor() {
+                dataHolderPinned.clear();
                 dataHolderUnpinned.clear();
                 Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
             }

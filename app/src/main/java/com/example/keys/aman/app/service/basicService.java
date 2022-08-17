@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 public class basicService extends AutofillService {
-    private final int NUMBER_DATASETS = 4;
 
     @Override
     public void onFillRequest(@NonNull FillRequest request, @NonNull CancellationSignal cancellationSignal, @NonNull FillCallback fillCallback) {
@@ -55,6 +54,7 @@ public class basicService extends AutofillService {
 
         // 1.Add the dynamic dataset
         String packageName = getApplicationContext().getPackageName();
+        int NUMBER_DATASETS = 4;
         for (int i = 1; i <= NUMBER_DATASETS; i++) {
             Dataset.Builder dataset = new Dataset.Builder();
             for (Map.Entry<String, AutofillId> field : fields.entrySet()) {

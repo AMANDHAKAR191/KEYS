@@ -17,8 +17,11 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -61,9 +64,11 @@ public class addPasswordData extends AppCompatActivity {
     String uid;
     String comingRequestCode;
     String comingDate, comingLoginName, comingLoginPassword, comingLoginWebsiteName, comingLoginWebsiteLink;
-//    public static String addWebsiteLink;
+    //    public static String addWebsiteLink;
     private String currentDateAndTime;
     public static myadaptorforaddpassword adaptor;
+    ActivityResultLauncher<Intent> getResult;
+
 
     String s1 = "https://wetv.vip/en/channel/1001?id=1001";
     String s2 = "https://www.linkedin.com/";
@@ -78,8 +83,6 @@ public class addPasswordData extends AppCompatActivity {
     String s11 = "other";
 
 
-    private addDataHelperClass addDataHelperClass;
-    private DatabaseReference databaseReference;
     private PrograceBar prograceBar;
 
 
@@ -110,7 +113,7 @@ public class addPasswordData extends AppCompatActivity {
 
         btnGenratePassword.setVisibility(View.GONE);
 
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
 
         //Getting intent
@@ -126,11 +129,7 @@ public class addPasswordData extends AppCompatActivity {
         comingLoginWebsiteLink = intent.getStringExtra("loginwebsite_link");
 
         if (comingRequestCode.equals("ShowCardviewDataActivity")) {
-            if (comingLoginWebsiteLink.equals("")){
-                tietAddWebsiteLinkData.setEnabled(true);
-            }else {
-                tietAddWebsiteLinkData.setEnabled(false);
-            }
+            tietAddWebsiteLinkData.setEnabled(comingLoginWebsiteLink.equals(""));
             btnSubmit.setText("Update");
             tietAddLoginData.setText(comingLoginName);
             tietAddPasswordData.setText(comingLoginPassword);
@@ -176,27 +175,26 @@ public class addPasswordData extends AppCompatActivity {
                     Toast.makeText(addPasswordData.this, "The interstitial ad wasn't ready yet.", Toast.LENGTH_LONG).show();
                 }
             }
-        },1000);
+        }, 1000);
 
+
+        getResult = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+
+                        Intent data = result.getData();
+                        String resultdata = Objects.requireNonNull(data).getStringExtra("saved_Password");
+                        tietAddPasswordData.setText(resultdata);
+
+                    }
+                }
+        );
 
 
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-
-        if (requestCode == REQUEST_DETAIL_CODE) {
-            // TODO : Check Point
-//            if(resultCode == 1){
-
-            String resultdata = data.getStringExtra("saved_Password");
-            tietAddPasswordData.setText(resultdata);
-//            }
-        }
-    }
 
     private void addData() {
         String addlogin = Objects.requireNonNull(tilLogin.getEditText()).getText().toString().trim();
@@ -204,7 +202,7 @@ public class addPasswordData extends AppCompatActivity {
         String addwesitename = Objects.requireNonNull(tilWebsite.getEditText()).getText().toString().toLowerCase().trim();
         String addwebsitelink = Objects.requireNonNull(tilWebsitelink.getEditText()).getText().toString().toLowerCase().trim();
 
-        if (addwebsitelink.equals("")){
+        if (addwebsitelink.equals("")) {
             addwebsitelink = "_";
         }
 
@@ -233,6 +231,7 @@ public class addPasswordData extends AppCompatActivity {
             }
 
 
+            com.example.keys.aman.app.home.addpassword.addDataHelperClass addDataHelperClass;
             if (comingRequestCode.equals("ShowCardviewDataActivity")) {
                 addDataHelperClass = new addDataHelperClass(comingDate, e_addlogin, e_addpassword, addwesitename, comingLoginWebsiteLink);
                 addDataRef.child(comingDate).setValue(addDataHelperClass);
@@ -263,22 +262,26 @@ public class addPasswordData extends AppCompatActivity {
 
 
     }
+
     public void sumbitOrUpdateData(View view) {
         addData();
     }
+
     public void goBack(View view) {
         SplashActivity.isForeground = true;
         finish();
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
     }
+
     public void genratePassword(View view) {
         Intent intent = new Intent(addPasswordData.this, PassGenActivity.class);
         intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "addPasswordData");
-        startActivityForResult(intent, REQUEST_DETAIL_CODE);
+        getResult.launch(intent);
     }
+
     public void recyclerViewSetData() {
         progressbar();
-        databaseReference = FirebaseDatabase.getInstance().getReference("website_list");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("website_list");
 
 //        addWebsiteList(databaseReference);
 
@@ -299,7 +302,7 @@ public class addPasswordData extends AppCompatActivity {
                 scrollView2.setVisibility(View.VISIBLE);
                 tietAddWebsiteData.setText(dwebsitename);
 //                addWebsiteLink = dwebsiteLink;
-                if (!dwebsitename.equals("other")){
+                if (!dwebsitename.equals("other")) {
                     tietAddWebsiteLinkData.setText(dwebsiteLink);
                     tietAddWebsiteLinkData.setEnabled(false);
                 }
@@ -307,7 +310,6 @@ public class addPasswordData extends AppCompatActivity {
         };
         recyclerView.setAdapter(adaptor);
         recyclerView.hasFixedSize();
-
 
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -332,8 +334,8 @@ public class addPasswordData extends AppCompatActivity {
         });
         prograceBar.dismissbar();
     }
-    private void addWebsiteList(DatabaseReference databaseReference) {
 
+    private void addWebsiteList(DatabaseReference databaseReference) {
 
 
         websiteHelper data1 = new websiteHelper(fun(s1), s1);
@@ -382,18 +384,20 @@ public class addPasswordData extends AppCompatActivity {
 
 
     }
+
     protected String fun(String str) {
 //        String str= "This#string%contains^special*characters&.";
-        if (str.equals("other")){
+        if (str.equals("other")) {
             return str;
         }
         System.out.println(str);
-        String[] str1 = str.split("/",4);
+        String[] str1 = str.split("/", 4);
         System.out.println(str1[2]);
         str = str1[2].replaceAll("[^a-zA-Z0-9]", "_");
         System.out.println(str);
         return str;
     }
+
     public static String reverseFun(String str) {
 //        String str= "This#string%contains^special*characters&.";
 
@@ -401,6 +405,7 @@ public class addPasswordData extends AppCompatActivity {
         System.out.println(str);
         return str;
     }
+
     public void progressbar() {
         prograceBar = new PrograceBar(addPasswordData.this);
         prograceBar.showDialog();
@@ -416,12 +421,12 @@ public class addPasswordData extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (SplashActivity.isBackground){
+        if (SplashActivity.isBackground) {
             Intent intent = new Intent(addPasswordData.this, BiometricActivity.class);
             intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
             startActivity(intent);
         }
-        if (SplashActivity.isForeground){
+        if (SplashActivity.isForeground) {
             SplashActivity.isForeground = false;
         }
     }
@@ -429,7 +434,7 @@ public class addPasswordData extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!SplashActivity.isForeground){
+        if (!SplashActivity.isForeground) {
             SplashActivity.isBackground = true;
         }
     }

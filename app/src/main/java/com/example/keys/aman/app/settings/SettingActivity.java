@@ -1,7 +1,5 @@
 package com.example.keys.aman.app.settings;
 
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
@@ -18,7 +16,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +27,8 @@ import com.example.keys.aman.app.SplashActivity;
 import com.example.keys.aman.app.notes.pinLockFragment;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -94,8 +93,10 @@ public class SettingActivity extends Fragment {
             @Override
             public void onClick(View view) {
                 contactUsFragment contactUs = new contactUsFragment();
-                contactUs.show(getFragmentManager(), "contact_us");
+//                contactUs.show(getFragmentManager(), "contact_us");
+                contactUs.show(requireActivity().getSupportFragmentManager(), "contact_us");
             }
+
         });
         tvPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,62 +148,20 @@ public class SettingActivity extends Fragment {
         tvTutorial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SplashActivity.isForeground = true;
                 Intent intent = new Intent(context,TutorialActivity.class);
                 startActivity(intent);
             }
         });
-//        btnLogout.setOnLongClickListener(new View.OnLongClickListener() {
-//            @Override
-//            public boolean onLongClick(View view) {
-//                mAutofillManager = activity.getSystemService(AutofillManager.class);
-//               if (mAutofillManager.hasEnabledAutofillServices()){
-//                   Toast.makeText(context, "AutoFill Enabled", Toast.LENGTH_SHORT).show();
-//               } else {
-//                   Intent intent = new Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE);
-//                   intent.setData(Uri.parse("package:com.example.android.autofill.service"));
-//                   startActivityForResult(intent, 123);
-//               }
-//                return false;
-//            }
-//        });
         return view;
 
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            String result = data.getStringExtra("result");
-            if (result.equals("yes")) {
-            }
-        }
-
-        switch (requestCode) {
-            case REQUEST_CODE_SET_DEFAULT:
-                onDefaultServiceSet(resultCode);
-                break;
-        }
-    }
-
-    private void onDefaultServiceSet(int resultCode) {
-        switch (resultCode) {
-            case RESULT_OK:
-                Toast.makeText(context, "Autofill service set.", Toast.LENGTH_SHORT).show();
-                break;
-            case RESULT_CANCELED:
-                Toast.makeText(context, "Autofill service not selected.", Toast.LENGTH_SHORT).show();
-                break;
-        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
 
-        Uri currentUser = FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl();
+        Uri currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getPhotoUrl();
         String currentUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         if (currentUser == null) {

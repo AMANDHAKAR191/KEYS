@@ -10,6 +10,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -38,6 +42,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Objects;
+
 
 public class LogInActivity extends AppCompatActivity {
 
@@ -64,7 +70,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private boolean turn = false;
     public static DatabaseReference myRef;
-    private FirebaseDatabase firebaseDatabase;
+    ActivityResultLauncher<Intent> getResult;
 
 
     @Override
@@ -103,31 +109,32 @@ public class LogInActivity extends AppCompatActivity {
                 signIn();
             }
         });
-    }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        getResult = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        Intent data = result.getData();
+                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                        if (task.isSuccessful()) {
+                            prograceBar.dismissbar();
+                        } else {
+                            prograceBar.dismissbar();
+                        }
+                        try {
+                            // Google Sign In was successful, authenticate with Firebase
+                            GoogleSignInAccount account = task.getResult(ApiException.class);
+                            firebaseAuthWithGoogle(account);
+                        } catch (ApiException e) {
+                            // Google Sign In failed, update UI appropriately
+                            // ...
+                            Toast.makeText(LogInActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            if (task.isSuccessful()) {
-                prograceBar.dismissbar();
-            } else {
-                prograceBar.dismissbar();
-            }
-            try {
-                // Google Sign In was successful, authenticate with Firebase
-                GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account);
-            } catch (ApiException e) {
-                // Google Sign In failed, update UI appropriately
-                // ...
-                Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-
-            }
-        }
+                        }
+                    }
+                }
+        );
     }
 
     private void createRequest() {
@@ -145,7 +152,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-        startActivityForResult(signInIntent, RC_SIGN_IN);
+        getResult.launch(signInIntent);
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
@@ -159,7 +166,7 @@ public class LogInActivity extends AppCompatActivity {
                             progressBar();
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            uid = user.getUid();
+                            uid = Objects.requireNonNull(user).getUid();
                             //check user if already signed up in background
                             threadRunnable threadRunnable = new threadRunnable();
                             new Thread(threadRunnable).start();
@@ -243,7 +250,7 @@ public class LogInActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String temp;
                 try {
-                    temp = dataSnapshot.getValue().toString();
+                    temp = Objects.requireNonNull(dataSnapshot.getValue()).toString();
                 } catch (Exception e) {
                     temp = "1";
                 }
@@ -298,7 +305,7 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     public void createEntryOnDatabse(String name, String email, String uid) {
-        firebaseDatabase = FirebaseDatabase.getInstance();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         myRef = firebaseDatabase.getReference("signupdata");
 
         AES aes = new AES();

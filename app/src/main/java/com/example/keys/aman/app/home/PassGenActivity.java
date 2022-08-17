@@ -46,7 +46,6 @@ import java.util.regex.Pattern;
 public class PassGenActivity extends AppCompatActivity {
 
     public static RewardedAd mRewardedAd;
-    private final String rewardedAdId = "ca-app-pub-3752721223259598/1273800402";
 
     final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     final DatabaseReference myRef = firebaseDatabase.getReference("usedPassword");
@@ -202,6 +201,7 @@ public class PassGenActivity extends AppCompatActivity {
 
         AdRequest adRequest = new AdRequest.Builder().build();
 
+        String rewardedAdId = "ca-app-pub-3752721223259598/1273800402";
         RewardedAd.load(this, rewardedAdId,
                 adRequest, new RewardedAdLoadCallback() {
                     @Override

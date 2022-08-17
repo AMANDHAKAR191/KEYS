@@ -2,6 +2,7 @@ package com.example.keys.aman.app.home;
 
 import static android.content.Context.MODE_PRIVATE;
 
+
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -15,8 +16,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,13 +37,12 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> implements Filterable {
+public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
     final ArrayList<addDataHelperClass> dataholder;
     final ArrayList<addDataHelperClass> dataholderfilter;
     final Context context;
     Activity activity;
     AES aes = new AES();
-    private SharedPreferences sharedPreferences;
     public static Bitmap bmWebsiteLogo;
     private Bitmap emptyBitmap;
 
@@ -59,7 +57,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
     @Override
     public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.child_cardview_layout, parent, false);
 
         return new myviewholder(view);
 
@@ -73,7 +71,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
 
     public class myAdaptorThreadRunnable implements Runnable {
 
-        private int position;
+        private final int position;
         myviewholder holder;
         String dwebsite_link, Title;
         String[] title1;
@@ -88,7 +86,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
 
         @Override
         public void run() {
-            sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+            SharedPreferences sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
             aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
             int p = holder.getAdapterPosition();
             final addDataHelperClass temp = dataholder.get(position);
@@ -172,7 +170,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                                     ClipboardManager clipboardManager1 = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                                     ClipData clipData1 = ClipData.newPlainText("Copy_Password", temp_dpassword);
                                     clipboardManager1.setPrimaryClip(clipData1);
-                                    Toast.makeText(context, "Copied! <> ", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(context, "Copied! ", Toast.LENGTH_SHORT).show();
                                     return true;
                                 case R.id.img_delete:
                                     HomeActivity.databaseReference.child(dwebsite_name).child(current_date).removeValue();
@@ -212,53 +210,6 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
         return dataholder.size();
     }
 
-    @Override
-    public Filter getFilter() {
-        return newFilter;
-    }
-
-    private final Filter newFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence charSequence) {
-            ArrayList<addDataHelperClass> filteredDataList = new ArrayList<>();
-
-            if (charSequence == null || charSequence.length() == 0) {
-                filteredDataList.addAll(dataholder);
-            } else {
-                String filterPattern = charSequence.toString().toLowerCase().trim();
-
-                for (addDataHelperClass addDataHelperClass : dataholder) {
-                    try {
-                        String a1 = addDataHelperClass.getAddWebsite_name();
-                        if (a1.toLowerCase().contains(filterPattern)) {
-                            filteredDataList.add(addDataHelperClass);
-                            try {
-                                System.out.println("Filtered data: " + addDataHelperClass.getAddWebsite_name());
-                                System.out.println("Filtered ArrayList : " + filteredDataList);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            FilterResults filterResults = new FilterResults();
-            filterResults.values = filteredDataList;
-            filterResults.count = filteredDataList.size();
-            System.out.println("filterResults: " + filterResults.values);
-            return filterResults;
-        }
-
-        @Override
-        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-
-            dataholderfilter.clear();
-            dataholderfilter.addAll((ArrayList) filterResults.values);
-            notifyDataSetChanged();
-        }
-    };
 
     public class myviewholder extends RecyclerView.ViewHolder {
 
@@ -288,8 +239,6 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> impl
                 @Override
                 public void onClick(View v) {
                     showCardViewFragment(currentDate, tempLogin, tempPassword, dWebsiteName, dWebsiteLink);
-
-
                 }
             });
             tvLogin.setOnClickListener(new View.OnClickListener() {

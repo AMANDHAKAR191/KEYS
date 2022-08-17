@@ -63,7 +63,7 @@
         android:id="@+id/cb_hide_note"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
+        android:layout_margin="10dp"
         android:text="\t\tHide this note and show in\n\t\tsecret notes section"
         android:textColor="?attr/colorOnSecondary"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -72,11 +72,12 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_addtitle"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_margin="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/cb_hide_note">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tiet_addtitle"
@@ -87,17 +88,19 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_addnote"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_addtitle"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="350dp">
+        app:layout_constraintTop_toBottomOf="@+id/til_addtitle">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/tiet_addnote"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
+            android:gravity="start"
+            android:hint="Message"
             android:textColor="?attr/colorOnSecondary" />
     </com.google.android.material.textfield.TextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

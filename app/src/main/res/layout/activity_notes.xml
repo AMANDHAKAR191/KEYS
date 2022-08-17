@@ -4,12 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingTop="10dp"
+    android:paddingRight="10dp"
     tools:context=".aman.app.notes.notesActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent">
         <!--    <SearchView-->
         <!--        android:id="@+id/search_bar"-->
         <!--        android:layout_width="wrap_content"-->
@@ -21,13 +20,23 @@
         <!--        app:layout_constraintLeft_toLeftOf="parent"-->
         <!--        app:layout_constraintTop_toBottomOf="@+id/toolbar" />-->
 
+
         <TextView
             android:id="@+id/tv_pinned"
-            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="1dp"
+            android:background="@drawable/rounded_thems1"
+            android:minHeight="48dp"
+            android:gravity=""
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
             android:text="Pinned"
-            android:visibility="visible"
             android:textSize="20dp"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -35,6 +44,8 @@
             android:id="@+id/recview_pinned"
             android:layout_width="match_parent"
             android:layout_height="200dp"
+            android:layout_margin="5dp"
+            android:background="#00000000"
             android:clickable="true"
             android:visibility="visible"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -42,12 +53,20 @@
 
         <TextView
             android:id="@+id/tv_unpinned"
-            android:layout_width="match_parent"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="1dp"
+            android:layout_margin="1dp"
+            android:background="@drawable/rounded_thems1"
+            android:minHeight="48dp"
+            android:gravity="center"
+            android:paddingLeft="10dp"
+            android:paddingTop="5dp"
+            android:paddingRight="10dp"
+            android:paddingBottom="5dp"
             android:text="Unpinned"
-            android:visibility="visible"
             android:textSize="20dp"
+            android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recview_pinned" />
 
@@ -55,9 +74,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recview_unpinned"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="1dp"
+            android:layout_height="550dp"
+            android:layout_margin="5dp"
             android:clickable="true"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_unpinned" />
@@ -65,13 +83,14 @@
 
         <TextView
             android:id="@+id/tv_NOTE"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Your saved notes will show here"
             android:textColor="?attr/colorOnSecondary"
-            android:visibility="invisible" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

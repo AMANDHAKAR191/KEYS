@@ -12,8 +12,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,13 +29,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 
-public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPinnedNote.myviewholder> implements Filterable {
+public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPinnedNote.myviewholder> {
     final ArrayList<addDNoteHelperClass> dataholder;
     final ArrayList<addDNoteHelperClass> dataholderfilter;
     final Context context;
     Activity activity;
-    private SharedPreferences sharedPreferences;
     AES aes = new AES();
 
     public myAdaptorForPinnedNote(ArrayList<addDNoteHelperClass> dataholder, Context context, Activity activity) {
@@ -59,7 +57,7 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
 
-        sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
         int p = position;
         String noteDate, noteTitle, noteBody, decryptedNoteTitle, decryptedNoteBody, doubleDecryptedNoteTitle, doubleDecryptedNoteBody;
@@ -81,7 +79,7 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
 
             DateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy / hh:mm", Locale.getDefault());
             DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-            String dateAndTime1 = sdf.format(inputsdf.parse(noteDate));
+            String dateAndTime1 = sdf.format(Objects.requireNonNull(inputsdf.parse(noteDate)));
             String ispin = String.valueOf(isPinned);
             String ishide = String.valueOf(isHideNote);
 //            holder.tvDate.setText(ispin);
@@ -162,8 +160,8 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
                             return true;
                         case R.id.img_delete:
                             notesActivity.reference.child(noteDate).removeValue();
-                            notesActivity.adaptorUnpinned.notifyDataSetChanged();
-                            holder.resetAdaptorCall();
+                            notesActivity.adaptorPinned.notifyDataSetChanged();
+                            holder.resetPinnedAdaptorCall();
                             return true;
                         case R.id.item_pin:
                             notesActivity.reference.child(noteDate).child("pinned").setValue(false);
@@ -186,54 +184,6 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
         return dataholder.size();
     }
 
-    @Override
-    public Filter getFilter() {
-        return newFilter;
-    }
-
-    private final Filter newFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence charSequence) {
-            ArrayList<addDNoteHelperClass> filteredDataList = new ArrayList<>();
-
-            if (charSequence == null || charSequence.length() == 0) {
-                filteredDataList.addAll(dataholder);
-            } else {
-                String filterPattern = charSequence.toString().toLowerCase().trim();
-
-                for (addDNoteHelperClass addDNoteHelperClass : dataholder) {
-                    try {
-                        String a1 = aes.decrypt(addDNoteHelperClass.getTitle());
-                        if (a1.toLowerCase().contains(filterPattern)) {
-                            filteredDataList.add(addDNoteHelperClass);
-                            try {
-                                System.out.println("Filtered data: " + aes.decrypt(addDNoteHelperClass.getTitle()));
-                                System.out.println("Filtered ArrayList : " + filteredDataList);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-            FilterResults filterResults = new FilterResults();
-            filterResults.values = filteredDataList;
-            filterResults.count = filteredDataList.size();
-            System.out.println("filterResults: " + filterResults.values);
-            return filterResults;
-        }
-
-        @Override
-        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
-
-            dataholderfilter.clear();
-            dataholderfilter.addAll((ArrayList) filterResults.values);
-            notifyDataSetChanged();
-        }
-    };
-
 
     public class myviewholder extends RecyclerView.ViewHolder {
 
@@ -252,8 +202,8 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
             llCard = itemView.findViewById(R.id.lenear_layout_card);
         }
 
-        public void resetAdaptorCall() {
-            resetAdaptor();
+        public void resetPinnedAdaptorCall() {
+            resetPinnedAdaptor();
         }
         public void refreshRecViewCall(){
             refreshRecView();
@@ -262,7 +212,7 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
     }
 
     //create new abstract method
-    public void resetAdaptor() {
+    public void resetPinnedAdaptor() {
     }
     public void refreshRecView(){
     }

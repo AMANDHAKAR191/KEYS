@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.View;
 import android.view.Window;
@@ -28,7 +29,6 @@ public class pinLockFragment extends AppCompatActivity {
     public static final String TAG = "PinLockView";
 
     private PinLockView mPinLockView;
-    private IndicatorDots mIndicatorDots;
     private Vibrator vibrator;
     private String comingRequestCode;
     TextView tvTitle, tvErrorMessage;
@@ -51,7 +51,9 @@ public class pinLockFragment extends AppCompatActivity {
                         finish();
 
                     } else {
-                        vibrator.vibrate(200);
+//                        vibrator.vibrate(200);
+//                        vibrator.vibrate(VibrationEffect.DEFAULT_AMPLITUDE);
+                        vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
                         tvTitle.setText("Wrong Pin");
                         wrongePin();
                         handler.postDelayed(new Runnable() {
@@ -72,7 +74,9 @@ public class pinLockFragment extends AppCompatActivity {
 
                     } else {
                         tvTitle.setText("Wrong Pin");
-                        vibrator.vibrate(200);
+//                        vibrator.vibrate(200);
+                        vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
+
                         mPinLockView.resetPinLockView();
                         wrongePin();
                         handler.postDelayed(new Runnable() {
@@ -108,7 +112,8 @@ public class pinLockFragment extends AppCompatActivity {
                         }else {
                             tvTitle.setText("Wrong Pin");
                             mPinLockView.resetPinLockView();
-                            vibrator.vibrate(200);
+//                            vibrator.vibrate(200);
+                            vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
                             Intent intent = new Intent(pinLockFragment.this, pinLockFragment.class);
                             intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
                             intent.putExtra("title", "Set Pin");
@@ -127,7 +132,8 @@ public class pinLockFragment extends AppCompatActivity {
                     } else {
                         tvTitle.setText("Wrong Pin");
                         mPinLockView.resetPinLockView();
-                        vibrator.vibrate(200);
+//                        vibrator.vibrate(200);
+                        vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
                         wrongePin();
                     }
                     break;
@@ -139,7 +145,8 @@ public class pinLockFragment extends AppCompatActivity {
 
                     } else {
                         tvTitle.setText("Wrong Pin");
-                        vibrator.vibrate(200);
+//                        vibrator.vibrate(200);
+                        vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
                         mPinLockView.resetPinLockView();
                         wrongePin();
                         handler.postDelayed(new Runnable() {
@@ -177,7 +184,7 @@ public class pinLockFragment extends AppCompatActivity {
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         //Hooks
         mPinLockView = findViewById(R.id.pin_lock_view);
-        mIndicatorDots = findViewById(R.id.indicator_dots);
+        IndicatorDots mIndicatorDots = findViewById(R.id.indicator_dots);
         tvTitle = findViewById(R.id.tv_title_name);
         tvErrorMessage = findViewById(R.id.tv_error_message);
         //properties

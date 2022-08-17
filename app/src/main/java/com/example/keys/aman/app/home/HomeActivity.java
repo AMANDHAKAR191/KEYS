@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.keys.R;
-import com.example.keys.aman.app.home.addpassword.addDataHelperClass;
 import com.example.keys.aman.app.signin_login.LogInActivity;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,7 +35,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Objects;
 
 
@@ -57,9 +55,11 @@ public class HomeActivity extends Fragment {
     public static SwipeRefreshLayout swipeRefreshLayout;
     SharedPreferences sharedPreferences;
     public static DatabaseReference databaseReference;
-    public static myadaptor adaptor;
-    ArrayList<addDataHelperClass> dataholder;
+    public static parentMyAdaptor adaptor;
+    //    ArrayList<addDataHelperClass> dataholder;
+    ArrayList<String> parentdataholder;
     String uid;
+
 
     @Nullable
     @Override
@@ -74,8 +74,6 @@ public class HomeActivity extends Fragment {
         searchView = view.findViewById(R.id.search_bar);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         tvNOTE = view.findViewById(R.id.tv_NOTE);
-
-
 
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
@@ -99,7 +97,7 @@ public class HomeActivity extends Fragment {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                dataholder.clear();
+                parentdataholder.clear();
                 recyclerviewsetdata();
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -133,15 +131,15 @@ public class HomeActivity extends Fragment {
     }
 
 
-
     public void recyclerviewsetdata() {
 
         databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata")
                 .child(uid);
         recview.setLayoutManager(new LinearLayoutManager(context));
 
-        dataholder = new ArrayList<>();
-        adaptor = new myadaptor(dataholder, context, activity){
+//        dataholder = new ArrayList<>();
+        parentdataholder = new ArrayList<>();
+        adaptor = new parentMyAdaptor(parentdataholder, context, activity) {
             @Override
             public void resetAdaptor() {
                 dataholder.clear();
@@ -149,15 +147,16 @@ public class HomeActivity extends Fragment {
             }
 
             @Override
-            public void showCardViewFragment(String currentDate, String tempLogin, String tempPassword,
+            public void showCardViewFragment1(String currentDate, String tempLogin, String tempPassword,
                                              String dWebsiteName, String dWebsiteLink) {
-                
+
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fl_container,new ShowCardviewDataActivity(context,activity, currentDate,tempLogin,
-                        tempPassword,dWebsiteName,dWebsiteLink));
+                fragmentTransaction.replace(R.id.fl_container, new ShowCardviewDataActivity(context, activity, currentDate, tempLogin,
+                        tempPassword, dWebsiteName, dWebsiteLink));
                 fragmentTransaction.commit();
             }
+
         };
         recview.setAdapter(adaptor);
         recview.hasFixedSize();
@@ -167,14 +166,8 @@ public class HomeActivity extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-
-                        for (DataSnapshot ds1 : ds.getChildren()) {
-
-                            addDataHelperClass data = ds1.getValue(addDataHelperClass.class);
-                            dataholder.add(data);
-                        }
+                        parentdataholder.add(ds.getKey());
                     }
-                    Collections.sort(dataholder, addDataHelperClass.addDataHelperClassComparator);
                     adaptor.notifyDataSetChanged();
 
                 } else {

@@ -13,8 +13,8 @@
         <item name="android:statusBarColor" tools:targetApi="l">@color/primary_dark_900</item>
         <!-- Customize your theme here. -->
     </style>
-    <style name="SplashTheme"
-        parent="Theme.MaterialComponents.Light.NoActionBar.Bridge">
+
+    <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar.Bridge">
         <item name="android:windowBackground">@drawable/splash_drawable</item>
     </style>
 </resources>

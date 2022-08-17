@@ -27,10 +27,6 @@ public class BiometricActivity extends AppCompatActivity{
 
     TextView tvDisplayMessage;
     ImageView imgFingerPrint;
-    private FingerprintManager fingerprintManager;
-    private KeyguardManager keyguardManager;
-    private String comingrequestcode;
-    private SharedPreferences sharedPreferences;
     private boolean isHardwareDetected;
     private boolean hasEnrolledFingerprints;
 
@@ -39,7 +35,7 @@ public class BiometricActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biometric);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        sharedPreferences = getSharedPreferences(SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
         //Hooks
         tvDisplayMessage = findViewById(R.id.tv_result);
@@ -53,14 +49,14 @@ public class BiometricActivity extends AppCompatActivity{
 
         //Hide mobile no and
         Intent intent = getIntent();
-        comingrequestcode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
+        String comingrequestcode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
         if (comingrequestcode == null){
             comingrequestcode = "this";
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
-            keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
+            FingerprintManager fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+            KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
             try {
                 isHardwareDetected = fingerprintManager.isHardwareDetected();
                 hasEnrolledFingerprints = fingerprintManager.hasEnrolledFingerprints();
@@ -134,7 +130,7 @@ public class BiometricActivity extends AppCompatActivity{
                 }
             } else {
                 tvDisplayMessage.setText("Place your Finger to Acsess the app");
-                FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this, BiometricActivity.this ,comingrequestcode);
+                FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this, BiometricActivity.this , comingrequestcode);
                 fingerPrintHandler.startAuth(fingerprintManager,null);
             }
 
