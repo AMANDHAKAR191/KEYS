@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".aman.app.settings.AppInfo">
+    tools:context=".aman.settings.AppInfoActivity">
 
     <LinearLayout
         android:id="@+id/title_linear_layout"
@@ -21,6 +21,7 @@
             android:layout_gravity="top"
             android:layout_margin="20dp"
             android:background="@drawable/fully_transparent_background"
+            android:contentDescription="@string/img_back"
             android:src="@drawable/arrow_back" />
 
         <TextView

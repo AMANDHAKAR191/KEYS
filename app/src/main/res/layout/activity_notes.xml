@@ -7,7 +7,7 @@
     android:paddingLeft="10dp"
     android:paddingTop="10dp"
     android:paddingRight="10dp"
-    tools:context=".aman.app.notes.notesActivity">
+    tools:context=".aman.notes.NotesFragment">
 
         <!--    <SearchView-->
         <!--        android:id="@+id/search_bar"-->
@@ -35,7 +35,7 @@
             android:paddingRight="10dp"
             android:paddingBottom="5dp"
             android:text="Pinned"
-            android:textSize="20dp"
+            android:textSize="14dp"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -65,7 +65,7 @@
             android:paddingRight="10dp"
             android:paddingBottom="5dp"
             android:text="Unpinned"
-            android:textSize="20dp"
+            android:textSize="14dp"
             android:visibility="visible"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/recview_pinned" />

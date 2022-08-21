@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".aman.app.settings.SettingActivity">
+    tools:context=".aman.settings.SettingFragment">
         <LinearLayout
             android:id="@+id/ll_header"
             android:layout_width="match_parent"

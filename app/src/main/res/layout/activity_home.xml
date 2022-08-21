@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:elevation="40dp"
     android:translationZ="50dp"
-    tools:context=".aman.app.home.HomeActivity">
+    tools:context=".aman.home.HomeFragment">
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/mine_shaft"
-    tools:context=".aman.app.notes.pinLockFragment">
+    tools:context=".aman.notes.PinLockActivity">
 
     <ImageView
         android:id="@+id/profile_image"

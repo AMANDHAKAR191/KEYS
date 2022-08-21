@@ -85,7 +85,7 @@
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_splash.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_tab_layout.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/fragment_pin_lock.xml" value="0.1" />
-        <entry key="..\:/KEYS/app/src/main/res/layout/activity_add_notes.xml" value="0.1875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_add_notes.xml" value="0.16799999999999998" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_add_password_data.xml" value="0.22" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_app_info.xml" value="0.25" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_ask_email.xml" value="0.1875" />
@@ -128,7 +128,7 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/multidataset_service_list_item.xml" value="0.18671875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/note_cardview_layout.xml" value="0.128" />
         <entry key="..\:/KEYS/app/src/main/res/layout/parent_cardview_layout.xml" value="0.1875" />
-        <entry key="..\:/KEYS/app/src/main/res/layout/pinned_note_cardview_layout.xml" value="0.1875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/pinned_note_cardview_layout.xml" value="0.2" />
         <entry key="..\:/KEYS/app/src/main/res/layout/prograce_bar_layout.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/website_card.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/website_cardview_layout.xml" value="0.1875" />

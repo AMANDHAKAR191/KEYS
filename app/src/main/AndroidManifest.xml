@@ -18,11 +18,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KEYS">
         <activity
-            android:name=".aman.app.settings.TutorialActivity"
+            android:name=".aman.settings.TutorialActivity"
             android:exported="false" />
 
         <service
-            android:name=".aman.app.MyAutofillService"
+            android:name=".aman.MyAutofillService"
             android:exported="true"
             android:label="KEYS"
             android:permission="android.permission.BIND_AUTOFILL_SERVICE">
@@ -36,16 +36,16 @@
         </service>
 
         <activity
-            android:name=".aman.app.notes.BiometricActivity"
+            android:name=".aman.notes.BiometricActivity"
             android:exported="false" />
         <activity
-            android:name=".aman.app.notes.secretNotesActivity"
+            android:name=".aman.notes.SecretNotesActivity"
             android:exported="false" />
         <activity
-            android:name=".aman.app.notes.addNotesActivity"
+            android:name=".aman.notes.AddNotesActivity"
             android:exported="false" />
         <activity
-            android:name=".aman.app.SplashActivity"
+            android:name=".aman.SplashActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -55,30 +55,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".aman.app.signin_login.LogInActivity"
+            android:name=".aman.signin_login.LogInActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".aman.app.checkInternetFragment"
+            android:name=".aman.checkInternetFragment"
             android:exported="false" /> <!-- <activity -->
         <!-- android:name=".aman.app.home.HomeActivity" -->
         <!-- android:exported="false" -->
         <!-- android:windowSoftInputMode="adjustPan" /> -->
         <activity
-            android:name=".aman.app.home.PassGenActivity"
+            android:name=".aman.home.PasswordGeneratorActivity"
             android:exported="false" />
         <activity
-            android:name=".aman.app.home.addpassword.addPasswordData"
+            android:name=".aman.home.addpassword.AddPasswordDataActivity"
             android:exported="false" />
         <activity
-            android:name=".aman.app.base.tabLayoutActivity"
+            android:name=".aman.base.TabLayoutActivity"
             android:exported="false"
             android:theme="@style/Theme.KEYS" />
         <activity
-            android:name=".aman.app.settings.AppInfo"
+            android:name=".aman.settings.AppInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".aman.app.notes.pinLockFragment"
+            android:name=".aman.notes.PinLockActivity"
             android:exported="false" />
 
         <meta-data

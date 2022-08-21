@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".aman.app.notes.addNotesActivity">
+    tools:context=".aman.notes.AddNotesActivity">
 
     <TextView
         android:id="@+id/toolbar"
@@ -22,11 +22,11 @@
         android:id="@+id/img_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_margin="20dp"
         android:background="@drawable/fully_transparent_background"
+        android:contentDescription="@string/img_back"
         android:elevation="4dp"
-        android:onClick="gocencal"
+        android:onClick="goCancel"
         android:src="@drawable/close"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,11 +35,11 @@
         android:id="@+id/img_save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_margin="20dp"
         android:background="@drawable/fully_transparent_background"
+        android:contentDescription="@string/img_save"
         android:elevation="4dp"
-        android:onClick="gosave"
+        android:onClick="goSave"
         android:src="@drawable/save"
         android:visibility="visible"
         app:layout_constraintRight_toRightOf="parent"
@@ -53,7 +53,7 @@
         android:layout_marginRight="20dp"
         android:background="?attr/colorPrimary"
         android:elevation="4dp"
-        android:onClick="goedit"
+        android:onClick="goEdit"
         android:src="@drawable/create1"
         android:visibility="invisible"
         app:layout_constraintRight_toRightOf="parent"
@@ -64,9 +64,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
+        android:minHeight="48dp"
         android:text="\t\tHide this note and show in\n\t\tsecret notes section"
         android:textColor="?attr/colorOnSecondary"
-        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintLeft_toLeftOf="@+id/til_addtitle"
+        app:layout_constraintRight_toRightOf="@+id/til_addtitle"
         app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 
@@ -83,7 +85,8 @@
             android:id="@+id/tiet_addtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="title" />
+            android:hint="title"
+            android:textColorHint="#546E7A" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -101,6 +104,9 @@
             android:layout_height="300dp"
             android:gravity="start"
             android:hint="Message"
-            android:textColor="?attr/colorOnSecondary" />
+            android:textColor="?attr/colorOnSecondary"
+            android:textColorHint="#546E7A" />
     </com.google.android.material.textfield.TextInputLayout>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
