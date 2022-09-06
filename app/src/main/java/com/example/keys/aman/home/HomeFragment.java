@@ -76,6 +76,7 @@ public class HomeFragment extends Fragment {
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         tvNOTE = view.findViewById(R.id.tv_NOTE);
 
+
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
 //        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

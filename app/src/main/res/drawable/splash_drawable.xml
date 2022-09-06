@@ -5,7 +5,7 @@
     <item>
         <bitmap
             android:gravity="center"
-            android:src="@drawable/keys_app_icon_new" />
+            android:src="@drawable/keys_privacy_playstore" />
     </item>
 
 </layer-list>

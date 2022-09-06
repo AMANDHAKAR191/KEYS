@@ -26,6 +26,7 @@ import com.example.keys.aman.notes.AddNotesActivity;
 import com.example.keys.aman.notes.BiometricActivity;
 import com.example.keys.aman.notes.NotesFragment;
 import com.example.keys.aman.notes.PinLockActivity;
+import com.example.keys.aman.service.MyService;
 import com.example.keys.aman.settings.SettingFragment;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -56,6 +57,7 @@ public class TabLayoutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_layout);
+        startService(new Intent(this, MyService.class));
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 

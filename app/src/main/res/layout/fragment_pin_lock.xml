@@ -9,12 +9,12 @@
 
     <ImageView
         android:id="@+id/profile_image"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:elevation="8dp"
-        android:src="@drawable/keys_app_inside_icon_new" />
+        android:src="@drawable/keys_privacy" />
 
 <!--    <TextView-->
 <!--        android:id="@+id/tv_use_biometrix"-->
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/profile_image"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="56dp"
         android:fontFamily="@font/aclonica"
         android:gravity="center"
         android:textColor="@color/white"
@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/profile_image"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="96dp"
+        android:layout_marginTop="106dp"
         android:gravity="center"
         android:visibility="invisible"
         android:text="Too many attempts. Try again, after 5 seconds later."

@@ -48,7 +48,7 @@ public class AddNotesActivity extends AppCompatActivity {
     boolean isHideNote;
     private String comingRequestCode;
     private String comingDate;
-    String uid;
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

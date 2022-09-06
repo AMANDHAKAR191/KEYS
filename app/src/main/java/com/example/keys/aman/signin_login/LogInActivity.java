@@ -67,7 +67,7 @@ public class LogInActivity extends AppCompatActivity {
     public static String MASTER_PIN = "master_pin";
     public static String IS_PIN_SET = "ispin_set";
     public static String IS_USER_RESTRICTED = "is_user_restricted";
-    private String uid;
+    private String UID;
     private boolean turn = false;
 
 
@@ -193,7 +193,7 @@ public class LogInActivity extends AppCompatActivity {
                             progressBar();
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            uid = Objects.requireNonNull(user).getUid();
+                            UID = Objects.requireNonNull(user).getUid();
                             //check user if already signed up in background
                             threadRunnable threadRunnable = new threadRunnable();
                             new Thread(threadRunnable).start();
@@ -226,7 +226,7 @@ public class LogInActivity extends AppCompatActivity {
                                         intent.putExtra("title", "Set Pin");
                                         startActivity(intent);
                                     } else {
-                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(uid);
+                                        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(UID);
                                         // Read from the database
                                         reference.addValueEventListener(new ValueEventListener() {
                                             @Override
@@ -271,7 +271,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private void checkUser() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
-        reference.child(uid).addListenerForSingleValueEvent(new ValueEventListener() {
+        reference.child(UID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 String temp;

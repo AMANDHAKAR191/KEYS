@@ -64,7 +64,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> getResult;
     private PrograceBar prograceBar;
 
-    String uid;
+    private String uid;
     String comingRequestCode;
     String comingDate, comingLoginName, comingLoginPassword, comingLoginWebsiteName, comingLoginWebsiteLink;
     //    public static String addWebsiteLink;

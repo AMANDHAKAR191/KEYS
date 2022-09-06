@@ -55,10 +55,11 @@
             android:text="By \n\t Aman Dhakar \nBheri Saiteja"
             android:textSize="18dp" />
         <ImageView
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:layout_gravity="center"
-            android:src="@drawable/keys_app_inside_icon_new"/>
+            android:layout_margin="20dp"
+            android:src="@drawable/keys_privacy"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -50,6 +50,7 @@
     <string name="img_back">back</string>
     <string name="img_save">save</string>
     <string name="btn_submit_or_update">submit or update</string>
+    <string name="Vp_contaner">contaner</string>
 
 
 </resources>
