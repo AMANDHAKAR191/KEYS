@@ -1,8 +1,6 @@
 package com.example.keys.aman.notes;
 
 import static com.example.keys.aman.SplashActivity.mRewardedAd;
-import static com.example.keys.aman.signin_login.LogInActivity.REQUEST_CODE_NAME;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -39,6 +37,7 @@ public class SecretNotesActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
     TextView tvNote;
     private String uid;
+    LogInActivity logInActivity = new LogInActivity();
 
 
     @Override
@@ -46,7 +45,7 @@ public class SecretNotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secret_notes);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
         SplashActivity.isForeground = false;
 
         //Hooks
@@ -55,7 +54,7 @@ public class SecretNotesActivity extends AppCompatActivity {
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         Intent intent = getIntent();
-        String comingRequestCode = intent.getStringExtra(REQUEST_CODE_NAME);
+        String comingRequestCode = intent.getStringExtra(logInActivity.getREQUEST_CODE_NAME());
         if (comingRequestCode == null){
             comingRequestCode = "this";
         }
@@ -152,7 +151,7 @@ public class SecretNotesActivity extends AppCompatActivity {
         super.onStart();
         if (SplashActivity.isBackground){
             Intent intent = new Intent(SecretNotesActivity.this, BiometricActivity.class);
-            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
+            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
             startActivity(intent);
         }
         if (SplashActivity.isForeground){

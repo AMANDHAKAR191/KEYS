@@ -1,6 +1,5 @@
 package com.example.keys.aman.settings;
 
-import static com.example.keys.aman.signin_login.LogInActivity.REQUEST_CODE_NAME;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,10 +11,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.notes.BiometricActivity;
+import com.example.keys.aman.signin_login.LogInActivity;
 
 public class TutorialActivity extends AppCompatActivity {
 
     private ImageView img_back;
+    LogInActivity logInActivity = new LogInActivity();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class TutorialActivity extends AppCompatActivity {
         super.onStart();
         if (SplashActivity.isBackground){
             Intent intent = new Intent(TutorialActivity.this, BiometricActivity.class);
-            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
+            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
             startActivity(intent);
         }
         if (SplashActivity.isForeground){

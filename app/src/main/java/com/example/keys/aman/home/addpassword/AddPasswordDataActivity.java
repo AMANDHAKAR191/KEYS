@@ -1,7 +1,6 @@
 package com.example.keys.aman.home.addpassword;
 
 import static com.example.keys.aman.SplashActivity.mInterstitialAd;
-import static com.example.keys.aman.signin_login.LogInActivity.REQUEST_CODE_NAME;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -28,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.AES;
+import com.example.keys.aman.DatabaseProcess;
 import com.example.keys.aman.PrograceBar;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.base.TabLayoutActivity;
@@ -63,6 +63,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
     public static myadaptorforaddpassword adaptor;
     ActivityResultLauncher<Intent> getResult;
     private PrograceBar prograceBar;
+    LogInActivity logInActivity = new LogInActivity();
 
     private String uid;
     String comingRequestCode;
@@ -89,7 +90,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_password_data);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
         SplashActivity.isForeground = false;
 
 
@@ -116,7 +117,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
 
         //Getting intent
         Intent intent = getIntent();
-        comingRequestCode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
+        comingRequestCode = intent.getStringExtra(logInActivity.getREQUEST_CODE_NAME());
         if (comingRequestCode == null) {
             comingRequestCode = "this";
         }
@@ -200,6 +201,14 @@ public class AddPasswordDataActivity extends AppCompatActivity {
 
     }
 
+    public boolean validate( String tempAddLogin, String tempAddPassword, String tempAddWebsiteName){
+        if (tempAddLogin.equals("") || tempAddPassword.equals("") || tempAddWebsiteName.equals("")) {
+            return false;
+        }
+        return true;
+
+    }
+
 
     private void addData() {
         String addLogin = Objects.requireNonNull(tilLogin.getEditText()).getText().toString().trim();
@@ -207,22 +216,19 @@ public class AddPasswordDataActivity extends AppCompatActivity {
         String addWebsiteName = Objects.requireNonNull(tilWebsite.getEditText()).getText().toString().toLowerCase().trim();
         String addWebsiteLink = Objects.requireNonNull(tilWebsitelink.getEditText()).getText().toString().toLowerCase().trim();
 
+
         if (addWebsiteLink.equals("")) {
             addWebsiteLink = "_";
         }
 
 
-        if (addLogin.equals("") || addPassword.equals("") || addWebsiteName.equals("")) {
-            tvError.setVisibility(View.VISIBLE);
-            tvError.setText("Please enter all Fields");
-            tvError.setTextColor(Color.RED);
-        } else {
+        if (validate(addLogin,addPassword,addWebsiteName)) {
             String encryptedAddlLogin = "", encryptedAddPassword = "", encryptedAddWebsite = "";
 
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             DatabaseReference addDataRef = firebaseDatabase.getReference("addpassworddata").child(uid).child(addWebsiteName);
             AES aes = new AES();
-            aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
+            aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
             try {
                 // Double encryption
                 // TODO : in future, (if needed) give two key to user for double encryption
@@ -237,32 +243,35 @@ public class AddPasswordDataActivity extends AppCompatActivity {
 
 
             AddPasswordDataHelperClass AddPasswordDataHelperClass;
-            if (comingRequestCode.equals("ShowCardviewDataActivity")) {
+            if (comingRequestCode.equals("ShowCardViewDataActivity")) {
                 AddPasswordDataHelperClass = new AddPasswordDataHelperClass(comingDate, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, comingLoginWebsiteLink);
-                addDataRef.child(comingDate).setValue(AddPasswordDataHelperClass);
+                DatabaseProcess storeDataProcess = new DatabaseProcess(AddPasswordDataHelperClass);
+                storeDataProcess.storeData(addDataRef);
                 Toast.makeText(AddPasswordDataActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
 
 
                 Intent intent = new Intent(AddPasswordDataActivity.this, HomeFragment.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "addPasswordData");
-//                intent.putExtra("resultlogin", addLogin);
-//                intent.putExtra("resultpassword", addPassword);
-//                intent.putExtra("resultwebsite", addwesitename);
+                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "addPasswordData");
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
             } else if (comingRequestCode.equals("HomeActivity")) {
                 AddPasswordDataHelperClass = new AddPasswordDataHelperClass(currentDateAndTime, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, addWebsiteLink);
-                addDataRef.child(currentDateAndTime).setValue(AddPasswordDataHelperClass);
+                DatabaseProcess storeDataProcess = new DatabaseProcess(AddPasswordDataHelperClass);
+                storeDataProcess.storeData(addDataRef);
                 Toast.makeText(AddPasswordDataActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
             }
 
             SplashActivity.isForeground = true;
             Intent intent1 = new Intent(AddPasswordDataActivity.this, TabLayoutActivity.class);
-            intent1.putExtra(LogInActivity.REQUEST_CODE_NAME, "addPasswordData");
+            intent1.putExtra(logInActivity.getREQUEST_CODE_NAME(), "addPasswordData");
             startActivity(intent1);
             finish();
             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+        } else {
+            tvError.setVisibility(View.VISIBLE);
+            tvError.setText("Please enter all Fields");
+            tvError.setTextColor(Color.RED);
         }
 
 
@@ -281,7 +290,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
     public void generatePassword(View view) {
         SplashActivity.isForeground = true;
         Intent intent = new Intent(AddPasswordDataActivity.this, PasswordGeneratorActivity.class);
-        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "addPasswordData");
+        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "addPasswordData");
         getResult.launch(intent);
     }
 
@@ -429,7 +438,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
         super.onStart();
         if (SplashActivity.isBackground) {
             Intent intent = new Intent(AddPasswordDataActivity.this, BiometricActivity.class);
-            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
+            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
             startActivity(intent);
         }
         if (SplashActivity.isForeground) {

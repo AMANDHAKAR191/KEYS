@@ -40,6 +40,7 @@ public class NotesFragment extends Fragment {
     //    private SwipeRefreshLayout swipeRefreshLayout;
     public ArrayList<AddNoteDataHelperClass> dataHolderPinned, dataHolderUnpinned;
     RecyclerView recyclerViewPinned, recyclerViewUnpinned;
+    LogInActivity logInActivity = new LogInActivity();
 
     public NotesFragment(Context context, Activity activity) {
         this.context = context;
@@ -62,7 +63,7 @@ public class NotesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_notes, container, false);
-        sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
 
         //Hooks
         searchView = view.findViewById(R.id.search_bar);

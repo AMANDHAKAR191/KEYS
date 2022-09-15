@@ -37,6 +37,7 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
     final Context context;
     Activity activity;
     AES aes = new AES();
+    LogInActivity logInActivity = new LogInActivity();
 
     public myAdaptorForPinnedNote(ArrayList<AddNoteDataHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
@@ -57,8 +58,8 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
+        SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
         int p = position;
         String noteDate, noteTitle, noteBody, decryptedNoteTitle, decryptedNoteBody, doubleDecryptedNoteTitle, doubleDecryptedNoteBody;
         boolean isHideNote, isPinned;

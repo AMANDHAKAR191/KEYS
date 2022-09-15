@@ -1,6 +1,5 @@
 package com.example.keys.aman.base;
 
-import static com.example.keys.aman.signin_login.LogInActivity.REQUEST_CODE_NAME;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -46,6 +45,7 @@ public class TabLayoutActivity extends AppCompatActivity {
     TextView tvAddPassword, tvPasswordGenrator, tvShowPersonalInfo;
     LinearLayout llFab, llToolBar;
     private SharedPreferences sharedPreferences;
+    LogInActivity logInActivity = new LogInActivity();
 
     //variables
     int selectedTab = 0;
@@ -59,7 +59,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tab_layout);
         startService(new Intent(this, MyService.class));
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
 
         SplashActivity.isForeground = false;
 
@@ -100,7 +100,7 @@ public class TabLayoutActivity extends AppCompatActivity {
             public void onClick(View view) {
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), AddPasswordDataActivity.class);
-                intent.putExtra(REQUEST_CODE_NAME, "HomeActivity");
+                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -110,7 +110,7 @@ public class TabLayoutActivity extends AppCompatActivity {
             public void onClick(View view) {
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), PasswordGeneratorActivity.class);
-                intent.putExtra(REQUEST_CODE_NAME, "HomeActivity");
+                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -120,7 +120,7 @@ public class TabLayoutActivity extends AppCompatActivity {
             public void onClick(View view) {
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), AddNotesActivity.class);
-                intent.putExtra(REQUEST_CODE_NAME, "HomeActivity");
+                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -130,7 +130,7 @@ public class TabLayoutActivity extends AppCompatActivity {
             public void onClick(View view) {
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), AddNotesActivity.class);
-                intent.putExtra(REQUEST_CODE_NAME, "notesActivity");
+                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "notesActivity");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -211,11 +211,11 @@ public class TabLayoutActivity extends AppCompatActivity {
                         }
                     }, 1000);
                     if (clickCounter == 1) {
-                        boolean ispin_set = sharedPreferences.getBoolean(LogInActivity.IS_PIN_SET, false);
-                        if (ispin_set) {
+                        boolean isPinSet = sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(), false);
+                        if (isPinSet) {
                             SplashActivity.isForeground = true;
                             Intent intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
-                            intent3.putExtra(REQUEST_CODE_NAME, "notesActivity");
+                            intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(), "notesActivity");
                             intent3.putExtra("title", "Enter Pin");
                             startActivity(intent3);
                             clickCounter = 0;
@@ -242,7 +242,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         super.onStart();
         if (SplashActivity.isBackground) {
             Intent intent = new Intent(TabLayoutActivity.this, BiometricActivity.class);
-            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
+            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
             startActivity(intent);
         }
         if (SplashActivity.isForeground) {

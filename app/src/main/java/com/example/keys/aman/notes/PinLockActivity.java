@@ -1,7 +1,5 @@
 package com.example.keys.aman.notes;
 
-import static com.example.keys.aman.signin_login.LogInActivity.SHARED_PREF_ALL_DATA;
-
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -33,6 +31,7 @@ public class PinLockActivity extends AppCompatActivity {
     TextView tvTitle, tvErrorMessage;
     private SharedPreferences sharedPreferences;
     Handler handler = new Handler();
+    LogInActivity logInActivity = new LogInActivity();
 
     private String PIN = "";
     String setPin, confirmPin;
@@ -47,7 +46,7 @@ public class PinLockActivity extends AppCompatActivity {
                 case "LogInActivity":
                     if (pin.equals(PIN)) {
                         Intent intent = new Intent(PinLockActivity.this, TabLayoutActivity.class);
-                        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "pinLockFragment");
+                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "pinLockFragment");
                         startActivity(intent);
                         finish();
 
@@ -66,7 +65,7 @@ public class PinLockActivity extends AppCompatActivity {
                         },400);
                     }
                     break;
-                case "ShowCardviewDataActivity":
+                case "ShowCardViewDataActivity":
                     if (pin.equals(PIN)) {
                         Intent intent = new Intent(PinLockActivity.this, SecretNotesActivity.class);
                         intent.putExtra("result", "yes");
@@ -100,8 +99,8 @@ public class PinLockActivity extends AppCompatActivity {
                         if (confirmPin.equals(setPin)){
                             tvTitle.setText("Pin Matched");
                             SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                            editor1.putBoolean(LogInActivity.IS_PIN_SET, true);
-                            editor1.putString(LogInActivity.MASTER_PIN, confirmPin);
+                            editor1.putBoolean(logInActivity.getIS_PIN_SET(), true);
+                            editor1.putString(logInActivity.getMASTER_PIN(), confirmPin);
                             editor1.apply();
 
                             Toast.makeText(PinLockActivity.this, "Pin Set", Toast.LENGTH_SHORT).show();
@@ -116,7 +115,7 @@ public class PinLockActivity extends AppCompatActivity {
 //                            vibrator.vibrate(200);
                             vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
                             Intent intent = new Intent(PinLockActivity.this, PinLockActivity.class);
-                            intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
+                            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
                             intent.putExtra("title", "Set Pin");
                             startActivity(intent);
                             finish();
@@ -126,7 +125,7 @@ public class PinLockActivity extends AppCompatActivity {
                 case "changepin":
                     if (pin.equals(PIN)) {
                         Intent intent = new Intent(PinLockActivity.this, PinLockActivity.class);
-                        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
+                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
                         intent.putExtra("title", "Set Pin");
                         startActivity(intent);
                         finish();
@@ -179,7 +178,7 @@ public class PinLockActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.fragment_pin_lock);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        sharedPreferences = getSharedPreferences(SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         //Hooks
@@ -197,7 +196,7 @@ public class PinLockActivity extends AppCompatActivity {
 
         //Hide mobile no and
         Intent intent = getIntent();
-        comingRequestCode = intent.getStringExtra(LogInActivity.REQUEST_CODE_NAME);
+        comingRequestCode = intent.getStringExtra(logInActivity.getREQUEST_CODE_NAME());
         if (comingRequestCode == null) {
             comingRequestCode = "this";
         }
@@ -205,21 +204,21 @@ public class PinLockActivity extends AppCompatActivity {
         Toast.makeText(PinLockActivity.this, comingRequestCode, Toast.LENGTH_SHORT).show();
 
         if (comingRequestCode.equals("LogInActivity")) {
-            PIN = sharedPreferences.getString(LogInActivity.MASTER_PIN, "no");
+            PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
             tvTitle.setText("Enter Pin");
-        } else if (comingRequestCode.equals("ShowCardviewDataActivity")) {
-            PIN = sharedPreferences.getString(LogInActivity.MASTER_PIN, "no");
+        } else if (comingRequestCode.equals("ShowCardViewDataActivity")) {
+            PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
             String title = intent.getStringExtra("title");
             tvTitle.setText(title);
         } else if (comingRequestCode.equals("notesActivity")) {
-            PIN = sharedPreferences.getString(LogInActivity.MASTER_PIN, "no");
+            PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
             String title = intent.getStringExtra("title");
             tvTitle.setText(title);
         } else if (comingRequestCode.equals("setpin")) {
             String title = intent.getStringExtra("title");
             tvTitle.setText(title);
         } else if (comingRequestCode.equals("changepin")) {
-            PIN = sharedPreferences.getString(LogInActivity.MASTER_PIN, "no");
+            PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
             String title = intent.getStringExtra("title");
             tvTitle.setText(title);
         }
@@ -229,7 +228,7 @@ public class PinLockActivity extends AppCompatActivity {
         count =  count + 1;
         if (count >= 3){
             SharedPreferences.Editor editor1 = sharedPreferences.edit();
-            editor1.putBoolean(LogInActivity.IS_USER_RESTRICTED, true);
+            editor1.putBoolean(logInActivity.getIS_USER_RESTRICTED(), true);
             editor1.apply();
             tvErrorMessage.setVisibility(View.VISIBLE);
             mPinLockView.setVisibility(View.INVISIBLE);

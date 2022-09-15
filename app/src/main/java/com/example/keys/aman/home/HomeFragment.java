@@ -60,13 +60,14 @@ public class HomeFragment extends Fragment {
 
     ArrayList<String> parentdataholder;
     String uid;
+    LogInActivity logInActivity = new LogInActivity();
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home, container, false);
-        sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
 
         //Hooks
 
@@ -152,7 +153,7 @@ public class HomeFragment extends Fragment {
             public void showCardViewFragment1(String currentDate, String tempLogin, String tempPassword,
                                              String dWebsiteName, String dWebsiteLink) {
 
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.fl_container, new ShowCardViewDataActivity(context, activity, currentDate, tempLogin,
                         tempPassword, dWebsiteName, dWebsiteLink));

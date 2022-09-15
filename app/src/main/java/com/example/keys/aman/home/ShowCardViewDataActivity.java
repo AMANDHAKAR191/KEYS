@@ -56,6 +56,7 @@ public class ShowCardViewDataActivity extends Fragment {
     Context context;
     Activity activity;
     ActivityResultLauncher<Intent> getResult;
+    LogInActivity logInActivity = new LogInActivity();
 
     String comingDate, comingLoginName, comingLoginPassword, comingLoginWebsiteName, comingLoginWebsiteLink;
     private Bitmap bmWebsiteLogo;
@@ -152,7 +153,7 @@ public class ShowCardViewDataActivity extends Fragment {
                         Toast.makeText(context, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
                     }
                     Intent intent1 = new Intent(context, PinLockActivity.class);
-                    intent1.putExtra(LogInActivity.REQUEST_CODE_NAME, "ShowCardviewDataActivity");
+                    intent1.putExtra(logInActivity.getREQUEST_CODE_NAME(), "ShowCardViewDataActivity");
                     intent1.putExtra("title", "Enter Pin");
                     getResult.launch(intent1);
 
@@ -192,7 +193,7 @@ public class ShowCardViewDataActivity extends Fragment {
 
     public void editdata() {
         Intent intent = new Intent(context, AddPasswordDataActivity.class);
-        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "ShowCardviewDataActivity");
+        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "ShowCardViewDataActivity");
         intent.putExtra("date", comingDate);
         intent.putExtra("loginname", comingLoginName);
         intent.putExtra("loginpassowrd", comingLoginPassword);

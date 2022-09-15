@@ -1,8 +1,6 @@
 package com.example.keys.aman.home;
 
 
-import static com.example.keys.aman.signin_login.LogInActivity.REQUEST_CODE_NAME;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipData;
@@ -25,6 +23,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.notes.BiometricActivity;
+import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
@@ -49,6 +48,7 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
 
     final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     final DatabaseReference myRef = firebaseDatabase.getReference("usedPassword");
+    LogInActivity logInActivity = new LogInActivity();
 
     //variable
     SwitchCompat swCapitalCaseLetter, swLowerCaseLetter, swNumbers, swSymbols;
@@ -90,7 +90,7 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
         genrate_password();
         //Hide use button
         Intent intent = getIntent();
-        comingRequestCode = intent.getStringExtra(REQUEST_CODE_NAME);
+        comingRequestCode = intent.getStringExtra(logInActivity.getREQUEST_CODE_NAME());
         if (comingRequestCode == null) {
             comingRequestCode = "fromAppsShortcut";
         }
@@ -343,12 +343,12 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (SplashActivity.isBackground){
+        if (SplashActivity.isBackground) {
             Intent intent = new Intent(PasswordGeneratorActivity.this, BiometricActivity.class);
-            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
+            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
             startActivity(intent);
         }
-        if (SplashActivity.isForeground){
+        if (SplashActivity.isForeground) {
             SplashActivity.isForeground = false;
         }
     }
@@ -356,7 +356,7 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!SplashActivity.isForeground){
+        if (!SplashActivity.isForeground) {
             SplashActivity.isBackground = true;
         }
     }

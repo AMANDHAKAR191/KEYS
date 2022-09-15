@@ -44,6 +44,7 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
     AES aes = new AES();
     public static Bitmap bmWebsiteLogo;
     private Bitmap emptyBitmap;
+    LogInActivity logInActivity = new LogInActivity();
 
     public myadaptor(ArrayList<AddPasswordDataHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
@@ -85,8 +86,8 @@ public class myadaptor extends RecyclerView.Adapter<myadaptor.myviewholder> {
 
         @Override
         public void run() {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-            aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
+            SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+            aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
             int p = holder.getAdapterPosition();
             final AddPasswordDataHelperClass temp = dataholder.get(position);
 

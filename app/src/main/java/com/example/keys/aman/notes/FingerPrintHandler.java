@@ -26,12 +26,13 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
     public SharedPreferences sharedPreferences;
     TextView paralable;
     CancellationSignal cancellationSignal;
+    LogInActivity logInActivity = new LogInActivity();
 
     public FingerPrintHandler(Context context, Activity activity, String comingrRequestCode) {
         this.context = context;
         this.activity = activity;
         this.comingRequestCode = comingrRequestCode;
-        sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
     }
 
     public void startAuth(FingerprintManager fingerprintManager, FingerprintManager.CryptoObject cryptoObject) {
@@ -83,23 +84,23 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
             switch (comingRequestCode) {
                 case "LogInActivity":
                     SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                    editor1.putBoolean(LogInActivity.IS_AUTHENTICATED, true);
+                    editor1.putBoolean(logInActivity.getIS_AUTHENTICATED(), true);
                     editor1.apply();
 
-                    String masterPin = sharedPreferences.getString(LogInActivity.MASTER_PIN, "");
-                    boolean ispinset = sharedPreferences.getBoolean(LogInActivity.IS_PIN_SET,false);
+                    String masterPin = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "");
+                    boolean ispinset = sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(),false);
 
                     if (!ispinset) {
                         SplashActivity.isForeground = true;
                         Intent intent = new Intent(context, PinLockActivity.class);
-                        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
+                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("title", "Set Pin");
                         activity.startActivity(intent);
 
                     } else {
                         Intent intent = new Intent(context, TabLayoutActivity.class);
-                        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, comingRequestCode);
+                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), comingRequestCode);
                         context.startActivity(intent);
                         activity.finish();
                     }
@@ -109,17 +110,17 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
                 case "notesActivity":
                     comingRequestCode = "BiometricActivity";
                     SharedPreferences.Editor editor2 = sharedPreferences.edit();
-                    editor2.putBoolean(LogInActivity.IS_AUTHENTICATED, true);
+                    editor2.putBoolean(logInActivity.getIS_AUTHENTICATED(), true);
                     editor2.apply();
 
                     Intent intent1 = new Intent(context, SecretNotesActivity.class);
-                    intent1.putExtra(LogInActivity.REQUEST_CODE_NAME, comingRequestCode);
+                    intent1.putExtra(logInActivity.getREQUEST_CODE_NAME(), comingRequestCode);
                     context.startActivity(intent1);
                     activity.finish();
                     break;
                 case "HomeActivity":
                     Intent intent2 = new Intent(context, TabLayoutActivity.class);
-                    intent2.putExtra(LogInActivity.REQUEST_CODE_NAME, "HomeActivity");
+                    intent2.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
                     context.startActivity(intent2);
                     activity.finish();
                     break;

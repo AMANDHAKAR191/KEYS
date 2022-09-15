@@ -48,6 +48,7 @@ public class SettingFragment extends Fragment {
     AutofillManager mAutofillManager;
     private static final int REQUEST_CODE_SET_DEFAULT = 1;
     private String s1;
+    LogInActivity logInActivity = new LogInActivity();
 
 
     public SettingFragment(Context context, Activity activity) {
@@ -61,7 +62,7 @@ public class SettingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_setting, container, false);
 
-        sharedPreferences = activity.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
         /*---------------Hooks--------------*/
         tvAppInfo = view.findViewById(R.id.tv_app_info);
         tvContactUs = view.findViewById(R.id.tv_contectus);
@@ -115,9 +116,9 @@ public class SettingFragment extends Fragment {
         tvChangePin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean ispin_set = sharedPreferences.getBoolean(LogInActivity.IS_PIN_SET, false);
+                boolean ispin_set = sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(), false);
                 Intent intent = new Intent(context, PinLockActivity.class);
-                intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "changepin");
+                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "changepin");
                 intent.putExtra("title", "Enter Old Pin");
                 startActivity(intent);
             }
@@ -137,9 +138,9 @@ public class SettingFragment extends Fragment {
                 FirebaseAuth.getInstance().signOut();
 
                 SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                editor1.putBoolean(LogInActivity.IS_LOGIN, false);
+                editor1.putBoolean(logInActivity.getIS_LOGIN(), false);
                 editor1.apply();
-                System.out.println(sharedPreferences.getBoolean(LogInActivity.IS_LOGIN, false));
+                System.out.println(sharedPreferences.getBoolean(logInActivity.getIS_LOGIN(), false));
 
                 Intent intent = new Intent(context, LogInActivity.class);
                 startActivity(intent);

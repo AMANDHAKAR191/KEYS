@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.AES;
+import com.example.keys.aman.DatabaseProcess;
 import com.example.keys.aman.PrograceBar;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
@@ -57,18 +58,23 @@ public class LogInActivity extends AppCompatActivity {
 
 
     //variables
-    public static final String AES_KEY = "aes_key";
-    public static final String AES_IV = "aes_iv";
-    public static final String SHARED_PREF_ALL_DATA = "All data";
-    public static String IS_LOGIN = "islogin";
-    public static String IS_FIRST_TIME = "0";
-    public static String REQUEST_CODE_NAME = "request_code";
-    public static String IS_AUTHENTICATED = "isauthenticated";
-    public static String MASTER_PIN = "master_pin";
-    public static String IS_PIN_SET = "ispin_set";
-    public static String IS_USER_RESTRICTED = "is_user_restricted";
+    private final String AES_KEY = "aes_key";
+    private final String AES_IV = "aes_iv";
+    private final String SHARED_PREF_ALL_DATA = "All data";
+    private final String IS_LOGIN = "islogin";
+    private final String IS_FIRST_TIME = "0";
+    private final String REQUEST_CODE_NAME = "request_code";
+    private final String IS_AUTHENTICATED = "isauthenticated";
+    private final String MASTER_PIN = "master_pin";
+    private final String IS_PIN_SET = "ispin_set";
+    private final String IS_USER_RESTRICTED = "is_user_restricted";
     private String UID;
     private boolean turn = false;
+
+    public String getUID() {
+        return UID;
+    }
+
 
 
 
@@ -94,7 +100,6 @@ public class LogInActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -139,12 +144,12 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (SplashActivity.isBackground){
+        if (SplashActivity.isBackground) {
             Intent intent = new Intent(LogInActivity.this, BiometricActivity.class);
             intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
             startActivity(intent);
         }
-        if (SplashActivity.isForeground){
+        if (SplashActivity.isForeground) {
             SplashActivity.isForeground = false;
         }
     }
@@ -153,7 +158,7 @@ public class LogInActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         Toast.makeText(this, "tabLayoutActivity.isForeground: " + SplashActivity.isForeground, Toast.LENGTH_SHORT).show();
-        if (!SplashActivity.isForeground){
+        if (!SplashActivity.isForeground) {
             SplashActivity.isBackground = true;
         }
     }
@@ -211,18 +216,18 @@ public class LogInActivity extends AppCompatActivity {
 
                                     if (temp == "0") {
                                         SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                                        editor1.putString(LogInActivity.AES_KEY, PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==");
-                                        editor1.putString(LogInActivity.AES_IV, PasswordGeneratorActivity.generateRandomPassword(16, true, true, true, false));
+                                        editor1.putString(AES_KEY, PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==");
+                                        editor1.putString(AES_IV, PasswordGeneratorActivity.generateRandomPassword(16, true, true, true, false));
                                         editor1.putBoolean(IS_LOGIN, true);
                                         editor1.putString(IS_FIRST_TIME, "1");
                                         editor1.apply();
 
-                                        writeData(user);
+                                        createEntryOnDatabase(user);
                                         turn = false;
                                         Toast.makeText(LogInActivity.this, "Registration Completed!!", Toast.LENGTH_SHORT).show();
                                         SplashActivity.isForeground = true;
                                         Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
-                                        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
+                                        intent.putExtra(REQUEST_CODE_NAME, "setpin");
                                         intent.putExtra("title", "Set Pin");
                                         startActivity(intent);
                                     } else {
@@ -237,8 +242,8 @@ public class LogInActivity extends AppCompatActivity {
                                                 String aes_key = dataSnapshot.child("aes_key").getValue(String.class);
 
                                                 SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                                                editor1.putString(LogInActivity.AES_KEY, aes_key);
-                                                editor1.putString(LogInActivity.AES_IV, aes_iv);
+                                                editor1.putString(AES_KEY, aes_key);
+                                                editor1.putString(AES_IV, aes_iv);
                                                 editor1.putBoolean(IS_LOGIN, true);
                                                 editor1.putString(IS_FIRST_TIME, "1");
                                                 editor1.apply();
@@ -254,7 +259,7 @@ public class LogInActivity extends AppCompatActivity {
                                         });
                                         SplashActivity.isForeground = true;
                                         Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
-                                        intent.putExtra(LogInActivity.REQUEST_CODE_NAME, "setpin");
+                                        intent.putExtra(REQUEST_CODE_NAME, "setpin");
                                         intent.putExtra("title", "Set Pin");
                                         startActivity(intent);
                                     }
@@ -269,40 +274,7 @@ public class LogInActivity extends AppCompatActivity {
                 });
     }
 
-    private void checkUser() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
-        reference.child(UID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                String temp;
-                try {
-                    temp = Objects.requireNonNull(dataSnapshot.getValue()).toString();
-                } catch (Exception e) {
-                    temp = "1";
-                }
-
-
-                if (temp != "1") {
-
-                    SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                    editor1.putString(IS_FIRST_TIME, "1");
-                    editor1.apply();
-                    turn = true;
-
-                } else {
-                    turn = true;
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                System.out.println(error);
-
-            }
-        });
-    }
-
-    public class threadRunnable implements Runnable {
+    private class threadRunnable implements Runnable {
         Handler handler = new Handler();
         View view;
 
@@ -314,29 +286,26 @@ public class LogInActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    checkUser();
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
+                    DatabaseProcess checkUserProcess = new DatabaseProcess();
+                    turn = checkUserProcess.checkUser(reference);
                 }
             });
         }
     }
-    
-    private void writeData(FirebaseUser user) {
+
+    private void createEntryOnDatabase(FirebaseUser user) {
         String name, email, uid;
         name = user.getDisplayName();
         email = user.getEmail();
         uid = user.getUid();
 
-        createEntryOnDatabase(name, email, uid);
-
-    }
-
-    public void createEntryOnDatabase(String name, String email, String uid) {
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         myRef = firebaseDatabase.getReference("signupdata");
 
         AES aes = new AES();
-        String encryptionKey = sharedPreferences.getString(LogInActivity.AES_KEY, null);
-        String encryptionIv = sharedPreferences.getString(LogInActivity.AES_IV, null);
+        String encryptionKey = sharedPreferences.getString(AES_KEY, null);
+        String encryptionIv = sharedPreferences.getString(AES_IV, null);
         aes.initFromStrings(encryptionKey, encryptionIv);
         String encryptedName, encryptedEmail;
         try {
@@ -350,6 +319,7 @@ public class LogInActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 
     public void progressBar() {
@@ -364,4 +334,45 @@ public class LogInActivity extends AppCompatActivity {
         }, 500);
     }
 
+
+    // getter and setter methods for Global Variable
+    public String getAES_KEY() {
+        return AES_KEY;
+    }
+
+    public String getAES_IV() {
+        return AES_IV;
+    }
+
+    public String getSHARED_PREF_ALL_DATA() {
+        return SHARED_PREF_ALL_DATA;
+    }
+
+    public String getIS_LOGIN() {
+        return IS_LOGIN;
+    }
+
+    public String getIS_FIRST_TIME() {
+        return IS_FIRST_TIME;
+    }
+
+    public String getREQUEST_CODE_NAME() {
+        return REQUEST_CODE_NAME;
+    }
+
+    public String getIS_AUTHENTICATED() {
+        return IS_AUTHENTICATED;
+    }
+
+    public String getMASTER_PIN() {
+        return MASTER_PIN;
+    }
+
+    public String getIS_PIN_SET() {
+        return IS_PIN_SET;
+    }
+
+    public String getIS_USER_RESTRICTED() {
+        return IS_USER_RESTRICTED;
+    }
 }

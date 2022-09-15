@@ -31,8 +31,10 @@ import java.util.Arrays;
 
 public class SplashActivity extends AppCompatActivity {
     public static InterstitialAd mInterstitialAd;
+    private final String mInterstitialAdId = "ca-app-pub-3752721223259598/1110148878";
 
     public static RewardedAd mRewardedAd;
+    private final String rewardedAdId = "ca-app-pub-3752721223259598/1273800402";
 
     private String[] PERMISSIONS;
     public static boolean isConnected = false;
@@ -45,7 +47,6 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
-
 
 
         imageView = findViewById(R.id.imageView);
@@ -77,44 +78,9 @@ public class SplashActivity extends AppCompatActivity {
 
     }
 
-    private void showRewardedAd() {
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
-
-            }
-        });
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        String rewardedAdId = "ca-app-pub-3752721223259598/1273800402";
-        RewardedAd.load(this, rewardedAdId,
-                adRequest, new RewardedAdLoadCallback() {
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error.
-                        Toast.makeText(SplashActivity.this, "Slow Internet or No connection. Please Wait!", Toast.LENGTH_LONG).show();
-                        mRewardedAd = null;
-                    }
-
-                    @Override
-                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
-                        mRewardedAd = rewardedAd;
-                        mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
-                            @Override
-                            public void onAdDismissedFullScreenContent() {
-                                super.onAdDismissedFullScreenContent();
-                                SplashActivity.isForeground = true;
-                            }
-                        });
-                    }
-                });
-    }
-
     private void showInterstialAd() {
         AdRequest adRequest = new AdRequest.Builder().build();
 
-        String mInterstitialAdId = "ca-app-pub-3752721223259598/1110148878";
         InterstitialAd.load(this, mInterstitialAdId, adRequest,
                 new InterstitialAdLoadCallback() {
                     @Override
@@ -154,6 +120,40 @@ public class SplashActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    private void showRewardedAd() {
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
+
+            }
+        });
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        RewardedAd.load(this, rewardedAdId,
+                adRequest, new RewardedAdLoadCallback() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        // Handle the error.
+                        Toast.makeText(SplashActivity.this, "Slow Internet or No connection. Please Wait!", Toast.LENGTH_LONG).show();
+                        mRewardedAd = null;
+                    }
+
+                    @Override
+                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
+                        mRewardedAd = rewardedAd;
+                        mRewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                            @Override
+                            public void onAdDismissedFullScreenContent() {
+                                super.onAdDismissedFullScreenContent();
+                                SplashActivity.isForeground = true;
+                            }
+                        });
+                    }
+                });
+    }
+
 
     public void createShortcutOfApp() {
 

@@ -47,6 +47,7 @@ public class parentMyAdaptor extends RecyclerView.Adapter<parentMyAdaptor.myview
     private Bitmap emptyBitmap;
     public myadaptor myadaptor;
     boolean isPasswordHidden = false;
+    LogInActivity logInActivity = new LogInActivity();
 
     public parentMyAdaptor(ArrayList<String> parentDataHolder, Context context, Activity activity) {
         this.parentDataHolder = parentDataHolder;
@@ -87,8 +88,8 @@ public class parentMyAdaptor extends RecyclerView.Adapter<parentMyAdaptor.myview
 
         @Override
         public void run() {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(LogInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-            aes.initFromStrings(sharedPreferences.getString(LogInActivity.AES_KEY, null), sharedPreferences.getString(LogInActivity.AES_IV, null));
+            SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+            aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
             int p = holder.getAdapterPosition();
             final String temp = parentDataHolder.get(position);
 
