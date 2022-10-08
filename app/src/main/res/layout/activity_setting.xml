@@ -86,10 +86,20 @@
                 android:id="@+id/tv_use_pin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Chnage Pin"
+                android:text="Change Pin"
                 android:textColor="?attr/colorOnSecondary"
                 android:textSize="20dp"
                 android:visibility="visible" />
+
+            <TextView
+                android:id="@+id/tv_lock_app"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Lock App"
+                android:layout_marginTop="20dp"
+                android:textColor="?attr/colorOnSecondary"
+                android:textSize="20dp"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/tv_devices_list"

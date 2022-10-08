@@ -25,6 +25,7 @@ import com.example.keys.aman.notes.AddNotesActivity;
 import com.example.keys.aman.notes.BiometricActivity;
 import com.example.keys.aman.notes.NotesFragment;
 import com.example.keys.aman.notes.PinLockActivity;
+import com.example.keys.aman.service.MyBackgroundService;
 import com.example.keys.aman.service.MyService;
 import com.example.keys.aman.settings.SettingFragment;
 import com.example.keys.aman.signin_login.LogInActivity;
@@ -256,6 +257,20 @@ public class TabLayoutActivity extends AppCompatActivity {
         if (!SplashActivity.isForeground) {
             SplashActivity.isBackground = true;
         }
+//        CountDownTimer countDownTimer = new CountDownTimer(10000,500) {
+//            @Override
+//            public void onTick(long millisUntilFinished) {
+//                Log.e("TabLayoutActivity", "remaining time = " + millisUntilFinished/1000);
+//            }
+//
+//            @Override
+//            public void onFinish() {
+//
+//            }
+//        }.start();
+//        new MyBackgroundService(TabLayoutActivity.this,TabLayoutActivity.this);
+        Intent timerIntent = new Intent(this, MyBackgroundService.class);
+        startService(timerIntent);
     }
 
     @Override

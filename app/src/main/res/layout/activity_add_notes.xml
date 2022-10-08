@@ -59,65 +59,63 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical">
+
+        <CheckBox
+            android:id="@+id/cb_hide_note"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="100dp"
-            android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:minHeight="48dp"
+            android:text="\t\tHide this note and show in\n\t\tsecret notes section"
+            app:layout_constraintLeft_toLeftOf="@+id/til_addtitle"
+            app:layout_constraintRight_toRightOf="@+id/til_addtitle"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
-            <CheckBox
-                android:id="@+id/cb_hide_note"
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_addtitle"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cb_hide_note">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiet_addtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:minHeight="48dp"
-                android:text="\t\tHide this note and show in\n\t\tsecret notes section" app:layout_constraintLeft_toLeftOf="@+id/til_addtitle"
-                app:layout_constraintRight_toRightOf="@+id/til_addtitle"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+                android:hint="title"
+                android:textColor="?attr/colorOnSecondary"
 
+                android:textColorHint="#546E7A" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_addtitle"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_addnote"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/til_addtitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/tiet_addnote"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/cb_hide_note">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tiet_addtitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="title"
-                    android:textColor="?attr/colorOnSecondary"
-
-                    android:textColorHint="#546E7A" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_addnote"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_addtitle">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tiet_addnote"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:gravity="start"
-                    android:hint="Message"
-                    android:textColor="?attr/colorOnSecondary"
-                    android:textColorHint="#546E7A" />
-            </com.google.android.material.textfield.TextInputLayout>
-        </LinearLayout>
-    </ScrollView>
+                android:layout_height="200dp"
+                android:gravity="start"
+                android:hint="Message"
+                android:textColor="?attr/colorOnSecondary"
+                android:textColorHint="#546E7A" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

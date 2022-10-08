@@ -28,6 +28,8 @@ public class BiometricActivity extends AppCompatActivity{
     private boolean isHardwareDetected;
     private boolean hasEnrolledFingerprints;
     LogInActivity logInActivity = new LogInActivity();
+    private FingerprintManager fingerprintManager;
+    private String comingrequestcode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,13 +50,13 @@ public class BiometricActivity extends AppCompatActivity{
 
         //Hide mobile no and
         Intent intent = getIntent();
-        String comingrequestcode = intent.getStringExtra(logInActivity.getREQUEST_CODE_NAME());
+        comingrequestcode = intent.getStringExtra(logInActivity.getREQUEST_CODE_NAME());
         if (comingrequestcode == null){
             comingrequestcode = "this";
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            FingerprintManager fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
+            fingerprintManager = (FingerprintManager) getSystemService(FINGERPRINT_SERVICE);
             KeyguardManager keyguardManager = (KeyguardManager) getSystemService(KEYGUARD_SERVICE);
             try {
                 isHardwareDetected = fingerprintManager.isHardwareDetected();
@@ -129,12 +131,17 @@ public class BiometricActivity extends AppCompatActivity{
                 }
             } else {
                 tvDisplayMessage.setText("Place your Finger to Acsess the app");
-                FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this, BiometricActivity.this , comingrequestcode);
-                fingerPrintHandler.startAuth(fingerprintManager,null);
+                callFingerPrintHandler(comingrequestcode, fingerprintManager);
             }
 
         }
     }
+
+    private void callFingerPrintHandler(String comingrequestcode, FingerprintManager fingerprintManager) {
+        FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this, BiometricActivity.this , comingrequestcode);
+        fingerPrintHandler.startAuth(fingerprintManager,null);
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -146,6 +153,13 @@ public class BiometricActivity extends AppCompatActivity{
 
     @Override
     protected void onStart() {
+        if (SplashActivity.isBackground) {
+            callFingerPrintHandler(comingrequestcode, fingerprintManager);
+        }
+        if (SplashActivity.isForeground) {
+            SplashActivity.isForeground = false;
+        }
+
         super.onStart();
     }
 

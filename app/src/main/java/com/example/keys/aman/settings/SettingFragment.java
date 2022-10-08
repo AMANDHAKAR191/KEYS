@@ -32,13 +32,14 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SettingFragment extends Fragment {
+public class SettingFragment extends Fragment{
 
     Context context;
     Activity activity;
 
     TextView tvAppInfo, tvContactUs, tvPrivacyPolicy, tvTermsAndConditions,
-            tvProfileName, tvProfileEmail, tvChangePin, tvDevicesList, tvTutorial;
+            tvProfileName, tvProfileEmail, tvChangePin, tvDevicesList, tvTutorial,
+            tvLockApp;
     ImageView imgBack;
     LinearLayout llDeviceList;
     TextView tvDevice1, tvDevice2, tvDevice3;
@@ -69,6 +70,7 @@ public class SettingFragment extends Fragment {
         tvPrivacyPolicy = view.findViewById(R.id.tv_privacy_policy);
         tvTermsAndConditions = view.findViewById(R.id.tv_terms_and_conditions);
         tvChangePin = view.findViewById(R.id.tv_use_pin);
+        tvLockApp = view.findViewById(R.id.tv_lock_app);
         tvDevicesList = view.findViewById(R.id.tv_devices_list);
         llDeviceList = view.findViewById(R.id.ll_device_list);
         tvDevice1 = view.findViewById(R.id.tv_devices1);
@@ -80,6 +82,7 @@ public class SettingFragment extends Fragment {
         tvProfileName = view.findViewById(R.id.tv_profile_name);
         tvProfileEmail = view.findViewById(R.id.tv_profile_email);
         tvTutorial = view.findViewById(R.id.tv_tutorial);
+
 
 
         tvAppInfo.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +97,6 @@ public class SettingFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 ContactUsFragment contactUs = new ContactUsFragment();
-//                contactUs.show(getFragmentManager(), "contact_us");
                 contactUs.show(requireActivity().getSupportFragmentManager(), "contact_us");
             }
 
@@ -121,6 +123,13 @@ public class SettingFragment extends Fragment {
                 intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "changepin");
                 intent.putExtra("title", "Enter Old Pin");
                 startActivity(intent);
+            }
+        });
+        tvLockApp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LockAppOptionsDialog optionsDialog = new LockAppOptionsDialog();
+                optionsDialog.show(requireActivity().getSupportFragmentManager(), "lockAppOptionsDialog");
             }
         });
         tvDevicesList.setOnClickListener(new View.OnClickListener() {
@@ -154,6 +163,14 @@ public class SettingFragment extends Fragment {
                 startActivity(intent);
             }
         });
+        tvDevice1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                ImportData importData = new ImportData();
+//                importData.importPasswordData(context,activity);
+//                Log.d("SettingFragment","Import done");
+            }
+        });
         return view;
 
     }
@@ -174,7 +191,5 @@ public class SettingFragment extends Fragment {
             tvProfileEmail.setText(currentUserEmail);
         }
     }
-
-
 
 }

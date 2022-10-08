@@ -117,7 +117,6 @@ public class parentMyAdaptor extends RecyclerView.Adapter<parentMyAdaptor.myview
                                     AddPasswordDataHelperClass data = ds.getValue(AddPasswordDataHelperClass.class);
 //                                    System.out.println("data: " + data);
 //                                    System.out.println("data value: " + data.getAddWebsite_name());
-
                                     dataholder.add(data);
                                 }
 

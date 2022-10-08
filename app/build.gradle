@@ -11,7 +11,7 @@ android {
         minSdk 27
         targetSdk 32
         versionCode 1
-        versionName "2022.09.1"
+        versionName "2022.10.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -56,6 +56,9 @@ dependencies {
 //    implementation 'com.google.firebase:firebase-auth:21.0.1'
     implementation 'com.google.firebase:firebase-storage:20.0.0'
     implementation 'com.google.firebase:firebase-common-ktx:20.0.0'
+    //for csv write
+    implementation files('libs\\opencsv-4.1.jar')
+    implementation files('libs\\commons-lang3-3.6.jar')
 //    implementation 'com.google.firebase:firebase-admin:8.1.0'
 
     testImplementation 'junit:junit:4.+'

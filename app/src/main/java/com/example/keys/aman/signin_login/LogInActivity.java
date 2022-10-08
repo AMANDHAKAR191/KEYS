@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -18,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.AES;
-import com.example.keys.aman.DatabaseProcess;
 import com.example.keys.aman.PrograceBar;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
@@ -68,9 +68,24 @@ public class LogInActivity extends AppCompatActivity {
     private final String MASTER_PIN = "master_pin";
     private final String IS_PIN_SET = "ispin_set";
     private final String IS_USER_RESTRICTED = "is_user_restricted";
-    private String UID;
+    public final String LOCK_APP = "lock_app";
+
+    protected String UID;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
     private boolean turn = false;
 
+    public void setUID(String UID) {
+        this.UID = UID;
+    }
     public String getUID() {
         return UID;
     }
@@ -109,6 +124,7 @@ public class LogInActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 SplashActivity.isForeground = true;
+                setName("AMAN");
                 progressBar();
                 signIn();
             }
@@ -198,7 +214,8 @@ public class LogInActivity extends AppCompatActivity {
                             progressBar();
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
-                            UID = Objects.requireNonNull(user).getUid();
+                            setUID(user.getUid());
+//                            UID = user.getUid();
                             //check user if already signed up in background
                             threadRunnable threadRunnable = new threadRunnable();
                             new Thread(threadRunnable).start();
@@ -209,11 +226,11 @@ public class LogInActivity extends AppCompatActivity {
                                 public void run() {
 //                                    Toast.makeText(LogInActivity.this, "before while Loop...", Toast.LENGTH_SHORT).show();
                                     while (!turn) {
+                                        Log.d("LoginActivity","Check_progressBar");
                                         progressBar();
                                     }
                                     prograceBar.dismissbar();
                                     String temp = sharedPreferences.getString(IS_FIRST_TIME, "0");
-
                                     if (temp == "0") {
                                         SharedPreferences.Editor editor1 = sharedPreferences.edit();
                                         editor1.putString(AES_KEY, PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==");
@@ -286,12 +303,47 @@ public class LogInActivity extends AppCompatActivity {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
+
                     DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
-                    DatabaseProcess checkUserProcess = new DatabaseProcess();
-                    turn = checkUserProcess.checkUser(reference);
+                    turn = checkUser(reference);
                 }
             });
         }
+    }
+
+    public boolean checkUser(DatabaseReference reference) {
+        LogInActivity logInActivity = new LogInActivity();
+
+        reference.child(UID).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String temp;
+                try {
+                    temp = Objects.requireNonNull(dataSnapshot.getValue()).toString();
+                } catch (Exception e) {
+                    temp = "1";
+                }
+
+
+                if (temp != "1") {
+
+                    SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                    editor1.putString(logInActivity.getIS_FIRST_TIME(), "1");
+                    editor1.apply();
+                    turn = true;
+
+                } else {
+                    turn = true;
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println(error);
+
+            }
+        });
+        return turn;
     }
 
     private void createEntryOnDatabase(FirebaseUser user) {

@@ -21,7 +21,7 @@ public class ContactUsFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_contact_us,container,false);
+        View view = inflater.inflate(R.layout.fragment_dialog_contact_us,container,false);
         img_gmail = view.findViewById(R.id.img_gmail);
         img_facebook = view.findViewById(R.id.img_facebook);
         img_instagram = view.findViewById(R.id.img_instagram);

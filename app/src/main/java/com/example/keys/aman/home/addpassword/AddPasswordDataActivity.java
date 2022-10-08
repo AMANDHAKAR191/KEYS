@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.AES;
-import com.example.keys.aman.DatabaseProcess;
 import com.example.keys.aman.PrograceBar;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.base.TabLayoutActivity;
@@ -127,7 +126,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
         comingLoginWebsiteName = intent.getStringExtra("loginwebsite_name");
         comingLoginWebsiteLink = intent.getStringExtra("loginwebsite_link");
 
-        if (comingRequestCode.equals("ShowCardviewDataActivity")) {
+        if (comingRequestCode.equals("ShowCardViewDataActivity")) {
             tietAddWebsiteLinkData.setEnabled(comingLoginWebsiteLink.equals(""));
             btnSubmit.setText("Update");
             tietAddLoginData.setText(comingLoginName);
@@ -201,7 +200,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
 
     }
 
-    public boolean validate( String tempAddLogin, String tempAddPassword, String tempAddWebsiteName){
+    public boolean validate(String tempAddLogin, String tempAddPassword, String tempAddWebsiteName) {
         if (tempAddLogin.equals("") || tempAddPassword.equals("") || tempAddWebsiteName.equals("")) {
             return false;
         }
@@ -222,7 +221,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
         }
 
 
-        if (validate(addLogin,addPassword,addWebsiteName)) {
+        if (validate(addLogin, addPassword, addWebsiteName)) {
             String encryptedAddlLogin = "", encryptedAddPassword = "", encryptedAddWebsite = "";
 
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
@@ -245,8 +244,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
             AddPasswordDataHelperClass AddPasswordDataHelperClass;
             if (comingRequestCode.equals("ShowCardViewDataActivity")) {
                 AddPasswordDataHelperClass = new AddPasswordDataHelperClass(comingDate, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, comingLoginWebsiteLink);
-                DatabaseProcess storeDataProcess = new DatabaseProcess(AddPasswordDataHelperClass);
-                storeDataProcess.storeData(addDataRef);
+                addDataRef.child(comingDate).setValue(AddPasswordDataHelperClass);
                 Toast.makeText(AddPasswordDataActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
 
 
@@ -257,8 +255,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
             } else if (comingRequestCode.equals("HomeActivity")) {
                 AddPasswordDataHelperClass = new AddPasswordDataHelperClass(currentDateAndTime, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, addWebsiteLink);
-                DatabaseProcess storeDataProcess = new DatabaseProcess(AddPasswordDataHelperClass);
-                storeDataProcess.storeData(addDataRef);
+                addDataRef.child(currentDateAndTime).setValue(AddPasswordDataHelperClass);
                 Toast.makeText(AddPasswordDataActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
             }
 

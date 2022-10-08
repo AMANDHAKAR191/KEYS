@@ -19,7 +19,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.AES;
-import com.example.keys.aman.DatabaseProcess;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
@@ -157,15 +156,11 @@ public class AddNotesActivity extends AppCompatActivity {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         if (comingRequestCode.equals("notesCardView")) {
             AddNoteDataHelperClass addDNoteHelper = new AddNoteDataHelperClass(comingDate, titleDecrypted, noteDecrypted, isHideNote, false);
-            DatabaseProcess processStore = new DatabaseProcess(addDNoteHelper);
-            processStore.storeData(reference);
-//            reference.child(comingDate).setValue(addDNoteHelper);
+            reference.child(comingDate).setValue(addDNoteHelper);
             Toast.makeText(AddNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
         } else {
             AddNoteDataHelperClass addDNoteHelper = new AddNoteDataHelperClass(currentDateAndTime, titleDecrypted, noteDecrypted, isHideNote, true);
-            DatabaseProcess processStore = new DatabaseProcess(addDNoteHelper);
-            processStore.storeData(reference);
-//            reference.child(currentDateAndTime).setValue(addDNoteHelper);
+            reference.child(currentDateAndTime).setValue(addDNoteHelper);
             Toast.makeText(AddNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
         }
         SplashActivity.isForeground = true;
