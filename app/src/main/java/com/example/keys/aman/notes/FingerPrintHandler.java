@@ -28,10 +28,10 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
     CancellationSignal cancellationSignal;
     LogInActivity logInActivity = new LogInActivity();
 
-    public FingerPrintHandler(Context context, Activity activity, String comingrRequestCode) {
+    public FingerPrintHandler(Context context, Activity activity, String comingRequestCode) {
         this.context = context;
         this.activity = activity;
-        this.comingRequestCode = comingrRequestCode;
+        this.comingRequestCode = comingRequestCode;
         sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
     }
 

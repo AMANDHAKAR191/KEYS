@@ -8,3 +8,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "KEYS"
 include ':app'
+include ':loginapplication'
+include ':loginapplicaton'

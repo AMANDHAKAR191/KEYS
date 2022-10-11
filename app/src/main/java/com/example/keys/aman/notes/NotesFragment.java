@@ -47,6 +47,9 @@ public class NotesFragment extends Fragment {
         this.activity = activity;
     }
 
+    public NotesFragment() {
+    }
+
     private static final String TAG = "notesActivity";
     SharedPreferences sharedPreferences;
     public static DatabaseReference reference;

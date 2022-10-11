@@ -48,6 +48,9 @@ public class HomeFragment extends Fragment {
         this.activity = activity;
     }
 
+    public HomeFragment() {
+    }
+
     ScrollView scrollView;
     TextView tvNOTE;
     RecyclerView recview;

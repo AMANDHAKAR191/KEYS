@@ -36,7 +36,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-//import com.example.android.autofill.service.MyAutofillService;
 import com.example.keys.R;
 
 import java.util.Collection;
@@ -105,7 +104,7 @@ public final class BasicService extends AutofillService {
         ids.toArray(requiredIds);
         response.setSaveInfo(
                 // We're simple, so we're generic
-                new SaveInfo.Builder(SaveInfo.SAVE_DATA_TYPE_GENERIC, requiredIds).build());
+                new SaveInfo.Builder(SaveInfo.SAVE_DATA_TYPE_USERNAME & SaveInfo.SAVE_DATA_TYPE_PASSWORD, requiredIds).build());
 
         // 3.Profit!
         callback.onSuccess(response.build());
@@ -114,7 +113,14 @@ public final class BasicService extends AutofillService {
     @Override
     public void onSaveRequest(SaveRequest request, SaveCallback callback) {
         Log.d(TAG, "onSaveRequest()");
-        toast("Save not supported");
+        // Get the structure from the request
+        List<FillContext> context = request.getFillContexts();
+        AssistStructure structure = context.get(context.size() - 1).getStructure();
+
+        // Traverse the structure looking for data to save
+        traverseStructure(structure);
+
+        // Persist the data, if there are no errors, call onSuccess()
         callback.onSuccess();
     }
 
@@ -169,7 +175,10 @@ public final class BasicService extends AutofillService {
      */
     @NonNull
     static AssistStructure getLatestAssistStructure(@NonNull FillRequest request) {
+        Log.d(TAG, "getFillContexts : " + request.getFillContexts());
         List<FillContext> fillContexts = request.getFillContexts();
+        Log.d(TAG, "getFillContexts : " + fillContexts.get(fillContexts.size() - 1).getRequestId());
+        Log.d(TAG, "getFillContexts : " + fillContexts.get(fillContexts.size() - 1).describeContents());
         return fillContexts.get(fillContexts.size() - 1).getStructure();
     }
 
@@ -182,7 +191,7 @@ public final class BasicService extends AutofillService {
         RemoteViews presentation =
                 new RemoteViews(packageName, R.layout.multidataset_service_list_item);
         presentation.setTextViewText(R.id.text, text);
-        presentation.setImageViewResource(R.id.icon, R.mipmap.ic_launcher);
+        presentation.setImageViewResource(R.id.icon, R.drawable.person);
         return presentation;
     }
 
@@ -191,5 +200,32 @@ public final class BasicService extends AutofillService {
      */
     private void toast(@NonNull CharSequence message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_LONG).show();
+    }
+
+    public void traverseStructure(AssistStructure structure) {
+        Log.d(TAG, "traverseStructure");
+        int nodes = structure.getWindowNodeCount();
+
+        for (int i = 0; i < nodes; i++) {
+            AssistStructure.WindowNode windowNode = structure.getWindowNodeAt(i);
+            ViewNode viewNode = windowNode.getRootViewNode();
+            traverseNode(viewNode);
+        }
+    }
+
+    public void traverseNode(ViewNode viewNode) {
+        Log.d(TAG, "traverseNode");
+        if (viewNode.getAutofillHints() != null && viewNode.getAutofillHints().length > 0) {
+            // If the client app provides autofill hints, you can obtain them using:
+            // viewNode.getAutofillHints();
+        } else {
+            // Or use your own heuristics to describe the contents of a view
+            // using methods such as getText() or getHint().
+        }
+
+        for (int i = 0; i < viewNode.getChildCount(); i++) {
+            ViewNode childNode = viewNode.getChildAt(i);
+            traverseNode(childNode);
+        }
     }
 }

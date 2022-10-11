@@ -1,5 +1,6 @@
 package com.example.keys.aman.settings;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,16 +15,23 @@ import androidx.fragment.app.DialogFragment;
 
 import com.example.keys.R;
 
-public class LockAppOptionsDialog extends DialogFragment {
+public class LockAppOptionsDialog extends DialogFragment  {
 
     RadioGroup rgLockAppOptions;
     RadioButton rbImmediately, rbAfterOneMinute, rbNever;
-    private String input;
+    private OnInputListener onInputListner;
+    Activity activity;
+    Context context;
 
-    public interface onInputListener{
-        void sendInput(String input);
+    public LockAppOptionsDialog(Activity activity, Context context) {
+        this.activity = activity;
+        this.context = context;
     }
-    public onInputListener mOnInputListener;
+
+    public interface OnInputListener{
+        public void onSendResult(RadioGroup radioGroup ,int iResult);
+    }
+
 
     @Nullable
     @Override
@@ -35,11 +43,17 @@ public class LockAppOptionsDialog extends DialogFragment {
         rbAfterOneMinute = view.findViewById(R.id.rb_after_one_minute);
         rbNever = view.findViewById(R.id.rb_never);
 
+        try {
+            onInputListner = (OnInputListener) getParentFragment();
+        }catch (ClassCastException e){
+            throw new ClassCastException("Calling Fragment must implement OnInputListener");
+        }
+
+
         rgLockAppOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                input = Integer.toString(i);
-                mOnInputListener.sendInput(input);
+            public void onCheckedChanged(RadioGroup radioGroup, int result) {
+                onInputListner.onSendResult(radioGroup,result);
                 getDialog().dismiss();
             }
         });
@@ -47,13 +61,5 @@ public class LockAppOptionsDialog extends DialogFragment {
         return view;
     }
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        try {
-            mOnInputListener = (onInputListener) getContext();
-        }catch (ClassCastException e){
-            e.printStackTrace();
-        }
-    }
+
 }

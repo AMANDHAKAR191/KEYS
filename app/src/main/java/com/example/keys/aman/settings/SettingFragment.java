@@ -3,6 +3,7 @@ package com.example.keys.aman.settings;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,7 +16,9 @@ import android.view.autofill.AutofillManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,6 +28,7 @@ import com.bumptech.glide.Glide;
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.notes.PinLockActivity;
+import com.example.keys.aman.service.MyForegroundService;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -32,16 +36,16 @@ import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SettingFragment extends Fragment{
+public class SettingFragment extends Fragment implements LockAppOptionsDialog.OnInputListener{
 
     Context context;
     Activity activity;
 
     TextView tvAppInfo, tvContactUs, tvPrivacyPolicy, tvTermsAndConditions,
             tvProfileName, tvProfileEmail, tvChangePin, tvDevicesList, tvTutorial,
-            tvLockApp;
+            tvStartForegroundService, tvStopForegroundService, tvLockApp, tvLockAppResult;
     ImageView imgBack;
-    LinearLayout llDeviceList;
+    LinearLayout llDeviceList, llLockApp;
     TextView tvDevice1, tvDevice2, tvDevice3;
     SharedPreferences sharedPreferences;
     Button btnLogout;
@@ -50,11 +54,15 @@ public class SettingFragment extends Fragment{
     private static final int REQUEST_CODE_SET_DEFAULT = 1;
     private String s1;
     LogInActivity logInActivity = new LogInActivity();
+    Intent serviceIntent;
 
 
     public SettingFragment(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
+    }
+
+    public SettingFragment() {
     }
 
     @Nullable
@@ -64,6 +72,7 @@ public class SettingFragment extends Fragment{
         View view = inflater.inflate(R.layout.activity_setting, container, false);
 
         sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        serviceIntent = new Intent(context, MyForegroundService.class);
         /*---------------Hooks--------------*/
         tvAppInfo = view.findViewById(R.id.tv_app_info);
         tvContactUs = view.findViewById(R.id.tv_contectus);
@@ -71,8 +80,12 @@ public class SettingFragment extends Fragment{
         tvTermsAndConditions = view.findViewById(R.id.tv_terms_and_conditions);
         tvChangePin = view.findViewById(R.id.tv_use_pin);
         tvLockApp = view.findViewById(R.id.tv_lock_app);
+        tvLockAppResult = view.findViewById(R.id.tv_lock_app_result);
+        tvStartForegroundService = view.findViewById(R.id.tv_start_foreground_Service);
+        tvStopForegroundService = view.findViewById(R.id.tv_stop_foreground_Service);
         tvDevicesList = view.findViewById(R.id.tv_devices_list);
         llDeviceList = view.findViewById(R.id.ll_device_list);
+        llLockApp = view.findViewById(R.id.ll_lock_app);
         tvDevice1 = view.findViewById(R.id.tv_devices1);
         tvDevice2 = view.findViewById(R.id.tv_devices2);
         tvDevice3 = view.findViewById(R.id.tv_devices3);
@@ -82,7 +95,6 @@ public class SettingFragment extends Fragment{
         tvProfileName = view.findViewById(R.id.tv_profile_name);
         tvProfileEmail = view.findViewById(R.id.tv_profile_email);
         tvTutorial = view.findViewById(R.id.tv_tutorial);
-
 
 
         tvAppInfo.setOnClickListener(new View.OnClickListener() {
@@ -125,11 +137,30 @@ public class SettingFragment extends Fragment{
                 startActivity(intent);
             }
         });
-        tvLockApp.setOnClickListener(new View.OnClickListener() {
+        llLockApp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LockAppOptionsDialog optionsDialog = new LockAppOptionsDialog();
+                LockAppOptionsDialog optionsDialog = new LockAppOptionsDialog(activity, context);
                 optionsDialog.show(requireActivity().getSupportFragmentManager(), "lockAppOptionsDialog");
+            }
+        });
+        tvStartForegroundService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!isForegroundServiceRunning()) {
+                    Toast.makeText(context, "MyForegroundService Starting...", Toast.LENGTH_SHORT).show();
+//                    activity.startForegroundService(serviceIntent);
+                    activity.startService(serviceIntent);
+                }
+            }
+        });
+        tvStopForegroundService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (isForegroundServiceRunning()) {
+                    Toast.makeText(context, "MyForegroundService Stopping...", Toast.LENGTH_SHORT).show();
+                    activity.stopService(serviceIntent);
+                }
             }
         });
         tvDevicesList.setOnClickListener(new View.OnClickListener() {
@@ -159,7 +190,7 @@ public class SettingFragment extends Fragment{
             @Override
             public void onClick(View view) {
                 SplashActivity.isForeground = true;
-                Intent intent = new Intent(context,TutorialActivity.class);
+                Intent intent = new Intent(context, TutorialActivity.class);
                 startActivity(intent);
             }
         });
@@ -192,4 +223,20 @@ public class SettingFragment extends Fragment{
         }
     }
 
+
+    public boolean isForegroundServiceRunning() {
+        ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+            if (MyForegroundService.class.getName().equals(serviceInfo.service.getClassName())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onSendResult(RadioGroup radioGroup, int iResult) {
+        tvLockAppResult.setText(radioGroup.getCheckedRadioButtonId() + " | " + iResult);
+    }
 }

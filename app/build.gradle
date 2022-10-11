@@ -95,4 +95,7 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
 
     apply plugin: 'com.google.firebase.crashlytics'
+
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+//    implementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
 }

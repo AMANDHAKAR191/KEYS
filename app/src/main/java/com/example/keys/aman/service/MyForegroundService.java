@@ -40,7 +40,9 @@ public class MyForegroundService extends Service {
         Notification.Builder notification = new Notification.Builder(this,CHANNEL_ID)
                 .setContentText("Service is Running...")
                 .setContentTitle("Autofill Service")
-                .setSmallIcon(R.drawable.keys_privacy);
+                .setSmallIcon(R.drawable.keys_privacy)
+                .setPriority(Notification.PRIORITY_LOW)
+                .setCategory(Notification.CATEGORY_SERVICE);
 
         startForeground(101,notification.build());
         return super.onStartCommand(intent, flags, startId);

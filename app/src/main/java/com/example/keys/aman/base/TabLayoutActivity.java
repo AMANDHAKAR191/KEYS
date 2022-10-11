@@ -4,7 +4,9 @@ package com.example.keys.aman.base;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -25,8 +27,7 @@ import com.example.keys.aman.notes.AddNotesActivity;
 import com.example.keys.aman.notes.BiometricActivity;
 import com.example.keys.aman.notes.NotesFragment;
 import com.example.keys.aman.notes.PinLockActivity;
-import com.example.keys.aman.service.MyBackgroundService;
-import com.example.keys.aman.service.MyService;
+import com.example.keys.aman.service.AppLockCounter;
 import com.example.keys.aman.settings.SettingFragment;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -35,7 +36,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
 
-public class TabLayoutActivity extends AppCompatActivity {
+public class TabLayoutActivity extends AppCompatActivity implements AppLockCounter {
 
     //objects
     private TabLayout tabLayout;
@@ -47,6 +48,7 @@ public class TabLayoutActivity extends AppCompatActivity {
     LinearLayout llFab, llToolBar;
     private SharedPreferences sharedPreferences;
     LogInActivity logInActivity = new LogInActivity();
+    CountDownTimer countDownTimer;
 
     //variables
     int selectedTab = 0;
@@ -58,7 +60,6 @@ public class TabLayoutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_layout);
-        startService(new Intent(this, MyService.class));
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
 
@@ -241,36 +242,35 @@ public class TabLayoutActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (SplashActivity.isBackground) {
-            Intent intent = new Intent(TabLayoutActivity.this, BiometricActivity.class);
-            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
-            startActivity(intent);
+//        MyBackgroundService stopThread = new MyBackgroundService();
+//        stopThread.stopThread();
+        if (countDownTimer != null){
+            countDownTimer.cancel();
+//            Log.d("MyForegroundService", "Counter Finished");
         }
-        if (SplashActivity.isForeground) {
-            SplashActivity.isForeground = false;
-        }
+
+//        if (SplashActivity.isBackground) {
+//            Intent intent = new Intent(TabLayoutActivity.this, BiometricActivity.class);
+//            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
+//            startActivity(intent);
+//        }
+//        if (SplashActivity.isForeground) {
+//            SplashActivity.isForeground = false;
+//        }
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        if (countDownTimer == null){
+            initializeCounter();
+        }else {
+            countDownTimer.start();
+        }
         if (!SplashActivity.isForeground) {
             SplashActivity.isBackground = true;
         }
-//        CountDownTimer countDownTimer = new CountDownTimer(10000,500) {
-//            @Override
-//            public void onTick(long millisUntilFinished) {
-//                Log.e("TabLayoutActivity", "remaining time = " + millisUntilFinished/1000);
-//            }
-//
-//            @Override
-//            public void onFinish() {
-//
-//            }
-//        }.start();
-//        new MyBackgroundService(TabLayoutActivity.this,TabLayoutActivity.this);
-        Intent timerIntent = new Intent(this, MyBackgroundService.class);
-        startService(timerIntent);
+
     }
 
     @Override
@@ -322,4 +322,31 @@ public class TabLayoutActivity extends AppCompatActivity {
                     }
                 });
     }
+
+    @Override
+    public void initializeCounter() {
+        if (countDownTimer == null){
+            countDownTimer = new CountDownTimer(10000, 1000) {
+                @Override
+                public void onTick(long milliSecondCount) {
+                    Log.d("MyForegroundService", "Counter Running:" + milliSecondCount/1000);
+                }
+
+                @Override
+                public void onFinish() {
+                    Log.d("MyForegroundService", "Counter Finished");
+                    if (SplashActivity.isBackground) {
+                        Intent intent = new Intent(TabLayoutActivity.this, BiometricActivity.class);
+                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
+                        startActivity(intent);
+                    }
+                    if (SplashActivity.isForeground) {
+                        SplashActivity.isForeground = false;
+                    }
+                }
+            }.start();
+        }
+
+    }
+
 }

@@ -137,7 +137,7 @@ public class BiometricActivity extends AppCompatActivity{
         }
     }
 
-    private void callFingerPrintHandler(String comingrequestcode, FingerprintManager fingerprintManager) {
+    public void callFingerPrintHandler(String comingrequestcode, FingerprintManager fingerprintManager) {
         FingerPrintHandler fingerPrintHandler = new FingerPrintHandler(this, BiometricActivity.this , comingrequestcode);
         fingerPrintHandler.startAuth(fingerprintManager,null);
     }

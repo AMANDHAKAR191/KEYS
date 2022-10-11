@@ -1,7 +1,5 @@
 package com.example.keys.aman;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.content.pm.ShortcutManager;
@@ -16,7 +14,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
-import com.example.keys.aman.service.MyForegroundService;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -59,14 +56,11 @@ public class SplashActivity extends AppCompatActivity {
         showInterstialAd();
         showRewardedAd();
 
-        if (!isForegroundServiceRunning()) {
-            Toast.makeText(this, "MyForegroundService Starting...", Toast.LENGTH_SHORT).show();
-            Toast.makeText(this, "MyAutofill Service Starting...", Toast.LENGTH_SHORT).show();
-            Intent serviceIntent = new Intent(this, MyForegroundService.class);
-            startForegroundService(serviceIntent);
-        }
-
-
+//        if (!isForegroundServiceRunning()) {
+//            Toast.makeText(getApplicationContext(), "MyForegroundService Starting...", Toast.LENGTH_SHORT).show();
+//            Intent serviceIntent = new Intent(getApplicationContext(), MyForegroundService.class);
+//            startForegroundService(serviceIntent);
+//        }
 
 
         isForeground = true;
@@ -184,16 +178,17 @@ public class SplashActivity extends AppCompatActivity {
         shortcutManager.setDynamicShortcuts(Arrays.asList(shortcutInfo));
     }
 
-    public boolean isForegroundServiceRunning() {
-        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
-            if (MyForegroundService.class.getName().equals(serviceInfo.service.getClassName())) {
-                return true;
-            }
-        }
+//    public boolean isForegroundServiceRunning() {
+//        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+//            if (MyForegroundService.class.getName().equals(serviceInfo.service.getClassName())) {
+//                return true;
+//            }
+//        }
+//
+//        return false;
+//    }
 
-        return false;
-    }
 
 
 }
