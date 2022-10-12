@@ -32,7 +32,7 @@ import androidx.fragment.app.Fragment;
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.home.addpassword.AddPasswordDataActivity;
-import com.example.keys.aman.notes.PinLockActivity;
+import com.example.keys.aman.authentication.PinLockActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.rewarded.RewardItem;

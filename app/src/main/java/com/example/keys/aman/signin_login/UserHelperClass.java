@@ -1,4 +1,4 @@
-package com.example.keys.aman.app.signin_login;
+package com.example.keys.aman.signin_login;
 
 public class UserHelperClass {
     String name, email, aes_key, aes_iv, uid;

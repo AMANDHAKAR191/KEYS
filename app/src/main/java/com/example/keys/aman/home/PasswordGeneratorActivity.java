@@ -22,7 +22,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
-import com.example.keys.aman.notes.BiometricActivity;
+import com.example.keys.aman.authentication.BiometricActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
@@ -37,7 +37,6 @@ import com.google.android.material.slider.Slider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -259,9 +258,7 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-    protected String genrate_password() {
-        StringBuilder password = new StringBuilder();
-        ArrayList<Integer> passSel = new ArrayList<>();
+    protected void genrate_password() {
         slider.addOnChangeListener(new Slider.OnChangeListener() {
             @SuppressLint("RestrictedApi")
             @Override
@@ -330,8 +327,6 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
                 }
             }
         }
-
-        return generatedPassword;
     }
 
     public void goBack(View view) {

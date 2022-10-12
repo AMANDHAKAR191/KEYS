@@ -1,4 +1,4 @@
-package com.example.keys.aman.notes;
+package com.example.keys.aman.authentication;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +20,7 @@ import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 import com.example.keys.R;
 import com.example.keys.aman.base.TabLayoutActivity;
+import com.example.keys.aman.notes.SecretNotesActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 
 public class PinLockActivity extends AppCompatActivity {
@@ -74,7 +75,6 @@ public class PinLockActivity extends AppCompatActivity {
 
                     } else {
                         tvTitle.setText("Wrong Pin");
-//                        vibrator.vibrate(200);
                         vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
 
                         mPinLockView.resetPinLockView();
@@ -108,7 +108,6 @@ public class PinLockActivity extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), TabLayoutActivity.class);
                             intent.putExtra("result", "yes");
                             startActivity(intent);
-                            finish();
                         }else {
                             tvTitle.setText("Wrong Pin");
                             mPinLockView.resetPinLockView();
@@ -118,8 +117,8 @@ public class PinLockActivity extends AppCompatActivity {
                             intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
                             intent.putExtra("title", "Set Pin");
                             startActivity(intent);
-                            finish();
                         }
+                        finish();
                     }
                     break;
                 case "changepin":
@@ -203,24 +202,34 @@ public class PinLockActivity extends AppCompatActivity {
 
         Toast.makeText(PinLockActivity.this, comingRequestCode, Toast.LENGTH_SHORT).show();
 
-        if (comingRequestCode.equals("LogInActivity")) {
-            PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
-            tvTitle.setText("Enter Pin");
-        } else if (comingRequestCode.equals("ShowCardViewDataActivity")) {
-            PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
-            String title = intent.getStringExtra("title");
-            tvTitle.setText(title);
-        } else if (comingRequestCode.equals("notesActivity")) {
-            PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
-            String title = intent.getStringExtra("title");
-            tvTitle.setText(title);
-        } else if (comingRequestCode.equals("setpin")) {
-            String title = intent.getStringExtra("title");
-            tvTitle.setText(title);
-        } else if (comingRequestCode.equals("changepin")) {
-            PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
-            String title = intent.getStringExtra("title");
-            tvTitle.setText(title);
+        switch (comingRequestCode) {
+            case "LogInActivity":
+                PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
+                tvTitle.setText("Enter Pin");
+                break;
+            case "ShowCardViewDataActivity": {
+                PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
+                String title = intent.getStringExtra("title");
+                tvTitle.setText(title);
+                break;
+            }
+            case "notesActivity": {
+                PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
+                String title = intent.getStringExtra("title");
+                tvTitle.setText(title);
+                break;
+            }
+            case "setpin": {
+                String title = intent.getStringExtra("title");
+                tvTitle.setText(title);
+                break;
+            }
+            case "changepin": {
+                PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
+                String title = intent.getStringExtra("title");
+                tvTitle.setText(title);
+                break;
+            }
         }
     }
 

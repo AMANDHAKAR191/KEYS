@@ -32,7 +32,7 @@ import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.home.HomeFragment;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
-import com.example.keys.aman.notes.BiometricActivity;
+import com.example.keys.aman.authentication.BiometricActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -126,29 +126,33 @@ public class AddPasswordDataActivity extends AppCompatActivity {
         comingLoginWebsiteName = intent.getStringExtra("loginwebsite_name");
         comingLoginWebsiteLink = intent.getStringExtra("loginwebsite_link");
 
-        if (comingRequestCode.equals("ShowCardViewDataActivity")) {
-            tietAddWebsiteLinkData.setEnabled(comingLoginWebsiteLink.equals(""));
-            btnSubmit.setText("Update");
-            tietAddLoginData.setText(comingLoginName);
-            tietAddPasswordData.setText(comingLoginPassword);
-            tietAddWebsiteData.setText(comingLoginWebsiteName);
-            tietAddWebsiteLinkData.setText(comingLoginWebsiteLink);
-            tietAddWebsiteData.setEnabled(false);
-            scrollView1.setVisibility(View.GONE);
-            scrollView2.setVisibility(View.VISIBLE);
-        } else if (comingRequestCode.equals("myadaptorforaddpassword")) {
-            Intent intent1 = getIntent();
-            String name = intent1.getStringExtra("loginname");
-            String website = intent1.getStringExtra("loginwebsite");
-            scrollView1.setVisibility(View.GONE);
-            scrollView2.setVisibility(View.VISIBLE);
-            tietAddWebsiteData.setText(website);
-        } else if (comingRequestCode.equals("HomeActivity")) {
-            scrollView1.setVisibility(View.VISIBLE);
-            scrollView2.setVisibility(View.GONE);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-            currentDateAndTime = sdf.format(new Date());
+        switch (comingRequestCode) {
+            case "ShowCardViewDataActivity":
+                tietAddWebsiteLinkData.setEnabled(comingLoginWebsiteLink.equals(""));
+                btnSubmit.setText("Update");
+                tietAddLoginData.setText(comingLoginName);
+                tietAddPasswordData.setText(comingLoginPassword);
+                tietAddWebsiteData.setText(comingLoginWebsiteName);
+                tietAddWebsiteLinkData.setText(comingLoginWebsiteLink);
+                tietAddWebsiteData.setEnabled(false);
+                scrollView1.setVisibility(View.GONE);
+                scrollView2.setVisibility(View.VISIBLE);
+                break;
+            case "myadaptorforaddpassword":
+                Intent intent1 = getIntent();
+                String name = intent1.getStringExtra("loginname");
+                String website = intent1.getStringExtra("loginwebsite");
+                scrollView1.setVisibility(View.GONE);
+                scrollView2.setVisibility(View.VISIBLE);
+                tietAddWebsiteData.setText(website);
+                break;
+            case "HomeActivity":
+                scrollView1.setVisibility(View.VISIBLE);
+                scrollView2.setVisibility(View.GONE);
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                currentDateAndTime = sdf.format(new Date());
 
+                break;
         }
 
 
@@ -201,10 +205,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
     }
 
     public boolean validate(String tempAddLogin, String tempAddPassword, String tempAddWebsiteName) {
-        if (tempAddLogin.equals("") || tempAddPassword.equals("") || tempAddWebsiteName.equals("")) {
-            return false;
-        }
-        return true;
+        return !tempAddLogin.equals("") && !tempAddPassword.equals("") && !tempAddWebsiteName.equals("");
 
     }
 
@@ -222,7 +223,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
 
 
         if (validate(addLogin, addPassword, addWebsiteName)) {
-            String encryptedAddlLogin = "", encryptedAddPassword = "", encryptedAddWebsite = "";
+            String encryptedAddlLogin = "", encryptedAddPassword = "";
 
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             DatabaseReference addDataRef = firebaseDatabase.getReference("addpassworddata").child(uid).child(addWebsiteName);
@@ -433,12 +434,12 @@ public class AddPasswordDataActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (SplashActivity.isBackground) {
+        if (SplashActivity.isBackground){
             Intent intent = new Intent(AddPasswordDataActivity.this, BiometricActivity.class);
             intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
             startActivity(intent);
         }
-        if (SplashActivity.isForeground) {
+        if (SplashActivity.isForeground){
             SplashActivity.isForeground = false;
         }
     }
@@ -446,7 +447,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        if (!SplashActivity.isForeground) {
+        if (!SplashActivity.isForeground){
             SplashActivity.isBackground = true;
         }
     }

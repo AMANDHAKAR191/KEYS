@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
-import com.example.keys.aman.notes.BiometricActivity;
+import com.example.keys.aman.authentication.BiometricActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 
 public class TutorialActivity extends AppCompatActivity {

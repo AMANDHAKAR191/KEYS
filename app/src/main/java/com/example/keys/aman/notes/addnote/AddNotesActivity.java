@@ -1,4 +1,4 @@
-package com.example.keys.aman.notes;
+package com.example.keys.aman.notes.addnote;
 
 import static com.example.keys.aman.SplashActivity.mRewardedAd;
 
@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.AES;
+import com.example.keys.aman.authentication.BiometricActivity;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
@@ -79,23 +80,29 @@ public class AddNotesActivity extends AppCompatActivity {
         boolean comingIsHideNote = intent.getBooleanExtra("hide note", false);
         String comingTitle = intent.getStringExtra("title");
         String comingNote = intent.getStringExtra("note");
-        if (comingRequestCode.equals("notesCardView")) {
-            tietAddNoteTitle.setText(comingTitle);
-            tietAddNoteBody.setText(comingNote);
-            cbHideNote.setChecked(comingIsHideNote);
-            cbHideNote.setEnabled(false);
-            tilAddNoteTitle.setEnabled(false);
-            tilAddNoteBody.setEnabled(false);
-            img_save.setVisibility(View.INVISIBLE);
-            img_edit.setVisibility(View.VISIBLE);
-        } else if (comingRequestCode.equals("notesActivity")) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-            currentDateAndTime = sdf.format(new Date());
-            System.out.println("Dateandtime: " + currentDateAndTime);
-        } else if (comingRequestCode.equals("HomeActivity")) {
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-            currentDateAndTime = sdf.format(new Date());
-            System.out.println("Dateandtime: " + currentDateAndTime);
+        switch (comingRequestCode) {
+            case "notesCardView":
+                tietAddNoteTitle.setText(comingTitle);
+                tietAddNoteBody.setText(comingNote);
+                cbHideNote.setChecked(comingIsHideNote);
+                cbHideNote.setEnabled(false);
+                tilAddNoteTitle.setEnabled(false);
+                tilAddNoteBody.setEnabled(false);
+                img_save.setVisibility(View.INVISIBLE);
+                img_edit.setVisibility(View.VISIBLE);
+                break;
+            case "notesActivity": {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                currentDateAndTime = sdf.format(new Date());
+                System.out.println("Dateandtime: " + currentDateAndTime);
+                break;
+            }
+            case "HomeActivity": {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                currentDateAndTime = sdf.format(new Date());
+                System.out.println("Dateandtime: " + currentDateAndTime);
+                break;
+            }
         }
 
         cbHideNote.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -154,15 +161,15 @@ public class AddNotesActivity extends AppCompatActivity {
         }
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
+        AddNoteDataHelperClass addDNoteHelper;
         if (comingRequestCode.equals("notesCardView")) {
-            AddNoteDataHelperClass addDNoteHelper = new AddNoteDataHelperClass(comingDate, titleDecrypted, noteDecrypted, isHideNote, false);
+            addDNoteHelper = new AddNoteDataHelperClass(comingDate, titleDecrypted, noteDecrypted, isHideNote, false);
             reference.child(comingDate).setValue(addDNoteHelper);
-            Toast.makeText(AddNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
         } else {
-            AddNoteDataHelperClass addDNoteHelper = new AddNoteDataHelperClass(currentDateAndTime, titleDecrypted, noteDecrypted, isHideNote, true);
+            addDNoteHelper = new AddNoteDataHelperClass(currentDateAndTime, titleDecrypted, noteDecrypted, isHideNote, true);
             reference.child(currentDateAndTime).setValue(addDNoteHelper);
-            Toast.makeText(AddNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
         }
+        Toast.makeText(AddNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
         SplashActivity.isForeground = true;
         Intent intent = new Intent(AddNotesActivity.this, TabLayoutActivity.class);
         intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "addNotesActivity");

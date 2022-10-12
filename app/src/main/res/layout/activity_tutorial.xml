@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".aman.app.settings.TutorialActivity">
+    tools:context=".aman.settings.TutorialActivity">
 
     <LinearLayout
         android:id="@+id/ll_toolbar"

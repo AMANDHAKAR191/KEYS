@@ -27,39 +27,20 @@ public class AddPasswordDataHelperClass {
         return date;
     }
 
-    public void setDate(String date) {
-        this.date = date;
-    }
-
     public String getAddDataLogin() {
         return addDataLogin;
-    }
-
-    public void setAddDataLogin(String addDataLogin) {
-        this.addDataLogin = addDataLogin;
     }
 
     public String getAddDataPassword() {
         return addDataPassword;
     }
 
-    public void setAddDataPassword(String addDataPassword) {
-        this.addDataPassword = addDataPassword;
-    }
-
     public String getAddWebsite_name() {
         return addWebsite_name;
-    }
-
-    public void setAddWebsite_name(String addWebsite_name) {
-        this.addWebsite_name = addWebsite_name;
     }
 
     public String getAddWebsite_link() {
         return addWebsite_link;
     }
 
-    public void setAddWebsite_link(String addWebsite_link) {
-        this.addWebsite_link = addWebsite_link;
-    }
 }

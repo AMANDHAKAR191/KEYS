@@ -1,4 +1,4 @@
-package com.example.keys.aman.notes;
+package com.example.keys.aman.authentication;
 
 import android.Manifest;
 import android.app.KeyguardManager;
@@ -70,65 +70,62 @@ public class BiometricActivity extends AppCompatActivity{
             if (!isHardwareDetected) {
                 tvDisplayMessage.setText("Fingerprint Scanner not detected in Device");
                 boolean isPinSet =  sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(),false);
+                SplashActivity.isForeground = true;
+                Intent intent3;
                 if (isPinSet){
-                    SplashActivity.isForeground = true;
-                    Intent intent3 = new Intent(BiometricActivity.this, PinLockActivity.class);
+                    intent3 = new Intent(BiometricActivity.this, PinLockActivity.class);
                     intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(),"LogInActivity");
                     intent3.putExtra("title","Enter Pin");
                     Toast.makeText(this, "isHardwareDetected: " + isHardwareDetected, Toast.LENGTH_SHORT).show();
                     startActivity(intent3);
-                    finish();
                 }else {
-                    SplashActivity.isForeground = true;
-                    Intent intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
+                    intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
                     intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
                     intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent3.putExtra("title", "Set Pin");
                     startActivity(intent);
-                    finish();
                 }
+                finish();
             } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
                 tvDisplayMessage.setText("Permission not granted to use Fingerprint Scanner");
             }
             else if (!keyguardManager.isKeyguardSecure()) {
                 tvDisplayMessage.setText("Add Lock to your Phone in Setting");
                 boolean ispin_set =  sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(),false);
+                SplashActivity.isForeground = true;
+                Intent intent3;
                 if (ispin_set){
-                    SplashActivity.isForeground = true;
-                    Intent intent3 = new Intent(BiometricActivity.this, PinLockActivity.class);
+                    intent3 = new Intent(BiometricActivity.this, PinLockActivity.class);
                     intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(),"LogInActivity");
                     intent3.putExtra("title","Enter Pin");
                     startActivity(intent3);
-                    finish();
                 }else {
-                    SplashActivity.isForeground = true;
-                    Intent intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
+                    intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
                     intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
                     intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent3.putExtra("title", "Set Pin");
                     startActivity(intent);
-                    finish();
                 }
+                finish();
             } else if (!hasEnrolledFingerprints) {
                 tvDisplayMessage.setText("You should add atleast 1 Fingerprint to use this Feature");
                 boolean ispin_set =  sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(),false);
                 Toast.makeText(this, "ispin_set" + ispin_set, Toast.LENGTH_SHORT).show();
+                SplashActivity.isForeground = true;
+                Intent intent3;
                 if (ispin_set){
-                    SplashActivity.isForeground = true;
-                    Intent intent3 = new Intent(BiometricActivity.this, PinLockActivity.class);
+                    intent3 = new Intent(BiometricActivity.this, PinLockActivity.class);
                     intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(),"LogInActivity");
                     intent3.putExtra("title","Enter Pin");
                     startActivity(intent3);
-                    finish();
                 }else {
-                    SplashActivity.isForeground = true;
-                    Intent intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
+                    intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
                     intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
                     intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent3.putExtra("title", "Set Pin");
                     startActivity(intent);
-                    finish();
                 }
+                finish();
             } else {
                 tvDisplayMessage.setText("Place your Finger to Acsess the app");
                 callFingerPrintHandler(comingrequestcode, fingerprintManager);

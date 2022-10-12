@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 
 import com.example.keys.R;
 
+/* TODO Checked on 12/10/2022
+    All is ok
+ */
 public class PrograceBar {
     final Activity activity;
     AlertDialog dialog;

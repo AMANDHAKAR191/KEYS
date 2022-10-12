@@ -1,7 +1,6 @@
-package com.example.keys.aman.notes;
+package com.example.keys.aman.authentication;
 
 import static android.content.Context.MODE_PRIVATE;
-
 
 import android.app.Activity;
 import android.content.Context;
@@ -16,6 +15,7 @@ import android.widget.TextView;
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.base.TabLayoutActivity;
+import com.example.keys.aman.notes.SecretNotesActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 
 public class FingerPrintHandler extends FingerprintManager.AuthenticationCallback {

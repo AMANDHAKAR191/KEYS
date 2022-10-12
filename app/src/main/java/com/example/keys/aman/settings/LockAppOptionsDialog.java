@@ -19,18 +19,19 @@ public class LockAppOptionsDialog extends DialogFragment  {
 
     RadioGroup rgLockAppOptions;
     RadioButton rbImmediately, rbAfterOneMinute, rbNever;
-    private OnInputListener onInputListner;
+//    private OnInputListener onInputListner;
     Activity activity;
     Context context;
+    SettingFragment settingFragment = new SettingFragment();
 
     public LockAppOptionsDialog(Activity activity, Context context) {
         this.activity = activity;
         this.context = context;
     }
 
-    public interface OnInputListener{
-        public void onSendResult(RadioGroup radioGroup ,int iResult);
-    }
+//    public interface OnInputListener{
+//        public void onSendResult(RadioGroup radioGroup ,int iResult);
+//    }
 
 
     @Nullable
@@ -43,20 +44,13 @@ public class LockAppOptionsDialog extends DialogFragment  {
         rbAfterOneMinute = view.findViewById(R.id.rb_after_one_minute);
         rbNever = view.findViewById(R.id.rb_never);
 
-        try {
-            onInputListner = (OnInputListener) getParentFragment();
-        }catch (ClassCastException e){
-            throw new ClassCastException("Calling Fragment must implement OnInputListener");
-        }
+//        try {
+//            onInputListner = (OnInputListener) getParentFragment();
+//        }catch (ClassCastException e){
+//            throw new ClassCastException("Calling Fragment must implement OnInputListener");
+//        }
 
 
-        rgLockAppOptions.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int result) {
-                onInputListner.onSendResult(radioGroup,result);
-                getDialog().dismiss();
-            }
-        });
 
         return view;
     }

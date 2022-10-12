@@ -8,6 +8,9 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
+/* TODO Checked on 12/10/2022
+    All is ok
+ */
 public class AES {
     private SecretKey key;
 

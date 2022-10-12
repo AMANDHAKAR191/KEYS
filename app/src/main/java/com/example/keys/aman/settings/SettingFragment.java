@@ -5,10 +5,12 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,17 +29,19 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
-import com.example.keys.aman.notes.PinLockActivity;
+import com.example.keys.aman.authentication.PinLockActivity;
 import com.example.keys.aman.service.MyForegroundService;
 import com.example.keys.aman.signin_login.LogInActivity;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class SettingFragment extends Fragment implements LockAppOptionsDialog.OnInputListener{
+public class SettingFragment extends Fragment {
 
+    private static final String TAG = "SettingFragment";
     Context context;
     Activity activity;
 
@@ -53,6 +57,7 @@ public class SettingFragment extends Fragment implements LockAppOptionsDialog.On
     AutofillManager mAutofillManager;
     private static final int REQUEST_CODE_SET_DEFAULT = 1;
     private String s1;
+    int checkedItem = 0;
     LogInActivity logInActivity = new LogInActivity();
     Intent serviceIntent;
 
@@ -95,6 +100,9 @@ public class SettingFragment extends Fragment implements LockAppOptionsDialog.On
         tvProfileName = view.findViewById(R.id.tv_profile_name);
         tvProfileEmail = view.findViewById(R.id.tv_profile_email);
         tvTutorial = view.findViewById(R.id.tv_tutorial);
+        checkedItem = sharedPreferences.getInt(logInActivity.LOCK_APP_OPTIONS,0);
+        String[] Item = {"Immediately", "After 1 minute", "Never"};
+        tvLockAppResult.setText(Item[checkedItem]);
 
 
         tvAppInfo.setOnClickListener(new View.OnClickListener() {
@@ -140,8 +148,31 @@ public class SettingFragment extends Fragment implements LockAppOptionsDialog.On
         llLockApp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LockAppOptionsDialog optionsDialog = new LockAppOptionsDialog(activity, context);
-                optionsDialog.show(requireActivity().getSupportFragmentManager(), "lockAppOptionsDialog");
+                MaterialAlertDialogBuilder alertDialogBuilder = new MaterialAlertDialogBuilder(context)
+                        .setTitle("Lock App")
+                        .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Log.d(TAG, "=> " + i);
+                                dialogInterface.dismiss();
+                            }
+                        })
+                        .setSingleChoiceItems(Item, checkedItem, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int result) {
+                                Log.d(TAG, "=> " + result);
+                                tvLockAppResult.setText(Item[result]);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putInt(logInActivity.LOCK_APP_OPTIONS,result);
+                                editor.apply();
+
+                                checkedItem = sharedPreferences.getInt(logInActivity.LOCK_APP_OPTIONS,0);
+                                dialogInterface.dismiss();
+                            }
+                        });
+                alertDialogBuilder.show();
+//                LockAppOptionsDialog optionsDialog = new LockAppOptionsDialog(activity, context);
+//                optionsDialog.show(requireActivity().getSupportFragmentManager(), "lockAppOptionsDialog");
             }
         });
         tvStartForegroundService.setOnClickListener(new View.OnClickListener() {
@@ -235,7 +266,7 @@ public class SettingFragment extends Fragment implements LockAppOptionsDialog.On
         return false;
     }
 
-    @Override
+
     public void onSendResult(RadioGroup radioGroup, int iResult) {
         tvLockAppResult.setText(radioGroup.getCheckedRadioButtonId() + " | " + iResult);
     }

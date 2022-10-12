@@ -2,7 +2,6 @@ package com.example.keys.aman.settings;
 
 
 import android.content.Intent;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -13,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
-import com.example.keys.aman.notes.BiometricActivity;
+import com.example.keys.aman.authentication.BiometricActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 
 public class AppInfoActivity extends AppCompatActivity {
@@ -50,9 +49,10 @@ public class AppInfoActivity extends AppCompatActivity {
         });
 
         try {
-            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            String version = pInfo.versionName;
-            tv_app_version.setText("Version: " + version);
+
+            tv_app_version.setText("Version Name: " + getPackageManager().
+                    getPackageInfo(getPackageName(),0).versionName + "\n Version Code: " + getPackageManager().
+                    getPackageInfo(getPackageName(),0).versionCode);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }

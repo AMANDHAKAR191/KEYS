@@ -4,9 +4,7 @@ package com.example.keys.aman.base;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -23,11 +21,10 @@ import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.home.HomeFragment;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
 import com.example.keys.aman.home.addpassword.AddPasswordDataActivity;
-import com.example.keys.aman.notes.AddNotesActivity;
-import com.example.keys.aman.notes.BiometricActivity;
+import com.example.keys.aman.notes.addnote.AddNotesActivity;
 import com.example.keys.aman.notes.NotesFragment;
-import com.example.keys.aman.notes.PinLockActivity;
-import com.example.keys.aman.service.AppLockCounter;
+import com.example.keys.aman.authentication.PinLockActivity;
+import com.example.keys.aman.authentication.AppLockCounterClass;
 import com.example.keys.aman.settings.SettingFragment;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -36,8 +33,9 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.Objects;
 
-public class TabLayoutActivity extends AppCompatActivity implements AppLockCounter {
+public class TabLayoutActivity extends AppCompatActivity {
 
+    private static final String TAG = "TabLayoutActivity";
     //objects
     private TabLayout tabLayout;
     ImageView img_keys_icon;
@@ -48,13 +46,17 @@ public class TabLayoutActivity extends AppCompatActivity implements AppLockCount
     LinearLayout llFab, llToolBar;
     private SharedPreferences sharedPreferences;
     LogInActivity logInActivity = new LogInActivity();
-    CountDownTimer countDownTimer;
+    AppLockCounterClass appLockCounterClass = new AppLockCounterClass(TabLayoutActivity.this,TabLayoutActivity.this);
+
+
 
     //variables
     int selectedTab = 0;
+
     Boolean isAllFabsVisible;
     private int clickCounter = 0;
     public static int pauseCounter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,35 +244,14 @@ public class TabLayoutActivity extends AppCompatActivity implements AppLockCount
     @Override
     protected void onStart() {
         super.onStart();
-//        MyBackgroundService stopThread = new MyBackgroundService();
-//        stopThread.stopThread();
-        if (countDownTimer != null){
-            countDownTimer.cancel();
-//            Log.d("MyForegroundService", "Counter Finished");
-        }
-
-//        if (SplashActivity.isBackground) {
-//            Intent intent = new Intent(TabLayoutActivity.this, BiometricActivity.class);
-//            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
-//            startActivity(intent);
-//        }
-//        if (SplashActivity.isForeground) {
-//            SplashActivity.isForeground = false;
-//        }
+        appLockCounterClass.onStartOperation();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (countDownTimer == null){
-            initializeCounter();
-        }else {
-            countDownTimer.start();
-        }
-        if (!SplashActivity.isForeground) {
-            SplashActivity.isBackground = true;
-        }
-
+        appLockCounterClass.checkedItem = sharedPreferences.getInt(logInActivity.LOCK_APP_OPTIONS,0);
+        appLockCounterClass.onPauseOperation();
     }
 
     @Override
@@ -323,30 +304,5 @@ public class TabLayoutActivity extends AppCompatActivity implements AppLockCount
                 });
     }
 
-    @Override
-    public void initializeCounter() {
-        if (countDownTimer == null){
-            countDownTimer = new CountDownTimer(10000, 1000) {
-                @Override
-                public void onTick(long milliSecondCount) {
-                    Log.d("MyForegroundService", "Counter Running:" + milliSecondCount/1000);
-                }
-
-                @Override
-                public void onFinish() {
-                    Log.d("MyForegroundService", "Counter Finished");
-                    if (SplashActivity.isBackground) {
-                        Intent intent = new Intent(TabLayoutActivity.this, BiometricActivity.class);
-                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
-                        startActivity(intent);
-                    }
-                    if (SplashActivity.isForeground) {
-                        SplashActivity.isForeground = false;
-                    }
-                }
-            }.start();
-        }
-
-    }
 
 }

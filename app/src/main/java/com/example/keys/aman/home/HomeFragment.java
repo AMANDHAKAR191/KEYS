@@ -111,17 +111,17 @@ public class HomeFragment extends Fragment {
 
         MobileAds.initialize(context);
 
-        threadRunnable threadRunnable = new threadRunnable(view);
-        new Thread(threadRunnable).start();
+        threadRunnableHomeFragment threadRunnableHomeFragment = new threadRunnableHomeFragment(view);
+        new Thread(threadRunnableHomeFragment).start();
 
         return view;
     }
 
-    public class threadRunnable implements Runnable {
+    public class threadRunnableHomeFragment implements Runnable {
         Handler handler = new Handler();
         View view;
 
-        public threadRunnable(View view) {
+        public threadRunnableHomeFragment(View view) {
             this.view = view;
         }
 

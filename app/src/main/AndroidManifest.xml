@@ -43,28 +43,16 @@
         <activity
             android:name=".aman.settings.TutorialActivity"
             android:exported="false" />
-        <!-- <service -->
-        <!-- android:name=".aman.MyAutofillService" -->
-        <!-- android:exported="true" -->
-        <!-- android:label="KEYS" -->
-        <!-- android:permission="android.permission.BIND_AUTOFILL_SERVICE"> -->
-        <!-- <intent-filter> -->
-        <!-- <action android:name="android.service.autofill.AutofillService" /> -->
-        <!-- </intent-filter> -->
-        <!-- <meta-data -->
-        <!-- android:name="android.autofill" -->
-        <!-- android:resource="@xml/multidataset_service" /> -->
-        <!-- </service> -->
 
 
         <activity
-            android:name=".aman.notes.BiometricActivity"
+            android:name=".aman.authentication.BiometricActivity"
             android:exported="false" />
         <activity
             android:name=".aman.notes.SecretNotesActivity"
             android:exported="false" />
         <activity
-            android:name=".aman.notes.AddNotesActivity"
+            android:name=".aman.notes.addnote.AddNotesActivity"
             android:exported="false" />
         <activity
             android:name=".aman.SplashActivity"
@@ -80,9 +68,6 @@
             android:name=".aman.signin_login.LogInActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".aman.checkInternetFragment"
-            android:exported="false" />
         <!-- <activity -->
         <!-- android:name=".aman.app.home.HomeActivity" -->
         <!-- android:exported="false" -->
@@ -101,7 +86,7 @@
             android:name=".aman.settings.AppInfoActivity"
             android:exported="false" />
         <activity
-            android:name=".aman.notes.PinLockActivity"
+            android:name=".aman.authentication.PinLockActivity"
             android:exported="false" />
 
         <meta-data

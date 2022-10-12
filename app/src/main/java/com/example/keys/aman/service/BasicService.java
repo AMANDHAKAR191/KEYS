@@ -50,7 +50,7 @@ import java.util.Map.Entry;
  * <p>The goal of this class is to provide a simple autofill service implementation that is easy
  * to understand and extend, but it should <strong>not</strong> be used as-is on real apps because
  * it lacks fundamental security requirements such as data partitioning and package verification
- * &mdashthese requirements are fullfilled by {@link MyAutofillService}.
+ * &mdashthese requirements are fullfilled by {@link //MyAutofillService}.
  */
 public final class BasicService extends AutofillService {
 
@@ -129,7 +129,7 @@ public final class BasicService extends AutofillService {
      * map of autofillable fields (represented by their autofill ids) mapped by the hint associate
      * with them.
      *
-     * <p>An autofillable field is a {@link ViewNode} whose {@link #getHint(ViewNode)} metho
+     * <p>An autofillable field is a {@link ViewNode} whose {@link //#getHint(ViewNode)} metho
      */
     @NonNull
     private Map<String, AutofillId> getAutofillableFields(@NonNull AssistStructure structure) {
@@ -152,15 +152,13 @@ public final class BasicService extends AutofillService {
             // We're simple, we only care about the first hint
             String hint = hints[0].toLowerCase();
 
-            if (hint != null) {
-                AutofillId id = node.getAutofillId();
-                if (!fields.containsKey(hint)) {
-                    Log.v(TAG, "Setting hint '" + hint + "' on " + id);
-                    fields.put(hint, id);
-                } else {
-                    Log.v(TAG, "Ignoring hint '" + hint + "' on " + id
-                            + " because it was already set");
-                }
+            AutofillId id = node.getAutofillId();
+            if (!fields.containsKey(hint)) {
+                Log.v(TAG, "Setting hint '" + hint + "' on " + id);
+                fields.put(hint, id);
+            } else {
+                Log.v(TAG, "Ignoring hint '" + hint + "' on " + id
+                        + " because it was already set");
             }
         }
         int childrenSize = node.getChildCount();

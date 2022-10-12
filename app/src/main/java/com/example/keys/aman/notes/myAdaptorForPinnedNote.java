@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.keys.R;
 import com.example.keys.aman.AES;
 import com.example.keys.aman.SplashActivity;
+import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
+import com.example.keys.aman.notes.addnote.AddNotesActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 
 import java.text.DateFormat;
@@ -60,7 +62,6 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
         aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
-        int p = position;
         String noteDate, noteTitle, noteBody, decryptedNoteTitle, decryptedNoteBody, doubleDecryptedNoteTitle, doubleDecryptedNoteBody;
         boolean isHideNote, isPinned;
         try {

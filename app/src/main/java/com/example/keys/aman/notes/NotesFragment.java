@@ -6,7 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
+import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -50,15 +50,13 @@ public class NotesFragment extends Fragment {
     public NotesFragment() {
     }
 
-    private static final String TAG = "notesActivity";
     SharedPreferences sharedPreferences;
     public static DatabaseReference reference;
     public static myadaptorfornote adaptorUnpinned;
     public static myAdaptorForPinnedNote adaptorPinned;
-    private final boolean turn = false;
     TextView tvNote, tvPinned, tvUnpinned;
     SearchView searchView;
-    public static boolean ispin = false;
+
 
     private String uid;
 
@@ -73,34 +71,19 @@ public class NotesFragment extends Fragment {
         tvNote = view.findViewById(R.id.tv_NOTE);
         tvPinned = view.findViewById(R.id.tv_pinned);
         tvUnpinned = view.findViewById(R.id.tv_unpinned);
-//        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         recyclerViewPinned = view.findViewById(R.id.recview_pinned);
         recyclerViewUnpinned = view.findViewById(R.id.recview_unpinned);
         recyclerViewUnpinned.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-                Log.d("RecyclerViewDebug"," | " + i3);
-                if (i3 > 30){
+                if (i3 > 30) {
                     recyclerViewPinned.setVisibility(View.VISIBLE);
                     tvPinned.setVisibility(View.VISIBLE);
-                }else if (i3 < -30){
+                } else if (i3 < -30) {
                     recyclerViewPinned.setVisibility(View.GONE);
                     tvPinned.setVisibility(View.GONE);
 
                 }
-            }
-        });
-        recyclerViewUnpinned.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-//                System.out.println(" | " + newState);
-//                Log.d("RecyclerViewDebug"," | " + newState);
-//                if (newState == 0){
-////                    recyclerViewPinned.setVisibility(View.VISIBLE);
-//                }else {
-//                    recyclerViewPinned.setVisibility(View.GONE);
-//                }
             }
         });
 
@@ -122,14 +105,6 @@ public class NotesFragment extends Fragment {
 //            }
 //        });
 
-//        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                dataHolder.clear();
-//                recyclerViewSetData();
-//                swipeRefreshLayout.setRefreshing(false);
-//            }
-//        });
 
         recyclerViewSetPinnedData();
         recyclerViewSetData();
@@ -217,7 +192,6 @@ public class NotesFragment extends Fragment {
                         AddNoteDataHelperClass data = ds.getValue(AddNoteDataHelperClass.class);
                         assert data != null;
                         if (data.isHideNote()) {
-
                         } else {
                             if (data.isPinned()) {
                                 dataHolderPinned.add(data);
