@@ -28,6 +28,7 @@ public class BiometricActivity extends AppCompatActivity{
     private boolean isHardwareDetected;
     private boolean hasEnrolledFingerprints;
     LogInActivity logInActivity = new LogInActivity();
+    PinLockActivity pinLockActivity = new PinLockActivity();
     private FingerprintManager fingerprintManager;
     private String comingrequestcode;
 
@@ -69,7 +70,7 @@ public class BiometricActivity extends AppCompatActivity{
 
             if (!isHardwareDetected) {
                 tvDisplayMessage.setText("Fingerprint Scanner not detected in Device");
-                boolean isPinSet =  sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(),false);
+                boolean isPinSet =  sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(),false);
                 SplashActivity.isForeground = true;
                 Intent intent3;
                 if (isPinSet){
@@ -91,7 +92,7 @@ public class BiometricActivity extends AppCompatActivity{
             }
             else if (!keyguardManager.isKeyguardSecure()) {
                 tvDisplayMessage.setText("Add Lock to your Phone in Setting");
-                boolean ispin_set =  sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(),false);
+                boolean ispin_set =  sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(),false);
                 SplashActivity.isForeground = true;
                 Intent intent3;
                 if (ispin_set){
@@ -109,7 +110,7 @@ public class BiometricActivity extends AppCompatActivity{
                 finish();
             } else if (!hasEnrolledFingerprints) {
                 tvDisplayMessage.setText("You should add atleast 1 Fingerprint to use this Feature");
-                boolean ispin_set =  sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(),false);
+                boolean ispin_set =  sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(),false);
                 Toast.makeText(this, "ispin_set" + ispin_set, Toast.LENGTH_SHORT).show();
                 SplashActivity.isForeground = true;
                 Intent intent3;

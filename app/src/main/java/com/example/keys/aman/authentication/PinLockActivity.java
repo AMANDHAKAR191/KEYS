@@ -34,6 +34,21 @@ public class PinLockActivity extends AppCompatActivity {
     Handler handler = new Handler();
     LogInActivity logInActivity = new LogInActivity();
 
+    public String getMASTER_PIN() {
+        String MASTER_PIN = "master_pin";
+        return MASTER_PIN;
+    }
+
+    public String getIS_PIN_SET() {
+        String IS_PIN_SET = "ispin_set";
+        return IS_PIN_SET;
+    }
+
+    public String getIS_USER_RESTRICTED() {
+        String IS_USER_RESTRICTED = "is_user_restricted";
+        return IS_USER_RESTRICTED;
+    }
+
     private String PIN = "";
     String setPin, confirmPin;
     int temp = 0;
@@ -99,8 +114,8 @@ public class PinLockActivity extends AppCompatActivity {
                         if (confirmPin.equals(setPin)){
                             tvTitle.setText("Pin Matched");
                             SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                            editor1.putBoolean(logInActivity.getIS_PIN_SET(), true);
-                            editor1.putString(logInActivity.getMASTER_PIN(), confirmPin);
+                            editor1.putBoolean(getIS_PIN_SET(), true);
+                            editor1.putString(getMASTER_PIN(), confirmPin);
                             editor1.apply();
 
                             Toast.makeText(PinLockActivity.this, "Pin Set", Toast.LENGTH_SHORT).show();
@@ -204,17 +219,17 @@ public class PinLockActivity extends AppCompatActivity {
 
         switch (comingRequestCode) {
             case "LogInActivity":
-                PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
+                PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
                 tvTitle.setText("Enter Pin");
                 break;
             case "ShowCardViewDataActivity": {
-                PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
+                PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
                 String title = intent.getStringExtra("title");
                 tvTitle.setText(title);
                 break;
             }
             case "notesActivity": {
-                PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
+                PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
                 String title = intent.getStringExtra("title");
                 tvTitle.setText(title);
                 break;
@@ -225,7 +240,7 @@ public class PinLockActivity extends AppCompatActivity {
                 break;
             }
             case "changepin": {
-                PIN = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "no");
+                PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
                 String title = intent.getStringExtra("title");
                 tvTitle.setText(title);
                 break;
@@ -237,7 +252,7 @@ public class PinLockActivity extends AppCompatActivity {
         count =  count + 1;
         if (count >= 3){
             SharedPreferences.Editor editor1 = sharedPreferences.edit();
-            editor1.putBoolean(logInActivity.getIS_USER_RESTRICTED(), true);
+            editor1.putBoolean(getIS_USER_RESTRICTED(), true);
             editor1.apply();
             tvErrorMessage.setVisibility(View.VISIBLE);
             mPinLockView.setVisibility(View.INVISIBLE);

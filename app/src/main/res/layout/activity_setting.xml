@@ -118,28 +118,6 @@
                     android:visibility="visible" />
             </LinearLayout>
 
-
-
-            <TextView
-                android:id="@+id/tv_start_foreground_Service"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Start Foreground Service"
-                android:layout_marginTop="20dp"
-                android:textColor="?attr/colorOnSecondary"
-                android:textSize="20dp"
-                android:visibility="visible" />
-
-            <TextView
-                android:id="@+id/tv_stop_foreground_Service"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Stop Foreground Service"
-                android:layout_marginTop="20dp"
-                android:textColor="?attr/colorOnSecondary"
-                android:textSize="20dp"
-                android:visibility="visible" />
-
             <TextView
                 android:id="@+id/tv_devices_list"
                 android:layout_width="match_parent"

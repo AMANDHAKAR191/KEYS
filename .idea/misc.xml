@@ -32,6 +32,7 @@
         <entry key="..\:/KEYS/app/src/main/res/drawable/ic_pin_icon.xml" value="0.1825" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/icontent_copy.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/keysPrivacy_louncher_icon_background.xml" value="0.1545" />
+        <entry key="..\:/KEYS/app/src/main/res/drawable/keys_internal_logo_background.xml" value="0.1545" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/keys_privacy_louncher_icon_background.xml" value="0.18" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/lock.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/note_add.xml" value="0.25" />
@@ -70,6 +71,7 @@
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_sign_up.xml" value="0.271875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_splash.xml" value="0.271875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/activity_tab_layout.xml" value="0.2" />
+        <entry key="..\:/KEYS/app/src/main/res/layout-land/layout_reciver_message.xml" value="0.1513157894736842" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/parent_cardview_layout.xml" value="0.309375" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/simple_service_auth_activity.xml" value="0.283984375" />
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_add_notes.xml" value="0.1875" />
@@ -94,11 +96,13 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_base.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_biometric.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_change_password.xml" value="0.17552083333333332" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_chat.xml" value="0.176" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_email_suggestion.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_home.xml" value="0.1701388888888889" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_log_in.xml" value="0.184375" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_login1.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_messages.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_my_autofill_service.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_notes.xml" value="0.14335664335664336" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_otpverification.xml" value="0.17552083333333332" />
@@ -117,6 +121,7 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_tab_layout.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_tutorial.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/cardview_layout.xml" value="0.17552083333333332" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/chat_messages_layout.xml" value="0.15789473684210525" />
         <entry key="..\:/KEYS/app/src/main/res/layout/check_internet_dialog.xml" value="0.14666666666666667" />
         <entry key="..\:/KEYS/app/src/main/res/layout/child_cardview_layout.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/layout/dialogdbtakinglongtime.xml" value="0.1875" />
@@ -124,15 +129,19 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_base.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_check_internet.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_contact_us.xml" value="0.1875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/fragment_dialog_add_contact_email.xml" value="0.15789473684210525" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_dialog_lock_app_options.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_o_t_p_verification.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_pin_lock.xml" value="0.2" />
         <entry key="..\:/KEYS/app/src/main/res/layout/fragment_wesite_list.xml" value="0.1875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/layout_receiver_message.xml" value="0.15789473684210525" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/layout_sender_message.xml" value="0.15789473684210525" />
         <entry key="..\:/KEYS/app/src/main/res/layout/multidataset_service_list_item.xml" value="0.18671875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/note_cardview_layout.xml" value="0.128" />
         <entry key="..\:/KEYS/app/src/main/res/layout/parent_cardview_layout.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/pinned_note_cardview_layout.xml" value="0.2" />
         <entry key="..\:/KEYS/app/src/main/res/layout/prograce_bar_layout.xml" value="0.17552083333333332" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/user_list_layout.xml" value="0.2" />
         <entry key="..\:/KEYS/app/src/main/res/layout/website_card.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/website_cardview_layout.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/menu/bottom_nevigation_menu.xml" value="0.17552083333333332" />
@@ -143,6 +152,7 @@
         <entry key="..\:/KEYS/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.19166666666666668" />
         <entry key="..\:/KEYS/app/src/main/res/mipmap-anydpi-v26/icon_iamge.xml" value="0.1" />
         <entry key="..\:/KEYS/app/src/main/res/mipmap-anydpi-v26/icon_iamge_round.xml" value="0.121" />
+        <entry key="..\:/KEYS/app/src/main/res/mipmap-anydpi-v26/keys_internal_logo.xml" value="0.1545" />
         <entry key="..\:/KEYS/app/src/main/res/mipmap-anydpi-v26/keys_louncher_icon.xml" value="0.121" />
         <entry key="..\:/KEYS/app/src/main/res/mipmap-anydpi-v26/keys_louncher_icon1.xml" value="0.158" />
         <entry key="..\:/KEYS/app/src/main/res/mipmap-anydpi-v26/keys_louncher_icon_new1.xml" value="0.18" />

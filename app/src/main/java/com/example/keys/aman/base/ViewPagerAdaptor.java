@@ -41,22 +41,4 @@ public class ViewPagerAdaptor extends FragmentPagerAdapter {
         fragmentarraylist.add(fragment);
     }
 
-//    @NonNull
-//    @Override
-//    public Fragment createFragment(int position) {
-//        switch (position){
-//            case 0:
-//                return new HomeActivity(context,activity);
-//            case 1:
-//                return new notesActivity(context,activity);
-//            case 2:
-//                return new SettingActivity(context,activity);
-//        }
-//        return new HomeActivity(context,activity);
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return fragmentarraylist.size();
-//    }
 }

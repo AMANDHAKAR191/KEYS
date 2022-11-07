@@ -80,20 +80,31 @@ public final class BasicService extends AutofillService {
         // Create the base response
         FillResponse.Builder response = new FillResponse.Builder();
 
+//        String[] value = new String[fields.size()];
+//        value[0] = "AMAN";
+//        value[0] = "DHAKAR";
+//        value[0] = "2020";
+//        value[0] = "KIRAN";
+//        value[0] = "06/06/2022";
+
         // 1.Add the dynamic datasets
         String packageName = getApplicationContext().getPackageName();
         for (int i = 1; i <= NUMBER_DATASETS; i++) {
             Dataset.Builder dataset = new Dataset.Builder();
+            int j = 0;
             for (Entry<String, AutofillId> field : fields.entrySet()) {
                 String hint = field.getKey();
                 AutofillId id = field.getValue();
-                String value = i + "-" + hint;
+
+                String value = "AMAN DHAKAR";
+//                String value = parentMyAdaptor.dataHolderForAutofill(i).getAddDataPassword();
                 // We're simple - our dataset values are hardcoded as "N-hint" (for example,
                 // "1-username", "2-username") and they're displayed as such, except if they're a
                 // password
-                String displayValue = hint.contains("password") ? "password for #" + i : value;
+                String displayValue = hint.contains("password") ? "password for #" + i : "username for #" + i;
                 RemoteViews presentation = newDatasetPresentation(packageName, displayValue);
                 dataset.setValue(id, AutofillValue.forText(value), presentation);
+                j++;
             }
             response.addDataset(dataset.build());
         }

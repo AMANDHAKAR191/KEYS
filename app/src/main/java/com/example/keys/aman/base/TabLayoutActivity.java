@@ -18,13 +18,15 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
+import com.example.keys.aman.authentication.AppLockCounterClass;
+import com.example.keys.aman.authentication.PinLockActivity;
 import com.example.keys.aman.home.HomeFragment;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
 import com.example.keys.aman.home.addpassword.AddPasswordDataActivity;
-import com.example.keys.aman.notes.addnote.AddNotesActivity;
+import com.example.keys.aman.messages.AddContactEmailDialogFragment;
+import com.example.keys.aman.messages.MessagesActivity;
 import com.example.keys.aman.notes.NotesFragment;
-import com.example.keys.aman.authentication.PinLockActivity;
-import com.example.keys.aman.authentication.AppLockCounterClass;
+import com.example.keys.aman.notes.addnote.AddNotesActivity;
 import com.example.keys.aman.settings.SettingFragment;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
@@ -36,18 +38,22 @@ import java.util.Objects;
 public class TabLayoutActivity extends AppCompatActivity {
 
     private static final String TAG = "TabLayoutActivity";
+    public final String LOCK_APP_OPTIONS = "lock_app";
     //objects
     private TabLayout tabLayout;
-    ImageView img_keys_icon;
-    TextView tv_title;
+    TextView tvTitle, tvAddPassword, tvPasswordGenerator, tvAddNote;
+    LinearLayout llFab, llToolbar;
+    ImageView imgKeysIcon;
     ExtendedFloatingActionButton exFABtn, exFABtn_notes;
-    FloatingActionButton fabAddPassword, fabPasswordGenrator, fabAddNote;
-    TextView tvAddPassword, tvPasswordGenrator, tvShowPersonalInfo;
-    LinearLayout llFab, llToolBar;
+    FloatingActionButton fabAddPassword, fabPasswordGenerator, fabAddNote, fabAddContactEmail;
     private SharedPreferences sharedPreferences;
     LogInActivity logInActivity = new LogInActivity();
-    AppLockCounterClass appLockCounterClass = new AppLockCounterClass(TabLayoutActivity.this,TabLayoutActivity.this);
+    PinLockActivity pinLockActivity = new PinLockActivity();
+    AppLockCounterClass appLockCounterClass = new AppLockCounterClass(TabLayoutActivity.this, TabLayoutActivity.this);
 
+    public String getLOCK_APP_OPTIONS() {
+        return LOCK_APP_OPTIONS;
+    }
 
 
     //variables
@@ -69,29 +75,31 @@ public class TabLayoutActivity extends AppCompatActivity {
 
         tabLayout = findViewById(R.id.tablayout);
         ViewPager viewPager = findViewById(R.id.viewpager);
-        img_keys_icon = findViewById(R.id.img_keys_icon);
-        tv_title = findViewById(R.id.tv_title);
-        exFABtn = findViewById(R.id.ExtendedFloatingActionButton);
-        exFABtn_notes = findViewById(R.id.ExtendedFloatingActionButton_notes);
+        imgKeysIcon = findViewById(R.id.img_keys_icon);
+        tvTitle = findViewById(R.id.tv_title);
+        exFABtn = findViewById(R.id.ex_fab);
+        exFABtn_notes = findViewById(R.id.ex_fab_notes);
         fabAddPassword = findViewById(R.id.add_password_fab);
         tvAddPassword = findViewById(R.id.tv_add_password);
-        fabPasswordGenrator = findViewById(R.id.password_gen_fab);
-        tvPasswordGenrator = findViewById(R.id.tv_pass_gen);
+        fabPasswordGenerator = findViewById(R.id.password_gen_fab);
+        fabAddNote = findViewById(R.id.add_contact_email_fab);
+        fabAddContactEmail = findViewById(R.id.add_contact_email_fab);
+        tvPasswordGenerator = findViewById(R.id.tv_pass_gen);
         fabAddNote = findViewById(R.id.add_note_fab);
-        tvShowPersonalInfo = findViewById(R.id.tv_personal_info);
+        tvAddNote = findViewById(R.id.tv_add_note);
         llFab = findViewById(R.id.ll_fab);
         tabLayout.setupWithViewPager(viewPager);
-        llToolBar = findViewById(R.id.ll_toolbar);
+        llToolbar = findViewById(R.id.ll_toolbar);
 
         llFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 fabAddPassword.hide();
-                fabPasswordGenrator.hide();
+                fabPasswordGenerator.hide();
                 fabAddNote.hide();
                 tvAddPassword.setVisibility(View.GONE);
-                tvPasswordGenrator.setVisibility(View.GONE);
-                tvShowPersonalInfo.setVisibility(View.GONE);
+                tvPasswordGenerator.setVisibility(View.GONE);
+                tvAddNote.setVisibility(View.GONE);
                 exFABtn.setIconResource(R.drawable.add);
                 exFABtn.extend();
                 llFab.setBackground(getDrawable(R.drawable.fully_transparent_background));
@@ -109,7 +117,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
         });
-        fabPasswordGenrator.setOnClickListener(new View.OnClickListener() {
+        fabPasswordGenerator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 SplashActivity.isForeground = true;
@@ -129,6 +137,13 @@ public class TabLayoutActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
         });
+        fabAddContactEmail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddContactEmailDialogFragment dialogFragment = new AddContactEmailDialogFragment();
+                dialogFragment.show(getSupportFragmentManager(), "AddContactEmailDialogFragment");
+            }
+        });
         exFABtn_notes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -143,13 +158,15 @@ public class TabLayoutActivity extends AppCompatActivity {
 
         ViewPagerAdaptor viewPagerAdaptor = new ViewPagerAdaptor(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         viewPagerAdaptor.addFragment(new HomeFragment(TabLayoutActivity.this, TabLayoutActivity.this));
+        viewPagerAdaptor.addFragment(new MessagesActivity(TabLayoutActivity.this, TabLayoutActivity.this));
         viewPagerAdaptor.addFragment(new NotesFragment(TabLayoutActivity.this, TabLayoutActivity.this));
         viewPagerAdaptor.addFragment(new SettingFragment(TabLayoutActivity.this, TabLayoutActivity.this));
         viewPager.setAdapter(viewPagerAdaptor);
 
         Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.home);
-        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.notes);
-        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.settings);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.chat);
+        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.notes);
+        Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.settings);
         Objects.requireNonNull(tabLayout.getTabAt(0)).setText("Home");
         tabLayout.setUnboundedRipple(true);
 
@@ -162,19 +179,26 @@ public class TabLayoutActivity extends AppCompatActivity {
                         selectedTab = 1;
                         exFABtn.setVisibility(View.VISIBLE);
                         Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Home");
-                        tv_title.setText("HOME");
+                        tvTitle.setText("HOME");
                         break;
                     case 1:
                         selectedTab = 2;
-                        exFABtn_notes.setVisibility(View.VISIBLE);
-                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Notes");
-                        tv_title.setText("NOTES");
+                        llToolbar.setVisibility(View.VISIBLE);
+                        fabAddContactEmail.setVisibility(View.VISIBLE);
+                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Chats");
+                        tvTitle.setText("Chats");
                         break;
                     case 2:
                         selectedTab = 3;
-                        llToolBar.setVisibility(View.GONE);
+                        exFABtn_notes.setVisibility(View.VISIBLE);
+                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Notes");
+                        tvTitle.setText("NOTES");
+                        break;
+                    case 3:
+                        selectedTab = 4;
+                        llToolbar.setVisibility(View.GONE);
                         Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Setting");
-                        tv_title.setText("SETTING");
+                        tvTitle.setText("SETTING");
                         break;
                 }
             }
@@ -189,10 +213,13 @@ public class TabLayoutActivity extends AppCompatActivity {
                         exFABtn.setVisibility(View.INVISIBLE);
                         break;
                     case 1:
-                        exFABtn_notes.setVisibility(View.INVISIBLE);
+                        fabAddContactEmail.setVisibility(View.INVISIBLE);
                         break;
                     case 2:
-                        llToolBar.setVisibility(View.VISIBLE);
+                        fabAddNote.setVisibility(View.INVISIBLE);
+                        break;
+                    case 3:
+                        llToolbar.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -203,7 +230,7 @@ public class TabLayoutActivity extends AppCompatActivity {
             }
         });
 
-        img_keys_icon.setOnClickListener(new View.OnClickListener() {
+        imgKeysIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (selectedTab == 2) {
@@ -215,7 +242,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                         }
                     }, 1000);
                     if (clickCounter == 1) {
-                        boolean isPinSet = sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(), false);
+                        boolean isPinSet = sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(), false);
                         if (isPinSet) {
                             SplashActivity.isForeground = true;
                             Intent intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
@@ -250,7 +277,7 @@ public class TabLayoutActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        appLockCounterClass.checkedItem = sharedPreferences.getInt(logInActivity.LOCK_APP_OPTIONS,0);
+        appLockCounterClass.checkedItem = sharedPreferences.getInt(LOCK_APP_OPTIONS, 0);
         appLockCounterClass.onPauseOperation();
     }
 
@@ -264,10 +291,10 @@ public class TabLayoutActivity extends AppCompatActivity {
         isAllFabsVisible = false;
         fabAddPassword.setVisibility(View.GONE);
         tvAddPassword.setVisibility(View.GONE);
-        fabPasswordGenrator.setVisibility(View.GONE);
-        tvPasswordGenrator.setVisibility(View.GONE);
+        fabPasswordGenerator.setVisibility(View.GONE);
+        tvPasswordGenerator.setVisibility(View.GONE);
         fabAddNote.setVisibility(View.GONE);
-        tvShowPersonalInfo.setVisibility(View.GONE);
+        tvAddNote.setVisibility(View.GONE);
         exFABtn.extend();
         exFABtn.setOnClickListener(
                 new View.OnClickListener() {
@@ -275,11 +302,11 @@ public class TabLayoutActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         if (!isAllFabsVisible) {
                             fabAddPassword.show();
-                            fabPasswordGenrator.show();
+                            fabPasswordGenerator.show();
                             fabAddNote.show();
                             tvAddPassword.setVisibility(View.VISIBLE);
-                            tvPasswordGenrator.setVisibility(View.VISIBLE);
-                            tvShowPersonalInfo.setVisibility(View.VISIBLE);
+                            tvPasswordGenerator.setVisibility(View.VISIBLE);
+                            tvAddNote.setVisibility(View.VISIBLE);
                             exFABtn.shrink();
                             exFABtn.setIconResource(R.drawable.close);
                             exFABtn.setTranslationZ(1000);
@@ -288,11 +315,11 @@ public class TabLayoutActivity extends AppCompatActivity {
                             isAllFabsVisible = true;
                         } else {
                             fabAddPassword.hide();
-                            fabPasswordGenrator.hide();
+                            fabPasswordGenerator.hide();
                             fabAddNote.hide();
                             tvAddPassword.setVisibility(View.GONE);
-                            tvPasswordGenrator.setVisibility(View.GONE);
-                            tvShowPersonalInfo.setVisibility(View.GONE);
+                            tvPasswordGenerator.setVisibility(View.GONE);
+                            tvAddNote.setVisibility(View.GONE);
                             exFABtn.setIconResource(R.drawable.add);
                             exFABtn.extend();
                             llFab.setVisibility(View.INVISIBLE);

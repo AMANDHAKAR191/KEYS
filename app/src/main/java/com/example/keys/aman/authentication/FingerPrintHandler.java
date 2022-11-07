@@ -27,6 +27,12 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
     TextView paralable;
     CancellationSignal cancellationSignal;
     LogInActivity logInActivity = new LogInActivity();
+    PinLockActivity pinLockActivity = new PinLockActivity();
+    private final String IS_AUTHENTICATED = "isauthenticated";
+
+    public String getIS_AUTHENTICATED() {
+        return IS_AUTHENTICATED;
+    }
 
     public FingerPrintHandler(Context context, Activity activity, String comingRequestCode) {
         this.context = context;
@@ -84,11 +90,11 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
             switch (comingRequestCode) {
                 case "LogInActivity":
                     SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                    editor1.putBoolean(logInActivity.getIS_AUTHENTICATED(), true);
+                    editor1.putBoolean(getIS_AUTHENTICATED(), true);
                     editor1.apply();
 
-                    String masterPin = sharedPreferences.getString(logInActivity.getMASTER_PIN(), "");
-                    boolean ispinset = sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(),false);
+//                    String masterPin = sharedPreferences.getString(getMASTER_PIN(), "");
+                    boolean ispinset = sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(),false);
 
                     if (!ispinset) {
                         SplashActivity.isForeground = true;
@@ -110,7 +116,7 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
                 case "notesActivity":
                     comingRequestCode = "BiometricActivity";
                     SharedPreferences.Editor editor2 = sharedPreferences.edit();
-                    editor2.putBoolean(logInActivity.getIS_AUTHENTICATED(), true);
+                    editor2.putBoolean(getIS_AUTHENTICATED(), true);
                     editor2.apply();
 
                     Intent intent1 = new Intent(context, SecretNotesActivity.class);

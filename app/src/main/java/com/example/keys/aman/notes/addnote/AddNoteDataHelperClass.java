@@ -28,36 +28,36 @@ public class AddNoteDataHelperClass {
         return date;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
-    public boolean isHideNote() {
-        return isHideNote;
-    }
-
-    public boolean isPinned() {
-        return isPinned;
-    }
-
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
+    public String getNote() {
+        return note;
+    }
+
     public void setNote(String note) {
         this.note = note;
     }
 
+    public boolean isHideNote() {
+        return isHideNote;
+    }
+
     public void setHideNote(boolean hideNote) {
         isHideNote = hideNote;
+    }
+
+    public boolean isPinned() {
+        return isPinned;
     }
 
     public void setPinned(boolean pinned) {

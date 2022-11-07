@@ -36,7 +36,7 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class parentMyAdaptor extends RecyclerView.Adapter<parentMyAdaptor.myviewholder> {
+public class parentMyAdaptor extends RecyclerView.Adapter<parentMyAdaptor.myviewholder>{
     ArrayList<AddPasswordDataHelperClass> dataholder;
     final ArrayList<String> parentDataHolder;
     public static int passwordCounter = 0;
@@ -54,6 +54,7 @@ public class parentMyAdaptor extends RecyclerView.Adapter<parentMyAdaptor.myview
         this.context = context;
         this.activity = activity;
     }
+
 
     @NonNull
     @Override
@@ -118,6 +119,7 @@ public class parentMyAdaptor extends RecyclerView.Adapter<parentMyAdaptor.myview
 //                                    System.out.println("data: " + data);
 //                                    System.out.println("data value: " + data.getAddWebsite_name());
                                     dataholder.add(data);
+
                                 }
 
                                 holder.childRecView.setLayoutManager(new LinearLayoutManager(context));
@@ -180,6 +182,9 @@ public class parentMyAdaptor extends RecyclerView.Adapter<parentMyAdaptor.myview
         }
     }
 
+//    public static AddPasswordDataHelperClass dataHolderForAutofill(int index) {
+//        return dataholder.get(index);
+//    }
 
     private static Bitmap fetchFavicon(Uri uri) {
         final Uri iconUri = uri.buildUpon().path("favicon.ico").build();
@@ -235,3 +240,4 @@ public class parentMyAdaptor extends RecyclerView.Adapter<parentMyAdaptor.myview
     public void resetAdaptor() {
     }
 }
+

@@ -24,6 +24,7 @@ import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.BiometricActivity;
 import com.example.keys.aman.authentication.PinLockActivity;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
+import com.example.keys.aman.messages.UserListModelClass;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -33,6 +34,7 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.security.ProviderInstaller;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -68,15 +70,12 @@ public class LogInActivity extends AppCompatActivity {
     //Global variables
     private final String AES_KEY = "aes_key";
     private final String AES_IV = "aes_iv";
-    private final String SHARED_PREF_ALL_DATA = "All data";
+    public final String PUBLIC_UID = "public_uid";
+    public final String SHARED_PREF_ALL_DATA = "All data";
     private final String IS_LOGIN = "islogin";
     private final String IS_FIRST_TIME = "0";
     private final String REQUEST_CODE_NAME = "request_code";
-    private final String IS_AUTHENTICATED = "isauthenticated";
-    private final String MASTER_PIN = "master_pin";
-    private final String IS_PIN_SET = "ispin_set";
-    private final String IS_USER_RESTRICTED = "is_user_restricted";
-    public final String LOCK_APP_OPTIONS = "lock_app";
+
 
     String UID;
     private boolean turn = false;
@@ -247,10 +246,12 @@ public class LogInActivity extends AppCompatActivity {
                                                         // whenever data at this location is updated.
                                                         String aes_iv = dataSnapshot.child("aes_iv").getValue(String.class);
                                                         String aes_key = dataSnapshot.child("aes_key").getValue(String.class);
+                                                        String public_uid = dataSnapshot.child("public_uid").getValue(String.class);
 
                                                         SharedPreferences.Editor editor1 = sharedPreferences.edit();
                                                         editor1.putString(AES_KEY, aes_key);
                                                         editor1.putString(AES_IV, aes_iv);
+                                                        editor1.putString(PUBLIC_UID,public_uid);
                                                         editor1.putBoolean(IS_LOGIN, true);
                                                         editor1.putString(IS_FIRST_TIME, "1");
                                                         editor1.apply();
@@ -321,10 +322,11 @@ public class LogInActivity extends AppCompatActivity {
     }
 
     private void createEntryOnDatabase(FirebaseUser user) {
-        String name, email, uid;
-        name = user.getDisplayName();
+        String publicUname, email, private_uid, publicUid;
+        publicUname = user.getDisplayName();
         email = user.getEmail();
-        uid = user.getUid();
+        private_uid = user.getUid();
+        publicUid = PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==";
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         myRef = firebaseDatabase.getReference("signupdata");
@@ -336,15 +338,26 @@ public class LogInActivity extends AppCompatActivity {
         String encryptedName, encryptedEmail;
         try {
             Toast.makeText(LogInActivity.this, "Creating Data  Entry on DB", Toast.LENGTH_SHORT).show();
-            encryptedName = aes.encrypt(name);
+            encryptedName = aes.encrypt(publicUname);
             encryptedEmail = aes.encrypt(email);
-            UserHelperClass userHelperClass = new UserHelperClass(encryptedName, encryptedEmail, encryptionKey, encryptionIv, uid);
+            UserHelperClass userHelperClass = new UserHelperClass(encryptedName, encryptedEmail, encryptionKey, encryptionIv, private_uid, publicUid);
 
 
-            myRef.child(uid).setValue(userHelperClass);
+            myRef.child(private_uid).setValue(userHelperClass)
+            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                @Override
+                public void onSuccess(Void unused) {
+                    UserListModelClass userListModel = new UserListModelClass(publicUid, publicUname);
+                    DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference();
+                    referenceSender.child("messageUserList").child(publicUid)
+                            .setValue(userListModel);
+                }
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
 
     }
 
@@ -384,22 +397,6 @@ public class LogInActivity extends AppCompatActivity {
 
     public String getREQUEST_CODE_NAME() {
         return REQUEST_CODE_NAME;
-    }
-
-    public String getIS_AUTHENTICATED() {
-        return IS_AUTHENTICATED;
-    }
-
-    public String getMASTER_PIN() {
-        return MASTER_PIN;
-    }
-
-    public String getIS_PIN_SET() {
-        return IS_PIN_SET;
-    }
-
-    public String getIS_USER_RESTRICTED() {
-        return IS_USER_RESTRICTED;
     }
 
 

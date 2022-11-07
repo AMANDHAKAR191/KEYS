@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
-
     <application
         android:allowBackup="false"
         android:icon="@mipmap/keys_privacy_louncher_icon_new"
@@ -20,6 +19,10 @@
         android:roundIcon="@mipmap/keys_privacy_louncher_icon_new_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.KEYS">
+        <activity
+            android:name=".aman.messages.ChatActivity"
+            android:exported="false" />
+
         <service
             android:name=".aman.service.BasicService"
             android:exported="true"
@@ -28,23 +31,17 @@
             <intent-filter>
                 <action android:name="android.service.autofill.AutofillService" />
             </intent-filter>
-        </service>
-<!--        <service android:name=".aman.service.MyBackgroundService"></service>-->
-        <service android:name=".aman.service.MyForegroundService"></service>
-
-<!--        <receiver-->
-<!--            android:name=".aman.service.MyBroadcastReceiver"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.BOOT_COMPLETED" />-->
-<!--            </intent-filter>-->
-<!--        </receiver>-->
-
+        </service> <!-- <service android:name=".aman.service.MyBackgroundService"></service> -->
+        <service android:name=".aman.service.MyForegroundService" /> <!-- <receiver -->
+        <!-- android:name=".aman.service.MyBroadcastReceiver" -->
+        <!-- android:exported="true"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.BOOT_COMPLETED" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
         <activity
             android:name=".aman.settings.TutorialActivity"
             android:exported="false" />
-
-
         <activity
             android:name=".aman.authentication.BiometricActivity"
             android:exported="false" />
@@ -67,8 +64,7 @@
         <activity
             android:name=".aman.signin_login.LogInActivity"
             android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <!-- <activity -->
+            android:windowSoftInputMode="adjustResize" /> <!-- <activity -->
         <!-- android:name=".aman.app.home.HomeActivity" -->
         <!-- android:exported="false" -->
         <!-- android:windowSoftInputMode="adjustPan" /> -->
@@ -81,7 +77,8 @@
         <activity
             android:name=".aman.base.TabLayoutActivity"
             android:exported="false"
-            android:theme="@style/Theme.KEYS" />
+            android:theme="@style/Theme.KEYS"
+            android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name=".aman.settings.AppInfoActivity"
             android:exported="false" />

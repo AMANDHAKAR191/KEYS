@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.PinLockActivity;
+import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.service.MyForegroundService;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -42,12 +42,13 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class SettingFragment extends Fragment {
 
     private static final String TAG = "SettingFragment";
+
     Context context;
     Activity activity;
 
     TextView tvAppInfo, tvContactUs, tvPrivacyPolicy, tvTermsAndConditions,
             tvProfileName, tvProfileEmail, tvChangePin, tvDevicesList, tvTutorial,
-            tvStartForegroundService, tvStopForegroundService, tvLockApp, tvLockAppResult;
+            tvLockApp, tvLockAppResult;
     ImageView imgBack;
     LinearLayout llDeviceList, llLockApp;
     TextView tvDevice1, tvDevice2, tvDevice3;
@@ -59,7 +60,11 @@ public class SettingFragment extends Fragment {
     private String s1;
     int checkedItem = 0;
     LogInActivity logInActivity = new LogInActivity();
+    PinLockActivity pinLockActivity = new PinLockActivity();
+    TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
     Intent serviceIntent;
+    String currentUserName, currentUserEmail;
+
 
 
     public SettingFragment(Context context, Activity activity) {
@@ -86,8 +91,6 @@ public class SettingFragment extends Fragment {
         tvChangePin = view.findViewById(R.id.tv_use_pin);
         tvLockApp = view.findViewById(R.id.tv_lock_app);
         tvLockAppResult = view.findViewById(R.id.tv_lock_app_result);
-        tvStartForegroundService = view.findViewById(R.id.tv_start_foreground_Service);
-        tvStopForegroundService = view.findViewById(R.id.tv_stop_foreground_Service);
         tvDevicesList = view.findViewById(R.id.tv_devices_list);
         llDeviceList = view.findViewById(R.id.ll_device_list);
         llLockApp = view.findViewById(R.id.ll_lock_app);
@@ -100,9 +103,11 @@ public class SettingFragment extends Fragment {
         tvProfileName = view.findViewById(R.id.tv_profile_name);
         tvProfileEmail = view.findViewById(R.id.tv_profile_email);
         tvTutorial = view.findViewById(R.id.tv_tutorial);
-        checkedItem = sharedPreferences.getInt(logInActivity.LOCK_APP_OPTIONS,0);
+        checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS,0);
         String[] Item = {"Immediately", "After 1 minute", "Never"};
         tvLockAppResult.setText(Item[checkedItem]);
+        currentUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
 
         tvAppInfo.setOnClickListener(new View.OnClickListener() {
@@ -138,7 +143,7 @@ public class SettingFragment extends Fragment {
         tvChangePin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean ispin_set = sharedPreferences.getBoolean(logInActivity.getIS_PIN_SET(), false);
+                boolean ispin_set = sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(), false);
                 Intent intent = new Intent(context, PinLockActivity.class);
                 intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "changepin");
                 intent.putExtra("title", "Enter Old Pin");
@@ -163,10 +168,10 @@ public class SettingFragment extends Fragment {
                                 Log.d(TAG, "=> " + result);
                                 tvLockAppResult.setText(Item[result]);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putInt(logInActivity.LOCK_APP_OPTIONS,result);
+                                editor.putInt(tabLayoutActivity.LOCK_APP_OPTIONS,result);
                                 editor.apply();
 
-                                checkedItem = sharedPreferences.getInt(logInActivity.LOCK_APP_OPTIONS,0);
+                                checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS,0);
                                 dialogInterface.dismiss();
                             }
                         });
@@ -175,25 +180,25 @@ public class SettingFragment extends Fragment {
 //                optionsDialog.show(requireActivity().getSupportFragmentManager(), "lockAppOptionsDialog");
             }
         });
-        tvStartForegroundService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!isForegroundServiceRunning()) {
-                    Toast.makeText(context, "MyForegroundService Starting...", Toast.LENGTH_SHORT).show();
-//                    activity.startForegroundService(serviceIntent);
-                    activity.startService(serviceIntent);
-                }
-            }
-        });
-        tvStopForegroundService.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (isForegroundServiceRunning()) {
-                    Toast.makeText(context, "MyForegroundService Stopping...", Toast.LENGTH_SHORT).show();
-                    activity.stopService(serviceIntent);
-                }
-            }
-        });
+//        tvStartForegroundService.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (!isForegroundServiceRunning()) {
+//                    Toast.makeText(context, "MyForegroundService Starting...", Toast.LENGTH_SHORT).show();
+////                    activity.startForegroundService(serviceIntent);
+//                    activity.startService(serviceIntent);
+//                }
+//            }
+//        });
+//        tvStopForegroundService.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (isForegroundServiceRunning()) {
+//                    Toast.makeText(context, "MyForegroundService Stopping...", Toast.LENGTH_SHORT).show();
+//                    activity.stopService(serviceIntent);
+//                }
+//            }
+//        });
         tvDevicesList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -240,10 +245,8 @@ public class SettingFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
         Uri currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getPhotoUrl();
-        String currentUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        String currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+
         if (currentUser == null) {
             // No user is signed in
         } else {

@@ -56,33 +56,11 @@ public class SplashActivity extends AppCompatActivity {
         showInterstialAd();
         showRewardedAd();
 
-//        if (!isForegroundServiceRunning()) {
-//            Toast.makeText(getApplicationContext(), "MyForegroundService Starting...", Toast.LENGTH_SHORT).show();
-//            Intent serviceIntent = new Intent(getApplicationContext(), MyForegroundService.class);
-//            startForegroundService(serviceIntent);
-//        }
-
 
         isForeground = true;
         Intent i = new Intent(SplashActivity.this, LogInActivity.class);
         startActivity(i);
         finish();
-//        new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                imageView.setVisibility(View.INVISIBLE);
-//                imageView1.setVisibility(View.VISIBLE);
-//                new Handler().postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        isForeground = true;
-//                        Intent i = new Intent(SplashActivity.this, LogInActivity.class);
-//                        startActivity(i);
-//                        finish();
-//                    }
-//                }, 1000);
-//            }
-//        }, 1000);
 
     }
 
@@ -177,18 +155,6 @@ public class SplashActivity extends AppCompatActivity {
                 build();
         shortcutManager.setDynamicShortcuts(Arrays.asList(shortcutInfo));
     }
-
-//    public boolean isForegroundServiceRunning() {
-//        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-//        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
-//            if (MyForegroundService.class.getName().equals(serviceInfo.service.getClassName())) {
-//                return true;
-//            }
-//        }
-//
-//        return false;
-//    }
-
 
 
 }

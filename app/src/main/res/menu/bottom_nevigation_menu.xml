@@ -4,6 +4,10 @@
         android:id="@+id/menu_home"
         android:enabled="true"
         android:icon="@drawable/home" />
+    <item android:title="Chat"
+        android:id="@+id/menu_chat"
+        android:enabled="true"
+        android:icon="@drawable/chat" />
     <item android:title="@string/Notes"
         android:id="@+id/menu_notes"
         android:icon="@drawable/notes"
