@@ -74,6 +74,7 @@
         <entry key="..\:/KEYS/app/src/main/res/layout-land/layout_reciver_message.xml" value="0.1513157894736842" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/parent_cardview_layout.xml" value="0.309375" />
         <entry key="..\:/KEYS/app/src/main/res/layout-land/simple_service_auth_activity.xml" value="0.283984375" />
+        <entry key="..\:/KEYS/app/src/main/res/layout-notnight/layout_sender_message.xml" value="0.15526315789473685" />
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_add_notes.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_add_password_data.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout-sw600dp/activity_app_info.xml" value="0.1875" />
@@ -95,6 +96,7 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_ask_email.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_base.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_biometric.xml" value="0.17552083333333332" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_biometric_authentication.xml" value="0.15789473684210525" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_change_password.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_chat.xml" value="0.176" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_email_suggestion.xml" value="0.1875" />

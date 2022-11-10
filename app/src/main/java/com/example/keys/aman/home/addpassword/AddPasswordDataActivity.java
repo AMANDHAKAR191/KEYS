@@ -29,10 +29,10 @@ import com.example.keys.R;
 import com.example.keys.aman.AES;
 import com.example.keys.aman.PrograceBar;
 import com.example.keys.aman.SplashActivity;
+import com.example.keys.aman.authentication.BiometricAuthActivity;
 import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.home.HomeFragment;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
-import com.example.keys.aman.authentication.BiometricActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -435,7 +435,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (SplashActivity.isBackground){
-            Intent intent = new Intent(AddPasswordDataActivity.this, BiometricActivity.class);
+            Intent intent = new Intent(AddPasswordDataActivity.this, BiometricAuthActivity.class);
             intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
             startActivity(intent);
         }

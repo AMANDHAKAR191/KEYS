@@ -11,6 +11,15 @@
           </Key>
         </deviceKey>
       </Target>
+      <Target>
+        <type value="RUNNING_DEVICE_TARGET" />
+        <deviceKey>
+          <Key>
+            <type value="SERIAL_NUMBER" />
+            <value value="R52N60DLW1P" />
+          </Key>
+        </deviceKey>
+      </Target>
     </runningDeviceTargetsSelectedWithDialog>
   </component>
 </project>

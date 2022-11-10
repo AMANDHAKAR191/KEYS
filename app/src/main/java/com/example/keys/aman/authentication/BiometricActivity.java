@@ -84,7 +84,7 @@ public class BiometricActivity extends AppCompatActivity{
                     intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
                     intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent3.putExtra("title", "Set Pin");
-                    startActivity(intent);
+                    startActivity(intent3);
                 }
                 finish();
             } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.USE_FINGERPRINT) != PackageManager.PERMISSION_GRANTED) {
@@ -105,7 +105,7 @@ public class BiometricActivity extends AppCompatActivity{
                     intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
                     intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent3.putExtra("title", "Set Pin");
-                    startActivity(intent);
+                    startActivity(intent3);
                 }
                 finish();
             } else if (!hasEnrolledFingerprints) {

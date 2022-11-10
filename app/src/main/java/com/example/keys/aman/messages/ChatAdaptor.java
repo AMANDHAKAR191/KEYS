@@ -40,7 +40,6 @@ public class ChatAdaptor extends RecyclerView.Adapter{
         this.dataHolder = dataHolder;
         this.context = context;
         this.activity = activity;
-        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
     }
 
     @NonNull
@@ -57,6 +56,7 @@ public class ChatAdaptor extends RecyclerView.Adapter{
 
     @Override
     public int getItemViewType(int position) {
+        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
         if (dataHolder.get(position).getPublicUid().equals(sharedPreferences.getString(logInActivity.PUBLIC_UID,null))){
             return SENDER_VIEW_TYPE;
         }

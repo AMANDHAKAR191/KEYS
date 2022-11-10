@@ -37,7 +37,7 @@ public class AppLockCounterClass implements AppLockCounter {
                 public void onFinish() {
                     Log.d(TAG, "Counter Finished");
                     if (SplashActivity.isBackground) {
-                        Intent intent = new Intent(context, BiometricActivity.class);
+                        Intent intent = new Intent(context, BiometricAuthActivity.class);
                         intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
                         activity.startActivity(intent);
                     }
@@ -54,7 +54,7 @@ public class AppLockCounterClass implements AppLockCounter {
         switch (checkedItem) {
             case 0:
                 if (SplashActivity.isBackground) {
-                    Intent intent = new Intent(context, BiometricActivity.class);
+                    Intent intent = new Intent(context, BiometricAuthActivity.class);
                     intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
                     activity.startActivity(intent);
                 }

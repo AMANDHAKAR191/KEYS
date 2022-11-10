@@ -216,7 +216,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                         fabAddContactEmail.setVisibility(View.INVISIBLE);
                         break;
                     case 2:
-                        fabAddNote.setVisibility(View.INVISIBLE);
+                        exFABtn_notes.setVisibility(View.INVISIBLE);
                         break;
                     case 3:
                         llToolbar.setVisibility(View.VISIBLE);

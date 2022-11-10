@@ -20,6 +20,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KEYS">
         <activity
+            android:name=".aman.authentication.BiometricAuthActivity"
+            android:exported="false" />
+        <activity
             android:name=".aman.messages.ChatActivity"
             android:exported="false" />
 

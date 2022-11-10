@@ -22,7 +22,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
-import com.example.keys.aman.authentication.BiometricActivity;
+import com.example.keys.aman.authentication.BiometricAuthActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
@@ -339,7 +339,7 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (SplashActivity.isBackground) {
-            Intent intent = new Intent(PasswordGeneratorActivity.this, BiometricActivity.class);
+            Intent intent = new Intent(PasswordGeneratorActivity.this, BiometricAuthActivity.class);
             intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
             startActivity(intent);
         }

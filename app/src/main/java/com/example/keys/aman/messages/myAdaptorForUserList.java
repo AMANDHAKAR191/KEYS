@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
+import com.example.keys.aman.SplashActivity;
 
 import java.util.ArrayList;
 
@@ -39,11 +40,13 @@ public class myAdaptorForUserList extends RecyclerView.Adapter<myAdaptorForUserL
     @Override
     public void onBindViewHolder(@NonNull myViewHolder holder, int position) {
 
-        holder.tv_public_uid.setText(dataHolder.get(position).getPublicUname());
+        holder.tvPublicUid.setText(dataHolder.get(position).getPublicUid());
+        holder.tvPublicUname.setText(dataHolder.get(position).getPublicUname());
 
-        holder.tv_public_uid.setOnClickListener(new View.OnClickListener() {
+        holder.tvPublicUid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SplashActivity.isForeground = true;
                 Intent intent = new Intent(context,ChatActivity.class);
                 intent.putExtra("receiver_public_uid", dataHolder.get(position).getPublicUid());
                 intent.putExtra("receiver_public_uname", dataHolder.get(position).getPublicUname());
@@ -62,11 +65,12 @@ public class myAdaptorForUserList extends RecyclerView.Adapter<myAdaptorForUserL
 
     public class myViewHolder extends RecyclerView.ViewHolder {
 
-        TextView tv_public_uid;
+        TextView tvPublicUid, tvPublicUname;
 
         public myViewHolder(@NonNull View itemView) {
             super(itemView);
-            tv_public_uid = itemView.findViewById(R.id.tv_public_uid);
+            tvPublicUid = itemView.findViewById(R.id.tv_public_uid);
+            tvPublicUname = itemView.findViewById(R.id.tv_public_uname);
         }
     }
 }

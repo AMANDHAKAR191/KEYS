@@ -1,6 +1,7 @@
 package com.example.keys.aman.notes;
 
 import static com.example.keys.aman.SplashActivity.mRewardedAd;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,8 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
-import com.example.keys.aman.authentication.BiometricActivity;
 import com.example.keys.aman.SplashActivity;
+import com.example.keys.aman.authentication.BiometricAuthActivity;
 import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
@@ -152,7 +153,7 @@ public class SecretNotesActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (SplashActivity.isBackground){
-            Intent intent = new Intent(SecretNotesActivity.this, BiometricActivity.class);
+            Intent intent = new Intent(SecretNotesActivity.this, BiometricAuthActivity.class);
             intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
             startActivity(intent);
         }

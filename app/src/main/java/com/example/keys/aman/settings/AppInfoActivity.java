@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
-import com.example.keys.aman.authentication.BiometricActivity;
+import com.example.keys.aman.authentication.BiometricAuthActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 
 public class AppInfoActivity extends AppCompatActivity {
@@ -61,7 +61,7 @@ public class AppInfoActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (SplashActivity.isBackground){
-            Intent intent = new Intent(AppInfoActivity.this, BiometricActivity.class);
+            Intent intent = new Intent(AppInfoActivity.this, BiometricAuthActivity.class);
             intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
             startActivity(intent);
         }

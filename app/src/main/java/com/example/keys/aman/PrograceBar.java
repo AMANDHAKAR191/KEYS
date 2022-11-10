@@ -3,6 +3,7 @@ package com.example.keys.aman;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.widget.TextView;
 
 import com.example.keys.R;
 
@@ -12,14 +13,17 @@ import com.example.keys.R;
 public class PrograceBar {
     final Activity activity;
     AlertDialog dialog;
+    TextView tvPrograceBar;
 
     public PrograceBar(Activity thisActivity){
         activity = thisActivity;
     }
     public void showDialog(){
+//        View view = LayoutInflater.from(activity.getParent()).inflate(R.layout.prograce_bar_layout,null);
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         LayoutInflater inflater = activity.getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.prograce_bar_layout,null));
+//        builder.setView(view);
         dialog = builder.create();
         dialog.show();
     }

@@ -28,6 +28,7 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
+import com.example.keys.aman.authentication.BiometricAuthActivity;
 import com.example.keys.aman.authentication.PinLockActivity;
 import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.service.MyForegroundService;
@@ -171,7 +172,7 @@ public class SettingFragment extends Fragment {
                                 editor.putInt(tabLayoutActivity.LOCK_APP_OPTIONS,result);
                                 editor.apply();
 
-                                checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS,0);
+                                checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS,2);
                                 dialogInterface.dismiss();
                             }
                         });
@@ -202,9 +203,10 @@ public class SettingFragment extends Fragment {
         tvDevicesList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                llDeviceList.setVisibility(View.VISIBLE);
-                tvDevice2.setVisibility(View.VISIBLE);
-                tvDevice3.setVisibility(View.VISIBLE);
+//                llDeviceList.setVisibility(View.VISIBLE);
+//                tvDevice2.setVisibility(View.VISIBLE);
+//                tvDevice3.setVisibility(View.VISIBLE);
+                startActivity(new Intent(context, BiometricAuthActivity.class));
             }
         });
         btnLogout.setOnClickListener(new View.OnClickListener() {
