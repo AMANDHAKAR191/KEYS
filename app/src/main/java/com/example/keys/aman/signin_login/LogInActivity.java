@@ -443,7 +443,7 @@ public class LogInActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-                            UserListModelClass userListModel = new UserListModelClass(publicUid, publicUname);
+                            UserListModelClass userListModel = new UserListModelClass(publicUid, publicUname, false);
                             DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference();
                             referenceSender.child("messageUserList").child(publicUid)
                                     .setValue(userListModel)

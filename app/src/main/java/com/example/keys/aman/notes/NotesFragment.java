@@ -76,14 +76,19 @@ public class NotesFragment extends Fragment {
         recyclerViewUnpinned.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
             public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-                if (i3 > 30) {
-                    recyclerViewPinned.setVisibility(View.VISIBLE);
-                    tvPinned.setVisibility(View.VISIBLE);
-                } else if (i3 < -30) {
-                    recyclerViewPinned.setVisibility(View.GONE);
-                    tvPinned.setVisibility(View.GONE);
 
-                }
+//                System.out.println(recyclerViewUnpinned.computeVerticalScrollExtent());
+//                System.out.println(recyclerViewUnpinned.computeHorizontalScrollOffset());
+//                System.out.println(recyclerViewUnpinned.computeVerticalScrollRange());
+
+//                if (i3 > 30) {
+//                    recyclerViewPinned.setVisibility(View.VISIBLE);
+//                    tvPinned.setVisibility(View.VISIBLE);
+//                } else if (i3 < -30) {
+//                    recyclerViewPinned.setVisibility(View.GONE);
+//                    tvPinned.setVisibility(View.GONE);
+//
+//                }
             }
         });
 

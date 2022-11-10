@@ -2,13 +2,15 @@ package com.example.keys.aman.messages;
 
 public class UserListModelClass {
     String publicUid, publicUname;
+    boolean knowUser;
 
     public UserListModelClass() {
     }
 
-    public UserListModelClass(String publicUid, String publicUname) {
+    public UserListModelClass(String publicUid, String publicUname, boolean knowUser) {
         this.publicUid = publicUid;
         this.publicUname = publicUname;
+        this.knowUser = knowUser;
     }
 
     public String getPublicUid() {
@@ -25,5 +27,13 @@ public class UserListModelClass {
 
     public void setPublicUname(String publicUname) {
         this.publicUname = publicUname;
+    }
+
+    public boolean isKnowUser() {
+        return knowUser;
+    }
+
+    public void setKnowUser(boolean knowUser) {
+        this.knowUser = knowUser;
     }
 }
