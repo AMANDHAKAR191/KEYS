@@ -102,11 +102,13 @@ public class ChatAdaptor extends RecyclerView.Adapter{
 
     public class SenderViewHolder extends RecyclerView.ViewHolder{
 
-        TextView tvSenderMessage, tvSenderTimeStamp;
+        TextView tvSenderMessage, tvSenderTimeStamp, tvSenderMessageStatus;
         public SenderViewHolder(@NonNull View itemView) {
             super(itemView);
             tvSenderMessage = itemView.findViewById(R.id.tv_sender_message);
             tvSenderTimeStamp = itemView.findViewById(R.id.tv_sender_time_stamp);
+            tvSenderMessageStatus = itemView.findViewById(R.id.tv_sender_message_status);
         }
     }
+
 }

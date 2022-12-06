@@ -37,6 +37,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.keys.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Collection;
 import java.util.List;
@@ -68,6 +74,7 @@ public final class BasicService extends AutofillService {
 
         // Find autofillable fields
         AssistStructure structure = getLatestAssistStructure(request);
+        Log.d(TAG, "structure " + structure.getActivityComponent() + "\n+" + structure.describeContents());
         Map<String, AutofillId> fields = getAutofillableFields(structure);
         Log.d(TAG, "autofillable fields:" + fields);
 
@@ -236,5 +243,22 @@ public final class BasicService extends AutofillService {
             ViewNode childNode = viewNode.getChildAt(i);
             traverseNode(childNode);
         }
+    }
+    
+    private void loadDataFromDB(String websiteName){
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        databaseReference.orderByChild("addWebsite_name").equalTo(websiteName)
+                .addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 }

@@ -19,7 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
-import com.example.keys.aman.authentication.BiometricAuthActivity;
+import com.example.keys.aman.authentication.AppLockCounterClass;
+import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
@@ -41,6 +42,10 @@ public class SecretNotesActivity extends AppCompatActivity {
     TextView tvNote;
     private String uid;
     LogInActivity logInActivity = new LogInActivity();
+    TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
+    //todo 2 object calling of AppLockCounterClass
+    AppLockCounterClass appLockCounterClass = new AppLockCounterClass(SecretNotesActivity.this, SecretNotesActivity.this);
+
 
 
     @Override
@@ -49,6 +54,7 @@ public class SecretNotesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_secret_notes);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
 
         //Hooks
@@ -71,7 +77,7 @@ public class SecretNotesActivity extends AppCompatActivity {
             public void run() {
                 if (mRewardedAd != null) {
                     Activity activityContext = SecretNotesActivity.this;
-                    SplashActivity.isForeground = true;
+//                    SplashActivity.isForeground = true;
                     mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
                         @Override
                         public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
@@ -145,6 +151,7 @@ public class SecretNotesActivity extends AppCompatActivity {
     }
 
     public void goCancel(View view) {
+        //todo 4 if app is going to another activity make isForeground = true
         SplashActivity.isForeground = true;
         finish();
     }
@@ -152,27 +159,31 @@ public class SecretNotesActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (SplashActivity.isBackground){
-            Intent intent = new Intent(SecretNotesActivity.this, BiometricAuthActivity.class);
-            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
-            startActivity(intent);
-        }
-        if (SplashActivity.isForeground){
-            SplashActivity.isForeground = false;
-        }
+        //todo 9 onStartOperation, it will check app is
+        // coming from foreground or background.
+        appLockCounterClass.onStartOperation();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (!SplashActivity.isForeground){
-            SplashActivity.isBackground = true;
-        }
+        //todo 10 onPauseOperation, it will check app is
+        // going to foreground or background.
+        // if UI component made isForeground = true then it
+        // is going to another activity then this method will make
+        // isForeground = false, so user will not be verified.
+        // if UI component is not clicked then it
+        // is going in background then this method will make
+        // isBackground = true and timer will started,
+        // at time of return, user will be verified.
+        appLockCounterClass.checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS, 0);
+        appLockCounterClass.onPauseOperation();
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        //todo 11 app is going to close no to do anything
         SplashActivity.isForeground = true;
         finish();
     }

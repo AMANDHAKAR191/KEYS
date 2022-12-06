@@ -22,13 +22,18 @@ import com.google.firebase.database.ValueEventListener;
 public class AddContactEmailDialogFragment extends DialogFragment {
 
     TextInputLayout tilAddUser;
+    String senderUid;
+
+    public AddContactEmailDialogFragment(String senderUid) {
+        this.senderUid = senderUid;
+    }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
 
-        View view = inflater.inflate(R.layout.fragment_dialog_add_contact_email,container,false);
+        View view = inflater.inflate(R.layout.fragment_dialog_add_contact_email, container, false);
         tilAddUser = view.findViewById(R.id.til_add_user);
         tilAddUser.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,16 +45,25 @@ public class AddContactEmailDialogFragment extends DialogFragment {
                 checkUser.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot.exists()){
-                            System.out.println("User Found");
-                            reference.child(userName).child("knowUser").setValue(true)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    dismiss();
-                                }
-                            });
-                        }else {
+                        if (dataSnapshot.exists()) {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                System.out.println("User Found");
+                                UserListModelClass userListModel = ds.getValue(UserListModelClass.class);
+                                String tempUserId = userListModel.getPublicUid();
+                                String tempUserName = userListModel.getPublicUname();
+
+                                UserPersonalChatList personalChatList = new UserPersonalChatList(tempUserId, tempUserName,true, ".");
+                                System.out.println("senderUid: " + senderUid);
+                                reference.child(senderUid).child("userPersonalChatList").child(tempUserId).setValue(personalChatList)
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void unused) {
+                                                System.out.println("Changed..");
+                                                dismiss();
+                                            }
+                                        });
+                            }
+                        } else {
                             tilAddUser.setError("No User Found!");
                         }
                     }

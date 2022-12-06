@@ -8,7 +8,7 @@ import android.util.Log;
 
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
-
+// todo 1 main Operation
 public class AppLockCounterClass implements AppLockCounter {
 
     private static final String TAG = "AppLockCounterClass";
@@ -80,12 +80,14 @@ public class AppLockCounterClass implements AppLockCounter {
         switch (checkedItem) {
             case 0:
                 if (!SplashActivity.isForeground) {
+                    //todo 1.1 Here app is going in background
                     SplashActivity.isBackground = true;
                 }
                 break;
             case 1:
                 Log.d(TAG, "SplashActivity.isForeground=? " + SplashActivity.isForeground);
                 if (!SplashActivity.isForeground) {
+                    //todo 1.1 Here app is going in background
                     SplashActivity.isBackground = true;
                     if (countDownTimer == null) {
                         initializeCounter();
@@ -93,6 +95,11 @@ public class AppLockCounterClass implements AppLockCounter {
                         countDownTimer.start();
                     }
                 } else {
+                    //todo 1.1 Here app is going in foreground,
+                    // Ui component will make isForeground = true
+                    // for going to another activity, this only for
+                    // escaping from above if condition. so here we
+                    // make this to again false
                     SplashActivity.isForeground = false;
                 }
                 Log.d(TAG, "SplashActivity.isForeground=?? " + SplashActivity.isForeground);

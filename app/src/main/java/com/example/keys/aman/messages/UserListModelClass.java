@@ -2,38 +2,45 @@ package com.example.keys.aman.messages;
 
 public class UserListModelClass {
     String publicUid, publicUname;
-    boolean knowUser;
+    boolean profileAccess;
 
     public UserListModelClass() {
     }
 
-    public UserListModelClass(String publicUid, String publicUname, boolean knowUser) {
+    public UserListModelClass(String publicUid, String publicUname, boolean profileAccess) {
         this.publicUid = publicUid;
         this.publicUname = publicUname;
-        this.knowUser = knowUser;
+        this.profileAccess = profileAccess;
     }
+
+    //Getter
 
     public String getPublicUid() {
         return publicUid;
-    }
-
-    public void setPublicUid(String publicUid) {
-        this.publicUid = publicUid;
     }
 
     public String getPublicUname() {
         return publicUname;
     }
 
+    public boolean isProfileAccess() {
+        return profileAccess;
+    }
+
+
+    //Setter
+
+
+    public void setPublicUid(String publicUid) {
+        this.publicUid = publicUid;
+    }
+
     public void setPublicUname(String publicUname) {
         this.publicUname = publicUname;
     }
 
-    public boolean isKnowUser() {
-        return knowUser;
+    public void setProfileAccess(boolean profileAccess) {
+        this.profileAccess = profileAccess;
     }
 
-    public void setKnowUser(boolean knowUser) {
-        this.knowUser = knowUser;
-    }
 }

@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.keys.R;
+import com.example.keys.aman.home.addpassword.AddPasswordDataHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
@@ -58,10 +60,10 @@ public class HomeFragment extends Fragment {
     public static SwipeRefreshLayout swipeRefreshLayout;
     SharedPreferences sharedPreferences;
     public static DatabaseReference databaseReference;
-    public static parentMyAdaptor adaptor;
-    //    ArrayList<addDataHelperClass> dataholder;
+    public static passwordAdaptor adaptor;
+    ArrayList<AddPasswordDataHelperClass> dataholder;
 
-    ArrayList<String> parentdataholder;
+    //    ArrayList<String> parentdataholder;
     String uid;
     LogInActivity logInActivity = new LogInActivity();
 
@@ -83,27 +85,28 @@ public class HomeFragment extends Fragment {
 
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String s) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String s) {
-//                System.out.println("onQueryTextChange...");
-//                adaptor.getFilter().filter(s);
-//                System.out.println();
-//                adaptor.notifyDataSetChanged();
-//
-//                return false;
-//            }
-//        });
+
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                adaptor.getFilter().filter(s);
+                System.out.println();
+                adaptor.notifyDataSetChanged();
+
+                return false;
+            }
+        });
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                parentdataholder.clear();
+                dataholder.clear();
                 recyclerviewsetdata();
                 swipeRefreshLayout.setRefreshing(false);
             }
@@ -138,41 +141,28 @@ public class HomeFragment extends Fragment {
 
 
     public void recyclerviewsetdata() {
+        System.out.println("in recyclerviewsetdata()");
 
         databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata")
                 .child(uid);
         recview.setLayoutManager(new LinearLayoutManager(context));
 
-//        dataholder = new ArrayList<>();
-        parentdataholder = new ArrayList<>();
-        adaptor = new parentMyAdaptor(parentdataholder, context, activity) {
-            @Override
-            public void resetAdaptor() {
-                dataholder.clear();
-                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
-            }
+        dataholder = new ArrayList<>();
 
-            @Override
-            public void showCardViewFragment1(String currentDate, String tempLogin, String tempPassword,
-                                             String dWebsiteName, String dWebsiteLink) {
-
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fl_container, new ShowCardViewDataActivity(context, activity, currentDate, tempLogin,
-                        tempPassword, dWebsiteName, dWebsiteLink));
-                fragmentTransaction.commit();
-            }
-
-        };
-        recview.setAdapter(adaptor);
         recview.hasFixedSize();
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
+                    System.out.println(dataSnapshot);
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        parentdataholder.add(ds.getKey());
+                        System.out.println("\t" + ds);
+                        for (DataSnapshot ds1 : ds.getChildren()) {
+                            System.out.println("\t\t" + ds1);
+                            AddPasswordDataHelperClass data = ds1.getValue(AddPasswordDataHelperClass.class);
+                            dataholder.add(data);
+                        }
                     }
                     adaptor.notifyDataSetChanged();
 
@@ -186,5 +176,26 @@ public class HomeFragment extends Fragment {
 
             }
         });
+        adaptor = new passwordAdaptor(dataholder, context, activity) {
+            @Override
+            public void resetAdaptor() {
+                dataholder.clear();
+                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void showCardViewFragment(String currentDate, String tempLogin, String tempPassword,
+                                             String dWebsiteName, String dWebsiteLink) {
+
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fl_container, new ShowCardViewDataActivity(context, activity, currentDate, tempLogin,
+                        tempPassword, dWebsiteName, dWebsiteLink));
+                fragmentTransaction.commit();
+            }
+
+        };
+        recview.setAdapter(adaptor);
+        adaptor.notifyDataSetChanged();
     }
 }

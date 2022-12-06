@@ -56,6 +56,15 @@ public class SplashActivity extends AppCompatActivity {
         showInterstialAd();
         showRewardedAd();
 
+//        Intent serviceIntent = new Intent(SplashActivity.this, MyForegroundService.class);
+//        startForegroundService(serviceIntent);
+//        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
+//            if (MyForegroundService.class.getName().equals(serviceInfo.service.getClassName())) {
+//
+//            }
+//        }
+
 
         isForeground = true;
         Intent i = new Intent(SplashActivity.this, LogInActivity.class);

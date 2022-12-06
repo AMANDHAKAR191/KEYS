@@ -3,7 +3,6 @@ package com.example.keys.aman.settings;
 import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,7 +30,6 @@ import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.BiometricAuthActivity;
 import com.example.keys.aman.authentication.PinLockActivity;
 import com.example.keys.aman.base.TabLayoutActivity;
-import com.example.keys.aman.service.MyForegroundService;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
@@ -83,7 +81,7 @@ public class SettingFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_setting, container, false);
 
         sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
-        serviceIntent = new Intent(context, MyForegroundService.class);
+//        serviceIntent = new Intent(context, MyForegroundService.class);
         /*---------------Hooks--------------*/
         tvAppInfo = view.findViewById(R.id.tv_app_info);
         tvContactUs = view.findViewById(R.id.tv_contectus);
@@ -110,40 +108,27 @@ public class SettingFragment extends Fragment {
         currentUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         currentUserEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
-
-        tvAppInfo.setOnClickListener(new View.OnClickListener() {
+        btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
                 SplashActivity.isForeground = true;
-                startActivity(new Intent(context, AppInfoActivity.class));
-                activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-            }
-        });
-        tvContactUs.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ContactUsFragment contactUs = new ContactUsFragment();
-                contactUs.show(requireActivity().getSupportFragmentManager(), "contact_us");
-            }
+                FirebaseAuth.getInstance().signOut();
 
-        });
-        tvPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent open_privacy_policy = new Intent(Intent.ACTION_VIEW, Uri.parse("https://amandhakar.blogspot.com/2022/02/privacy-policy-keys.html"));
-                startActivity(open_privacy_policy);
+                SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                editor1.putBoolean(logInActivity.getIS_LOGIN(), false);
+                editor1.apply();
+                System.out.println(sharedPreferences.getBoolean(logInActivity.getIS_LOGIN(), false));
+
+                Intent intent = new Intent(context, LogInActivity.class);
+                startActivity(intent);
             }
         });
-        tvTermsAndConditions.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent open_terms_conditions = new Intent(Intent.ACTION_VIEW, Uri.parse("https://amandhakar.blogspot.com/2022/02/terms-conditions-keys.html"));
-                startActivity(open_terms_conditions);
-            }
-        });
+
         tvChangePin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //todo 4 if app is going to another activity make isForeground = true
+                SplashActivity.isForeground = true;
                 boolean ispin_set = sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(), false);
                 Intent intent = new Intent(context, PinLockActivity.class);
                 intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "changepin");
@@ -181,6 +166,54 @@ public class SettingFragment extends Fragment {
 //                optionsDialog.show(requireActivity().getSupportFragmentManager(), "lockAppOptionsDialog");
             }
         });
+        tvDevicesList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                llDeviceList.setVisibility(View.VISIBLE);
+//                tvDevice2.setVisibility(View.VISIBLE);
+//                tvDevice3.setVisibility(View.VISIBLE);
+                startActivity(new Intent(context, BiometricAuthActivity.class));
+            }
+        });
+        tvTutorial.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SplashActivity.isForeground = true;
+                Intent intent = new Intent(context, TutorialActivity.class);
+                startActivity(intent);
+            }
+        });
+        tvAppInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SplashActivity.isForeground = true;
+                startActivity(new Intent(context, AppInfoActivity.class));
+                activity.overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
+            }
+        });
+        tvContactUs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ContactUsFragment contactUs = new ContactUsFragment();
+                contactUs.show(requireActivity().getSupportFragmentManager(), "contact_us");
+            }
+
+        });
+        tvPrivacyPolicy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent open_privacy_policy = new Intent(Intent.ACTION_VIEW, Uri.parse("https://amandhakar.blogspot.com/2022/02/privacy-policy-keys.html"));
+                startActivity(open_privacy_policy);
+            }
+        });
+        tvTermsAndConditions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent open_terms_conditions = new Intent(Intent.ACTION_VIEW, Uri.parse("https://amandhakar.blogspot.com/2022/02/terms-conditions-keys.html"));
+                startActivity(open_terms_conditions);
+            }
+        });
+
 //        tvStartForegroundService.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -200,38 +233,7 @@ public class SettingFragment extends Fragment {
 //                }
 //            }
 //        });
-        tvDevicesList.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                llDeviceList.setVisibility(View.VISIBLE);
-//                tvDevice2.setVisibility(View.VISIBLE);
-//                tvDevice3.setVisibility(View.VISIBLE);
-                startActivity(new Intent(context, BiometricAuthActivity.class));
-            }
-        });
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SplashActivity.isForeground = true;
-                FirebaseAuth.getInstance().signOut();
 
-                SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                editor1.putBoolean(logInActivity.getIS_LOGIN(), false);
-                editor1.apply();
-                System.out.println(sharedPreferences.getBoolean(logInActivity.getIS_LOGIN(), false));
-
-                Intent intent = new Intent(context, LogInActivity.class);
-                startActivity(intent);
-            }
-        });
-        tvTutorial.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SplashActivity.isForeground = true;
-                Intent intent = new Intent(context, TutorialActivity.class);
-                startActivity(intent);
-            }
-        });
         tvDevice1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -261,12 +263,7 @@ public class SettingFragment extends Fragment {
 
 
     public boolean isForegroundServiceRunning() {
-        ActivityManager activityManager = (ActivityManager) activity.getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
-            if (MyForegroundService.class.getName().equals(serviceInfo.service.getClassName())) {
-                return true;
-            }
-        }
+
 
         return false;
     }

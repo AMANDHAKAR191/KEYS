@@ -11,9 +11,11 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.example.keys.R;
+import com.example.keys.aman.messages.ChatActivity;
 
 public class MyForegroundService extends Service {
 
+    ChatActivity chatActivity = new ChatActivity();
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         new Thread(new Runnable() {
@@ -21,11 +23,29 @@ public class MyForegroundService extends Service {
             public void run() {
                 while (true){
                     Log.e("MyForegroundService", "Service is Running...");
+//                    Log.e("MyForegroundService", chatActivity.receiverRoom);
+
                     try {
                         Thread.sleep(3000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
+//                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
+//                    reference.child(chatActivity.senderPublicUid).child("userPersonalChatList").child(chatActivity.receiverPublicUid)
+//                            .addValueEventListener(new ValueEventListener() {
+//                                @Override
+//                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                                    System.out.println(dataSnapshot);
+//                                    chatActivity.createNotification(chatActivity.receiverPublicUid, chatActivity.receiverPublicUname);
+//                                }
+//
+//                                @Override
+//                                public void onCancelled(@NonNull DatabaseError error) {
+//
+//                                }
+//                            });
+
                 }
             }
         }).start();

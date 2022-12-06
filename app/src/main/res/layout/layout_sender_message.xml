@@ -21,17 +21,31 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:text="12:00 pm"
-            android:textStyle="italic"
+            android:textColor="?attr/colorOnSecondary"
             android:textSize="12sp"
+            android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guideline5" />
+
+        <TextView
+            android:id="@+id/tv_sender_message_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:text="status"
+            android:textColor="?attr/colorOnSecondary"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toTopOf="@+id/tv_sender_time_stamp"
+            app:layout_constraintEnd_toEndOf="@id/guideline5"
+            app:layout_constraintTop_toBottomOf="@+id/tv_sender_message" />
 
         <TextView
             android:id="@+id/tv_sender_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="@color/primary_light"
+            android:background="@drawable/bg_sender"
             android:inputType="textMultiLine"
             android:maxWidth="270dp"
             android:maxHeight="360dp"
@@ -41,6 +55,7 @@
             android:paddingRight="10dp"
             android:paddingBottom="5dp"
             android:text="TextView AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+            android:textColor="?attr/colorOnSecondary"
             app:layout_constraintBottom_toTopOf="@+id/tv_sender_time_stamp"
             app:layout_constraintEnd_toStartOf="@+id/guideline5"
             app:layout_constraintStart_toStartOf="parent"

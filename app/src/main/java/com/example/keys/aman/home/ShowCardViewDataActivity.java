@@ -31,8 +31,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
-import com.example.keys.aman.home.addpassword.AddPasswordDataActivity;
 import com.example.keys.aman.authentication.PinLockActivity;
+import com.example.keys.aman.home.addpassword.AddPasswordDataActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.rewarded.RewardItem;
@@ -102,6 +102,7 @@ public class ShowCardViewDataActivity extends Fragment {
         tvDisplayWebsite.setText(comingLoginWebsiteLink);
         tvTitle.setText(Title.replace("_","."));
 
+
         clBackground.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -154,7 +155,7 @@ public class ShowCardViewDataActivity extends Fragment {
                     }
                     Intent intent1 = new Intent(context, PinLockActivity.class);
                     intent1.putExtra(logInActivity.getREQUEST_CODE_NAME(), "ShowCardViewDataActivity");
-                    intent1.putExtra("title", "Enter Pin");
+                    intent1.putExtra("title", "Enter 6 digit Pin");
                     getResult.launch(intent1);
 
 

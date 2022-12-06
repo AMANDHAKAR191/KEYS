@@ -24,10 +24,13 @@
         android:id="@+id/search_bar"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_marginTop="-25dp"
         android:background="@drawable/search_et_background"
         android:elevation="8dp"
-        android:visibility="gone"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="10dp"
+        android:visibility="visible"
         ads:layout_constraintLeft_toLeftOf="parent"
         ads:layout_constraintTop_toTopOf="parent" />
 
@@ -36,6 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         ads:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintTop_toBottomOf="@id/search_bar"
         ads:layout_constraintStart_toStartOf="parent">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -61,10 +65,11 @@
     <FrameLayout
         android:id="@+id/fl_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:elevation="20dp"
         android:translationZ="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
+        ads:layout_constraintTop_toBottomOf="@+id/search_bar"
         app:layout_constraintStart_toStartOf="parent" />
 
 

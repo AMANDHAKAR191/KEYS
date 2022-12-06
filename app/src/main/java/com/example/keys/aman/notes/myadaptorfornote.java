@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
@@ -26,6 +27,7 @@ import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
 import com.example.keys.aman.notes.addnote.AddNotesActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -159,9 +161,24 @@ public class myadaptorfornote extends RecyclerView.Adapter<myadaptorfornote.myvi
                             Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
                             return true;
                         case R.id.img_delete:
-                            NotesFragment.reference.child(noteDate).removeValue();
-                            NotesFragment.adaptorUnpinned.notifyDataSetChanged();
-                            holder.resetAdaptorCall();
+                            new MaterialAlertDialogBuilder(context)
+                                    .setTitle("Alert!")
+                                    .setMessage("Are you sure, you want to delete the Note?")
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            NotesFragment.reference.child(noteDate).removeValue();
+                                            NotesFragment.adaptorUnpinned.notifyDataSetChanged();
+                                            holder.resetAdaptorCall();
+                                        }
+                                    })
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.dismiss();
+                                        }
+                                    }).show();
+
                             return true;
                         case R.id.item_pin:
                             NotesFragment.reference.child(noteDate).child("pinned").setValue(true);

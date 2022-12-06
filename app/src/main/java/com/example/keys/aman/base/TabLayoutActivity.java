@@ -23,7 +23,6 @@ import com.example.keys.aman.authentication.PinLockActivity;
 import com.example.keys.aman.home.HomeFragment;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
 import com.example.keys.aman.home.addpassword.AddPasswordDataActivity;
-import com.example.keys.aman.messages.AddContactEmailDialogFragment;
 import com.example.keys.aman.messages.MessagesActivity;
 import com.example.keys.aman.notes.NotesFragment;
 import com.example.keys.aman.notes.addnote.AddNotesActivity;
@@ -49,6 +48,7 @@ public class TabLayoutActivity extends AppCompatActivity {
     private SharedPreferences sharedPreferences;
     LogInActivity logInActivity = new LogInActivity();
     PinLockActivity pinLockActivity = new PinLockActivity();
+    //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(TabLayoutActivity.this, TabLayoutActivity.this);
 
     public String getLOCK_APP_OPTIONS() {
@@ -70,7 +70,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tab_layout);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
-
+        //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
 
         tabLayout = findViewById(R.id.tablayout);
@@ -110,6 +110,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         fabAddPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), AddPasswordDataActivity.class);
                 intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
@@ -120,6 +121,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         fabPasswordGenerator.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), PasswordGeneratorActivity.class);
                 intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
@@ -130,6 +132,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         fabAddNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), AddNotesActivity.class);
                 intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
@@ -140,13 +143,14 @@ public class TabLayoutActivity extends AppCompatActivity {
         fabAddContactEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                AddContactEmailDialogFragment dialogFragment = new AddContactEmailDialogFragment();
-                dialogFragment.show(getSupportFragmentManager(), "AddContactEmailDialogFragment");
+//                AddContactEmailDialogFragment dialogFragment = new AddContactEmailDialogFragment();
+//                dialogFragment.show(getSupportFragmentManager(), "AddContactEmailDialogFragment");
             }
         });
         exFABtn_notes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), AddNotesActivity.class);
                 intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "notesActivity");
@@ -233,7 +237,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         imgKeysIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (selectedTab == 2) {
+                if (selectedTab == 3) {
                     Handler handler = new Handler();
                     handler.postDelayed(new Runnable() {
                         @Override
@@ -241,13 +245,14 @@ public class TabLayoutActivity extends AppCompatActivity {
                             clickCounter = 0;
                         }
                     }, 1000);
-                    if (clickCounter == 1) {
+                    if (clickCounter == 2) {
                         boolean isPinSet = sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(), false);
                         if (isPinSet) {
+                            //todo 4 if app is going to another activity make isForeground = true
                             SplashActivity.isForeground = true;
                             Intent intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
                             intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(), "notesActivity");
-                            intent3.putExtra("title", "Enter Pin");
+                            intent3.putExtra("title", "Enter 6 digit Pin");
                             startActivity(intent3);
                             clickCounter = 0;
                         } else {
@@ -271,12 +276,23 @@ public class TabLayoutActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+        //todo 9 onStartOperation, it will check app is
+        // coming from foreground or background.
         appLockCounterClass.onStartOperation();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
+        //todo 10 onPauseOperation, it will check app is
+        // going to foreground or background.
+        // if UI component made isForeground = true then it
+        // is going to another activity then this method will make
+        // isForeground = false, so user will not be verified.
+        // if UI component is not clicked then it
+        // is going in background then this method will make
+        // isBackground = true and timer will started,
+        // at time of return, user will be verified.
         appLockCounterClass.checkedItem = sharedPreferences.getInt(LOCK_APP_OPTIONS, 0);
         appLockCounterClass.onPauseOperation();
     }
@@ -284,6 +300,7 @@ public class TabLayoutActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        //todo 11 app is going to close no to do anything
         SplashActivity.isForeground = true;
     }
 

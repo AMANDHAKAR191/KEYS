@@ -130,7 +130,7 @@ public class PinLockActivity extends AppCompatActivity {
                             vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
                             Intent intent = new Intent(PinLockActivity.this, PinLockActivity.class);
                             intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
-                            intent.putExtra("title", "Set Pin");
+                            intent.putExtra("title", "Set 6 digit pin");
                             startActivity(intent);
                         }
                         finish();
@@ -140,7 +140,7 @@ public class PinLockActivity extends AppCompatActivity {
                     if (pin.equals(PIN)) {
                         Intent intent = new Intent(PinLockActivity.this, PinLockActivity.class);
                         intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
-                        intent.putExtra("title", "Set Pin");
+                        intent.putExtra("title", "Set 6 digit pin");
                         startActivity(intent);
                         finish();
                     } else {
@@ -220,7 +220,7 @@ public class PinLockActivity extends AppCompatActivity {
         switch (comingRequestCode) {
             case "LogInActivity":
                 PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
-                tvTitle.setText("Enter Pin");
+                tvTitle.setText("Enter 6 digit Pin");
                 break;
             case "ShowCardViewDataActivity": {
                 PIN = sharedPreferences.getString(getMASTER_PIN(), "no");

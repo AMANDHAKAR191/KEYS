@@ -39,6 +39,7 @@
         android:gravity="center"
         android:textColor="@color/white"
         android:textSize="20sp" />
+
     <TextView
         android:id="@+id/tv_error_message"
         android:layout_width="256dp"
@@ -47,10 +48,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="106dp"
         android:gravity="center"
-        android:visibility="invisible"
         android:text="Too many attempts. Try again, after 5 seconds later."
         android:textColor="@color/design_default_color_error"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:visibility="invisible" />
 
     <com.andrognito.pinlockview.IndicatorDots
         android:id="@+id/indicator_dots"

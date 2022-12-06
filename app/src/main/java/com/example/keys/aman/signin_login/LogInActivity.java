@@ -253,7 +253,7 @@ public class LogInActivity extends AppCompatActivity {
                                                 SplashActivity.isForeground = true;
                                                 Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
                                                 intent.putExtra(REQUEST_CODE_NAME, "setpin");
-                                                intent.putExtra("title", "Set Pin");
+                                                intent.putExtra("title", "Set 6 digit Pin");
                                                 startActivity(intent);
                                         }
                                     });
@@ -346,7 +346,7 @@ public class LogInActivity extends AppCompatActivity {
                                             SplashActivity.isForeground = true;
                                             Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
                                             intent.putExtra(REQUEST_CODE_NAME, "setpin");
-                                            intent.putExtra("title", "Set Pin");
+                                            intent.putExtra("title", "Set 6 digit Pin");
                                             startActivity(intent);
 //                                            }
                                         }
@@ -443,6 +443,7 @@ public class LogInActivity extends AppCompatActivity {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
+//                            UserPersonalChatList personalChatList = new UserPersonalChatList(publicUid, publicUname, false);
                             UserListModelClass userListModel = new UserListModelClass(publicUid, publicUname, false);
                             DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference();
                             referenceSender.child("messageUserList").child(publicUid)

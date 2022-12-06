@@ -40,6 +40,8 @@ dependencies {
 
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
+//    implementation 'androidx.compose.material3:material3:1.0.1'
+//    implementation 'androidx.compose.material3:material3-window-size-class:1.0.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
     implementation 'com.google.firebase:firebase-database:20.0.3'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
@@ -73,10 +75,15 @@ dependencies {
 
     // AdMob
     implementation 'com.google.android.gms:play-services-ads:20.5.0'
-
     // pinview lock
     implementation 'com.andrognito.pinlockview:pinlockview:2.1.0'
     implementation 'de.hdodenhof:circleimageview:1.2.1'
+    // biometric
+    implementation 'androidx.biometric:biometric:1.1.0'
+    // for image loading from URL
+    implementation 'com.github.bumptech.glide:glide:4.13.0'
+    androidTestImplementation 'androidx.test:rules:1.4.1-alpha06'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
 
     
 
@@ -90,14 +97,11 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.2.0'
 
 
-    // for image loading from URL
-    implementation 'com.github.bumptech.glide:glide:4.13.0'
-    androidTestImplementation 'androidx.test:rules:1.4.1-alpha06'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.13.0'
+
 
     apply plugin: 'com.google.firebase.crashlytics'
 
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
 //    implementation 'com.google.android.gms:play-services-auth-api-phone:18.0.1'
-    implementation 'androidx.biometric:biometric:1.1.0'
+
 }

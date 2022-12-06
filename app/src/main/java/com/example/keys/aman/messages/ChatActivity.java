@@ -18,11 +18,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
+import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.AppLockCounterClass;
+import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.example.keys.databinding.ActivityChatBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,19 +41,20 @@ import java.util.Locale;
 public class ChatActivity extends AppCompatActivity {
 
     ActivityChatBinding binding;
-    public final String LOCK_APP_OPTIONS = "lock_app";
     TextView tvSentMessage, tvReceivedMessage;
     TextInputLayout tilMessage;
     //    ImageButton imgSendMessage;
     RecyclerView recViewChatMessages;
     private ArrayList<ChatModelClass> dataHolderChatMessages;
-    String receiverPublicUid, receiverPublicUname, senderPublicUid, currentDateAndTime;
+    public String receiverPublicUid, receiverPublicUname, senderPublicUid, senderPublicUname, currentDateAndTime;
     private SharedPreferences sharedPreferences;
     LogInActivity logInActivity = new LogInActivity();
+    TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
+    //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(ChatActivity.this, ChatActivity.this);
 
     ChatAdaptor chatAdaptor;
-    String senderRoom, receiverRoom;
+    public String senderRoom, receiverRoom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,11 +63,15 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
 
+        //todo 3 when is coming from background or foreground always make isForeground false
+        SplashActivity.isForeground = false;
+
         Intent intentResult = getIntent();
         receiverPublicUid = intentResult.getStringExtra("receiver_public_uid");
         receiverPublicUname = intentResult.getStringExtra("receiver_public_uname");
         senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID, null);
         System.out.println(senderPublicUid + "\t" + receiverPublicUid);
+        senderPublicUname = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
 
         senderRoom = senderPublicUid + receiverPublicUid;
         receiverRoom = receiverPublicUid + senderPublicUid;
@@ -80,6 +88,18 @@ public class ChatActivity extends AppCompatActivity {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                 currentDateAndTime = sdf.format(new Date());
                 System.out.println("Dateandtime: " + currentDateAndTime);
+                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
+                reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage")
+                        .addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
 
                 String message = binding.tilMessage.getEditText().getText().toString();
                 ChatModelClass chatModelClass = new ChatModelClass(message, currentDateAndTime, senderPublicUid);
@@ -89,13 +109,32 @@ public class ChatActivity extends AppCompatActivity {
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
+//                                setSenderMessageStatus("01");
                                 DatabaseReference referenceReceiver = FirebaseDatabase.getInstance().getReference().child("messages");
                                 referenceReceiver.child(receiverRoom).push()
                                         .setValue(chatModelClass)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
+                                                UserPersonalChatList personalChatList = new UserPersonalChatList(senderPublicUid, senderPublicUname, true, ".");
 
+                                                reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).setValue(personalChatList);
+//                                                setSenderMessageStatus("11");
+                                                // Set last message in userList
+                                                String lastMessage;
+                                                if(message.length()>6){
+                                                    lastMessage = message.substring(0, 6) + "...";
+                                                }else {
+                                                    lastMessage = message;
+                                                }
+
+                                                reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage").setValue(lastMessage)
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void unused) {
+
+                                                            }
+                                                        });
                                             }
                                         });
                             }
@@ -105,15 +144,20 @@ public class ChatActivity extends AppCompatActivity {
         binding.imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //todo 4 if app is going to another activity make isForeground = true
+                SplashActivity.isForeground = true;
                 finish();
             }
         });
 
         dataHolderChatMessages = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+
         binding.recviewChat.setLayoutManager(linearLayoutManager);
         chatAdaptor = new ChatAdaptor(dataHolderChatMessages, ChatActivity.this, ChatActivity.this);
+
         binding.recviewChat.setAdapter(chatAdaptor);
+
         FirebaseDatabase.getInstance().getReference().child("messages")
                 .child(senderRoom)
                 .addValueEventListener(new ValueEventListener() {
@@ -123,6 +167,7 @@ public class ChatActivity extends AppCompatActivity {
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
                             ChatModelClass chatModel = ds.getValue(ChatModelClass.class);
                             dataHolderChatMessages.add(chatModel);
+
                         }
                         chatAdaptor.notifyDataSetChanged();
                     }
@@ -136,112 +181,102 @@ public class ChatActivity extends AppCompatActivity {
 
         FirebaseDatabase.getInstance().getReference().child("messages")
                 .addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
-                System.out.println(dataSnapshot.getKey());
-                if (dataSnapshot.getKey().equals(receiverRoom)){
-                    System.out.println("Yes");
-                }else {
-                    System.out.println("No");
-                }
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
+                        System.out.println(dataSnapshot.getKey());
+                        if (dataSnapshot.getKey().equals(receiverRoom)) {
+                            System.out.println("Yes");
+                        } else {
+                            System.out.println("No");
+                        }
 
-                final String CHANNEL_ID = "Foreground Service ID";
-                NotificationChannel channel = new NotificationChannel(
-                        CHANNEL_ID,
-                        CHANNEL_ID,
-                        NotificationManager.IMPORTANCE_DEFAULT
-                );
+                    }
 
-                Intent intent = new Intent(ChatActivity.this, ChatActivity.class);
-                intent.putExtra("receiver_public_uid",receiverPublicUid);
-                intent.putExtra("receiver_public_uname", receiverPublicUname);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(ChatActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-                getSystemService(NotificationManager.class).createNotificationChannel(channel);
-                Notification.Builder notificationBuilder = new Notification.Builder(ChatActivity.this,CHANNEL_ID)
-                        .setContentText("New message")
-                        .setContentTitle(receiverPublicUname)
-                        .setSmallIcon(R.drawable.keys_privacy)
-                        .setPriority(Notification.PRIORITY_DEFAULT)
-                        .setContentIntent(pendingIntent)
-                        .setCategory(Notification.CATEGORY_MESSAGE)
-                        .setAutoCancel(true);
-                NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ChatActivity.this);
-                notificationManager.notify(1234,notificationBuilder.build());
-            }
+                    }
 
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
 
-            }
+                    }
 
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
 
-            }
+                    }
 
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
 
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+                    }
+                });
 
     }
+
+    public void createNotification(String tempReceiverPublicUid, String tempReceiverPublicUname) {
+        ChatActivity chatActivity = new ChatActivity();
+        final String CHANNEL_ID = "Foreground Service ID";
+        NotificationChannel channel = new NotificationChannel(
+                CHANNEL_ID,
+                CHANNEL_ID,
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+
+        Intent intent = new Intent(ChatActivity.this, ChatActivity.class);
+        intent.putExtra("receiver_public_uid", chatActivity.receiverPublicUid);
+        intent.putExtra("receiver_public_uname", chatActivity.receiverPublicUname);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(ChatActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+        getSystemService(NotificationManager.class).createNotificationChannel(channel);
+        Notification.Builder notificationBuilder = new Notification.Builder(ChatActivity.this, CHANNEL_ID)
+                .setContentText("New message")
+                .setContentTitle(tempReceiverPublicUid)
+                .setSmallIcon(R.drawable.keys_privacy)
+                .setPriority(Notification.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
+                .setCategory(Notification.CATEGORY_MESSAGE)
+                .setAutoCancel(true);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ChatActivity.this);
+        notificationManager.notify(1234, notificationBuilder.build());
+    }
+
 
     @Override
     protected void onStart() {
         super.onStart();
+        //todo 9 onStartOperation, it will check app is
+        // coming from foreground or background.
         appLockCounterClass.onStartOperation();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        appLockCounterClass.checkedItem = sharedPreferences.getInt(LOCK_APP_OPTIONS, 0);
+    protected void onPause() {
+        super.onPause();
+        //todo 10 onPauseOperation, it will check app is
+        // going to foreground or background.
+        // if UI component made isForeground = true then it
+        // is going to another activity then this method will make
+        // isForeground = false, so user will not be verified.
+        // if UI component is not clicked then it
+        // is going in background then this method will make
+        // isBackground = true and timer will started,
+        // at time of return, user will be verified.
+        appLockCounterClass.checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS, 0);
         appLockCounterClass.onPauseOperation();
     }
-    //    public void recyclerViewSetData() {
-//        reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
-//        recViewChatMessages.setLayoutManager(new LinearLayoutManager(ChatActivity.this));
-//
-//        dataHolderChatMessages = new ArrayList<>();
-////        adaptorUnpinned = new myadaptorfornote(dataHolderChatMessages, ChatActivity.this, ChatActivity.this) {
-////            @Override
-////            public void resetAdaptor() {
-////                dataHolderChatMessages.clear();
-////                dataHolderPinned.clear();
-////                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
-////            }
-////
-////            @Override
-////            public void refreshRecView() {
-////                dataHolderChatMessages.clear();
-////                dataHolderPinned.clear();
-////            }
-////        };
-//        recViewChatMessages.setAdapter(adaptorUnpinned);
-//        reference.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                for(DataSnapshot ds : dataSnapshot.getChildren()){
-//                    ChatHelperClass chatHelperObject = ds.getValue(ChatHelperClass.class);
-//                    dataHolderChatMessages.add(chatHelperObject);
-//                    tvReceivedMessage.setText(chatHelperObject.getMessage());
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-//        recViewChatMessages.setAdapter(adaptorUnpinned);
-//
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        //todo 11 do anything
+        SplashActivity.isForeground = true;
+    }
+    //    public void setSenderMessageStatus(String status){
+//        onSetSenderMessageStatus(status);
 //    }
+//
+//    public abstract void onSetSenderMessageStatus(String status);
 }
