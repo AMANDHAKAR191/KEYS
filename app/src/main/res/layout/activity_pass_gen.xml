@@ -8,9 +8,9 @@
 
     <TextView
         android:id="@+id/title1"
+        style="@style/Widget.MaterialComponents.Toolbar.Primary"
         android:layout_width="match_parent"
         android:layout_height="100dp"
-        style="@style/Widget.MaterialComponents.Toolbar.Primary"
         android:fontFamily="@font/aclonica"
         android:gravity="center"
         android:text="@string/genrate_password"
@@ -21,39 +21,43 @@
         android:id="@+id/img_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="20dp"
-        android:elevation="4dp"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/fully_transparent_background"
+        android:elevation="4dp"
         android:onClick="goBack"
         android:src="@drawable/close"
+        app:layout_constraintBottom_toBottomOf="@+id/title1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/textView2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title1"
-        android:layout_marginLeft="15dp"
         android:layout_marginTop="20dp"
+        android:text="Password Length"
         android:textColor="?attr/colorOnSecondary"
-        android:text="Password Length"/>
+        app:layout_constraintEnd_toStartOf="@+id/guideline11"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/img_back"
+        app:layout_constraintTop_toBottomOf="@+id/title1" />
 
     <com.google.android.material.slider.Slider
         android:id="@+id/slider_pass_lenght"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
-        app:thumbColor="?attr/colorSecondary"
-        app:tickColor="#C16565"
-        app:trackColor="?attr/colorSecondary"
         android:stepSize="4.0"
         android:value="8"
         android:valueFrom="4.0"
         android:valueTo="40.0"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/title1" />
+        app:layout_constraintTop_toBottomOf="@+id/title1"
+        app:thumbColor="?attr/colorSecondary"
+        app:tickColor="#C16565"
+        app:trackColor="?attr/colorSecondary" />
 
     <LinearLayout
         android:id="@+id/linear_layout2"
@@ -111,35 +115,44 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:text="Copy"
         android:background="@drawable/rounded_thems5"
+        android:text="Copy"
         app:layout_constraintLeft_toRightOf="@+id/bt_use"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_password" />
 
     <TextView
         android:id="@+id/tv_password_strength"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:text="Strength"
         android:textColor="?attr/colorOnSecondary"
         android:textIsSelectable="true"
         android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline11"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
         app:layout_constraintTop_toBottomOf="@+id/slider_pass_lenght" />
 
     <TextView
         android:id="@+id/tv_password"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="10dp"
         android:text="password"
         android:textColor="?attr/colorOnSecondary"
         android:textIsSelectable="true"
         android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/guideline11"
+        app:layout_constraintStart_toStartOf="@+id/tv_password_strength"
         app:layout_constraintTop_toBottomOf="@+id/tv_password_strength" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="16dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

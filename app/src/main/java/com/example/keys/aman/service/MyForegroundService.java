@@ -1,10 +1,13 @@
 package com.example.keys.aman.service;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -12,16 +15,31 @@ import androidx.annotation.Nullable;
 
 import com.example.keys.R;
 import com.example.keys.aman.messages.ChatActivity;
+import com.example.keys.aman.signin_login.LogInActivity;
 
 public class MyForegroundService extends Service {
 
     ChatActivity chatActivity = new ChatActivity();
+    LogInActivity logInActivity = new LogInActivity();
+    SharedPreferences sharedPreferences;
+    Context context;
+    Activity activity;
+
+    public MyForegroundService(Context context, Activity activity) {
+        this.context = context;
+        this.activity = activity;
+    }
+
+    public MyForegroundService() {
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true){
+                while (true) {
                     Log.e("MyForegroundService", "Service is Running...");
 //                    Log.e("MyForegroundService", chatActivity.receiverRoom);
 
@@ -30,21 +48,6 @@ public class MyForegroundService extends Service {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-
-//                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
-//                    reference.child(chatActivity.senderPublicUid).child("userPersonalChatList").child(chatActivity.receiverPublicUid)
-//                            .addValueEventListener(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                    System.out.println(dataSnapshot);
-//                                    chatActivity.createNotification(chatActivity.receiverPublicUid, chatActivity.receiverPublicUname);
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                                }
-//                            });
 
                 }
             }
@@ -57,14 +60,14 @@ public class MyForegroundService extends Service {
         );
 
         getSystemService(NotificationManager.class).createNotificationChannel(channel);
-        Notification.Builder notification = new Notification.Builder(this,CHANNEL_ID)
+        Notification.Builder notification = new Notification.Builder(this, CHANNEL_ID)
                 .setContentText("Service is Running...")
                 .setContentTitle("Autofill Service")
                 .setSmallIcon(R.drawable.keys_privacy)
                 .setPriority(Notification.PRIORITY_LOW)
                 .setCategory(Notification.CATEGORY_SERVICE);
 
-        startForeground(101,notification.build());
+        startForeground(101, notification.build());
         return super.onStartCommand(intent, flags, startId);
     }
 

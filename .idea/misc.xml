@@ -31,6 +31,7 @@
         <entry key="..\:/KEYS/app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.25" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/ic_baseline_open_in_new_24.xml" value="0.25" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/ic_baseline_search_24.xml" value="0.25" />
+        <entry key="..\:/KEYS/app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.2225" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/ic_pin_icon.xml" value="0.1825" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/icontent_copy.xml" value="0.202" />
         <entry key="..\:/KEYS/app/src/main/res/drawable/keysPrivacy_louncher_icon_background.xml" value="0.1545" />
@@ -100,7 +101,7 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_biometric.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_biometric_authentication.xml" value="0.15789473684210525" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_change_password.xml" value="0.17552083333333332" />
-        <entry key="..\:/KEYS/app/src/main/res/layout/activity_chat.xml" value="0.176" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/activity_chat.xml" value="0.152" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_email_suggestion.xml" value="0.1875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_home.xml" value="0.1701388888888889" />
         <entry key="..\:/KEYS/app/src/main/res/layout/activity_log_in.xml" value="0.184375" />
@@ -142,7 +143,9 @@
         <entry key="..\:/KEYS/app/src/main/res/layout/layout_sender_message.xml" value="0.15789473684210525" />
         <entry key="..\:/KEYS/app/src/main/res/layout/multidataset_service_list_item.xml" value="0.18671875" />
         <entry key="..\:/KEYS/app/src/main/res/layout/note_cardview_layout.xml" value="0.128" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/note_share_cardview_layout.xml" value="0.15789473684210525" />
         <entry key="..\:/KEYS/app/src/main/res/layout/parent_cardview_layout.xml" value="0.1875" />
+        <entry key="..\:/KEYS/app/src/main/res/layout/password_share_cardview_layout.xml" value="0.15789473684210525" />
         <entry key="..\:/KEYS/app/src/main/res/layout/pinned_note_cardview_layout.xml" value="0.2" />
         <entry key="..\:/KEYS/app/src/main/res/layout/prograce_bar_layout.xml" value="0.17552083333333332" />
         <entry key="..\:/KEYS/app/src/main/res/layout/user_list_layout.xml" value="0.2" />

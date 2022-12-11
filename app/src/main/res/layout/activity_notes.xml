@@ -46,7 +46,6 @@
         android:id="@+id/recview_pinned"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_margin="5dp"
         android:background="#00000000"
         android:clickable="true"
         android:visibility="visible"
@@ -78,9 +77,9 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recview_unpinned"
         android:layout_width="match_parent"
-        android:layout_height="550dp"
-        android:layout_margin="5dp"
+        android:layout_height="0dp"
         android:clickable="true"
+        app:layout_constraintBottom_toTopOf="@+id/guideline10"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_unpinned" />
 
@@ -96,5 +95,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="8dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

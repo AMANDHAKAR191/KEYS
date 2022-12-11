@@ -194,6 +194,11 @@ public class HomeFragment extends Fragment {
                 fragmentTransaction.commit();
             }
 
+            @Override
+            public void sharePassword(String tempELogin, String tempEPassword, String dWebsiteName) {
+                super.sharePassword(tempELogin, tempEPassword, dWebsiteName);
+
+            }
         };
         recview.setAdapter(adaptor);
         adaptor.notifyDataSetChanged();

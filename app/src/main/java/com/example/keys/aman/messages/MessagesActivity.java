@@ -25,7 +25,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.signin_login.LogInActivity;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,7 +38,7 @@ public class MessagesActivity extends Fragment {
     Context context;
     Activity activity;
     Button btnAddMessage;
-    FloatingActionButton fabAddChat;
+//    FloatingActionButton fabAddChat;
     RecyclerView recViewUsersChatList;
     LogInActivity logInActivity = new LogInActivity();
     ArrayList<UserPersonalChatList> dataHolderUserList;
@@ -65,16 +64,16 @@ public class MessagesActivity extends Fragment {
         View view = inflater.inflate(R.layout.activity_messages, container, false);
         sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         recViewUsersChatList = view.findViewById(R.id.recview_user_chat_list);
-        fabAddChat = view.findViewById(R.id.fab_add_chat);
+//        fabAddChat = view.findViewById(R.id.fab_add_chat);
         senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID,null);
 
-        fabAddChat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AddContactEmailDialogFragment dialogFragment = new AddContactEmailDialogFragment(senderPublicUid);
-                dialogFragment.show(requireActivity().getSupportFragmentManager(),"add_chat");
-            }
-        });
+//        fabAddChat.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                AddContactEmailDialogFragment dialogFragment = new AddContactEmailDialogFragment(senderPublicUid);
+//                dialogFragment.show(requireActivity().getSupportFragmentManager(),"add_chat");
+//            }
+//        });
 
         recyclerViewSetData();
 
@@ -105,7 +104,7 @@ public class MessagesActivity extends Fragment {
                             if (personalChatList.isKnowUser()){
                                 dataHolderUserList.add(personalChatList);
                                 if (!personalChatList.getLastMessage().equals(".")){
-                                    createNotification();
+//                                    createNotification();
                                 }
                             }
                         }

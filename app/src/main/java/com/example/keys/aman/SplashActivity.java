@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.keys.R;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
+import com.example.keys.aman.service.MyFirebaseMessagingService;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
@@ -56,8 +57,8 @@ public class SplashActivity extends AppCompatActivity {
         showInterstialAd();
         showRewardedAd();
 
-//        Intent serviceIntent = new Intent(SplashActivity.this, MyForegroundService.class);
-//        startForegroundService(serviceIntent);
+        Intent serviceIntent = new Intent(SplashActivity.this, MyFirebaseMessagingService.class);
+        startService(serviceIntent);
 //        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 //        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
 //            if (MyForegroundService.class.getName().equals(serviceInfo.service.getClassName())) {

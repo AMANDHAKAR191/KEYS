@@ -58,9 +58,9 @@
             android:id="@+id/btn_create_account"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="230dp"
-            android:layout_marginTop="50dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="50dp"
             android:text="Create Account"
             android:textColor="?attr/colorOnSecondary" />
     </LinearLayout>

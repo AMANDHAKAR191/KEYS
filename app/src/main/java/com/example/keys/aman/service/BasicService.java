@@ -78,6 +78,7 @@ public final class BasicService extends AutofillService {
         Map<String, AutofillId> fields = getAutofillableFields(structure);
         Log.d(TAG, "autofillable fields:" + fields);
 
+
         if (fields.isEmpty()) {
             toast("No autofill hints found");
             callback.onSuccess(null);

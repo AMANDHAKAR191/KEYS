@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.keys.R;
 import com.example.keys.aman.AES;
 import com.example.keys.aman.home.addpassword.AddPasswordDataHelperClass;
+import com.example.keys.aman.messages.ChatActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -50,7 +51,7 @@ public class passwordAdaptor extends RecyclerView.Adapter<passwordAdaptor.myView
     public static Bitmap bmWebsiteLogo;
     private Bitmap emptyBitmap;
     LogInActivity logInActivity = new LogInActivity();
-
+    ChatActivity chatActivity = new ChatActivity();
     public passwordAdaptor(ArrayList<AddPasswordDataHelperClass> tempDataHolder, Context context, Activity activity) {
         this.dataHolder = tempDataHolder;
         this.dataHolderFull = tempDataHolder;
@@ -172,16 +173,21 @@ public class passwordAdaptor extends RecyclerView.Adapter<passwordAdaptor.myView
                 }
             });
         }
+        public void sharePasswordCall(String tempELogin, String tempEPassword, String dWebsiteName){
+            sharePassword(tempELogin, tempEPassword, dWebsiteName);
+        }
+
 
     }
 
     //create new abstract method
     public void showCardViewFragment(String currentDate, String tempLogin, String tempPassword,
-                                     String dWebsiteName, String dWebsiteLink) {
-    }
+                                     String dWebsiteName, String dWebsiteLink) {}
 
-    public void resetAdaptor() {
-    }
+    public void resetAdaptor() {}
+
+    public void sharePassword(String tempELogin, String tempEPassword, String dWebsiteName){}
+
 
     private static Bitmap fetchFavicon(Uri uri) {
         final Uri iconUri = uri.buildUpon().path("favicon.ico").build();
@@ -206,7 +212,7 @@ public class passwordAdaptor extends RecyclerView.Adapter<passwordAdaptor.myView
         String dWebsiteLink, Title;
         String[] title1;
         String dWebsiteName;
-        String currentDate, dLogin, dPassword, tempDLogin, tempDPassword;
+        String currentDate, dLogin, dPassword, tempDLogin, tempDPassword, tempELogin, tempEPassword;
 
 
         public myAdaptorThreadRunnable(int position1, myViewHolder holder1) {
@@ -226,9 +232,11 @@ public class passwordAdaptor extends RecyclerView.Adapter<passwordAdaptor.myView
             try {
                 currentDate = dataHolder.get(position).getDate();
                 //Double Decryption
-                dLogin = aes.decrypt(dataHolder.get(position).getAddDataLogin());
+                tempELogin = dataHolder.get(position).getAddDataLogin();
+                dLogin = aes.decrypt(tempELogin);
                 tempDLogin = aes.decrypt(dLogin);
-                dPassword = aes.decrypt(dataHolder.get(position).getAddDataPassword());
+                tempEPassword = dataHolder.get(position).getAddDataPassword();
+                dPassword = aes.decrypt(tempEPassword);
                 tempDPassword = aes.decrypt(dPassword);
 
 
@@ -292,7 +300,6 @@ public class passwordAdaptor extends RecyclerView.Adapter<passwordAdaptor.myView
                         public boolean onMenuItemClick(MenuItem item) {
                             switch (item.getItemId()) {
                                 case R.id.img_copy_username:
-
                                     ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
                                     ClipData clipData = ClipData.newPlainText("Copy_Login", tempDLogin);
                                     clipboardManager.setPrimaryClip(clipData);
@@ -324,6 +331,8 @@ public class passwordAdaptor extends RecyclerView.Adapter<passwordAdaptor.myView
                                                 }
                                             }).show();
                                     return true;
+                                case R.id.img_share_password:
+                                    holder.sharePasswordCall(tempELogin, tempEPassword, dWebsiteName);
                             }
                             return false;
                         }

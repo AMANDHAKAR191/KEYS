@@ -32,6 +32,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,6 +42,9 @@ import java.util.Locale;
 public class ChatActivity extends AppCompatActivity {
 
     ActivityChatBinding binding;
+    public final String RECEIVER_ROOM = "receiver_room";
+    public final String RECEIVER_PUBLIC_UID = "receiver_public_uid";
+    public final String SENDER_ROOM = "sender_room";
     TextView tvSentMessage, tvReceivedMessage;
     TextInputLayout tilMessage;
     //    ImageButton imgSendMessage;
@@ -66,15 +70,24 @@ public class ChatActivity extends AppCompatActivity {
         //todo 3 when is coming from background or foreground always make isForeground false
         SplashActivity.isForeground = false;
 
+
+
         Intent intentResult = getIntent();
         receiverPublicUid = intentResult.getStringExtra("receiver_public_uid");
         receiverPublicUname = intentResult.getStringExtra("receiver_public_uname");
         senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID, null);
         System.out.println(senderPublicUid + "\t" + receiverPublicUid);
         senderPublicUname = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        FirebaseMessaging.getInstance().subscribeToTopic(senderPublicUid);
 
         senderRoom = senderPublicUid + receiverPublicUid;
         receiverRoom = receiverPublicUid + senderPublicUid;
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(RECEIVER_ROOM, receiverRoom);
+        editor.putString(SENDER_ROOM, senderRoom);
+        editor.putString(RECEIVER_PUBLIC_UID, receiverPublicUid);
+        editor.apply();
+
         System.out.println("senderRoom\t" + senderRoom);
         System.out.println("receiverRoom\t" + receiverRoom);
 
@@ -85,60 +98,69 @@ public class ChatActivity extends AppCompatActivity {
         binding.imgSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-                currentDateAndTime = sdf.format(new Date());
-                System.out.println("Dateandtime: " + currentDateAndTime);
-                DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
-                reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage")
-                        .addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-
                 String message = binding.tilMessage.getEditText().getText().toString();
-                ChatModelClass chatModelClass = new ChatModelClass(message, currentDateAndTime, senderPublicUid);
-                binding.tietMessage.setText("");
-                DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference().child("messages");
-                referenceSender.child(senderRoom).push().setValue(chatModelClass)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
+                if (message.equals("")) {
+
+                } else {
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+                    currentDateAndTime = sdf.format(new Date());
+                    System.out.println("Dateandtime: " + currentDateAndTime);
+                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
+                    reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage")
+                            .addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+                    ChatModelClass chatModelClass = new ChatModelClass(message, currentDateAndTime, senderPublicUid, ".", ".", ".", ".", ".");
+                    binding.tietMessage.setText("");
+                    DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference().child("messages");
+                    referenceSender.child(senderRoom).push().setValue(chatModelClass)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
 //                                setSenderMessageStatus("01");
-                                DatabaseReference referenceReceiver = FirebaseDatabase.getInstance().getReference().child("messages");
-                                referenceReceiver.child(receiverRoom).push()
-                                        .setValue(chatModelClass)
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                UserPersonalChatList personalChatList = new UserPersonalChatList(senderPublicUid, senderPublicUname, true, ".");
+                                    DatabaseReference referenceReceiver = FirebaseDatabase.getInstance().getReference().child("messages");
+                                    referenceReceiver.child(receiverRoom).push()
+                                            .setValue(chatModelClass)
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
 
-                                                reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).setValue(personalChatList);
+                                                    FCMNotificationSender notificationSender =
+                                                            new FCMNotificationSender("/topics/"+receiverPublicUid, senderPublicUid, message, ChatActivity.this, ChatActivity.this);
+                                                    notificationSender.sendNotification();
+
+                                                    UserPersonalChatList personalChatList = new UserPersonalChatList(senderPublicUid, senderPublicUname, true, ".");
+
+                                                    reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).setValue(personalChatList);
 //                                                setSenderMessageStatus("11");
-                                                // Set last message in userList
-                                                String lastMessage;
-                                                if(message.length()>6){
-                                                    lastMessage = message.substring(0, 6) + "...";
-                                                }else {
-                                                    lastMessage = message;
+                                                    // Set last message in userList
+                                                    String lastMessage;
+                                                    if (message.length() > 6) {
+                                                        lastMessage = message.substring(0, 6) + "...";
+                                                    } else {
+                                                        lastMessage = message;
+                                                    }
+
+                                                    reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage").setValue(lastMessage)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void unused) {
+
+                                                                }
+                                                            });
                                                 }
-
-                                                reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage").setValue(lastMessage)
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void unused) {
-
-                                                            }
-                                                        });
-                                            }
-                                        });
-                            }
-                        });
+                                            });
+                                }
+                            });
+                }
             }
         });
         binding.imgBack.setOnClickListener(new View.OnClickListener() {

@@ -37,10 +37,10 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         ads:layout_constraintBottom_toBottomOf="parent"
-        ads:layout_constraintTop_toBottomOf="@id/search_bar"
-        ads:layout_constraintStart_toStartOf="parent">
+        ads:layout_constraintStart_toStartOf="parent"
+        ads:layout_constraintTop_toBottomOf="@id/search_bar">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recview"
@@ -65,11 +65,11 @@
     <FrameLayout
         android:id="@+id/fl_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:elevation="20dp"
         android:translationZ="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         ads:layout_constraintTop_toBottomOf="@+id/search_bar"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
 

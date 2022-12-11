@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="300dp"
-    android:layout_height="match_parent"
-
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
     android:background="#00000000">
 
     <LinearLayout
@@ -12,11 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="10dp"
-        android:layout_weight="100"
         android:background="@drawable/rounded_thems1"
         android:elevation="5dp"
         android:orientation="vertical"
-        android:padding="5dp">
+        android:padding="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -36,11 +33,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:maxLines="2"
-                    android:minHeight="48dp"
                     android:text="Title"
-                    android:layout_gravity="center"
-                    android:gravity="start|center"
                     android:textColor="?attr/colorOnSecondary"
                     android:textIsSelectable="true"
                     android:textSize="18dp"
@@ -53,9 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_weight="100"
-            android:textIsSelectable="true"
-            android:maxLines="4"
+            android:maxLines="2"
             android:text="Note"
             android:textColor="?attr/colorOnSecondary" />
 
@@ -69,7 +60,6 @@
             android:textSize="12dp" />
 
     </LinearLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
