@@ -11,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
+import com.example.keys.aman.notes.NoteAdapterForUnpinned;
+import com.example.keys.aman.notes.NotesFragment;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -33,7 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class MessagesActivity extends Fragment {
+public class MessagesFragment extends Fragment {
 
     Context context;
     Activity activity;
@@ -44,16 +47,27 @@ public class MessagesActivity extends Fragment {
     ArrayList<UserPersonalChatList> dataHolderUserList;
     private SharedPreferences sharedPreferences;
     private DatabaseReference reference;
-    private myAdaptorForUserList adaptorForUsersList;
+    private UserListAdapter adaptorForUsersList;
     public String senderPublicUid;
+    Bundle args;
 
 
-    public MessagesActivity(Context context, Activity activity) {
+    public MessagesFragment(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
     }
 
-    public MessagesActivity() {
+    public MessagesFragment() {
+    }
+
+    public MessagesFragment(Context context, Activity activity, Bundle data) {
+        this.context = context;
+        this.activity = activity;
+        this.args = data;
+    }
+
+    public static MessagesFragment newInstance() {
+        return new MessagesFragment();
     }
 
 
@@ -86,7 +100,17 @@ public class MessagesActivity extends Fragment {
         recViewUsersChatList.setLayoutManager(new LinearLayoutManager(context));
 
         dataHolderUserList = new ArrayList<>();
-        adaptorForUsersList = new myAdaptorForUserList(dataHolderUserList, context, activity);
+
+        Intent intentResult = activity.getIntent();
+        String comingFromActivity = intentResult.getStringExtra(logInActivity.REQUEST_CODE_NAME);
+
+        Log.e("shareNote", "Check3: MessagesFragment: comingFromActivity" +comingFromActivity);
+        if (comingFromActivity.equals(NoteAdapterForUnpinned.REQUEST_ID)){
+            Log.e("shareNote", "Check3: MessagesFragment: " + args.getParcelable(NotesFragment.shareNoteCode));
+            adaptorForUsersList = new UserListAdapter(dataHolderUserList, context, activity, args);
+        }else {
+            adaptorForUsersList = new UserListAdapter(dataHolderUserList, context, activity);
+        }
         recViewUsersChatList.setAdapter(adaptorForUsersList);
         reference.addValueEventListener(new ValueEventListener() {
             @Override

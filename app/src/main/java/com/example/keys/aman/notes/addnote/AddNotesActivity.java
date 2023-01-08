@@ -22,6 +22,7 @@ import com.example.keys.aman.AES;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.AppLockCounterClass;
 import com.example.keys.aman.base.TabLayoutActivity;
+import com.example.keys.aman.notes.NoteAdapterForUnpinned;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.rewarded.RewardItem;
@@ -86,7 +87,7 @@ public class AddNotesActivity extends AppCompatActivity {
         String comingTitle = intent.getStringExtra("title");
         String comingNote = intent.getStringExtra("note");
         switch (comingRequestCode) {
-            case "notesCardView":
+            case NoteAdapterForUnpinned.REQUEST_ID:
                 tietAddNoteTitle.setText(comingTitle);
                 tietAddNoteBody.setText(comingNote);
                 cbHideNote.setChecked(comingIsHideNote);
@@ -96,18 +97,11 @@ public class AddNotesActivity extends AppCompatActivity {
                 img_save.setVisibility(View.INVISIBLE);
                 img_edit.setVisibility(View.VISIBLE);
                 break;
-            case "notesActivity": {
+            case TabLayoutActivity.REQUEST_ID:
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                 currentDateAndTime = sdf.format(new Date());
                 System.out.println("Dateandtime: " + currentDateAndTime);
                 break;
-            }
-            case "HomeActivity": {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-                currentDateAndTime = sdf.format(new Date());
-                System.out.println("Dateandtime: " + currentDateAndTime);
-                break;
-            }
         }
 
         cbHideNote.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

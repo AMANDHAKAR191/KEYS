@@ -83,7 +83,7 @@
             android:name=".aman.home.PasswordGeneratorActivity"
             android:exported="false" />
         <activity
-            android:name=".aman.home.addpassword.AddPasswordDataActivity"
+            android:name=".aman.home.addpassword.AddPasswordActivity"
             android:exported="false" />
         <activity
             android:name=".aman.base.TabLayoutActivity"

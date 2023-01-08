@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,7 +19,9 @@ import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 import com.example.keys.R;
 import com.example.keys.aman.base.TabLayoutActivity;
+import com.example.keys.aman.home.ShowCardViewDataDialog;
 import com.example.keys.aman.notes.SecretNotesActivity;
+import com.example.keys.aman.settings.SettingFragment;
 import com.example.keys.aman.signin_login.LogInActivity;
 
 public class PinLockActivity extends AppCompatActivity {
@@ -59,29 +60,7 @@ public class PinLockActivity extends AppCompatActivity {
         public void onComplete(String pin) {
 
             switch (comingRequestCode) {
-                case "LogInActivity":
-                    if (pin.equals(PIN)) {
-                        Intent intent = new Intent(PinLockActivity.this, TabLayoutActivity.class);
-                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "pinLockFragment");
-                        startActivity(intent);
-                        finish();
-
-                    } else {
-//                        vibrator.vibrate(200);
-//                        vibrator.vibrate(VibrationEffect.DEFAULT_AMPLITUDE);
-                        vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
-                        tvTitle.setText("Wrong Pin");
-                        wrongPin();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvTitle.setText("Enter Pin Again");
-                                mPinLockView.resetPinLockView();
-                            }
-                        },400);
-                    }
-                    break;
-                case "ShowCardViewDataActivity":
+                case ShowCardViewDataDialog.REQUEST_ID:
                     if (pin.equals(PIN)) {
                         Intent intent = new Intent(PinLockActivity.this, SecretNotesActivity.class);
                         intent.putExtra("result", "yes");
@@ -103,7 +82,7 @@ public class PinLockActivity extends AppCompatActivity {
                         },400);
                     }
                     break;
-                case "setpin":
+                case LogInActivity.REQUEST_ID:
                     if (temp == 0) {
                         setPin = pin;
                         tvTitle.setText("Confirm PIn");
@@ -122,6 +101,8 @@ public class PinLockActivity extends AppCompatActivity {
 
                             Intent intent = new Intent(getApplicationContext(), TabLayoutActivity.class);
                             intent.putExtra("result", "yes");
+                            Bundle data = new Bundle();
+                            data.putString(logInActivity.REQUEST_CODE_NAME,LogInActivity.REQUEST_ID);
                             startActivity(intent);
                         }else {
                             tvTitle.setText("Wrong Pin");
@@ -129,17 +110,19 @@ public class PinLockActivity extends AppCompatActivity {
 //                            vibrator.vibrate(200);
                             vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
                             Intent intent = new Intent(PinLockActivity.this, PinLockActivity.class);
-                            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
+                            // for confirm the pin we have open the same page again
+                            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), LogInActivity.REQUEST_ID);
                             intent.putExtra("title", "Set 6 digit pin");
                             startActivity(intent);
                         }
                         finish();
                     }
                     break;
-                case "changepin":
+                case SettingFragment.REQUEST_ID:
                     if (pin.equals(PIN)) {
                         Intent intent = new Intent(PinLockActivity.this, PinLockActivity.class);
-                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
+                        //for change the pin After verifying the pin we have use same process as we used at the time of login
+                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), LogInActivity.REQUEST_ID);
                         intent.putExtra("title", "Set 6 digit pin");
                         startActivity(intent);
                         finish();
@@ -151,7 +134,7 @@ public class PinLockActivity extends AppCompatActivity {
                         wrongPin();
                     }
                     break;
-                case "notesActivity":
+                case TabLayoutActivity.REQUEST_ID:
                     if (pin.equals(PIN)) {
                         Intent intent = new Intent(PinLockActivity.this, SecretNotesActivity.class);
                         startActivity(intent);
@@ -189,7 +172,7 @@ public class PinLockActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //it is mandatory to call this requestWindowFeature method before setContentView
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.fragment_pin_lock);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
@@ -218,28 +201,24 @@ public class PinLockActivity extends AppCompatActivity {
         Toast.makeText(PinLockActivity.this, comingRequestCode, Toast.LENGTH_SHORT).show();
 
         switch (comingRequestCode) {
-            case "LogInActivity":
-                PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
-                tvTitle.setText("Enter 6 digit Pin");
-                break;
-            case "ShowCardViewDataActivity": {
+            case ShowCardViewDataDialog.REQUEST_ID: {
                 PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
                 String title = intent.getStringExtra("title");
                 tvTitle.setText(title);
                 break;
             }
-            case "notesActivity": {
+            case TabLayoutActivity.REQUEST_ID: {
                 PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
                 String title = intent.getStringExtra("title");
                 tvTitle.setText(title);
                 break;
             }
-            case "setpin": {
+            case LogInActivity.REQUEST_ID: {
                 String title = intent.getStringExtra("title");
                 tvTitle.setText(title);
                 break;
             }
-            case "changepin": {
+            case SettingFragment.REQUEST_ID: {
                 PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
                 String title = intent.getStringExtra("title");
                 tvTitle.setText(title);

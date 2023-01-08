@@ -1,8 +1,11 @@
 package com.example.keys.aman.notes.addnote;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.Comparator;
 
-public class AddNoteDataHelperClass {
+public class AddNoteDataHelperClass implements Parcelable {
     String date, title, note;
     boolean isHideNote, isPinned;
 
@@ -24,7 +27,42 @@ public class AddNoteDataHelperClass {
         }
     };
 
-    public String getDate() {
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        // Write the values of the fields to the parcel
+        parcel.writeString(date);
+        parcel.writeString(title);
+        parcel.writeString(note);
+        parcel.writeByte((byte) (isHideNote ? 1 : 0));
+        parcel.writeByte((byte) (isPinned ? 1 : 0));
+    }
+
+    public static final Parcelable.Creator<AddNoteDataHelperClass> CREATOR = new Parcelable.Creator<AddNoteDataHelperClass>() {
+        @Override
+        public AddNoteDataHelperClass createFromParcel(Parcel in) {
+            // Read the values of the fields from the parcel
+            String date = in.readString();
+            String title = in.readString();
+            String note = in.readString();
+            boolean isHideNote = in.readByte() != 0;
+            boolean isPinned = in.readByte() != 0;
+
+            // Create a new AddNoteDataHelperClass object with the values from the parcel
+            return new AddNoteDataHelperClass(date, title, note, isHideNote, isPinned);
+        }
+
+        @Override
+        public AddNoteDataHelperClass[] newArray(int size) {
+            return new AddNoteDataHelperClass[size];
+        }
+    };
+
+        public String getDate() {
         return date;
     }
 
@@ -63,4 +101,5 @@ public class AddNoteDataHelperClass {
     public void setPinned(boolean pinned) {
         isPinned = pinned;
     }
+
 }

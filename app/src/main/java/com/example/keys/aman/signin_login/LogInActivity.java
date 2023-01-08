@@ -78,11 +78,13 @@ public class LogInActivity extends AppCompatActivity {
     public final String SHARED_PREF_ALL_DATA = "All data";
     private final String IS_LOGIN = "islogin";
     private final String IS_FIRST_TIME = "0";
-    private final String REQUEST_CODE_NAME = "request_code";
+    public final String REQUEST_CODE_NAME = "request_code";
+    public static final String REQUEST_ID = "LogInActivity";
 
 
     String UID;
     private boolean turn = false;
+    public GoogleSignInOptions gso;
 
 
     @Override
@@ -210,7 +212,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private void createRequest() {
         // Configure Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
@@ -345,7 +347,7 @@ public class LogInActivity extends AppCompatActivity {
                                             });
                                             SplashActivity.isForeground = true;
                                             Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
-                                            intent.putExtra(REQUEST_CODE_NAME, "setpin");
+                                            intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
                                             intent.putExtra("title", "Set 6 digit Pin");
                                             startActivity(intent);
 //                                            }

@@ -15,12 +15,12 @@ import com.example.keys.R;
 
 import java.util.ArrayList;
 
-public abstract class myadaptorforaddpassword extends RecyclerView.Adapter<myadaptorforaddpassword.myviewholder> {
+public abstract class PasswordAdaptor extends RecyclerView.Adapter<PasswordAdaptor.myviewholder> {
     final ArrayList<WebsiteHelperClass> dataholder;
     final Context context;
     Activity activity;
 
-    public myadaptorforaddpassword(ArrayList<WebsiteHelperClass> dataholder, Context context, Activity activity) {
+    public PasswordAdaptor(ArrayList<WebsiteHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
         this.context = context;
         this.activity = activity;

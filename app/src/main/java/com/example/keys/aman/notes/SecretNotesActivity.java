@@ -68,7 +68,7 @@ public class SecretNotesActivity extends AppCompatActivity {
             comingRequestCode = "this";
         }
 
-        if (comingRequestCode.equals("LogInActivity")) {
+        if (comingRequestCode.equals(LogInActivity.REQUEST_ID)) {
         }
 
         Handler handler = new Handler();
@@ -98,18 +98,18 @@ public class SecretNotesActivity extends AppCompatActivity {
 
     public void recyclerViewSetData() {
         RecyclerView recyclerView;
-        myadaptorfornote adaptor;
+        NoteAdapterForUnpinned adaptor;
         ArrayList<AddNoteDataHelperClass> dataholder;
 
 
-        recyclerView = findViewById(R.id.recview);
+        recyclerView = findViewById(R.id.recview_website_list);
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         dataholder = new ArrayList<>();
-        adaptor = new myadaptorfornote(dataholder, getApplicationContext(),this){
+        adaptor = new NoteAdapterForUnpinned(dataholder, getApplicationContext(),this){
             @Override
             public void resetAdaptor(){
                 dataholder.clear();

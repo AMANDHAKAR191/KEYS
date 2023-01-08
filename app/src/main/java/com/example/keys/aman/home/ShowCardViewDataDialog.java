@@ -32,7 +32,7 @@ import androidx.fragment.app.Fragment;
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.PinLockActivity;
-import com.example.keys.aman.home.addpassword.AddPasswordDataActivity;
+import com.example.keys.aman.home.addpassword.AddPasswordActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.rewarded.RewardItem;
@@ -46,7 +46,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Objects;
 
-public class ShowCardViewDataActivity extends Fragment {
+public class ShowCardViewDataDialog extends Fragment {
     TextView tvDisplayLogin, tvDisplayWebsite, tvTitle, tvWebsiteTitle;
     TextInputEditText tietDisplayPassword;
     TextInputLayout tilDisplayPassword;
@@ -57,14 +57,16 @@ public class ShowCardViewDataActivity extends Fragment {
     Activity activity;
     ActivityResultLauncher<Intent> getResult;
     LogInActivity logInActivity = new LogInActivity();
+    public static final String REQUEST_ID = "ShowCardViewDataDialog";
+
 
     String comingDate, comingLoginName, comingLoginPassword, comingLoginWebsiteName, comingLoginWebsiteLink;
     private Bitmap bmWebsiteLogo;
     private Bitmap emptyBitmap;
 
 
-    public ShowCardViewDataActivity(Context context, Activity activity, String currentDate, String tempLogin, String tempPassword,
-                                    String dWebsiteName, String dWebsiteLink) {
+    public ShowCardViewDataDialog(Context context, Activity activity, String currentDate, String tempLogin, String tempPassword,
+                                  String dWebsiteName, String dWebsiteLink) {
         this.context = context;
         this.activity = activity;
         this.comingDate = currentDate;
@@ -73,7 +75,7 @@ public class ShowCardViewDataActivity extends Fragment {
         this.comingLoginWebsiteName = dWebsiteName;
         this.comingLoginWebsiteLink = dWebsiteLink;
     }
-    public ShowCardViewDataActivity() {
+    public ShowCardViewDataDialog() {
     }
 
     @Nullable
@@ -154,7 +156,7 @@ public class ShowCardViewDataActivity extends Fragment {
                         Toast.makeText(context, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
                     }
                     Intent intent1 = new Intent(context, PinLockActivity.class);
-                    intent1.putExtra(logInActivity.getREQUEST_CODE_NAME(), "ShowCardViewDataActivity");
+                    intent1.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
                     intent1.putExtra("title", "Enter 6 digit Pin");
                     getResult.launch(intent1);
 
@@ -193,8 +195,8 @@ public class ShowCardViewDataActivity extends Fragment {
     }
 
     public void editdata() {
-        Intent intent = new Intent(context, AddPasswordDataActivity.class);
-        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "ShowCardViewDataActivity");
+        Intent intent = new Intent(context, AddPasswordActivity.class);
+        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
         intent.putExtra("date", comingDate);
         intent.putExtra("loginname", comingLoginName);
         intent.putExtra("loginpassowrd", comingLoginPassword);
@@ -204,7 +206,7 @@ public class ShowCardViewDataActivity extends Fragment {
     }
     public void goBack() {
 //        getFragmentManager().beginTransaction().remove(ShowCardviewDataActivity.this).commit();
-        getParentFragmentManager().beginTransaction().remove(ShowCardViewDataActivity.this).commit();
+        getParentFragmentManager().beginTransaction().remove(ShowCardViewDataDialog.this).commit();
     }
 //    public void openWebsite(View view) {
 //        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(addPasswordData.addWebsiteLink));

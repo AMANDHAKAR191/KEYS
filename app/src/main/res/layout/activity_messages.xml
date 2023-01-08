@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".aman.messages.MessagesActivity">
+    android:background="@drawable/rounded_thems3"
+    tools:context=".aman.messages.MessagesFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recview_user_chat_list"

@@ -25,6 +25,7 @@ import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.AppLockCounterClass;
 import com.example.keys.aman.base.TabLayoutActivity;
+import com.example.keys.aman.home.addpassword.AddPasswordActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
@@ -46,6 +47,8 @@ import java.util.regex.Pattern;
 public class PasswordGeneratorActivity extends AppCompatActivity {
 
     public static RewardedAd mRewardedAd;
+    public static final String REQUEST_ID = "PasswordGeneratorActivity";
+
 
     final FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     final DatabaseReference myRef = firebaseDatabase.getReference("usedPassword");
@@ -100,9 +103,9 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
         if (comingRequestCode == null) {
             comingRequestCode = "fromAppsShortcut";
         }
-        if (comingRequestCode.equals("HomeActivity")) {
+        if (comingRequestCode.equals(TabLayoutActivity.REQUEST_ID)) {
             btnUsePassword.setVisibility(View.INVISIBLE);
-        } else if (comingRequestCode.equals("addPasswordData")) {
+        } else if (comingRequestCode.equals(AddPasswordActivity.REQUEST_ID)) {
             btnUsePassword.setVisibility(View.VISIBLE);
         } else if (comingRequestCode.equals("fromAppsShortcut")) {
             btnUsePassword.setVisibility(View.INVISIBLE);
@@ -128,6 +131,7 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String textViewpassword = tvPassword.getText().toString();
                 Intent intentresult = getIntent();
+                intentresult.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                 intentresult.putExtra("saved_Password", generatedPassword);
                 setResult(RESULT_OK, intentresult);
                 finish();

@@ -50,22 +50,24 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-public class AddPasswordDataActivity extends AppCompatActivity {
+public class AddPasswordActivity extends AppCompatActivity {
 
-    TextInputLayout tilLogin, tilPassword, tilWebsite, tilWebsitelink;
-    TextInputEditText tietAddLoginData, tietAddPasswordData, tietAddWebsiteData, tietAddWebsiteLinkData;
+    public static final String REQUEST_ID = "PasswordGeneratorActivity";
+
+    TextInputLayout tilUsername, tilPassword, tilWebsiteName, tilWebsitelink;
+    TextInputEditText tietUsername, tietPassword, tietWebsiteName, tietWebsitelink;
     Button btnSubmit, btnGenratePassword;
     ImageView imgBack;
     TextView tvError;
     ScrollView scrollView1, scrollView2;
     SharedPreferences sharedPreferences;
-    public static myadaptorforaddpassword adaptor;
+    public static PasswordAdaptor adaptor;
     ActivityResultLauncher<Intent> getResult;
     private PrograceBar prograceBar;
     LogInActivity logInActivity = new LogInActivity();
     TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
     //todo 2 object calling of AppLockCounterClass
-    AppLockCounterClass appLockCounterClass = new AppLockCounterClass(AddPasswordDataActivity.this, AddPasswordDataActivity.this);
+    AppLockCounterClass appLockCounterClass = new AppLockCounterClass(AddPasswordActivity.this, AddPasswordActivity.this);
 
 
     private String uid;
@@ -98,21 +100,21 @@ public class AddPasswordDataActivity extends AppCompatActivity {
         SplashActivity.isForeground = false;
 
 
-        tilLogin = findViewById(R.id.til_addlogindata);
-        tilPassword = findViewById(R.id.til_addpassworddata);
-        tilWebsite = findViewById(R.id.til_addwebsitedata);
-        tilWebsitelink = findViewById(R.id.til_addwebsitelinkdata);
+        tilUsername = findViewById(R.id.til_username);
+        tilPassword = findViewById(R.id.til_password);
+        tietWebsiteName = findViewById(R.id.til_website_name);
+        tilWebsitelink = findViewById(R.id.til_website_link);
         btnSubmit = findViewById(R.id.btn_submit);
         btnSubmit.setText("Submit");
         imgBack = findViewById(R.id.img_back);
-        tietAddLoginData = findViewById(R.id.tiet_addlogindata);
-        tietAddPasswordData = findViewById(R.id.tiet_addpassworddata);
-        tietAddWebsiteData = findViewById(R.id.tiet_addwebsitedata);
-        tietAddWebsiteLinkData = findViewById(R.id.tiet_addwebsitelinkdata);
-        btnGenratePassword = findViewById(R.id.bt_genrate_password);
+        tietUsername = findViewById(R.id.tiet_website_name);
+        tietPassword = findViewById(R.id.tiet_password);
+        tietWebsiteName = findViewById(R.id.tiet_website_name);
+        tietWebsitelink = findViewById(R.id.tiet_website_link);
+        btnGenratePassword = findViewById(R.id.btn_generate_password);
         tvError = findViewById(R.id.tv_error);
-        scrollView1 = findViewById(R.id.sv_recview);
-        scrollView2 = findViewById(R.id.sv_filldata);
+        scrollView1 = findViewById(R.id.sv_website_list);
+        scrollView2 = findViewById(R.id.sv_fill_data);
 
         btnGenratePassword.setVisibility(View.GONE);
 
@@ -133,13 +135,13 @@ public class AddPasswordDataActivity extends AppCompatActivity {
 
         switch (comingRequestCode) {
             case "ShowCardViewDataActivity":
-                tietAddWebsiteLinkData.setEnabled(comingLoginWebsiteLink.equals(""));
+                tietWebsitelink.setEnabled(comingLoginWebsiteLink.equals(""));
                 btnSubmit.setText("Update");
-                tietAddLoginData.setText(comingLoginName);
-                tietAddPasswordData.setText(comingLoginPassword);
-                tietAddWebsiteData.setText(comingLoginWebsiteName);
-                tietAddWebsiteLinkData.setText(comingLoginWebsiteLink);
-                tietAddWebsiteData.setEnabled(false);
+                tietUsername.setText(comingLoginName);
+                tietPassword.setText(comingLoginPassword);
+                tietWebsiteName.setText(comingLoginWebsiteName);
+                tietWebsitelink.setText(comingLoginWebsiteLink);
+                tietWebsiteName.setEnabled(false);
                 scrollView1.setVisibility(View.GONE);
                 scrollView2.setVisibility(View.VISIBLE);
                 break;
@@ -149,7 +151,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
                 String website = intent1.getStringExtra("loginwebsite");
                 scrollView1.setVisibility(View.GONE);
                 scrollView2.setVisibility(View.VISIBLE);
-                tietAddWebsiteData.setText(website);
+                tietWebsiteName.setText(website);
                 break;
             case "HomeActivity":
                 scrollView1.setVisibility(View.VISIBLE);
@@ -161,7 +163,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
         }
 
 
-        tietAddPasswordData.setOnTouchListener(new View.OnTouchListener() {
+        tietPassword.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 btnGenratePassword.setVisibility(View.VISIBLE);
@@ -177,9 +179,9 @@ public class AddPasswordDataActivity extends AppCompatActivity {
             public void run() {
                 if (mInterstitialAd != null) {
                     SplashActivity.isForeground = true;
-                    mInterstitialAd.show(AddPasswordDataActivity.this);
+                    mInterstitialAd.show(AddPasswordActivity.this);
                 } else {
-                    Toast.makeText(AddPasswordDataActivity.this, "The interstitial ad wasn't ready yet.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddPasswordActivity.this, "The interstitial ad wasn't ready yet.", Toast.LENGTH_LONG).show();
                 }
             }
         }, 1000);
@@ -195,10 +197,10 @@ public class AddPasswordDataActivity extends AppCompatActivity {
                         try {
                             data = result.getData();
                             String resultdata = Objects.requireNonNull(data).getStringExtra("saved_Password");
-                            tietAddPasswordData.setText(resultdata);
+                            tietPassword.setText(resultdata);
                         } catch (Exception e) {
                             String resultdata = " ";
-                            tietAddPasswordData.setText(resultdata);
+                            tietPassword.setText(resultdata);
                         }
 
 
@@ -216,9 +218,9 @@ public class AddPasswordDataActivity extends AppCompatActivity {
 
 
     private void addData() {
-        String addLogin = Objects.requireNonNull(tilLogin.getEditText()).getText().toString().trim();
+        String addLogin = Objects.requireNonNull(tilUsername.getEditText()).getText().toString().trim();
         String addPassword = Objects.requireNonNull(tilPassword.getEditText()).getText().toString();
-        String addWebsiteName = Objects.requireNonNull(tilWebsite.getEditText()).getText().toString().toLowerCase().trim();
+        String addWebsiteName = Objects.requireNonNull(tilWebsiteName.getEditText()).getText().toString().toLowerCase().trim();
         String addWebsiteLink = Objects.requireNonNull(tilWebsitelink.getEditText()).getText().toString().toLowerCase().trim();
 
 
@@ -251,10 +253,10 @@ public class AddPasswordDataActivity extends AppCompatActivity {
             if (comingRequestCode.equals("ShowCardViewDataActivity")) {
                 AddPasswordDataHelperClass = new AddPasswordDataHelperClass(comingDate, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, comingLoginWebsiteLink);
                 addDataRef.child(comingDate).setValue(AddPasswordDataHelperClass);
-                Toast.makeText(AddPasswordDataActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddPasswordActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
 
 
-                Intent intent = new Intent(AddPasswordDataActivity.this, HomeFragment.class);
+                Intent intent = new Intent(AddPasswordActivity.this, HomeFragment.class);
                 intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "addPasswordData");
                 startActivity(intent);
                 finish();
@@ -262,12 +264,12 @@ public class AddPasswordDataActivity extends AppCompatActivity {
             } else if (comingRequestCode.equals("HomeActivity")) {
                 AddPasswordDataHelperClass = new AddPasswordDataHelperClass(currentDateAndTime, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, addWebsiteLink);
                 addDataRef.child(currentDateAndTime).setValue(AddPasswordDataHelperClass);
-                Toast.makeText(AddPasswordDataActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddPasswordActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
             }
 
             //todo 5 if app is going to another activity make isForeground = true
             SplashActivity.isForeground = true;
-            Intent intent1 = new Intent(AddPasswordDataActivity.this, TabLayoutActivity.class);
+            Intent intent1 = new Intent(AddPasswordActivity.this, TabLayoutActivity.class);
             intent1.putExtra(logInActivity.getREQUEST_CODE_NAME(), "addPasswordData");
             startActivity(intent1);
             finish();
@@ -295,7 +297,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
     public void generatePassword(View view) {
         //todo 5 if app is going to another activity make isForeground = true
         SplashActivity.isForeground = true;
-        Intent intent = new Intent(AddPasswordDataActivity.this, PasswordGeneratorActivity.class);
+        Intent intent = new Intent(AddPasswordActivity.this, PasswordGeneratorActivity.class);
         intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "addPasswordData");
         getResult.launch(intent);
     }
@@ -311,21 +313,21 @@ public class AddPasswordDataActivity extends AppCompatActivity {
         ArrayList<WebsiteHelperClass> dataholder;
 
 
-        recyclerView = findViewById(R.id.recview);
+        recyclerView = findViewById(R.id.recview_website_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         dataholder = new ArrayList<>();
-        adaptor = new myadaptorforaddpassword(dataholder, getApplicationContext(), this) {
+        adaptor = new PasswordAdaptor(dataholder, getApplicationContext(), this) {
             @Override
             public void onPictureClick(String dwebsiteLink, String dwebsitename) {
 
                 scrollView1.setVisibility(View.INVISIBLE);
                 scrollView2.setVisibility(View.VISIBLE);
-                tietAddWebsiteData.setText(dwebsitename);
+                tietWebsiteName.setText(dwebsitename);
 //                addWebsiteLink = dwebsiteLink;
                 if (!dwebsitename.equals("other")) {
-                    tietAddWebsiteLinkData.setText(dwebsiteLink);
-                    tietAddWebsiteLinkData.setEnabled(false);
+                    tietWebsiteName.setText(dwebsiteLink);
+                    tietWebsitelink.setEnabled(false);
                 }
             }
         };
@@ -401,7 +403,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
 //        websiteHelper data11 = new websiteHelper(fun(s11), s11);
 //        databaseReference.child(data11.getWebsite_name()).setValue(data11);
         prograceBar.dismissbar();
-        Toast.makeText(AddPasswordDataActivity.this, "website added successfully!!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(AddPasswordActivity.this, "website added successfully!!", Toast.LENGTH_SHORT).show();
 
 
     }
@@ -428,7 +430,7 @@ public class AddPasswordDataActivity extends AppCompatActivity {
     }
 
     public void progressbar() {
-        prograceBar = new PrograceBar(AddPasswordDataActivity.this);
+        prograceBar = new PrograceBar(AddPasswordActivity.this);
         prograceBar.showDialog();
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {

@@ -6,6 +6,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
+import com.example.keys.aman.notes.NoteAdapterForUnpinned;
+import com.example.keys.aman.notes.NotesFragment;
+import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -25,24 +30,37 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
-public class myAdaptorForUserList extends RecyclerView.Adapter<myAdaptorForUserList.myViewHolder> {
+public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myViewHolder> {
 
+    private AddNoteDataHelperClass noteData;
     ArrayList<UserPersonalChatList> dataHolder;
-    MessagesActivity messagesActivity = new MessagesActivity();
     LogInActivity logInActivity = new LogInActivity();
+    public static final String REQUEST_ID = "UserListAdapter";
     Context context;
     Activity activity;
     DatabaseReference reference;
     SharedPreferences sharedPreferences;
+    Bundle args;
 
-    public myAdaptorForUserList() {
+    public UserListAdapter() {
     }
 
-    public myAdaptorForUserList(ArrayList<UserPersonalChatList> dataHolder, Context context, Activity activity) {
+    public UserListAdapter(ArrayList<UserPersonalChatList> dataHolder, Context context, Activity activity) {
         this.dataHolder = dataHolder;
         this.context = context;
         this.activity = activity;
         sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+    }
+
+    public UserListAdapter(ArrayList<UserPersonalChatList> dataHolder, Context context, Activity activity, Bundle args) {
+        this.dataHolder = dataHolder;
+        this.context = context;
+        this.activity = activity;
+        this.args = args;
+        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        // Retrieve the note data
+        noteData = args.getParcelable(NotesFragment.shareNoteCode);
+        Log.e("shareNote", "Check4: UserListAdapter: " + noteData);
     }
 
     @NonNull
@@ -76,6 +94,7 @@ public class myAdaptorForUserList extends RecyclerView.Adapter<myAdaptorForUserL
 
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                 intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
                 intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
                 activity.startActivity(intent);
@@ -85,6 +104,13 @@ public class myAdaptorForUserList extends RecyclerView.Adapter<myAdaptorForUserL
             @Override
             public boolean onLongClick(View view) {
                 holder.llSelector.setVisibility(View.VISIBLE);
+                SplashActivity.isForeground = true;
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, NoteAdapterForUnpinned.REQUEST_ID);
+                intent.putExtra("noteData", noteData);
+                intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
+                intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
+                activity.startActivity(intent);
                 return false;
             }
         });

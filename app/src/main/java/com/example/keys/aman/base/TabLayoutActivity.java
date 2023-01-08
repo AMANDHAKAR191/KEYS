@@ -23,9 +23,9 @@ import com.example.keys.aman.authentication.AppLockCounterClass;
 import com.example.keys.aman.authentication.PinLockActivity;
 import com.example.keys.aman.home.HomeFragment;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
-import com.example.keys.aman.home.addpassword.AddPasswordDataActivity;
+import com.example.keys.aman.home.addpassword.AddPasswordActivity;
 import com.example.keys.aman.messages.AddContactEmailDialogFragment;
-import com.example.keys.aman.messages.MessagesActivity;
+import com.example.keys.aman.messages.MessagesFragment;
 import com.example.keys.aman.notes.NotesFragment;
 import com.example.keys.aman.notes.addnote.AddNotesActivity;
 import com.example.keys.aman.settings.SettingFragment;
@@ -33,6 +33,8 @@ import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
@@ -40,6 +42,8 @@ public class TabLayoutActivity extends AppCompatActivity {
 
     private static final String TAG = "TabLayoutActivity";
     public final String LOCK_APP_OPTIONS = "lock_app";
+    public static final String REQUEST_ID = "TabLayoutActivity";
+
     //objects
     private TabLayout tabLayout;
     TextView tvTitle;
@@ -77,6 +81,8 @@ public class TabLayoutActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
+
+//        System.out.println("args: TabLayout: " + savedInstanceState.getString(logInActivity.REQUEST_CODE_NAME));
 
         groupFabAll = findViewById(R.id.group_fab_all);
         groupFabHome = findViewById(R.id.group_fab_home);
@@ -133,8 +139,8 @@ public class TabLayoutActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
-                Intent intent = new Intent(getApplicationContext(), AddPasswordDataActivity.class);
-                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
+                Intent intent = new Intent(getApplicationContext(), AddPasswordActivity.class);
+                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -145,7 +151,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                 //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), PasswordGeneratorActivity.class);
-                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
+                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -156,7 +162,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                 //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), AddNotesActivity.class);
-                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
+                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -179,11 +185,9 @@ public class TabLayoutActivity extends AppCompatActivity {
 //                overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
 //            }
 //        });
-
-
         ViewPagerAdaptor viewPagerAdaptor = new ViewPagerAdaptor(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         viewPagerAdaptor.addFragment(new HomeFragment(TabLayoutActivity.this, TabLayoutActivity.this));
-        viewPagerAdaptor.addFragment(new MessagesActivity(TabLayoutActivity.this, TabLayoutActivity.this));
+        viewPagerAdaptor.addFragment(new MessagesFragment(TabLayoutActivity.this, TabLayoutActivity.this, savedInstanceState));
         viewPagerAdaptor.addFragment(new NotesFragment(TabLayoutActivity.this, TabLayoutActivity.this));
         viewPagerAdaptor.addFragment(new SettingFragment(TabLayoutActivity.this, TabLayoutActivity.this));
         viewPager.setAdapter(viewPagerAdaptor);
@@ -192,6 +196,8 @@ public class TabLayoutActivity extends AppCompatActivity {
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.chat);
         Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.notes);
         Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.settings);
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
         Objects.requireNonNull(tabLayout.getTabAt(0)).setText("Home");
         tabLayout.setUnboundedRipple(true);
 
@@ -203,7 +209,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                     case 0:
                         selectedTab = 1;
                         Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Home");
-                        tvTitle.setText("HOME");
+                        tvTitle.setText("Hello 👋\n" + user.getDisplayName());
                         break;
                     case 1:
                         selectedTab = 2;
@@ -288,7 +294,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                             //todo 4 if app is going to another activity make isForeground = true
                             SplashActivity.isForeground = true;
                             Intent intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
-                            intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(), "notesActivity");
+                            intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
                             intent3.putExtra("title", "Enter 6 digit Pin");
                             startActivity(intent3);
                             clickCounter = 0;
@@ -303,7 +309,7 @@ public class TabLayoutActivity extends AppCompatActivity {
             }
         });
 
-        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.primary_dark));
+        tabLayout.setSelectedTabIndicatorColor(getResources().getColor(R.color.secondaryDarkColor));
 
         setFabVisibility();
 

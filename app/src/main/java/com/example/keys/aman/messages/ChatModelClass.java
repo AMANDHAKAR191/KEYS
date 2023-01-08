@@ -1,85 +1,71 @@
 package com.example.keys.aman.messages;
 
+import com.example.keys.aman.home.addpassword.AddPasswordDataHelperClass;
+import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
+
 public class ChatModelClass {
-    String message,dateAndTime, publicUid;;
-    String addDataLogin, addDataPassword, addWebsite_name;
-    String title, note;
+    String message,dateAndTime, publicUid, type;
+    AddPasswordDataHelperClass PasswordModelClass;
+    AddNoteDataHelperClass noteModelClass;
+
 
     public ChatModelClass() {
     }
 
-    public ChatModelClass(String message, String dateAndTime, String publicUid, String addDataLogin, String addDataPassword, String addWebsite_name, String title, String note) {
+    public ChatModelClass(String message, String dateAndTime, String publicUid, String type, AddPasswordDataHelperClass passwordModelClass, AddNoteDataHelperClass noteModelClass) {
         this.message = message;
         this.dateAndTime = dateAndTime;
         this.publicUid = publicUid;
-        this.addDataLogin = addDataLogin;
-        this.addDataPassword = addDataPassword;
-        this.addWebsite_name = addWebsite_name;
-        this.title = title;
-        this.note = note;
+        this.type = type;
+        PasswordModelClass = passwordModelClass;
+        this.noteModelClass = noteModelClass;
     }
 
     public String getMessage() {
         return message;
     }
 
-    public String getDateAndTime() {
-        return dateAndTime;
-    }
-
-    public String getPublicUid() {
-        return publicUid;
-    }
-
-    public String getAddDataLogin() {
-        return addDataLogin;
-    }
-
-    public String getAddDataPassword() {
-        return addDataPassword;
-    }
-
-    public String getAddWebsite_name() {
-        return addWebsite_name;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getNote() {
-        return note;
-    }
-
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getDateAndTime() {
+        return dateAndTime;
     }
 
     public void setDateAndTime(String dateAndTime) {
         this.dateAndTime = dateAndTime;
     }
 
+    public String getPublicUid() {
+        return publicUid;
+    }
+
     public void setPublicUid(String publicUid) {
         this.publicUid = publicUid;
     }
 
-    public void setAddDataLogin(String addDataLogin) {
-        this.addDataLogin = addDataLogin;
+    public String getType() {
+        return type;
     }
 
-    public void setAddDataPassword(String addDataPassword) {
-        this.addDataPassword = addDataPassword;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public void setAddWebsite_name(String addWebsite_name) {
-        this.addWebsite_name = addWebsite_name;
+    public AddPasswordDataHelperClass getPasswordModelClass() {
+        return PasswordModelClass;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setPasswordModelClass(AddPasswordDataHelperClass passwordModelClass) {
+        PasswordModelClass = passwordModelClass;
     }
 
-    public void setNote(String note) {
-        this.note = note;
+    public AddNoteDataHelperClass getNoteModelClass() {
+        return noteModelClass;
+    }
+
+    public void setNoteModelClass(AddNoteDataHelperClass noteModelClass) {
+        this.noteModelClass = noteModelClass;
     }
 }

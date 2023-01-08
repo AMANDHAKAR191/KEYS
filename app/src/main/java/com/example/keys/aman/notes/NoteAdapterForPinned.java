@@ -33,15 +33,16 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
 
-public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPinnedNote.myviewholder> {
+public class NoteAdapterForPinned extends RecyclerView.Adapter<NoteAdapterForPinned.myviewholder> {
     final ArrayList<AddNoteDataHelperClass> dataholder;
     final ArrayList<AddNoteDataHelperClass> dataholderfilter;
     final Context context;
     Activity activity;
     AES aes = new AES();
     LogInActivity logInActivity = new LogInActivity();
+    public static final String REQUEST_ID = "NoteAdapter";
 
-    public myAdaptorForPinnedNote(ArrayList<AddNoteDataHelperClass> dataholder, Context context, Activity activity) {
+    public NoteAdapterForPinned(ArrayList<AddNoteDataHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
         this.context = context;
         this.activity = activity;
@@ -95,7 +96,7 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
                 public void onClick(View v) {
                     SplashActivity.isForeground = true;
                     Intent intent = new Intent(context, AddNotesActivity.class);
-                    intent.putExtra("request_code", "notesCardView");
+                    intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                     intent.putExtra("date", noteDate);
                     intent.putExtra("hide note", isHideNote);
                     intent.putExtra("title", doubleDecryptedNoteTitle);
@@ -110,7 +111,7 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
                 public void onClick(View v) {
                     SplashActivity.isForeground = true;
                     Intent intent = new Intent(context, AddNotesActivity.class);
-                    intent.putExtra("request_code", "notesCardView");
+                    intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                     intent.putExtra("date", noteDate);
                     intent.putExtra("hide note", isHideNote);
                     intent.putExtra("title", doubleDecryptedNoteTitle);
@@ -125,7 +126,7 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
                 public void onClick(View v) {
                     SplashActivity.isForeground = true;
                     Intent intent = new Intent(context, AddNotesActivity.class);
-                    intent.putExtra("request_code", "notesCardView");
+                    intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                     intent.putExtra("date", noteDate);
                     intent.putExtra("hide note", isHideNote);
                     intent.putExtra("title", doubleDecryptedNoteTitle);
@@ -140,7 +141,7 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
                 public void onClick(View v) {
                     SplashActivity.isForeground = true;
                     Intent intent = new Intent(context, AddNotesActivity.class);
-                    intent.putExtra("request_code", "notesCardView");
+                    intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                     intent.putExtra("date", noteDate);
                     intent.putExtra("hide note", isHideNote);
                     intent.putExtra("title", doubleDecryptedNoteTitle);
@@ -168,6 +169,9 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
                         case R.id.item_pin:
                             NotesFragment.reference.child(noteDate).child("pinned").setValue(false);
                             holder.refreshRecViewCall();
+                        case R.id.img_share_note:
+                            AddNoteDataHelperClass noteData = dataholder.get(position);
+                            holder.shareNotesCall(noteData);
 
                     }
                     return false;
@@ -210,12 +214,16 @@ public class myAdaptorForPinnedNote extends RecyclerView.Adapter<myAdaptorForPin
         public void refreshRecViewCall(){
             refreshRecView();
         }
-
+        public void shareNotesCall(AddNoteDataHelperClass noteData) {
+            shareNotes(noteData);
+        }
     }
 
     //create new abstract method
     public void resetPinnedAdaptor() {
     }
     public void refreshRecView(){
+    }
+    public void shareNotes(AddNoteDataHelperClass noteData){
     }
 }

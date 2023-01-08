@@ -77,7 +77,7 @@ public class HomeFragment extends Fragment {
         //Hooks
 
         scrollView = view.findViewById(R.id.scrollView);
-        recview = view.findViewById(R.id.recview);
+        recview = view.findViewById(R.id.recview_website_list);
         searchView = view.findViewById(R.id.search_bar);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         tvNOTE = view.findViewById(R.id.tv_NOTE);
@@ -141,7 +141,6 @@ public class HomeFragment extends Fragment {
 
 
     public void recyclerviewsetdata() {
-        System.out.println("in recyclerviewsetdata()");
 
         databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata")
                 .child(uid);
@@ -189,7 +188,7 @@ public class HomeFragment extends Fragment {
 
                 FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fl_container, new ShowCardViewDataActivity(context, activity, currentDate, tempLogin,
+                fragmentTransaction.replace(R.id.fl_container, new ShowCardViewDataDialog(context, activity, currentDate, tempLogin,
                         tempPassword, dWebsiteName, dWebsiteLink));
                 fragmentTransaction.commit();
             }

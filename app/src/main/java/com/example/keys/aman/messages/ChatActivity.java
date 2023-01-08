@@ -7,8 +7,10 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,6 +23,8 @@ import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.AppLockCounterClass;
 import com.example.keys.aman.base.TabLayoutActivity;
+import com.example.keys.aman.notes.NoteAdapterForUnpinned;
+import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.example.keys.databinding.ActivityChatBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -59,6 +63,9 @@ public class ChatActivity extends AppCompatActivity {
 
     ChatAdaptor chatAdaptor;
     public String senderRoom, receiverRoom;
+    private AddNoteDataHelperClass noteData;
+    private Intent intentResult;
+    private DatabaseReference reference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,15 +73,30 @@ public class ChatActivity extends AppCompatActivity {
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
 
         //todo 3 when is coming from background or foreground always make isForeground false
         SplashActivity.isForeground = false;
 
 
 
-        Intent intentResult = getIntent();
-        receiverPublicUid = intentResult.getStringExtra("receiver_public_uid");
-        receiverPublicUname = intentResult.getStringExtra("receiver_public_uname");
+        intentResult = getIntent();
+        String comingFromActivity = intentResult.getStringExtra(logInActivity.REQUEST_CODE_NAME);
+
+        Toast.makeText(this, "comingFromActivity" + comingFromActivity, Toast.LENGTH_SHORT).show();
+        if (comingFromActivity.equals(UserListAdapter.REQUEST_ID)){
+            receiverPublicUid = intentResult.getStringExtra("receiver_public_uid");
+            receiverPublicUname = intentResult.getStringExtra("receiver_public_uname");
+        }else if (comingFromActivity.equals(NoteAdapterForUnpinned.REQUEST_ID)){
+            receiverPublicUid = intentResult.getStringExtra("receiver_public_uid");
+            receiverPublicUname = intentResult.getStringExtra("receiver_public_uname");
+            noteData = intentResult.getParcelableExtra("noteData");
+            Log.e("shareNote", "Check5: ChatActivity: " +noteData);
+            binding.tilMessage.setEnabled(false);
+//            binding.tietMessage.setText("Note: " + noteData.getTitle() + "is sharing with " + receiverPublicUname);
+        }
+
+
         senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID, null);
         System.out.println(senderPublicUid + "\t" + receiverPublicUid);
         senderPublicUname = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
@@ -99,68 +121,8 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String message = binding.tilMessage.getEditText().getText().toString();
-                if (message.equals("")) {
+                sendMessage(message);
 
-                } else {
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-                    currentDateAndTime = sdf.format(new Date());
-                    System.out.println("Dateandtime: " + currentDateAndTime);
-                    DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
-                    reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage")
-                            .addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                }
-
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-
-                    ChatModelClass chatModelClass = new ChatModelClass(message, currentDateAndTime, senderPublicUid, ".", ".", ".", ".", ".");
-                    binding.tietMessage.setText("");
-                    DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference().child("messages");
-                    referenceSender.child(senderRoom).push().setValue(chatModelClass)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-//                                setSenderMessageStatus("01");
-                                    DatabaseReference referenceReceiver = FirebaseDatabase.getInstance().getReference().child("messages");
-                                    referenceReceiver.child(receiverRoom).push()
-                                            .setValue(chatModelClass)
-                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void unused) {
-
-                                                    FCMNotificationSender notificationSender =
-                                                            new FCMNotificationSender("/topics/"+receiverPublicUid, senderPublicUid, message, ChatActivity.this, ChatActivity.this);
-                                                    notificationSender.sendNotification();
-
-                                                    UserPersonalChatList personalChatList = new UserPersonalChatList(senderPublicUid, senderPublicUname, true, ".");
-
-                                                    reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).setValue(personalChatList);
-//                                                setSenderMessageStatus("11");
-                                                    // Set last message in userList
-                                                    String lastMessage;
-                                                    if (message.length() > 6) {
-                                                        lastMessage = message.substring(0, 6) + "...";
-                                                    } else {
-                                                        lastMessage = message;
-                                                    }
-
-                                                    reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage").setValue(lastMessage)
-                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void unused) {
-
-                                                                }
-                                                            });
-                                                }
-                                            });
-                                }
-                            });
-                }
             }
         });
         binding.imgBack.setOnClickListener(new View.OnClickListener() {
@@ -234,7 +196,72 @@ public class ChatActivity extends AppCompatActivity {
 
                     }
                 });
+        int lastPosition = dataHolderChatMessages.size() - 1;
+        if (lastPosition >= 0 && lastPosition < dataHolderChatMessages.size()) {
+            binding.recviewChat.smoothScrollToPosition(lastPosition);
+        }
 
+    }
+
+    private void sendMessage(String message) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
+        currentDateAndTime = sdf.format(new Date());
+        System.out.println("Dateandtime: " + currentDateAndTime);
+
+        reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
+        ChatModelClass chatModelClass = new ChatModelClass(message, currentDateAndTime, senderPublicUid,"text", null, noteData);
+        binding.tietMessage.setText("");
+        DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference().child("messages");
+        referenceSender.child(senderRoom).push().setValue(chatModelClass)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+//                                setSenderMessageStatus("01");
+                        DatabaseReference referenceReceiver = FirebaseDatabase.getInstance().getReference().child("messages");
+                        referenceReceiver.child(receiverRoom).push()
+                                .setValue(chatModelClass)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void unused) {
+
+                                        FCMNotificationSender notificationSender =
+                                                new FCMNotificationSender("/topics/"+receiverPublicUid, senderPublicUid, message, ChatActivity.this, ChatActivity.this);
+                                        notificationSender.sendNotification();
+
+                                        UserPersonalChatList personalChatList = new UserPersonalChatList(senderPublicUid, senderPublicUname, true, ".");
+
+                                        reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).setValue(personalChatList);
+//                                                setSenderMessageStatus("11");
+                                        // Set last message in userList
+                                        String lastMessage;
+                                        if (message.length() > 6) {
+                                            lastMessage = message.substring(0, 6) + "...";
+                                        } else {
+                                            lastMessage = message;
+                                        }
+
+                                        reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage").setValue(lastMessage)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+
+                                                    }
+                                                });
+                                    }
+                                });
+                    }
+                });
     }
 
     public void createNotification(String tempReceiverPublicUid, String tempReceiverPublicUname) {
@@ -296,9 +323,4 @@ public class ChatActivity extends AppCompatActivity {
         //todo 11 do anything
         SplashActivity.isForeground = true;
     }
-    //    public void setSenderMessageStatus(String status){
-//        onSetSenderMessageStatus(status);
-//    }
-//
-//    public abstract void onSetSenderMessageStatus(String status);
 }

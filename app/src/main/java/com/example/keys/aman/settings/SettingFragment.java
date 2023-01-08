@@ -31,6 +31,7 @@ import com.example.keys.aman.authentication.BiometricAuthActivity;
 import com.example.keys.aman.authentication.PinLockActivity;
 import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
+import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -56,6 +57,7 @@ public class SettingFragment extends Fragment {
     CircleImageView cimgProfile;
     AutofillManager mAutofillManager;
     private static final int REQUEST_CODE_SET_DEFAULT = 1;
+    public static final String REQUEST_ID = "SettingFragment";
     private String s1;
     int checkedItem = 0;
     LogInActivity logInActivity = new LogInActivity();
@@ -63,7 +65,7 @@ public class SettingFragment extends Fragment {
     TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
     Intent serviceIntent;
     String currentUserName, currentUserEmail;
-
+    private GoogleSignInApi mGoogleSignInClient;
 
 
     public SettingFragment(Context context, Activity activity) {
@@ -96,7 +98,7 @@ public class SettingFragment extends Fragment {
         tvDevice1 = view.findViewById(R.id.tv_devices1);
         tvDevice2 = view.findViewById(R.id.tv_devices2);
         tvDevice3 = view.findViewById(R.id.tv_devices3);
-        imgBack = view.findViewById(R.id.img_back);
+//        imgBack = view.findViewById(R.id.img_back);
         btnLogout = view.findViewById(R.id.btn_logout);
         cimgProfile = view.findViewById(R.id.img_profile);
         tvProfileName = view.findViewById(R.id.tv_profile_name);
@@ -113,6 +115,14 @@ public class SettingFragment extends Fragment {
             public void onClick(View v) {
                 SplashActivity.isForeground = true;
                 FirebaseAuth.getInstance().signOut();
+
+//                mGoogleSignInClient.signOut()
+//                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<Void> task) {
+//                                // User is signed out and their access has been revoked
+//                            }
+//                        });
 
                 SharedPreferences.Editor editor1 = sharedPreferences.edit();
                 editor1.putBoolean(logInActivity.getIS_LOGIN(), false);
@@ -131,7 +141,7 @@ public class SettingFragment extends Fragment {
                 SplashActivity.isForeground = true;
                 boolean ispin_set = sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(), false);
                 Intent intent = new Intent(context, PinLockActivity.class);
-                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "changepin");
+                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
                 intent.putExtra("title", "Enter Old Pin");
                 startActivity(intent);
             }

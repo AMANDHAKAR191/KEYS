@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,10 +17,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
+import com.example.keys.aman.messages.MessagesFragment;
 import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +45,7 @@ public class NotesFragment extends Fragment {
     public ArrayList<AddNoteDataHelperClass> dataHolderPinned, dataHolderUnpinned;
     RecyclerView recyclerViewPinned, recyclerViewUnpinned;
     LogInActivity logInActivity = new LogInActivity();
+    public static final String shareNoteCode = "noteData";
 
     public NotesFragment(Context context, Activity activity) {
         this.context = context;
@@ -52,8 +57,8 @@ public class NotesFragment extends Fragment {
 
     SharedPreferences sharedPreferences;
     public static DatabaseReference reference;
-    public static myadaptorfornote adaptorUnpinned;
-    public static myAdaptorForPinnedNote adaptorPinned;
+    public static NoteAdapterForUnpinned adaptorUnpinned;
+    public static NoteAdapterForPinned adaptorPinned;
     TextView tvNote, tvPinned, tvUnpinned;
     SearchView searchView;
 
@@ -67,7 +72,7 @@ public class NotesFragment extends Fragment {
         sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
 
         //Hooks
-        searchView = view.findViewById(R.id.search_bar);
+//        searchView = view.findViewById(R.id.search_bar);
         tvNote = view.findViewById(R.id.tv_NOTE);
         tvPinned = view.findViewById(R.id.tv_pinned);
         tvUnpinned = view.findViewById(R.id.tv_unpinned);
@@ -121,7 +126,7 @@ public class NotesFragment extends Fragment {
         recyclerViewUnpinned.setLayoutManager(new LinearLayoutManager(context));
 
         dataHolderUnpinned = new ArrayList<>();
-        adaptorUnpinned = new myadaptorfornote(dataHolderUnpinned, context, activity) {
+        adaptorUnpinned = new NoteAdapterForUnpinned(dataHolderUnpinned, context, activity) {
             @Override
             public void resetAdaptor() {
                 dataHolderUnpinned.clear();
@@ -133,6 +138,29 @@ public class NotesFragment extends Fragment {
             public void refreshRecView() {
                 dataHolderUnpinned.clear();
                 dataHolderPinned.clear();
+            }
+
+            @Override
+            public void shareNotes(AddNoteDataHelperClass noteData) {
+                super.shareNotes(noteData);
+                Log.e("shareNote", "Check2: NotesFragment: " +noteData);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                MessagesFragment messagesFragment = new MessagesFragment(context, activity);
+
+
+                // Create a new bundle to store the data
+                Bundle data = new Bundle();
+
+                // Put the note data in the bundle
+                data.putString(logInActivity.REQUEST_CODE_NAME,REQUEST_ID);
+                data.putParcelable(shareNoteCode, noteData);
+
+                // Set the arguments on the fragment
+                messagesFragment.setArguments(data);
+                fragmentTransaction.add(R.id.fl_container, messagesFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         };
         recyclerViewUnpinned.setAdapter(adaptorUnpinned);
@@ -174,7 +202,7 @@ public class NotesFragment extends Fragment {
         recyclerViewPinned.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
 
         dataHolderPinned = new ArrayList<>();
-        adaptorPinned = new myAdaptorForPinnedNote(dataHolderPinned, context, activity) {
+        adaptorPinned = new NoteAdapterForPinned(dataHolderPinned, context, activity) {
             @Override
             public void resetPinnedAdaptor() {
                 dataHolderPinned.clear();
@@ -186,6 +214,25 @@ public class NotesFragment extends Fragment {
             public void refreshRecView() {
                 dataHolderPinned.clear();
                 dataHolderUnpinned.clear();
+            }
+
+            @Override
+            public void shareNotes(AddNoteDataHelperClass noteData) {
+                super.shareNotes(noteData);
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                // Create a new bundle to store the data
+                Bundle args = new Bundle();
+                // Put the note data in the bundle
+                args.putParcelable("noteData", noteData);
+
+                MessagesFragment messagesFragment = new MessagesFragment(context, activity, args);
+
+                // Set the arguments on the fragment
+                messagesFragment.setArguments(args);
+                fragmentTransaction.add(R.id.fl_container, messagesFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         };
         recyclerViewPinned.setAdapter(adaptorPinned);

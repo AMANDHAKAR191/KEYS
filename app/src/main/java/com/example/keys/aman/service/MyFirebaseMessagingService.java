@@ -14,7 +14,7 @@ import android.os.Vibrator;
 
 import androidx.core.app.NotificationCompat;
 
-import com.example.keys.aman.messages.MessagesActivity;
+import com.example.keys.aman.messages.MessagesFragment;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -57,7 +57,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
 
-        Intent resultIntent = new Intent(this, MessagesActivity.class);
+        Intent resultIntent = new Intent(this, MessagesFragment.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 1, resultIntent, PendingIntent.FLAG_IMMUTABLE);
 
 
