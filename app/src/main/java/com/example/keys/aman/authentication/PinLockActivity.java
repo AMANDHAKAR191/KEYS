@@ -100,10 +100,10 @@ public class PinLockActivity extends AppCompatActivity {
                             Toast.makeText(PinLockActivity.this, "Pin Set", Toast.LENGTH_SHORT).show();
 
                             Intent intent = new Intent(getApplicationContext(), TabLayoutActivity.class);
+                            Bundle args = new Bundle();
+                            args.putString(logInActivity.REQUEST_CODE_NAME, LogInActivity.REQUEST_ID);
                             intent.putExtra("result", "yes");
-                            Bundle data = new Bundle();
-                            data.putString(logInActivity.REQUEST_CODE_NAME,LogInActivity.REQUEST_ID);
-                            startActivity(intent);
+                            startActivity(intent, args);
                         }else {
                             tvTitle.setText("Wrong Pin");
                             mPinLockView.resetPinLockView();
@@ -111,7 +111,7 @@ public class PinLockActivity extends AppCompatActivity {
                             vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
                             Intent intent = new Intent(PinLockActivity.this, PinLockActivity.class);
                             // for confirm the pin we have open the same page again
-                            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), LogInActivity.REQUEST_ID);
+                            intent.putExtra(logInActivity.REQUEST_CODE_NAME, LogInActivity.REQUEST_ID);
                             intent.putExtra("title", "Set 6 digit pin");
                             startActivity(intent);
                         }
@@ -122,7 +122,7 @@ public class PinLockActivity extends AppCompatActivity {
                     if (pin.equals(PIN)) {
                         Intent intent = new Intent(PinLockActivity.this, PinLockActivity.class);
                         //for change the pin After verifying the pin we have use same process as we used at the time of login
-                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), LogInActivity.REQUEST_ID);
+                        intent.putExtra(logInActivity.REQUEST_CODE_NAME, LogInActivity.REQUEST_ID);
                         intent.putExtra("title", "Set 6 digit pin");
                         startActivity(intent);
                         finish();
@@ -175,7 +175,7 @@ public class PinLockActivity extends AppCompatActivity {
 //        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.fragment_pin_lock);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         //Hooks
@@ -193,7 +193,7 @@ public class PinLockActivity extends AppCompatActivity {
 
         //Hide mobile no and
         Intent intent = getIntent();
-        comingRequestCode = intent.getStringExtra(logInActivity.getREQUEST_CODE_NAME());
+        comingRequestCode = intent.getStringExtra(logInActivity.REQUEST_CODE_NAME);
         if (comingRequestCode == null) {
             comingRequestCode = "this";
         }

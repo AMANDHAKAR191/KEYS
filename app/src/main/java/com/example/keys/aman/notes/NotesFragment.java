@@ -19,12 +19,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
+import com.example.keys.aman.MyViewModel;
 import com.example.keys.aman.messages.MessagesFragment;
-import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
+import com.example.keys.aman.notes.addnote.NoteHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -42,10 +44,12 @@ public class NotesFragment extends Fragment {
     Context context;
     Activity activity;
     //    private SwipeRefreshLayout swipeRefreshLayout;
-    public ArrayList<AddNoteDataHelperClass> dataHolderPinned, dataHolderUnpinned;
+    public ArrayList<NoteHelperClass> dataHolderPinned, dataHolderUnpinned;
     RecyclerView recyclerViewPinned, recyclerViewUnpinned;
     LogInActivity logInActivity = new LogInActivity();
     public static final String shareNoteCode = "noteData";
+    public static final String REQUEST_ID = "NotesFragment";
+    private MyViewModel viewModel;
 
     public NotesFragment(Context context, Activity activity) {
         this.context = context;
@@ -69,7 +73,8 @@ public class NotesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_notes, container, false);
-        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        viewModel = new ViewModelProvider(requireActivity()).get(MyViewModel.class);
 
         //Hooks
 //        searchView = view.findViewById(R.id.search_bar);
@@ -141,23 +146,23 @@ public class NotesFragment extends Fragment {
             }
 
             @Override
-            public void shareNotes(AddNoteDataHelperClass noteData) {
+            public void shareNotes(NoteHelperClass noteData) {
                 super.shareNotes(noteData);
+                //
+                viewModel.setData(noteData);
+
                 Log.e("shareNote", "Check2: NotesFragment: " +noteData);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 MessagesFragment messagesFragment = new MessagesFragment(context, activity);
-
-
-                // Create a new bundle to store the data
-                Bundle data = new Bundle();
-
-                // Put the note data in the bundle
-                data.putString(logInActivity.REQUEST_CODE_NAME,REQUEST_ID);
-                data.putParcelable(shareNoteCode, noteData);
-
-                // Set the arguments on the fragment
-                messagesFragment.setArguments(data);
+//                // Create a new bundle to store the data
+//                Bundle data = new Bundle();
+//                // Put the note data in the bundle
+//                data.putString(logInActivity.REQUEST_CODE_NAME,REQUEST_ID);
+//                data.putParcelable(shareNoteCode, noteData);
+//
+//                // Set the arguments on the fragment
+//                messagesFragment.setArguments(data);
                 fragmentTransaction.add(R.id.fl_container, messagesFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
@@ -169,7 +174,7 @@ public class NotesFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        AddNoteDataHelperClass data = ds.getValue(AddNoteDataHelperClass.class);
+                        NoteHelperClass data = ds.getValue(NoteHelperClass.class);
                         assert data != null;
                         if (data.isHideNote()) {
 
@@ -182,7 +187,7 @@ public class NotesFragment extends Fragment {
                         }
 
                     }
-                    Collections.sort(dataHolderUnpinned, AddNoteDataHelperClass.addDNoteHelperClassComparator);
+                    Collections.sort(dataHolderUnpinned, NoteHelperClass.addDNoteHelperClassComparator);
                     adaptorUnpinned.notifyDataSetChanged();
                 } else {
                     tvNote.setVisibility(View.VISIBLE);
@@ -217,7 +222,7 @@ public class NotesFragment extends Fragment {
             }
 
             @Override
-            public void shareNotes(AddNoteDataHelperClass noteData) {
+            public void shareNotes(NoteHelperClass noteData) {
                 super.shareNotes(noteData);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -241,7 +246,7 @@ public class NotesFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        AddNoteDataHelperClass data = ds.getValue(AddNoteDataHelperClass.class);
+                        NoteHelperClass data = ds.getValue(NoteHelperClass.class);
                         assert data != null;
                         if (data.isHideNote()) {
                         } else {
@@ -254,7 +259,7 @@ public class NotesFragment extends Fragment {
                         }
 
                     }
-                    Collections.sort(dataHolderPinned, AddNoteDataHelperClass.addDNoteHelperClassComparator);
+                    Collections.sort(dataHolderPinned, NoteHelperClass.addDNoteHelperClassComparator);
                     adaptorPinned.notifyDataSetChanged();
                 } else {
                     tvNote.setVisibility(View.VISIBLE);

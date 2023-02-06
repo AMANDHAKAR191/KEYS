@@ -9,16 +9,10 @@
         android:id="@+id/lenear_layout_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
+        android:layout_margin="20dp"
         android:background="@drawable/rounded_thems1"
         android:elevation="5dp"
-        android:orientation="vertical"
-        android:padding="10dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        android:orientation="vertical">
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/cardview_more"
@@ -26,7 +20,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:src="@drawable/ic_baseline_more_vert_24"
-                app:menu="@menu/cardview_notes_menu">
+                app:menu="@menu/cardview_catactivity_notes_menu">
 
                 <TextView
                     android:id="@+id/tv_title"
@@ -39,7 +33,6 @@
                     android:textSize="18dp"
                     android:textStyle="bold" />
             </androidx.appcompat.widget.Toolbar>
-        </LinearLayout>
 
         <TextView
             android:id="@+id/tv_note"
@@ -49,15 +42,6 @@
             android:maxLines="2"
             android:text="Note"
             android:textColor="?attr/colorOnSecondary" />
-
-        <TextView
-            android:id="@+id/tv_date"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:gravity="end"
-            android:text="Date"
-            android:textColor="?attr/colorOnSecondary"
-            android:textSize="12dp" />
 
     </LinearLayout>
 

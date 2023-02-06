@@ -61,7 +61,7 @@ public class AddNotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notes);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
@@ -77,7 +77,7 @@ public class AddNotesActivity extends AppCompatActivity {
 
         //Hide mobile no and
         Intent intent = getIntent();
-        comingRequestCode = intent.getStringExtra(logInActivity.getREQUEST_CODE_NAME());
+        comingRequestCode = intent.getStringExtra(logInActivity.REQUEST_CODE_NAME);
         if (comingRequestCode == null) {
             comingRequestCode = "this";
         }
@@ -161,19 +161,19 @@ public class AddNotesActivity extends AppCompatActivity {
         }
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
-        AddNoteDataHelperClass addDNoteHelper;
+        NoteHelperClass addDNoteHelper;
         if (comingRequestCode.equals("notesCardView")) {
-            addDNoteHelper = new AddNoteDataHelperClass(comingDate, titleDecrypted, noteDecrypted, isHideNote, false);
+            addDNoteHelper = new NoteHelperClass(comingDate, titleDecrypted, noteDecrypted, isHideNote, false);
             reference.child(comingDate).setValue(addDNoteHelper);
         } else {
-            addDNoteHelper = new AddNoteDataHelperClass(currentDateAndTime, titleDecrypted, noteDecrypted, isHideNote, true);
+            addDNoteHelper = new NoteHelperClass(currentDateAndTime, titleDecrypted, noteDecrypted, isHideNote, true);
             reference.child(currentDateAndTime).setValue(addDNoteHelper);
         }
         Toast.makeText(AddNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
         //todo 6 if app is going to another activity make isForeground = true
         SplashActivity.isForeground = true;
         Intent intent = new Intent(AddNotesActivity.this, TabLayoutActivity.class);
-        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "addNotesActivity");
+        intent.putExtra(logInActivity.REQUEST_CODE_NAME, "addNotesActivity");
         startActivity(intent);
         finish();
         overridePendingTransition(0, R.anim.slide_out_down);

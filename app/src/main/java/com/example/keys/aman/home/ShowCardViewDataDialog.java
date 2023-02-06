@@ -156,7 +156,7 @@ public class ShowCardViewDataDialog extends Fragment {
                         Toast.makeText(context, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
                     }
                     Intent intent1 = new Intent(context, PinLockActivity.class);
-                    intent1.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
+                    intent1.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                     intent1.putExtra("title", "Enter 6 digit Pin");
                     getResult.launch(intent1);
 
@@ -196,7 +196,7 @@ public class ShowCardViewDataDialog extends Fragment {
 
     public void editdata() {
         Intent intent = new Intent(context, AddPasswordActivity.class);
-        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
+        intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
         intent.putExtra("date", comingDate);
         intent.putExtra("loginname", comingLoginName);
         intent.putExtra("loginpassowrd", comingLoginPassword);

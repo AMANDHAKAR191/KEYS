@@ -7,9 +7,9 @@
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
     <application
         android:allowBackup="false"
         android:icon="@mipmap/keys_privacy_louncher_icon"
@@ -35,15 +35,13 @@
         </service>
         <service
             android:name=".aman.service.MyFirebaseMessagingService"
-            android:permission="TODO"
-            android:exported="true">
+            android:exported="true"
+            android:permission="TODO">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-
-        <!-- <service android:name=".aman.service.MyBackgroundService"></service> -->
-<!--        <service android:name=".aman.service.MyForegroundService" /> &lt;!&ndash; <receiver &ndash;&gt;-->
+        </service> <!-- <service android:name=".aman.service.MyBackgroundService"></service> -->
+        <!-- <service android:name=".aman.service.MyForegroundService" /> &lt;!&ndash; <receiver &ndash;&gt; -->
         <!-- android:name=".aman.service.MyBroadcastReceiver" -->
         <!-- android:exported="true"> -->
         <!-- <intent-filter> -->

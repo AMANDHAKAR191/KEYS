@@ -38,7 +38,7 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
         this.context = context;
         this.activity = activity;
         this.comingRequestCode = comingRequestCode;
-        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
     }
 
     public void startAuth(FingerprintManager fingerprintManager, FingerprintManager.CryptoObject cryptoObject) {
@@ -99,14 +99,14 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
                     if (!ispinset) {
                         SplashActivity.isForeground = true;
                         Intent intent = new Intent(context, PinLockActivity.class);
-                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
+                        intent.putExtra(logInActivity.REQUEST_CODE_NAME, "setpin");
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("title", "Set Pin");
                         activity.startActivity(intent);
 
                     } else {
                         Intent intent = new Intent(context, TabLayoutActivity.class);
-                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), comingRequestCode);
+                        intent.putExtra(logInActivity.REQUEST_CODE_NAME, comingRequestCode);
                         context.startActivity(intent);
                         activity.finish();
                     }
@@ -120,13 +120,13 @@ public class FingerPrintHandler extends FingerprintManager.AuthenticationCallbac
                     editor2.apply();
 
                     Intent intent1 = new Intent(context, SecretNotesActivity.class);
-                    intent1.putExtra(logInActivity.getREQUEST_CODE_NAME(), comingRequestCode);
+                    intent1.putExtra(logInActivity.REQUEST_CODE_NAME, comingRequestCode);
                     context.startActivity(intent1);
                     activity.finish();
                     break;
                 case "HomeActivity":
                     Intent intent2 = new Intent(context, TabLayoutActivity.class);
-                    intent2.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
+                    intent2.putExtra(logInActivity.REQUEST_CODE_NAME, "HomeActivity");
                     context.startActivity(intent2);
                     activity.finish();
                     break;

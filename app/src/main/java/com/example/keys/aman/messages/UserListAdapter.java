@@ -6,8 +6,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,9 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
-import com.example.keys.aman.notes.NoteAdapterForUnpinned;
-import com.example.keys.aman.notes.NotesFragment;
-import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
+import com.example.keys.aman.notes.addnote.NoteHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
@@ -32,7 +28,7 @@ import java.util.ArrayList;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myViewHolder> {
 
-    private AddNoteDataHelperClass noteData;
+    private NoteHelperClass noteData;
     ArrayList<UserPersonalChatList> dataHolder;
     LogInActivity logInActivity = new LogInActivity();
     public static final String REQUEST_ID = "UserListAdapter";
@@ -40,27 +36,24 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myView
     Activity activity;
     DatabaseReference reference;
     SharedPreferences sharedPreferences;
-    Bundle args;
 
     public UserListAdapter() {
     }
 
-    public UserListAdapter(ArrayList<UserPersonalChatList> dataHolder, Context context, Activity activity) {
-        this.dataHolder = dataHolder;
-        this.context = context;
-        this.activity = activity;
-        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
-    }
+//    public UserListAdapter(ArrayList<UserPersonalChatList> dataHolder, Context context, Activity activity) {
+//        this.dataHolder = dataHolder;
+//        this.context = context;
+//        this.activity = activity;
+//        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+//    }
 
-    public UserListAdapter(ArrayList<UserPersonalChatList> dataHolder, Context context, Activity activity, Bundle args) {
+    public UserListAdapter(ArrayList<UserPersonalChatList> dataHolder, Context context, Activity activity, NoteHelperClass noteData) {
         this.dataHolder = dataHolder;
         this.context = context;
         this.activity = activity;
-        this.args = args;
-        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         // Retrieve the note data
-        noteData = args.getParcelable(NotesFragment.shareNoteCode);
-        Log.e("shareNote", "Check4: UserListAdapter: " + noteData);
+        this.noteData = noteData;
     }
 
     @NonNull
@@ -79,7 +72,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myView
         holder.tvLastMessage.setText(dataHolder.get(position).getLastMessage());
         reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
 
-        holder.tvPublicUid.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String receiverPublicUid = dataHolder.get(position).getOtherUserPublicUid();
@@ -100,17 +93,13 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myView
                 activity.startActivity(intent);
             }
         });
-        holder.tvPublicUid.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
+                holder.onItemSelectedCall(position);
                 holder.llSelector.setVisibility(View.VISIBLE);
                 SplashActivity.isForeground = true;
-                Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra(logInActivity.REQUEST_CODE_NAME, NoteAdapterForUnpinned.REQUEST_ID);
-                intent.putExtra("noteData", noteData);
-                intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
-                intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
-                activity.startActivity(intent);
+
                 return false;
             }
         });
@@ -135,5 +124,12 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myView
             tvLastMessage = itemView.findViewById(R.id.tv_last_message);
             llSelector = itemView.findViewById(R.id.ll_selector);
         }
+
+        public void onItemSelectedCall(int position) {
+            onItemSelected(position);
+        }
     }
+
+    //
+    public void onItemSelected(int position){}
 }

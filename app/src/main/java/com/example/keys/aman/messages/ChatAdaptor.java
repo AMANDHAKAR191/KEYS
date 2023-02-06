@@ -5,6 +5,7 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
+import com.example.keys.aman.AES;
 import com.example.keys.aman.signin_login.LogInActivity;
 
 import java.text.DateFormat;
@@ -39,6 +41,7 @@ public class ChatAdaptor extends RecyclerView.Adapter {
     final int PASSWORD_VIEW_TYPE = 4;
 
     String chatType = "text";
+    private AES aes = new AES();
 
     public ChatAdaptor() {
     }
@@ -47,6 +50,8 @@ public class ChatAdaptor extends RecyclerView.Adapter {
         this.dataHolder = dataHolder;
         this.context = context;
         this.activity = activity;
+        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
     }
 
     @NonNull
@@ -61,7 +66,7 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                 view = LayoutInflater.from(context).inflate(R.layout.layout_receiver_message, parent, false);
                 return new ReceiverViewHolder(view);
             case NOTE_VIEW_TYPE:
-                view = LayoutInflater.from(context).inflate(R.layout.note_cardview_layout, parent, false);
+                view = LayoutInflater.from(context).inflate(R.layout.note_share_cardview_layout, parent, false);
                 return new NoteViewHolder(view);
             default:
                 view = LayoutInflater.from(context).inflate(R.layout.cardview_layout, parent, false);
@@ -72,14 +77,13 @@ public class ChatAdaptor extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
-        if (chatType.equals("text")) {
+        if (dataHolder.get(position).getType().equals("text")) {
             if (dataHolder.get(position).getPublicUid().equals(sharedPreferences.getString(logInActivity.PUBLIC_UID, null))) {
                 return SENDER_VIEW_TYPE;
             } else {
                 return RECEIVER_VIEW_TYPE;
             }
-        } else if (chatType.equals("note")) {
+        } else if (dataHolder.get(position).getType().equals("note")) {
             return NOTE_VIEW_TYPE;
         } else {
             return PASSWORD_VIEW_TYPE;
@@ -89,15 +93,38 @@ public class ChatAdaptor extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        chatType = dataHolder.get(position).getType();
+        String noteTitle, noteBody, decryptedNoteTitle, decryptedNoteBody, doubleDecryptedNoteTitle, doubleDecryptedNoteBody;
+
         try {
             if (holder.getClass() == SenderViewHolder.class) {
+                Log.e("ChatActivity", "SenderViewHolder");
                 ((SenderViewHolder) holder).tvSenderMessage.setText(dataHolder.get(position).getMessage());
                 DateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
                 DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                 String dateAndTime1 = sdf.format(Objects.requireNonNull(inputsdf.parse(dataHolder.get(position).getDateAndTime())));
                 ((SenderViewHolder) holder).tvSenderTimeStamp.setText(dateAndTime1);
+            }else if (holder.getClass() == NoteViewHolder.class){
+                Log.e("ChatActivity", "NoteViewHolder => text");
+                Log.e("ChatActivity", "NoteViewHolder => " + dataHolder.get(position).getType());
+                if (dataHolder.get(position).getType().equals("note")){
+                    Log.e("ChatActivity", "NoteViewHolder: note");
+                    noteBody = dataHolder.get(position).getNoteModelClass().getNote();
+                    noteTitle = dataHolder.get(position).getNoteModelClass().getTitle();
+                    //Double Decryption
+                    decryptedNoteTitle = aes.decrypt(noteTitle);
+                    doubleDecryptedNoteTitle = aes.decrypt(decryptedNoteTitle);
+                    decryptedNoteBody = aes.decrypt(noteBody);
+                    doubleDecryptedNoteBody = aes.decrypt(decryptedNoteBody);
+
+                    System.out.println(doubleDecryptedNoteTitle);
+                    System.out.println(doubleDecryptedNoteBody);
+
+                    ((NoteViewHolder) holder).tvNote.setText(doubleDecryptedNoteBody);
+                    ((NoteViewHolder) holder).tvTitle.setText(doubleDecryptedNoteTitle);
+                    System.out.println(dataHolder.get(position).getNoteModelClass());
+                }
             } else {
+                Log.e("ChatActivity", "ReceiverViewHolder");
                 ((ReceiverViewHolder) holder).tvReceiverMessage.setText(dataHolder.get(position).getMessage());
                 DateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
                 DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());

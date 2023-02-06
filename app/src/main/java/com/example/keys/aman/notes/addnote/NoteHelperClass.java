@@ -5,14 +5,14 @@ import android.os.Parcelable;
 
 import java.util.Comparator;
 
-public class AddNoteDataHelperClass implements Parcelable {
+public class NoteHelperClass implements Parcelable {
     String date, title, note;
     boolean isHideNote, isPinned;
 
-    public AddNoteDataHelperClass() {
+    public NoteHelperClass() {
     }
 
-    public AddNoteDataHelperClass(String date, String title, String note, boolean isHideNote, boolean isPinned) {
+    public NoteHelperClass(String date, String title, String note, boolean isHideNote, boolean isPinned) {
         this.date = date;
         this.title = title;
         this.note = note;
@@ -20,9 +20,9 @@ public class AddNoteDataHelperClass implements Parcelable {
         this.isPinned = isPinned;
     }
 
-    public static Comparator<AddNoteDataHelperClass> addDNoteHelperClassComparator = new Comparator<AddNoteDataHelperClass>() {
+    public static Comparator<NoteHelperClass> addDNoteHelperClassComparator = new Comparator<NoteHelperClass>() {
         @Override
-        public int compare(AddNoteDataHelperClass a1, AddNoteDataHelperClass a2) {
+        public int compare(NoteHelperClass a1, NoteHelperClass a2) {
             return a2.getDate().compareTo(a1.getDate());
         }
     };
@@ -42,9 +42,9 @@ public class AddNoteDataHelperClass implements Parcelable {
         parcel.writeByte((byte) (isPinned ? 1 : 0));
     }
 
-    public static final Parcelable.Creator<AddNoteDataHelperClass> CREATOR = new Parcelable.Creator<AddNoteDataHelperClass>() {
+    public static final Parcelable.Creator<NoteHelperClass> CREATOR = new Parcelable.Creator<NoteHelperClass>() {
         @Override
-        public AddNoteDataHelperClass createFromParcel(Parcel in) {
+        public NoteHelperClass createFromParcel(Parcel in) {
             // Read the values of the fields from the parcel
             String date = in.readString();
             String title = in.readString();
@@ -53,12 +53,12 @@ public class AddNoteDataHelperClass implements Parcelable {
             boolean isPinned = in.readByte() != 0;
 
             // Create a new AddNoteDataHelperClass object with the values from the parcel
-            return new AddNoteDataHelperClass(date, title, note, isHideNote, isPinned);
+            return new NoteHelperClass(date, title, note, isHideNote, isPinned);
         }
 
         @Override
-        public AddNoteDataHelperClass[] newArray(int size) {
-            return new AddNoteDataHelperClass[size];
+        public NoteHelperClass[] newArray(int size) {
+            return new NoteHelperClass[size];
         }
     };
 

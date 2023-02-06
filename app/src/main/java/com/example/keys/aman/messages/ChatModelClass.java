@@ -1,18 +1,18 @@
 package com.example.keys.aman.messages;
 
 import com.example.keys.aman.home.addpassword.AddPasswordDataHelperClass;
-import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
+import com.example.keys.aman.notes.addnote.NoteHelperClass;
 
 public class ChatModelClass {
     String message,dateAndTime, publicUid, type;
     AddPasswordDataHelperClass PasswordModelClass;
-    AddNoteDataHelperClass noteModelClass;
+    NoteHelperClass noteModelClass;
 
 
     public ChatModelClass() {
     }
 
-    public ChatModelClass(String message, String dateAndTime, String publicUid, String type, AddPasswordDataHelperClass passwordModelClass, AddNoteDataHelperClass noteModelClass) {
+    public ChatModelClass(String message, String dateAndTime, String publicUid, String type, AddPasswordDataHelperClass passwordModelClass, NoteHelperClass noteModelClass) {
         this.message = message;
         this.dateAndTime = dateAndTime;
         this.publicUid = publicUid;
@@ -61,11 +61,11 @@ public class ChatModelClass {
         PasswordModelClass = passwordModelClass;
     }
 
-    public AddNoteDataHelperClass getNoteModelClass() {
+    public NoteHelperClass getNoteModelClass() {
         return noteModelClass;
     }
 
-    public void setNoteModelClass(AddNoteDataHelperClass noteModelClass) {
+    public void setNoteModelClass(NoteHelperClass noteModelClass) {
         this.noteModelClass = noteModelClass;
     }
 }

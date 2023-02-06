@@ -21,7 +21,7 @@ import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.AppLockCounterClass;
 import com.example.keys.aman.base.TabLayoutActivity;
-import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
+import com.example.keys.aman.notes.addnote.NoteHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.rewarded.RewardItem;
@@ -53,7 +53,7 @@ public class SecretNotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secret_notes);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
 
@@ -63,7 +63,7 @@ public class SecretNotesActivity extends AppCompatActivity {
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
         Intent intent = getIntent();
-        String comingRequestCode = intent.getStringExtra(logInActivity.getREQUEST_CODE_NAME());
+        String comingRequestCode = intent.getStringExtra(logInActivity.REQUEST_CODE_NAME);
         if (comingRequestCode == null){
             comingRequestCode = "this";
         }
@@ -99,7 +99,7 @@ public class SecretNotesActivity extends AppCompatActivity {
     public void recyclerViewSetData() {
         RecyclerView recyclerView;
         NoteAdapterForUnpinned adaptor;
-        ArrayList<AddNoteDataHelperClass> dataholder;
+        ArrayList<NoteHelperClass> dataholder;
 
 
         recyclerView = findViewById(R.id.recview_website_list);
@@ -124,7 +124,7 @@ public class SecretNotesActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        AddNoteDataHelperClass data = ds.getValue(AddNoteDataHelperClass.class);
+                        NoteHelperClass data = ds.getValue(NoteHelperClass.class);
                         assert data != null;
                         if (data.isHideNote()){
                             dataholder.add(data);
@@ -133,7 +133,7 @@ public class SecretNotesActivity extends AppCompatActivity {
                         }
 
                     }
-                    Collections.sort(dataholder, AddNoteDataHelperClass.addDNoteHelperClassComparator);
+                    Collections.sort(dataholder, NoteHelperClass.addDNoteHelperClassComparator);
                     adaptor.notifyDataSetChanged();
                 } else {
                     tvNote.setVisibility(View.VISIBLE);

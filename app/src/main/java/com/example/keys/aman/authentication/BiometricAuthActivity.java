@@ -37,13 +37,14 @@ public class BiometricAuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biometric_authentication);
-        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
         Intent intent = getIntent();
-        comingRequestCode = intent.getStringExtra(logInActivity.getREQUEST_CODE_NAME());
+        comingRequestCode = intent.getStringExtra(logInActivity.REQUEST_CODE_NAME);
         if (comingRequestCode == null){
             comingRequestCode = "this";
         }
+
 
         BiometricManager biometricManager = BiometricManager.from(this);
         switch (biometricManager.canAuthenticate()){
@@ -55,11 +56,11 @@ public class BiometricAuthActivity extends AppCompatActivity {
                 Intent intent3;
                 if (isPinSet){
                     intent3 = new Intent(BiometricAuthActivity.this, PinLockActivity.class);
-                    intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(),"LogInActivity");
+                    intent3.putExtra(logInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     intent3.putExtra("title","Enter Pin");
                 }else {
                     intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
-                    intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
+                    intent3.putExtra(logInActivity.REQUEST_CODE_NAME, "setpin");
                     intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent3.putExtra("title", "Set Pin");
                 }
@@ -77,11 +78,11 @@ public class BiometricAuthActivity extends AppCompatActivity {
                 Intent intent2;
                 if (ispin_set){
                     intent2 = new Intent(BiometricAuthActivity.this, PinLockActivity.class);
-                    intent2.putExtra(logInActivity.getREQUEST_CODE_NAME(),"LogInActivity");
+                    intent2.putExtra(logInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     intent2.putExtra("title","Enter Pin");
                 }else {
                     intent2 = new Intent(getApplicationContext(), PinLockActivity.class);
-                    intent2.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
+                    intent2.putExtra(logInActivity.REQUEST_CODE_NAME, "setpin");
                     intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent2.putExtra("title", "Set Pin");
                 }
@@ -117,14 +118,14 @@ public class BiometricAuthActivity extends AppCompatActivity {
                         if (!ispinset) {
                             SplashActivity.isForeground = true;
                             Intent intent = new Intent(BiometricAuthActivity.this, PinLockActivity.class);
-                            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "setpin");
+                            intent.putExtra(logInActivity.REQUEST_CODE_NAME, "setpin");
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra("title", "Set Pin");
                             startActivity(intent);
 
                         } else {
                             Intent intent = new Intent(BiometricAuthActivity.this, TabLayoutActivity.class);
-                            intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), comingRequestCode);
+                            intent.putExtra(logInActivity.REQUEST_CODE_NAME, comingRequestCode);
                             startActivity(intent);
                             finish();
                         }
@@ -138,14 +139,15 @@ public class BiometricAuthActivity extends AppCompatActivity {
                         editor2.apply();
 
                         Intent intent1 = new Intent(BiometricAuthActivity.this, SecretNotesActivity.class);
-                        intent1.putExtra(logInActivity.getREQUEST_CODE_NAME(), comingRequestCode);
+                        intent1.putExtra(logInActivity.REQUEST_CODE_NAME, comingRequestCode);
                         startActivity(intent1);
                         finish();
                         break;
                     case "HomeActivity":
                         Intent intent2 = new Intent(BiometricAuthActivity.this, TabLayoutActivity.class);
-                        intent2.putExtra(logInActivity.getREQUEST_CODE_NAME(), "HomeActivity");
-                        startActivity(intent2);
+                        Bundle args = new Bundle();
+                        args.putString(logInActivity.REQUEST_CODE_NAME, LogInActivity.REQUEST_ID);
+                        startActivity(intent2, args);
                         finish();
                         break;
                     case "LockBackGroundApp":
@@ -161,7 +163,8 @@ public class BiometricAuthActivity extends AppCompatActivity {
                 Toast.makeText(BiometricAuthActivity.this, "Login Failed", Toast.LENGTH_SHORT).show();
             }
         });
-        promptInfo = new BiometricPrompt.PromptInfo.Builder().setTitle("KEYS")
+        promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("KEYS")
                 .setDescription("KEYS want to verify your biometric")
                 .setDeviceCredentialAllowed(true).build();
         biometricPrompt.authenticate(promptInfo);

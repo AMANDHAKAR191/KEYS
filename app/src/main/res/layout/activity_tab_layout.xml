@@ -8,58 +8,77 @@
 
     <LinearLayout
         android:id="@+id/ll_toolbar"
-        style="@style/Widget.MaterialComponents.Toolbar.Primary"
+        style="@style/Widget.MaterialComponents.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_weight="100"
-        android:background="@drawable/rounded_thems1"
-        android:elevation="-40dp"
         android:isScrollContainer="false"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/tv_title"
-            style="@style/Widget.MaterialComponents.TextView"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
             android:layout_weight="60"
-            android:fontFamily="@font/aclonica"
-            android:text="@string/home_title"
-            android:textSize="30sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:gravity="center|start"
+            android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/img_keys_icon"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_weight="40"
-            android:contentDescription="@string/keys_logo"
-            android:src="@drawable/keys_privacy" />
+            <TextView
+                android:id="@+id/tv_title"
+                style="@style/Widget.MaterialComponents.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/aclonica"
+                android:text="Hello 👋"
+                android:textSize="16sp"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_title1"
+                style="@style/Widget.MaterialComponents.TextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/aclonica"
+                android:text="Aman"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </LinearLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/img_profile"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_margin="20dp"
+            android:background="@drawable/roundprofilebackground"
+            android:src="@drawable/profile" />
 
     </LinearLayout>
 
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tablayout"
-        style="@style/Widget.MaterialComponents.TabLayout"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:elevation="40dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:tabSelectedTextColor="?attr/colorSecondary">
+        app:tabIndicator="@drawable/tab_indicator_theme"
+        app:tabIndicatorAnimationDuration="@integer/material_motion_duration_medium_1"
+        app:tabIndicatorAnimationMode="elastic"
+        app:tabIndicatorGravity="top"
+        app:tabIndicatorHeight="32dp">
 
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:icon="@drawable/home"
-            android:text="Home" />
+            android:text="Home"
+            tools:layout_editor_absoluteX="-1dp"
+            tools:layout_editor_absoluteY="738dp" />
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
@@ -85,10 +104,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:contentDescription="@string/Vp_contaner"
-        app:layout_constraintTop_toBottomOf="@+id/barrier_toolbar"
         app:layout_constraintBottom_toBottomOf="@+id/guideline_bottom_nav"
-        tools:layout_editor_absoluteX="30dp" >
-    </androidx.viewpager.widget.ViewPager>
+        app:layout_constraintTop_toBottomOf="@+id/barrier_toolbar" />
 
     <LinearLayout
         android:id="@+id/ll_fab"
@@ -96,7 +113,6 @@
         android:layout_height="match_parent"
         android:gravity="bottom"
         android:orientation="vertical"
-        android:translationZ="8dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent">
@@ -110,7 +126,6 @@
         android:layout_gravity="end"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal"
-        android:translationZ="15dp"
         app:layout_constraintBottom_toTopOf="@+id/ll_fab2"
         app:layout_constraintRight_toRightOf="@id/guideline_end">
 
@@ -131,7 +146,7 @@
             android:layout_gravity="center"
             android:contentDescription="@string/FAB_item"
             app:fabSize="normal"
-            app:srcCompat="@drawable/note_add" />
+            app:srcCompat="@drawable/add_note_new_set" />
 
     </LinearLayout>
 
@@ -142,7 +157,6 @@
         android:layout_gravity="end"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal"
-        android:translationZ="15dp"
         app:layout_constraintBottom_toTopOf="@+id/ll_fab3"
         app:layout_constraintRight_toRightOf="@id/guideline_end">
 
@@ -174,7 +188,6 @@
         android:layout_gravity="end"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal"
-        android:translationZ="15dp"
         app:layout_constraintBottom_toTopOf="@+id/ex_fab"
         app:layout_constraintRight_toRightOf="@id/guideline_end">
 
@@ -205,7 +218,6 @@
         android:layout_gravity="end"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal"
-        android:translationZ="15dp"
         app:layout_constraintBottom_toTopOf="@+id/ll_fab1"
         app:layout_constraintRight_toRightOf="@id/guideline_end"
         tools:visibility="gone">
@@ -237,25 +249,11 @@
         android:layout_gravity="end"
         android:contentDescription="@string/FAB_item"
         android:text="@string/item"
-        android:translationZ="15dp"
         android:visibility="visible"
         app:icon="@drawable/add"
         app:layout_constraintBottom_toBottomOf="@id/guideline_bottom_nav"
         app:layout_constraintEnd_toEndOf="@id/guideline_end"
         app:pressedTranslationZ="12dp" />
-
-<!--    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton-->
-<!--        android:id="@+id/ex_fab_notes"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:contentDescription="@string/FAB_item"-->
-<!--        android:text="@string/Notes"-->
-<!--        android:visibility="invisible"-->
-<!--        app:hoveredFocusedTranslationZ="6dp"-->
-<!--        app:icon="@drawable/add"-->
-<!--        app:layout_constraintBottom_toBottomOf="@id/guideline_bottom"-->
-<!--        app:layout_constraintEnd_toEndOf="@id/guideline_end"-->
-<!--        app:pressedTranslationZ="12dp" />-->
 
 
     <androidx.constraintlayout.widget.Guideline

@@ -33,6 +33,7 @@ import com.example.keys.aman.authentication.AppLockCounterClass;
 import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.home.HomeFragment;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
+import com.example.keys.aman.home.ShowCardViewDataDialog;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -52,7 +53,7 @@ import java.util.Objects;
 
 public class AddPasswordActivity extends AppCompatActivity {
 
-    public static final String REQUEST_ID = "PasswordGeneratorActivity";
+    public static final String REQUEST_ID = "AddPasswordActivity";
 
     TextInputLayout tilUsername, tilPassword, tilWebsiteName, tilWebsitelink;
     TextInputEditText tietUsername, tietPassword, tietWebsiteName, tietWebsitelink;
@@ -61,7 +62,7 @@ public class AddPasswordActivity extends AppCompatActivity {
     TextView tvError;
     ScrollView scrollView1, scrollView2;
     SharedPreferences sharedPreferences;
-    public static PasswordAdaptor adaptor;
+    public static WebsiteListAdaptor adaptor;
     ActivityResultLauncher<Intent> getResult;
     private PrograceBar prograceBar;
     LogInActivity logInActivity = new LogInActivity();
@@ -95,14 +96,14 @@ public class AddPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_password_data);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
 
 
         tilUsername = findViewById(R.id.til_username);
         tilPassword = findViewById(R.id.til_password);
-        tietWebsiteName = findViewById(R.id.til_website_name);
+        tilWebsiteName = findViewById(R.id.til_website_name);
         tilWebsitelink = findViewById(R.id.til_website_link);
         btnSubmit = findViewById(R.id.btn_submit);
         btnSubmit.setText("Submit");
@@ -123,7 +124,7 @@ public class AddPasswordActivity extends AppCompatActivity {
 
         //Getting intent
         Intent intent = getIntent();
-        comingRequestCode = intent.getStringExtra(logInActivity.getREQUEST_CODE_NAME());
+        comingRequestCode = intent.getStringExtra(logInActivity.REQUEST_CODE_NAME);
         if (comingRequestCode == null) {
             comingRequestCode = "this";
         }
@@ -134,7 +135,7 @@ public class AddPasswordActivity extends AppCompatActivity {
         comingLoginWebsiteLink = intent.getStringExtra("loginwebsite_link");
 
         switch (comingRequestCode) {
-            case "ShowCardViewDataActivity":
+            case ShowCardViewDataDialog.REQUEST_ID:
                 tietWebsitelink.setEnabled(comingLoginWebsiteLink.equals(""));
                 btnSubmit.setText("Update");
                 tietUsername.setText(comingLoginName);
@@ -145,7 +146,7 @@ public class AddPasswordActivity extends AppCompatActivity {
                 scrollView1.setVisibility(View.GONE);
                 scrollView2.setVisibility(View.VISIBLE);
                 break;
-            case "myadaptorforaddpassword":
+            case WebsiteListAdaptor.REQUEST_ID:
                 Intent intent1 = getIntent();
                 String name = intent1.getStringExtra("loginname");
                 String website = intent1.getStringExtra("loginwebsite");
@@ -153,7 +154,7 @@ public class AddPasswordActivity extends AppCompatActivity {
                 scrollView2.setVisibility(View.VISIBLE);
                 tietWebsiteName.setText(website);
                 break;
-            case "HomeActivity":
+            case TabLayoutActivity.REQUEST_ID:
                 scrollView1.setVisibility(View.VISIBLE);
                 scrollView2.setVisibility(View.GONE);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
@@ -257,7 +258,7 @@ public class AddPasswordActivity extends AppCompatActivity {
 
 
                 Intent intent = new Intent(AddPasswordActivity.this, HomeFragment.class);
-                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "addPasswordData");
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, "addPasswordData");
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
@@ -270,7 +271,7 @@ public class AddPasswordActivity extends AppCompatActivity {
             //todo 5 if app is going to another activity make isForeground = true
             SplashActivity.isForeground = true;
             Intent intent1 = new Intent(AddPasswordActivity.this, TabLayoutActivity.class);
-            intent1.putExtra(logInActivity.getREQUEST_CODE_NAME(), "addPasswordData");
+            intent1.putExtra(logInActivity.REQUEST_CODE_NAME, "addPasswordData");
             startActivity(intent1);
             finish();
             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
@@ -298,7 +299,7 @@ public class AddPasswordActivity extends AppCompatActivity {
         //todo 5 if app is going to another activity make isForeground = true
         SplashActivity.isForeground = true;
         Intent intent = new Intent(AddPasswordActivity.this, PasswordGeneratorActivity.class);
-        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "addPasswordData");
+        intent.putExtra(logInActivity.REQUEST_CODE_NAME, "addPasswordData");
         getResult.launch(intent);
     }
 
@@ -317,7 +318,7 @@ public class AddPasswordActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         dataholder = new ArrayList<>();
-        adaptor = new PasswordAdaptor(dataholder, getApplicationContext(), this) {
+        adaptor = new WebsiteListAdaptor(dataholder, getApplicationContext(), this) {
             @Override
             public void onPictureClick(String dwebsiteLink, String dwebsitename) {
 
@@ -326,7 +327,7 @@ public class AddPasswordActivity extends AppCompatActivity {
                 tietWebsiteName.setText(dwebsitename);
 //                addWebsiteLink = dwebsiteLink;
                 if (!dwebsitename.equals("other")) {
-                    tietWebsiteName.setText(dwebsiteLink);
+                    tietWebsitelink.setText(dwebsiteLink);
                     tietWebsitelink.setEnabled(false);
                 }
             }
@@ -352,7 +353,7 @@ public class AddPasswordActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                System.out.println("check error:" + error.getMessage());
             }
         });
         prograceBar.dismissbar();

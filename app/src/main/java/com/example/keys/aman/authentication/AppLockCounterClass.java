@@ -38,7 +38,7 @@ public class AppLockCounterClass implements AppLockCounter {
                     Log.d(TAG, "Counter Finished");
                     if (SplashActivity.isBackground) {
                         Intent intent = new Intent(context, BiometricAuthActivity.class);
-                        intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
+                        intent.putExtra(logInActivity.REQUEST_CODE_NAME, "LockBackGroundApp");
                         activity.startActivity(intent);
                     }
                     if (SplashActivity.isForeground) {
@@ -55,7 +55,7 @@ public class AppLockCounterClass implements AppLockCounter {
             case 0:
                 if (SplashActivity.isBackground) {
                     Intent intent = new Intent(context, BiometricAuthActivity.class);
-                    intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "LockBackGroundApp");
+                    intent.putExtra(logInActivity.REQUEST_CODE_NAME, "LockBackGroundApp");
                     activity.startActivity(intent);
                 }
                 if (SplashActivity.isForeground) {
@@ -85,7 +85,6 @@ public class AppLockCounterClass implements AppLockCounter {
                 }
                 break;
             case 1:
-                Log.d(TAG, "SplashActivity.isForeground=? " + SplashActivity.isForeground);
                 if (!SplashActivity.isForeground) {
                     //todo 1.1 Here app is going in background
                     SplashActivity.isBackground = true;
@@ -102,7 +101,6 @@ public class AppLockCounterClass implements AppLockCounter {
                     // make this to again false
                     SplashActivity.isForeground = false;
                 }
-                Log.d(TAG, "SplashActivity.isForeground=?? " + SplashActivity.isForeground);
                 break;
             case 2:
                 break;

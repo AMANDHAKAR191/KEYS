@@ -15,12 +15,13 @@ import com.example.keys.R;
 
 import java.util.ArrayList;
 
-public abstract class PasswordAdaptor extends RecyclerView.Adapter<PasswordAdaptor.myviewholder> {
+public abstract class WebsiteListAdaptor extends RecyclerView.Adapter<WebsiteListAdaptor.myviewholder> {
     final ArrayList<WebsiteHelperClass> dataholder;
     final Context context;
     Activity activity;
+    public static final String REQUEST_ID = "WebsiteListAdaptor";
 
-    public PasswordAdaptor(ArrayList<WebsiteHelperClass> dataholder, Context context, Activity activity) {
+    public WebsiteListAdaptor(ArrayList<WebsiteHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
         this.context = context;
         this.activity = activity;

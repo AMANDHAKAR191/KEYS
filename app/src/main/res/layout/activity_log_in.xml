@@ -15,26 +15,11 @@
 
         <TextView
             style="@style/Widget.MaterialComponents.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Welcome"
-            android:textSize="25dp"
-            android:textStyle="bold" />
-
-        <TextView
-            style="@style/Widget.MaterialComponents.TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="To"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-
-        <TextView
-            style="@style/Widget.MaterialComponents.TextView"
-            android:layout_width="wrap_content"
+            android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:fontFamily="@font/aclonica"
-            android:text="KEYS"
+            android:text="Login"
+            android:gravity="center"
             android:textSize="25dp"
             android:textStyle="bold" />
 
@@ -44,43 +29,58 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="100dp"
-            android:text="Log in"
-            android:textSize="25dp" />
-
+            android:text="Login with google"
+            android:textSize="16dp"/>
+        <TextView
+            android:id="@+id/tv_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Don't have account?"
+            android:textSize="12dp" />
+        <Button
+            android:id="@+id/btn_create_account"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:text="Create Account"
+            android:textSize="16dp"
+            android:textColor="?attr/colorOnSecondary" />
         <TextView
             android:id="@+id/tv_error_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Error: "
             android:textColor="@color/design_default_color_error"
             android:textSize="12dp" />
-
-        <Button
-            android:id="@+id/btn_create_account"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="230dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="50dp"
-            android:text="Create Account"
-            android:textColor="?attr/colorOnSecondary" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/title_linear_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintRight_toRightOf="parent"
+        android:orientation="horizontal"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/keys_icon"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_marginTop="10dp"
             android:padding="20dp"
             android:src="@drawable/keys_privacy" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="KEYS"
+            android:textSize="32dp"
+            android:textStyle="bold|italic" />
 
     </LinearLayout>
 

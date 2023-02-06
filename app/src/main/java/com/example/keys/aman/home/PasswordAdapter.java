@@ -41,7 +41,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-public class passwordAdaptor extends RecyclerView.Adapter<passwordAdaptor.myViewHolder> implements Filterable {
+public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.myViewHolder> implements Filterable {
 
     ArrayList<AddPasswordDataHelperClass> dataHolder;
     ArrayList<AddPasswordDataHelperClass> dataHolderFull;
@@ -52,7 +52,9 @@ public class passwordAdaptor extends RecyclerView.Adapter<passwordAdaptor.myView
     private Bitmap emptyBitmap;
     LogInActivity logInActivity = new LogInActivity();
     ChatActivity chatActivity = new ChatActivity();
-    public passwordAdaptor(ArrayList<AddPasswordDataHelperClass> tempDataHolder, Context context, Activity activity) {
+    public static final String REQUEST_ID = "passwordAdaptor";
+
+    public PasswordAdapter(ArrayList<AddPasswordDataHelperClass> tempDataHolder, Context context, Activity activity) {
         this.dataHolder = tempDataHolder;
         this.dataHolderFull = tempDataHolder;
         this.context = context;
@@ -224,7 +226,7 @@ public class passwordAdaptor extends RecyclerView.Adapter<passwordAdaptor.myView
 
         @Override
         public void run() {
-            SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+            SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
             aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
             int p = holder.getAdapterPosition();
             final AddPasswordDataHelperClass temp = dataHolder.get(position);

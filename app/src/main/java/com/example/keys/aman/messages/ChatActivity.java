@@ -4,6 +4,7 @@ import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,10 +26,11 @@ import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.AppLockCounterClass;
 import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.notes.NoteAdapterForUnpinned;
-import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
+import com.example.keys.aman.notes.addnote.NoteHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.example.keys.databinding.ActivityChatBinding;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
@@ -63,36 +66,54 @@ public class ChatActivity extends AppCompatActivity {
 
     ChatAdaptor chatAdaptor;
     public String senderRoom, receiverRoom;
-    private AddNoteDataHelperClass noteData;
+    private NoteHelperClass noteData;
     private Intent intentResult;
     private DatabaseReference reference;
+    private MutableLiveData<NoteHelperClass> data;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
 
         //todo 3 when is coming from background or foreground always make isForeground false
         SplashActivity.isForeground = false;
 
 
-
         intentResult = getIntent();
         String comingFromActivity = intentResult.getStringExtra(logInActivity.REQUEST_CODE_NAME);
 
         Toast.makeText(this, "comingFromActivity" + comingFromActivity, Toast.LENGTH_SHORT).show();
-        if (comingFromActivity.equals(UserListAdapter.REQUEST_ID)){
+        if (comingFromActivity.equals(UserListAdapter.REQUEST_ID)) {
             receiverPublicUid = intentResult.getStringExtra("receiver_public_uid");
             receiverPublicUname = intentResult.getStringExtra("receiver_public_uname");
-        }else if (comingFromActivity.equals(NoteAdapterForUnpinned.REQUEST_ID)){
+        } else if (comingFromActivity.equals(NoteAdapterForUnpinned.REQUEST_ID)) {
             receiverPublicUid = intentResult.getStringExtra("receiver_public_uid");
             receiverPublicUname = intentResult.getStringExtra("receiver_public_uname");
             noteData = intentResult.getParcelableExtra("noteData");
-            Log.e("shareNote", "Check5: ChatActivity: " +noteData);
+            Log.e("shareNote", "Check5: ChatActivity: " + noteData);
             binding.tilMessage.setEnabled(false);
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Alert!")
+                    .setIcon(R.drawable.app_info)
+                    .setMessage("Your Note will be shared with " + receiverPublicUname)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            sendMessage(null, "note");
+                        }
+                    })
+                    .setPositiveButtonIcon(getDrawable(R.drawable.send))
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    }).show();
 //            binding.tietMessage.setText("Note: " + noteData.getTitle() + "is sharing with " + receiverPublicUname);
         }
 
@@ -116,12 +137,20 @@ public class ChatActivity extends AppCompatActivity {
         binding.tvReceiverPublicUid.setText(receiverPublicUid);
         binding.tvReceiverPublicUname.setText(receiverPublicUname);
 
+        // Observe the object in the view model and update the UI when it changes
+        data = new MutableLiveData<>();
+
+        data.observe(this, value -> {
+            // Update UI
+            Log.e("shareNote", "Check: value: ChatActivity: " + value.getNote());
+        });
+
 
         binding.imgSendMessage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String message = binding.tilMessage.getEditText().getText().toString();
-                sendMessage(message);
+                sendMessage(message, "text");
 
             }
         });
@@ -149,7 +178,12 @@ public class ChatActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         dataHolderChatMessages.clear();
                         for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            System.out.println(ds);
                             ChatModelClass chatModel = ds.getValue(ChatModelClass.class);
+                            if (chatModel.getType().equals("note")) {
+                                System.out.println(chatModel.getNoteModelClass().getTitle());
+                                System.out.println(chatModel.getNoteModelClass().getNote());
+                            }
                             dataHolderChatMessages.add(chatModel);
 
                         }
@@ -203,7 +237,7 @@ public class ChatActivity extends AppCompatActivity {
 
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(String message, String type) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         currentDateAndTime = sdf.format(new Date());
         System.out.println("Dateandtime: " + currentDateAndTime);
@@ -220,7 +254,7 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 });
 
-        ChatModelClass chatModelClass = new ChatModelClass(message, currentDateAndTime, senderPublicUid,"text", null, noteData);
+        ChatModelClass chatModelClass = new ChatModelClass(message, currentDateAndTime, senderPublicUid, type, null, noteData);
         binding.tietMessage.setText("");
         DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference().child("messages");
         referenceSender.child(senderRoom).push().setValue(chatModelClass)
@@ -234,22 +268,20 @@ public class ChatActivity extends AppCompatActivity {
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
-
+                                        String lastMessage;
                                         FCMNotificationSender notificationSender =
-                                                new FCMNotificationSender("/topics/"+receiverPublicUid, senderPublicUid, message, ChatActivity.this, ChatActivity.this);
+                                                new FCMNotificationSender("/topics/" + receiverPublicUid, senderPublicUid, message, ChatActivity.this, ChatActivity.this);
                                         notificationSender.sendNotification();
 
                                         UserPersonalChatList personalChatList = new UserPersonalChatList(senderPublicUid, senderPublicUname, true, ".");
 
                                         reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).setValue(personalChatList);
 //                                                setSenderMessageStatus("11");
+
+
                                         // Set last message in userList
-                                        String lastMessage;
-                                        if (message.length() > 6) {
-                                            lastMessage = message.substring(0, 6) + "...";
-                                        } else {
-                                            lastMessage = message;
-                                        }
+                                        lastMessage = message;
+
 
                                         reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage").setValue(lastMessage)
                                                 .addOnSuccessListener(new OnSuccessListener<Void>() {

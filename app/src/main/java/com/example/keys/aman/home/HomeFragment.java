@@ -60,19 +60,20 @@ public class HomeFragment extends Fragment {
     public static SwipeRefreshLayout swipeRefreshLayout;
     SharedPreferences sharedPreferences;
     public static DatabaseReference databaseReference;
-    public static passwordAdaptor adaptor;
+    public static PasswordAdapter adaptor;
     ArrayList<AddPasswordDataHelperClass> dataholder;
 
     //    ArrayList<String> parentdataholder;
     String uid;
     LogInActivity logInActivity = new LogInActivity();
+    public static final String REQUEST_ID = "HomeFragment";
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home, container, false);
-        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 
         //Hooks
 
@@ -175,7 +176,7 @@ public class HomeFragment extends Fragment {
 
             }
         });
-        adaptor = new passwordAdaptor(dataholder, context, activity) {
+        adaptor = new PasswordAdapter(dataholder, context, activity) {
             @Override
             public void resetAdaptor() {
                 dataholder.clear();

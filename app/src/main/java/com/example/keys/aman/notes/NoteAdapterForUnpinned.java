@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.keys.R;
 import com.example.keys.aman.AES;
 import com.example.keys.aman.SplashActivity;
-import com.example.keys.aman.notes.addnote.AddNoteDataHelperClass;
+import com.example.keys.aman.notes.addnote.NoteHelperClass;
 import com.example.keys.aman.notes.addnote.AddNotesActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -37,15 +37,15 @@ import java.util.Locale;
 import java.util.Objects;
 
 public class NoteAdapterForUnpinned extends RecyclerView.Adapter<NoteAdapterForUnpinned.myviewholder> {
-    final ArrayList<AddNoteDataHelperClass> dataholder;
-    final ArrayList<AddNoteDataHelperClass> dataholderfilter;
+    final ArrayList<NoteHelperClass> dataholder;
+    final ArrayList<NoteHelperClass> dataholderfilter;
     final Context context;
     Activity activity;
     AES aes = new AES();
     LogInActivity logInActivity = new LogInActivity();
     public static final String REQUEST_ID = "NoteAdapter";
 
-    public NoteAdapterForUnpinned(ArrayList<AddNoteDataHelperClass> dataholder, Context context, Activity activity) {
+    public NoteAdapterForUnpinned(ArrayList<NoteHelperClass> dataholder, Context context, Activity activity) {
         this.dataholder = dataholder;
         this.context = context;
         this.activity = activity;
@@ -64,7 +64,7 @@ public class NoteAdapterForUnpinned extends RecyclerView.Adapter<NoteAdapterForU
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
 
-        SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
         String noteDate, noteTitle, noteBody, decryptedNoteTitle, decryptedNoteBody, doubleDecryptedNoteTitle, doubleDecryptedNoteBody;
         boolean isHideNote, isPinned;
@@ -188,7 +188,7 @@ public class NoteAdapterForUnpinned extends RecyclerView.Adapter<NoteAdapterForU
                             holder.refreshRecViewCall();
                             return true;
                         case R.id.img_share_note:
-                            AddNoteDataHelperClass noteData = dataholder.get(position);
+                            NoteHelperClass noteData = dataholder.get(position);
                             Log.e("shareNote", "Check1: NoteAdapterForUnpinned: " +noteData);
                             holder.shareNotesCall(noteData);
                     }
@@ -234,7 +234,7 @@ public class NoteAdapterForUnpinned extends RecyclerView.Adapter<NoteAdapterForU
             refreshRecView();
         }
 
-        public void shareNotesCall(AddNoteDataHelperClass noteDate) {
+        public void shareNotesCall(NoteHelperClass noteDate) {
             shareNotes(noteDate);
         }
     }
@@ -243,7 +243,7 @@ public class NoteAdapterForUnpinned extends RecyclerView.Adapter<NoteAdapterForU
     public void resetAdaptor() {
     }
 
-    public void shareNotes(AddNoteDataHelperClass noteData){
+    public void shareNotes(NoteHelperClass noteData){
     }
 
     public void refreshRecView() {

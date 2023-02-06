@@ -27,9 +27,9 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
-import com.example.keys.aman.authentication.BiometricAuthActivity;
 import com.example.keys.aman.authentication.PinLockActivity;
 import com.example.keys.aman.base.TabLayoutActivity;
+import com.example.keys.aman.import_data.ImportData;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -82,7 +82,7 @@ public class SettingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_setting, container, false);
 
-        sharedPreferences = activity.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 //        serviceIntent = new Intent(context, MyForegroundService.class);
         /*---------------Hooks--------------*/
         tvAppInfo = view.findViewById(R.id.tv_app_info);
@@ -104,7 +104,7 @@ public class SettingFragment extends Fragment {
         tvProfileName = view.findViewById(R.id.tv_profile_name);
         tvProfileEmail = view.findViewById(R.id.tv_profile_email);
         tvTutorial = view.findViewById(R.id.tv_tutorial);
-        checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS,0);
+        checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS, 0);
         String[] Item = {"Immediately", "After 1 minute", "Never"};
         tvLockAppResult.setText(Item[checkedItem]);
         currentUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
@@ -125,9 +125,9 @@ public class SettingFragment extends Fragment {
 //                        });
 
                 SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                editor1.putBoolean(logInActivity.getIS_LOGIN(), false);
+                editor1.putBoolean(logInActivity.IS_LOGIN, false);
                 editor1.apply();
-                System.out.println(sharedPreferences.getBoolean(logInActivity.getIS_LOGIN(), false));
+                System.out.println(sharedPreferences.getBoolean(logInActivity.IS_LOGIN, false));
 
                 Intent intent = new Intent(context, LogInActivity.class);
                 startActivity(intent);
@@ -141,7 +141,7 @@ public class SettingFragment extends Fragment {
                 SplashActivity.isForeground = true;
                 boolean ispin_set = sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(), false);
                 Intent intent = new Intent(context, PinLockActivity.class);
-                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                 intent.putExtra("title", "Enter Old Pin");
                 startActivity(intent);
             }
@@ -164,10 +164,10 @@ public class SettingFragment extends Fragment {
                                 Log.d(TAG, "=> " + result);
                                 tvLockAppResult.setText(Item[result]);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putInt(tabLayoutActivity.LOCK_APP_OPTIONS,result);
+                                editor.putInt(tabLayoutActivity.LOCK_APP_OPTIONS, result);
                                 editor.apply();
 
-                                checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS,2);
+                                checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS, 2);
                                 dialogInterface.dismiss();
                             }
                         });
@@ -182,7 +182,9 @@ public class SettingFragment extends Fragment {
 //                llDeviceList.setVisibility(View.VISIBLE);
 //                tvDevice2.setVisibility(View.VISIBLE);
 //                tvDevice3.setVisibility(View.VISIBLE);
-                startActivity(new Intent(context, BiometricAuthActivity.class));
+                ImportData importData = new ImportData();
+                importData.getPassword(context);
+//                startActivity(new Intent(context, BiometricAuthActivity.class));
             }
         });
         tvTutorial.setOnClickListener(new View.OnClickListener() {

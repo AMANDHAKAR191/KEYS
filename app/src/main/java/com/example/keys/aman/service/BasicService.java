@@ -17,6 +17,7 @@ package com.example.keys.aman.service;
 
 import android.app.assist.AssistStructure;
 import android.app.assist.AssistStructure.ViewNode;
+import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.service.autofill.AutofillService;
 import android.service.autofill.Dataset;
@@ -72,6 +73,14 @@ public final class BasicService extends AutofillService {
                               FillCallback callback) {
         Log.d(TAG, "onFillRequest()");
 
+        Bundle clientState = request.getClientState();
+        if (clientState != null){
+            String clientName = clientState.getString("client_name");
+            Log.d(TAG, "clientName: " + clientName);
+        }else {
+            Log.d(TAG, "clientState is null");
+        }
+
         // Find autofillable fields
         AssistStructure structure = getLatestAssistStructure(request);
         Log.d(TAG, "structure " + structure.getActivityComponent() + "\n+" + structure.describeContents());
@@ -88,12 +97,6 @@ public final class BasicService extends AutofillService {
         // Create the base response
         FillResponse.Builder response = new FillResponse.Builder();
 
-//        String[] value = new String[fields.size()];
-//        value[0] = "AMAN";
-//        value[0] = "DHAKAR";
-//        value[0] = "2020";
-//        value[0] = "KIRAN";
-//        value[0] = "06/06/2022";
 
         // 1.Add the dynamic datasets
         String packageName = getApplicationContext().getPackageName();

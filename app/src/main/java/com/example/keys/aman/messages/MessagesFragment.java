@@ -21,12 +21,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.keys.R;
+import com.example.keys.aman.MyViewModel;
 import com.example.keys.aman.notes.NoteAdapterForUnpinned;
-import com.example.keys.aman.notes.NotesFragment;
+import com.example.keys.aman.notes.addnote.NoteHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,6 +52,9 @@ public class MessagesFragment extends Fragment {
     private UserListAdapter adaptorForUsersList;
     public String senderPublicUid;
     Bundle args;
+    public static final String REQUEST_ID = "MessagesFragment";
+    private MyViewModel viewModel;
+    private NoteHelperClass noteData;
 
 
     public MessagesFragment(Context context, Activity activity) {
@@ -77,6 +82,8 @@ public class MessagesFragment extends Fragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.activity_messages, container, false);
         sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        viewModel = new ViewModelProvider(requireActivity()).get(MyViewModel.class);
+
         recViewUsersChatList = view.findViewById(R.id.recview_user_chat_list);
 //        fabAddChat = view.findViewById(R.id.fab_add_chat);
         senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID,null);
@@ -89,6 +96,12 @@ public class MessagesFragment extends Fragment {
 //            }
 //        });
 
+        // Observe the object in the view model and update the UI when it changes
+        viewModel.getData().observe(getViewLifecycleOwner(), note -> {
+            // Update UI
+            noteData = note;
+            Log.e("shareNote", "Check: value: MessagesFragment: " +note);
+        });
         recyclerViewSetData();
 
         return view;
@@ -102,15 +115,27 @@ public class MessagesFragment extends Fragment {
         dataHolderUserList = new ArrayList<>();
 
         Intent intentResult = activity.getIntent();
+//        Bundle args = getArguments();
         String comingFromActivity = intentResult.getStringExtra(logInActivity.REQUEST_CODE_NAME);
 
-        Log.e("shareNote", "Check3: MessagesFragment: comingFromActivity" +comingFromActivity);
-        if (comingFromActivity.equals(NoteAdapterForUnpinned.REQUEST_ID)){
-            Log.e("shareNote", "Check3: MessagesFragment: " + args.getParcelable(NotesFragment.shareNoteCode));
-            adaptorForUsersList = new UserListAdapter(dataHolderUserList, context, activity, args);
-        }else {
-            adaptorForUsersList = new UserListAdapter(dataHolderUserList, context, activity);
-        }
+//        Log.e("shareNote", "Check3: MessagesFragment: comingFromActivity" +comingFromActivity);
+//        if (comingFromActivity.equals(NoteAdapterForUnpinned.REQUEST_ID)){
+//            Log.e("shareNote", "Check3: MessagesFragment: " + args.getParcelable(NotesFragment.shareNoteCode));
+//            adaptorForUsersList = new UserListAdapter(dataHolderUserList, context, activity, args);
+//        }else {
+            adaptorForUsersList = new UserListAdapter(dataHolderUserList, context, activity , noteData){
+                @Override
+                public void onItemSelected(int position) {
+                    super.onItemSelected(position);
+                    Intent intent = new Intent(context, ChatActivity.class);
+                    intent.putExtra(logInActivity.REQUEST_CODE_NAME, NoteAdapterForUnpinned.REQUEST_ID);
+                    intent.putExtra("noteData", noteData);
+                    intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
+                    intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
+                    activity.startActivity(intent);
+                }
+            };
+//        }
         recViewUsersChatList.setAdapter(adaptorForUsersList);
         reference.addValueEventListener(new ValueEventListener() {
             @Override

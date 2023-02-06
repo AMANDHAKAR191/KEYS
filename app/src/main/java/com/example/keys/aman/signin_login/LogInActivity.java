@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -76,8 +75,8 @@ public class LogInActivity extends AppCompatActivity {
     private final String AES_IV = "aes_iv";
     public final String PUBLIC_UID = "public_uid";
     public final String SHARED_PREF_ALL_DATA = "All data";
-    private final String IS_LOGIN = "islogin";
-    private final String IS_FIRST_TIME = "0";
+    public final String IS_LOGIN = "islogin";
+    public final String IS_FIRST_TIME = "0";
     public final String REQUEST_CODE_NAME = "request_code";
     public static final String REQUEST_ID = "LogInActivity";
 
@@ -90,7 +89,7 @@ public class LogInActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_log_in);
         try {
             ProviderInstaller.installIfNeeded(getApplicationContext());
@@ -111,9 +110,9 @@ public class LogInActivity extends AppCompatActivity {
         if (isLogin) {
             SplashActivity.isForeground = true;
             Intent intent = new Intent(LogInActivity.this, BiometricAuthActivity.class);
-            intent.putExtra(REQUEST_CODE_NAME, "LogInActivity");
+            intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
+            startActivity(intent, savedInstanceState);
             finish();
         }
 
@@ -188,7 +187,7 @@ public class LogInActivity extends AppCompatActivity {
         super.onStart();
         if (SplashActivity.isBackground) {
             Intent intent = new Intent(LogInActivity.this, BiometricAuthActivity.class);
-            intent.putExtra(getREQUEST_CODE_NAME(), "LockBackGroundApp");
+            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
             startActivity(intent);
         }
         if (SplashActivity.isForeground) {
@@ -219,8 +218,6 @@ public class LogInActivity extends AppCompatActivity {
 
         // Build a GoogleSignInClient with the options specified by gso.
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
-
-
     }
 
 
@@ -391,7 +388,7 @@ public class LogInActivity extends AppCompatActivity {
 
                 if (temp != "1") {
                     SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                    editor1.putString(getIS_FIRST_TIME(), "1");
+                    editor1.putString(IS_FIRST_TIME, "1");
                     editor1.apply();
 
                 }
@@ -483,22 +480,6 @@ public class LogInActivity extends AppCompatActivity {
 
     public String getAES_IV() {
         return AES_IV;
-    }
-
-    public String getSHARED_PREF_ALL_DATA() {
-        return SHARED_PREF_ALL_DATA;
-    }
-
-    public String getIS_LOGIN() {
-        return IS_LOGIN;
-    }
-
-    public String getIS_FIRST_TIME() {
-        return IS_FIRST_TIME;
-    }
-
-    public String getREQUEST_CODE_NAME() {
-        return REQUEST_CODE_NAME;
     }
 
 

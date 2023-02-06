@@ -1,13 +1,14 @@
 package com.example.keys.aman.base;
 
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,6 +18,7 @@ import androidx.constraintlayout.widget.Group;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import com.bumptech.glide.Glide;
 import com.example.keys.R;
 import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.AppLockCounterClass;
@@ -38,6 +40,8 @@ import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Objects;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class TabLayoutActivity extends AppCompatActivity {
 
     private static final String TAG = "TabLayoutActivity";
@@ -46,10 +50,10 @@ public class TabLayoutActivity extends AppCompatActivity {
 
     //objects
     private TabLayout tabLayout;
-    TextView tvTitle;
+    TextView tvTitle, tvTitle1;
     LinearLayout llFab, llToolbar;
     Group groupFabHome, groupFabChat, groupFabNote, groupFabAll;
-    ImageView imgKeysIcon;
+    CircleImageView cimgProfile;
     ExtendedFloatingActionButton exFABtn; /*exFABtn_notes*/
     ;
     FloatingActionButton fabAddPassword, fabPasswordGenerator, fabAddNote, fabAddContactEmail;
@@ -73,12 +77,13 @@ public class TabLayoutActivity extends AppCompatActivity {
     public static int pauseCounter;
 
 
+    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_layout);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
 
@@ -90,8 +95,9 @@ public class TabLayoutActivity extends AppCompatActivity {
         groupFabNote = findViewById(R.id.group_fab_note);
         tabLayout = findViewById(R.id.tablayout);
         ViewPager viewPager = findViewById(R.id.viewpager);
-        imgKeysIcon = findViewById(R.id.img_keys_icon);
+        cimgProfile = findViewById(R.id.img_profile);
         tvTitle = findViewById(R.id.tv_title);
+        tvTitle1 = findViewById(R.id.tv_title1);
         exFABtn = findViewById(R.id.ex_fab);
 //        exFABtn_notes = findViewById(R.id.ex_fab_notes);
         fabAddPassword = findViewById(R.id.add_password_fab);
@@ -140,7 +146,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                 //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), AddPasswordActivity.class);
-                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -151,7 +157,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                 //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), PasswordGeneratorActivity.class);
-                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -162,7 +168,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                 //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
                 Intent intent = new Intent(getApplicationContext(), AddNotesActivity.class);
-                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
             }
@@ -192,13 +198,17 @@ public class TabLayoutActivity extends AppCompatActivity {
         viewPagerAdaptor.addFragment(new SettingFragment(TabLayoutActivity.this, TabLayoutActivity.this));
         viewPager.setAdapter(viewPagerAdaptor);
 
-        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.home);
-        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.chat);
-        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.notes);
-        Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.settings);
+        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.home_new_set);
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.chats_new_set);
+        Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.notes_new_set);
+        Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.setting_new_set);
         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         Objects.requireNonNull(tabLayout.getTabAt(0)).setText("Home");
+        Objects.requireNonNull(tabLayout.getTabAt(1)).setText("Chats");
+        Objects.requireNonNull(tabLayout.getTabAt(2)).setText("Notes");
+        Objects.requireNonNull(tabLayout.getTabAt(3)).setText("Setting");
+//        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.home_filled_new_set);
         tabLayout.setUnboundedRipple(true);
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -208,27 +218,32 @@ public class TabLayoutActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         selectedTab = 1;
-                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Home");
-                        tvTitle.setText("Hello 👋\n" + user.getDisplayName());
+//                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Home");
+                        tvTitle.setText("Hello 👋");
+                        tvTitle1.setVisibility(View.VISIBLE);
+                        tvTitle1.setText(user.getDisplayName());
                         break;
                     case 1:
                         selectedTab = 2;
 //                        fabAddContactEmail.setVisibility(View.VISIBLE);
-                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Chats");
+//                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Chats");
+                        tvTitle.setTextSize(40);
                         tvTitle.setText("Chats");
                         break;
                     case 2:
                         selectedTab = 3;
-                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Notes");
+//                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Notes");
+                        tvTitle.setTextSize(40);
                         tvTitle.setText("NOTES");
                         break;
                     case 3:
                         selectedTab = 4;
-                        llToolbar.setVisibility(View.GONE);
                         exFABtn.setVisibility(View.GONE);
                         groupFabAll.setVisibility(View.GONE);
-                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Setting");
+//                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Setting");
+                        tvTitle.setTextSize(40);
                         tvTitle.setText("SETTING");
+                        cimgProfile.setVisibility(View.INVISIBLE);
                         break;
                 }
             }
@@ -236,14 +251,16 @@ public class TabLayoutActivity extends AppCompatActivity {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
-                Objects.requireNonNull(tabLayout.getTabAt(position)).setText("");
+//                Objects.requireNonNull(tabLayout.getTabAt(position)).setText("");
 
                 switch (position) {
                     case 0:
+                        tvTitle1.setVisibility(View.GONE);
                         groupFabHome.setVisibility(View.GONE);
                         exFABtn.setIconResource(R.drawable.add);
                         exFABtn.extend();
                         llFab.setVisibility(View.GONE);
+//                        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.home_new_set);
                         llFab.setBackground(getDrawable(R.drawable.transparent_background));
                         break;
                     case 1:
@@ -261,12 +278,12 @@ public class TabLayoutActivity extends AppCompatActivity {
                         llFab.setBackground(getDrawable(R.drawable.transparent_background));
                         break;
                     case 3:
-                        llToolbar.setVisibility(View.VISIBLE);
                         exFABtn.setVisibility(View.VISIBLE);
                         exFABtn.setIconResource(R.drawable.add);
                         exFABtn.extend();
                         llFab.setVisibility(View.GONE);
                         llFab.setBackground(getDrawable(R.drawable.transparent_background));
+                        cimgProfile.setVisibility(View.VISIBLE);
                         break;
                 }
             }
@@ -277,7 +294,7 @@ public class TabLayoutActivity extends AppCompatActivity {
             }
         });
 
-        imgKeysIcon.setOnClickListener(new View.OnClickListener() {
+        cimgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (selectedTab == 3) {
@@ -294,7 +311,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                             //todo 4 if app is going to another activity make isForeground = true
                             SplashActivity.isForeground = true;
                             Intent intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
-                            intent3.putExtra(logInActivity.getREQUEST_CODE_NAME(), REQUEST_ID);
+                            intent3.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                             intent3.putExtra("title", "Enter 6 digit Pin");
                             startActivity(intent3);
                             clickCounter = 0;
@@ -322,6 +339,15 @@ public class TabLayoutActivity extends AppCompatActivity {
         //todo 9 onStartOperation, it will check app is
         // coming from foreground or background.
         appLockCounterClass.onStartOperation();
+        Uri currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getPhotoUrl();
+
+        if (currentUser == null) {
+            // No user is signed in
+        } else {
+            // User logged in
+            Glide.with(this).load(currentUser).into(cimgProfile);
+
+        }
     }
 
     @Override
