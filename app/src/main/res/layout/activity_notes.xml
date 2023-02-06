@@ -7,7 +7,7 @@
     android:paddingLeft="10dp"
     android:paddingTop="10dp"
     android:paddingRight="10dp"
-    android:background="@drawable/rounded_thems3"
+    android:background="@drawable/viewpager_background"
     tools:context=".aman.notes.NotesFragment">
 
     <!--    <SearchView-->
@@ -36,7 +36,7 @@
         android:paddingRight="10dp"
         android:paddingBottom="5dp"
         android:text="Pinned"
-        android:textColor="?attr/colorPrimaryVariant"
+        android:textColor="?attr/colorOnPrimary"
         android:textSize="14dp"
         android:textStyle="bold"
         android:visibility="visible"
@@ -69,7 +69,7 @@
         android:paddingRight="10dp"
         android:paddingBottom="5dp"
         android:text="Unpinned"
-        android:textColor="?attr/colorPrimaryVariant"
+        android:textColor="?attr/colorOnPrimary"
         android:textSize="14dp"
         android:textStyle="bold"
         android:visibility="visible"

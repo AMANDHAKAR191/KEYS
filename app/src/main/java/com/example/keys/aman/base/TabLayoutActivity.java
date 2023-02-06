@@ -63,6 +63,8 @@ public class TabLayoutActivity extends AppCompatActivity {
     //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(TabLayoutActivity.this, TabLayoutActivity.this);
     private String senderPublicUid;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseUser user;
 
     public String getLOCK_APP_OPTIONS() {
         return LOCK_APP_OPTIONS;
@@ -202,12 +204,13 @@ public class TabLayoutActivity extends AppCompatActivity {
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.chats_new_set);
         Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.notes_new_set);
         Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.setting_new_set);
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        FirebaseUser user = firebaseAuth.getCurrentUser();
+        firebaseAuth = FirebaseAuth.getInstance();
+        user = firebaseAuth.getCurrentUser();
         Objects.requireNonNull(tabLayout.getTabAt(0)).setText("Home");
         Objects.requireNonNull(tabLayout.getTabAt(1)).setText("Chats");
         Objects.requireNonNull(tabLayout.getTabAt(2)).setText("Notes");
         Objects.requireNonNull(tabLayout.getTabAt(3)).setText("Setting");
+
 //        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.home_filled_new_set);
         tabLayout.setUnboundedRipple(true);
 
@@ -340,6 +343,9 @@ public class TabLayoutActivity extends AppCompatActivity {
         // coming from foreground or background.
         appLockCounterClass.onStartOperation();
         Uri currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getPhotoUrl();
+
+        tvTitle.setText("Hello 👋");
+        tvTitle1.setText(user.getDisplayName());
 
         if (currentUser == null) {
             // No user is signed in

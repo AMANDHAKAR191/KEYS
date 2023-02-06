@@ -43,7 +43,7 @@
             android:id="@+id/recview_website_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/rounded_thems3"
+            android:background="@drawable/viewpager_background"
             android:clickable="true"
             android:scrollbarStyle="outsideOverlay"
             tools:listitem="@layout/cardview_layout" />

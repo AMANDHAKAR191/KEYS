@@ -5,7 +5,7 @@
     android:id="@+id/cl_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/rounded_thems3">
+    android:background="@drawable/viewpager_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
