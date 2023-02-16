@@ -1,12 +1,8 @@
 package com.example.keys.aman.notes.addnote;
 
-import static com.example.keys.aman.SplashActivity.mRewardedAd;
-
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.CheckBox;
@@ -24,8 +20,8 @@ import com.example.keys.aman.authentication.AppLockCounterClass;
 import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.notes.NoteAdapterForUnpinned;
 import com.example.keys.aman.signin_login.LogInActivity;
-import com.google.android.gms.ads.OnUserEarnedRewardListener;
-import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -111,29 +107,6 @@ public class AddNotesActivity extends AppCompatActivity {
             }
         });
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!comingRequestCode.equals("notesCardView")) {
-                    if (mRewardedAd != null) {
-                        Activity activityContext = AddNotesActivity.this;
-//                        SplashActivity.isForeground = true;
-                        mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
-                            @Override
-                            public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                                // Handle the reward.
-                                int rewardAmount = rewardItem.getAmount();
-                                String rewardType = rewardItem.getType();
-                            }
-                        });
-                    } else {
-                        Toast.makeText(AddNotesActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        }, 1000);
-
 
     }
 
@@ -164,12 +137,36 @@ public class AddNotesActivity extends AppCompatActivity {
         NoteHelperClass addDNoteHelper;
         if (comingRequestCode.equals("notesCardView")) {
             addDNoteHelper = new NoteHelperClass(comingDate, titleDecrypted, noteDecrypted, isHideNote, false);
-            reference.child(comingDate).setValue(addDNoteHelper);
+            reference.child(comingDate).setValue(addDNoteHelper)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(AddNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(AddNotesActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         } else {
             addDNoteHelper = new NoteHelperClass(currentDateAndTime, titleDecrypted, noteDecrypted, isHideNote, true);
-            reference.child(currentDateAndTime).setValue(addDNoteHelper);
+            reference.child(currentDateAndTime).setValue(addDNoteHelper)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void unused) {
+                            Toast.makeText(AddNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Toast.makeText(AddNotesActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
         }
-        Toast.makeText(AddNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
+
         //todo 6 if app is going to another activity make isForeground = true
         SplashActivity.isForeground = true;
         Intent intent = new Intent(AddNotesActivity.this, TabLayoutActivity.class);

@@ -28,7 +28,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.example.keys.R;
 import com.example.keys.aman.home.addpassword.AddPasswordDataHelperClass;
 import com.example.keys.aman.signin_login.LogInActivity;
-import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -113,7 +112,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        MobileAds.initialize(context);
 
         threadRunnableHomeFragment threadRunnableHomeFragment = new threadRunnableHomeFragment(view);
         new Thread(threadRunnableHomeFragment).start();

@@ -55,7 +55,6 @@ public class TabLayoutActivity extends AppCompatActivity {
     Group groupFabHome, groupFabChat, groupFabNote, groupFabAll;
     CircleImageView cimgProfile;
     ExtendedFloatingActionButton exFABtn; /*exFABtn_notes*/
-    ;
     FloatingActionButton fabAddPassword, fabPasswordGenerator, fabAddNote, fabAddContactEmail;
     private SharedPreferences sharedPreferences;
     LogInActivity logInActivity = new LogInActivity();

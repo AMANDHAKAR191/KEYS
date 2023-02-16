@@ -41,7 +41,7 @@ public class ChatAdaptor extends RecyclerView.Adapter {
     final int PASSWORD_VIEW_TYPE = 4;
 
     String chatType = "text";
-    private AES aes = new AES();
+    private final AES aes = new AES();
 
     public ChatAdaptor() {
     }

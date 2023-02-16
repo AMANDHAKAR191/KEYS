@@ -115,7 +115,11 @@ public class SettingFragment extends Fragment {
             public void onClick(View v) {
                 SplashActivity.isForeground = true;
                 FirebaseAuth.getInstance().signOut();
-
+//                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+//                        .requestIdToken(getString(R.string.default_web_client_id))
+//                        .requestEmail()
+//                        .build();
+//
 //                mGoogleSignInClient.signOut()
 //                        .addOnCompleteListener(new OnCompleteListener<Void>() {
 //                            @Override

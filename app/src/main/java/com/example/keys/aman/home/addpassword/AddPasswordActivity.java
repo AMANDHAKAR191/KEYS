@@ -1,6 +1,5 @@
 package com.example.keys.aman.home.addpassword;
 
-import static com.example.keys.aman.SplashActivity.mInterstitialAd;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -35,6 +34,8 @@ import com.example.keys.aman.home.HomeFragment;
 import com.example.keys.aman.home.PasswordGeneratorActivity;
 import com.example.keys.aman.home.ShowCardViewDataDialog;
 import com.example.keys.aman.signin_login.LogInActivity;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -174,18 +175,6 @@ public class AddPasswordActivity extends AppCompatActivity {
 
         recyclerViewSetData();
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mInterstitialAd != null) {
-                    SplashActivity.isForeground = true;
-                    mInterstitialAd.show(AddPasswordActivity.this);
-                } else {
-                    Toast.makeText(AddPasswordActivity.this, "The interstitial ad wasn't ready yet.", Toast.LENGTH_LONG).show();
-                }
-            }
-        }, 1000);
 
 
         getResult = registerForActivityResult(
@@ -251,27 +240,49 @@ public class AddPasswordActivity extends AppCompatActivity {
 
 
             AddPasswordDataHelperClass AddPasswordDataHelperClass;
-            if (comingRequestCode.equals("ShowCardViewDataActivity")) {
+            if (comingRequestCode.equals(ShowCardViewDataDialog.REQUEST_ID)) {
                 AddPasswordDataHelperClass = new AddPasswordDataHelperClass(comingDate, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, comingLoginWebsiteLink);
-                addDataRef.child(comingDate).setValue(AddPasswordDataHelperClass);
-                Toast.makeText(AddPasswordActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
+                addDataRef.child(comingDate).setValue(AddPasswordDataHelperClass)
+                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(AddPasswordActivity.this, " password saved!", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(AddPasswordActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
 
 
                 Intent intent = new Intent(AddPasswordActivity.this, HomeFragment.class);
-                intent.putExtra(logInActivity.REQUEST_CODE_NAME, "addPasswordData");
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
-            } else if (comingRequestCode.equals("HomeActivity")) {
+            } else if (comingRequestCode.equals(TabLayoutActivity.REQUEST_ID)) {
                 AddPasswordDataHelperClass = new AddPasswordDataHelperClass(currentDateAndTime, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, addWebsiteLink);
-                addDataRef.child(currentDateAndTime).setValue(AddPasswordDataHelperClass);
-                Toast.makeText(AddPasswordActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
+                addDataRef.child(currentDateAndTime).setValue(AddPasswordDataHelperClass)
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                Toast.makeText(AddPasswordActivity.this, "password saved!", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(AddPasswordActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
 
             //todo 5 if app is going to another activity make isForeground = true
             SplashActivity.isForeground = true;
             Intent intent1 = new Intent(AddPasswordActivity.this, TabLayoutActivity.class);
-            intent1.putExtra(logInActivity.REQUEST_CODE_NAME, "addPasswordData");
+            intent1.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
             startActivity(intent1);
             finish();
             overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);

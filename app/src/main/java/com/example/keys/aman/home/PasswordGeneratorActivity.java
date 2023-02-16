@@ -2,7 +2,6 @@ package com.example.keys.aman.home;
 
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -26,15 +25,6 @@ import com.example.keys.aman.authentication.AppLockCounterClass;
 import com.example.keys.aman.base.TabLayoutActivity;
 import com.example.keys.aman.home.addpassword.AddPasswordActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.OnUserEarnedRewardListener;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.rewarded.RewardItem;
-import com.google.android.gms.ads.rewarded.RewardedAd;
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.slider.Slider;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -45,7 +35,6 @@ import java.util.regex.Pattern;
 
 public class PasswordGeneratorActivity extends AppCompatActivity {
 
-    public static RewardedAd mRewardedAd;
     public static final String REQUEST_ID = "PasswordGeneratorActivity";
 
 
@@ -139,21 +128,6 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
         btnCopyPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mRewardedAd != null) {
-                    Activity activityContext = PasswordGeneratorActivity.this;
-                    mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
-                        @Override
-                        public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                            // Handle the reward.
-
-                            int rewardAmount = rewardItem.getAmount();
-                            String rewardType = rewardItem.getType();
-                        }
-                    });
-                } else {
-                    Toast.makeText(PasswordGeneratorActivity.this, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
-                }
-
                 ClipboardManager clipboardManager = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clipData = ClipData.newPlainText("Copy_Password", generatedPassword);
                 clipboardManager.setPrimaryClip(clipData);
@@ -161,7 +135,6 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
             }
         });
 
-        showRewardedAd();
     }
 
 //    @Override
@@ -199,34 +172,6 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
                 genrate_password();
             }
         });
-    }
-
-    private void showRewardedAd() {
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
-
-            }
-        });
-
-        AdRequest adRequest = new AdRequest.Builder().build();
-
-        String rewardedAdId = "ca-app-pub-3752721223259598/1273800402";
-        RewardedAd.load(this, rewardedAdId,
-                adRequest, new RewardedAdLoadCallback() {
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        // Handle the error.
-                        Toast.makeText(PasswordGeneratorActivity.this, loadAdError.getMessage(), Toast.LENGTH_LONG).show();
-                        mRewardedAd = null;
-                    }
-
-                    @Override
-                    public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
-                        mRewardedAd = rewardedAd;
-                        Toast.makeText(PasswordGeneratorActivity.this, "Ad was loaded.", Toast.LENGTH_LONG).show();
-                    }
-                });
     }
 
 

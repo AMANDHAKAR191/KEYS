@@ -1,7 +1,5 @@
 package com.example.keys.aman.home;
 
-import static com.example.keys.aman.SplashActivity.mRewardedAd;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -34,8 +32,6 @@ import com.example.keys.aman.SplashActivity;
 import com.example.keys.aman.authentication.PinLockActivity;
 import com.example.keys.aman.home.addpassword.AddPasswordActivity;
 import com.example.keys.aman.signin_login.LogInActivity;
-import com.google.android.gms.ads.OnUserEarnedRewardListener;
-import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -142,19 +138,6 @@ public class ShowCardViewDataDialog extends Fragment {
 
                 } else {
                     SplashActivity.isForeground = true;
-                    if (mRewardedAd != null) {
-                        Activity activityContext = activity;
-                        mRewardedAd.show(activityContext, new OnUserEarnedRewardListener() {
-                            @Override
-                            public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                                // Handle the reward.
-                                int rewardAmount = rewardItem.getAmount();
-                                String rewardType = rewardItem.getType();
-                            }
-                        });
-                    } else {
-                        Toast.makeText(context, "The rewarded ad wasn't ready yet.", Toast.LENGTH_SHORT).show();
-                    }
                     Intent intent1 = new Intent(context, PinLockActivity.class);
                     intent1.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                     intent1.putExtra("title", "Enter 6 digit Pin");

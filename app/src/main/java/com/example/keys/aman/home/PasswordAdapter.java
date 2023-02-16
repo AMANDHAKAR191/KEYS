@@ -84,7 +84,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.myView
         return dataHolder.size();
     }
 
-    private Filter passwordFilter = new Filter() {
+    private final Filter passwordFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence charSequence) {
             ArrayList<AddPasswordDataHelperClass> filteredList = new ArrayList<>();

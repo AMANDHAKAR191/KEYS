@@ -242,7 +242,7 @@ public class LogInActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     handler.post(new Runnable() {
-                                        private int count = 0;
+                                        private final int count = 0;
                                         @Override
                                         public void run() {
                                             String temp = sharedPreferences.getString(IS_FIRST_TIME, "0");
@@ -296,7 +296,7 @@ public class LogInActivity extends AppCompatActivity {
                                 @Override
                                 public void run() {
                                     handler.post(new Runnable() {
-                                        private int count = 0;
+                                        private final int count = 0;
 
                                         @Override
                                         public void run() {

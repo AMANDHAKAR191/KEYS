@@ -71,8 +71,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-crashlytics'
     implementation 'com.google.firebase:firebase-analytics'
 
-    // AdMob
-    implementation 'com.google.android.gms:play-services-ads:20.5.0'
+
     // pinview lock
     implementation 'com.andrognito.pinlockview:pinlockview:2.1.0'
     implementation 'de.hdodenhof:circleimageview:1.2.1'
@@ -100,9 +99,5 @@ dependencies {
 
 
     apply plugin: 'com.google.firebase.crashlytics'
-    //for retrieving password from google
-//    implementation 'com.google.http-client:google-http-client-android:1.30.9'
-//    implementation 'com.google.api-client:google-api-client-android:1.30.9'
-//    implementation 'com.google.apis:google-api-services-passwords:v1-rev20201209-1.30.9'
 
 }
