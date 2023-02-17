@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center"
-    android:background="@drawable/rounded_thems2"
+    android:background="@drawable/prograse_bar_bc"
     android:orientation="horizontal">
 
     <ProgressBar
@@ -19,6 +20,7 @@
         android:gravity="center|start"
         android:text="Loading..."
         android:textSize="25sp"
+        android:textColor="?attr/colorOnPrimary"
         android:textStyle="bold" />
 
 </LinearLayout>

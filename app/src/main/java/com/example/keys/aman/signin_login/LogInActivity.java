@@ -58,7 +58,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private static final String TAG = "LogInActivity";
     //objects
-    Button btnLogin, btnCreateAccount;
+    Button btnLogin;
     TextView tvErrorMessage;
     private PrograceBar prograceBar;
     private GoogleSignInClient mGoogleSignInClient;
@@ -101,7 +101,6 @@ public class LogInActivity extends AppCompatActivity {
 
         //Hooks
         btnLogin = findViewById(R.id.btn_login);
-        btnCreateAccount = findViewById(R.id.btn_create_account);
         tvErrorMessage = findViewById(R.id.tv_error_message);
 
 //        Check if User is already login then go direct to HomeScreen
@@ -129,16 +128,6 @@ public class LogInActivity extends AppCompatActivity {
                 getResultLogin.launch(signInIntent);
             }
         });
-        btnCreateAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createRequest();
-                SplashActivity.isForeground = true;
-                progressBar();
-                Intent loginIntent = mGoogleSignInClient.getSignInIntent();
-                getResultSignIn.launch(loginIntent);
-            }
-        });
 
         getResultLogin = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -150,7 +139,7 @@ public class LogInActivity extends AppCompatActivity {
                         try {
                             // Google Sign In was successful, authenticate with Firebase
                             GoogleSignInAccount account = task.getResult(ApiException.class);
-                            firebaseAuthWithGoogleLogin(account);
+                            firebaseAuthWithGoogle(account);
                         } catch (ApiException e) {
                             // Google Sign In failed, update UI appropriately
                             // ...
@@ -160,47 +149,6 @@ public class LogInActivity extends AppCompatActivity {
                     }
                 }
         );
-        getResultSignIn = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                        prograceBar.dismissbar();
-                        try {
-                            // Google Sign In was successful, authenticate with Firebase
-                            GoogleSignInAccount account = task.getResult(ApiException.class);
-                            firebaseAuthWithGoogleCreateAccount(account);
-                        } catch (ApiException e) {
-                            // Google Sign In failed, update UI appropriately
-                            // ...
-                            Toast.makeText(LogInActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                }
-        );
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        if (SplashActivity.isBackground) {
-            Intent intent = new Intent(LogInActivity.this, BiometricAuthActivity.class);
-            intent.putExtra(REQUEST_CODE_NAME, "LockBackGroundApp");
-            startActivity(intent);
-        }
-        if (SplashActivity.isForeground) {
-            SplashActivity.isForeground = false;
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (!SplashActivity.isForeground) {
-            SplashActivity.isBackground = true;
-        }
     }
 
     @Override
@@ -221,7 +169,7 @@ public class LogInActivity extends AppCompatActivity {
     }
 
 
-    private void firebaseAuthWithGoogleCreateAccount(GoogleSignInAccount acct) {
+    private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
@@ -234,28 +182,77 @@ public class LogInActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             UID = user.getUid();
                             //check user if already signed up in background
-//                            MyThreadRunnable MyThreadRunnable = new MyThreadRunnable();
-//                            new Thread(MyThreadRunnable).start();
+                            MyThreadRunnable MyThreadRunnable = new MyThreadRunnable();
+                            new Thread(MyThreadRunnable).start();
 
                             Handler handler = new Handler();
                             Thread loginThread = new Thread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    handler.post(new Runnable() {
-                                        private final int count = 0;
+                                    handler.postDelayed(new Runnable() {
+                                        private int count = 0;
+
                                         @Override
                                         public void run() {
+                                            while (!turn) {
+                                                count++;
+                                                progressBar();
+                                            }
+                                            prograceBar.dismissbar();
                                             String temp = sharedPreferences.getString(IS_FIRST_TIME, "0");
+                                            if (temp == "0") {
+                                                SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                                                editor1.putString(AES_KEY, PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==");
+                                                editor1.putString(AES_IV, PasswordGeneratorActivity.generateRandomPassword(16, true, true, true, false));
+                                                editor1.putBoolean(IS_LOGIN, true);
+                                                editor1.putString(IS_FIRST_TIME, "1");
+                                                editor1.apply();
+
                                                 createEntryOnDatabase(user);
                                                 turn = false;
                                                 Toast.makeText(LogInActivity.this, "Registration Completed!!", Toast.LENGTH_SHORT).show();
                                                 SplashActivity.isForeground = true;
                                                 Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
-                                                intent.putExtra(REQUEST_CODE_NAME, "setpin");
-                                                intent.putExtra("title", "Set 6 digit Pin");
+                                                intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
+                                                intent.putExtra("title", "Set Pin");
                                                 startActivity(intent);
+                                            } else {
+                                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(UID);
+                                                // Read from the database
+                                                reference.addValueEventListener(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                        // This method is called once with the initial value and again
+                                                        // whenever data at this location is updated.
+                                                        String aes_iv = dataSnapshot.child("aes_iv").getValue(String.class);
+                                                        String aes_key = dataSnapshot.child("aes_key").getValue(String.class);
+                                                        String public_uid = dataSnapshot.child("public_uid").getValue(String.class);
+
+                                                        SharedPreferences.Editor editor1 = sharedPreferences.edit();
+                                                        editor1.putString(AES_KEY, aes_key);
+                                                        editor1.putString(AES_IV, aes_iv);
+                                                        editor1.putString(PUBLIC_UID,public_uid);
+                                                        editor1.putBoolean(IS_LOGIN, true);
+                                                        editor1.putString(IS_FIRST_TIME, "1");
+                                                        editor1.apply();
+                                                        turn = false;
+                                                        Toast.makeText(LogInActivity.this, "SignIn Completed!!", Toast.LENGTH_SHORT).show();
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+                                                        // Failed to read value
+                                                        System.out.println("Not able get data from database");
+                                                    }
+                                                });
+                                                SplashActivity.isForeground = true;
+                                                Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
+                                                intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
+                                                intent.putExtra("title", "Set Pin");
+                                                startActivity(intent);
+                                            }
                                         }
-                                    });
+                                    }, 10000);
                                 }
                             });
                             loginThread.start();
@@ -265,106 +262,6 @@ public class LogInActivity extends AppCompatActivity {
 
 
                         }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        tvErrorMessage.setText(e.getMessage());
-                    }
-                });
-    }
-
-    private void firebaseAuthWithGoogleLogin(GoogleSignInAccount acct) {
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            progressBar();
-                            // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            UID = user.getUid();
-                            //check user if already signed up in background
-//                            MyThreadRunnable MyThreadRunnable = new MyThreadRunnable();
-//                            new Thread(MyThreadRunnable).start();
-
-                            Handler handler = new Handler();
-                            Thread loginThread = new Thread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    handler.post(new Runnable() {
-                                        private final int count = 0;
-
-                                        @Override
-                                        public void run() {
-                                            prograceBar.dismissbar();
-                                            String temp = sharedPreferences.getString(IS_FIRST_TIME, "0");
-//                                            if (temp == "0") {
-//
-//                                                createEntryOnDatabase(user);
-//                                                turn = false;
-//                                                Toast.makeText(LogInActivity.this, "Registration Completed!!", Toast.LENGTH_SHORT).show();
-//                                                SplashActivity.isForeground = true;
-//                                                Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
-//                                                intent.putExtra(REQUEST_CODE_NAME, "setpin");
-//                                                intent.putExtra("title", "Set Pin");
-//                                                startActivity(intent);
-//                                            } else
-//                                            {
-                                            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(UID);
-                                            // Read from the database
-                                            reference.addValueEventListener(new ValueEventListener() {
-                                                @Override
-                                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                    // This method is called once with the initial value and again
-                                                    // whenever data at this location is updated.
-                                                    String aes_iv = dataSnapshot.child("aes_iv").getValue(String.class);
-                                                    String aes_key = dataSnapshot.child("aes_key").getValue(String.class);
-                                                    String public_uid = dataSnapshot.child("public_uid").getValue(String.class);
-
-                                                    SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                                                    editor1.putString(AES_KEY, aes_key);
-                                                    editor1.putString(AES_IV, aes_iv);
-                                                    editor1.putString(PUBLIC_UID, public_uid);
-                                                    editor1.putBoolean(IS_LOGIN, true);
-                                                    editor1.putString(IS_FIRST_TIME, "1");
-                                                    editor1.apply();
-                                                    turn = false;
-                                                    Toast.makeText(LogInActivity.this, "SignIn Completed!!", Toast.LENGTH_SHORT).show();
-                                                }
-
-                                                @Override
-                                                public void onCancelled(@NonNull DatabaseError error) {
-                                                    // Failed to read value
-                                                    System.out.println("Not able get data from database");
-                                                }
-                                            });
-                                            SplashActivity.isForeground = true;
-                                            Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
-                                            intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
-                                            intent.putExtra("title", "Set 6 digit Pin");
-                                            startActivity(intent);
-//                                            }
-                                        }
-                                    });
-                                }
-                            });
-                            loginThread.start();
-
-                        } else {
-                            Toast.makeText(LogInActivity.this, "Sorry authentication failed.", Toast.LENGTH_SHORT).show();
-
-
-                        }
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        tvErrorMessage.setText(e.getMessage());
                     }
                 });
     }
@@ -397,7 +294,8 @@ public class LogInActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                tvErrorMessage.setText(error.getMessage());
+                System.err.println(error);
+
             }
         });
         return turn;
@@ -447,25 +345,26 @@ public class LogInActivity extends AppCompatActivity {
                             DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference();
                             referenceSender.child("messageUserList").child(publicUid)
                                     .setValue(userListModel)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void unused) {
-                                    Toast.makeText(LogInActivity.this, "Chat User Added", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                        @Override
+                                        public void onSuccess(Void unused) {
+                                            Toast.makeText(LogInActivity.this, "Chat User Added", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
                         }
                     }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    tvErrorMessage.setText(e.getMessage());
-                }
-            });
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            tvErrorMessage.setText(e.getMessage());
+                        }
+                    });
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
     }
+
 
     public void progressBar() {
         prograceBar = new PrograceBar(LogInActivity.this);

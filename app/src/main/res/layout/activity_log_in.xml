@@ -28,26 +28,10 @@
             android:layout_width="230dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="100dp"
+            android:layout_marginTop="50dp"
             android:text="Login with google"
             android:textSize="16dp"/>
-        <TextView
-            android:id="@+id/tv_info"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="Don't have account?"
-            android:textSize="12dp" />
-        <Button
-            android:id="@+id/btn_create_account"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="230dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:text="Create Account"
-            android:textSize="16dp"
-            android:textColor="?attr/colorOnSecondary" />
+
         <TextView
             android:id="@+id/tv_error_message"
             android:layout_width="wrap_content"
