@@ -19,7 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
-import com.example.keys.R;
+import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
 import com.keys.aman.base.TabLayoutActivity;

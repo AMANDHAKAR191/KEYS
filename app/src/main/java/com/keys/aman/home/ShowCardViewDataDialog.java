@@ -27,7 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
-import com.example.keys.R;
+import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.PinLockActivity;
 import com.keys.aman.home.addpassword.AddPasswordActivity;

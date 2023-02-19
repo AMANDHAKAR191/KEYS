@@ -11,7 +11,7 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
-import com.example.keys.R;
+import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.base.TabLayoutActivity;
 import com.keys.aman.notes.SecretNotesActivity;

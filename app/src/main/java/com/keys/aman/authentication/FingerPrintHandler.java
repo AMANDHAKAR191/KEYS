@@ -12,7 +12,7 @@ import android.os.CancellationSignal;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.keys.R;
+import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.base.TabLayoutActivity;
 import com.keys.aman.notes.SecretNotesActivity;

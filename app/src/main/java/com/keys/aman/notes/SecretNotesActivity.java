@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.keys.R;
+import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
 import com.keys.aman.base.TabLayoutActivity;

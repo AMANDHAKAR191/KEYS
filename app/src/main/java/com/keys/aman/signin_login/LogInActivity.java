@@ -17,14 +17,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.keys.R;
-import com.keys.aman.AES;
-import com.keys.aman.PrograceBar;
-import com.keys.aman.SplashActivity;
-import com.keys.aman.authentication.BiometricAuthActivity;
-import com.keys.aman.authentication.PinLockActivity;
-import com.keys.aman.home.PasswordGeneratorActivity;
-import com.keys.aman.messages.UserListModelClass;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -47,6 +39,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.keys.aman.AES;
+import com.keys.aman.PrograceBar;
+import com.keys.aman.R;
+import com.keys.aman.SplashActivity;
+import com.keys.aman.authentication.BiometricAuthActivity;
+import com.keys.aman.authentication.PinLockActivity;
+import com.keys.aman.home.PasswordGeneratorActivity;
+import com.keys.aman.messages.UserListModelClass;
 
 import java.util.Objects;
 

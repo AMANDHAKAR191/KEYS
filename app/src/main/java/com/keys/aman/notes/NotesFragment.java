@@ -23,7 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.keys.R;
+import com.keys.aman.R;
 import com.keys.aman.MyViewModel;
 import com.keys.aman.messages.MessagesFragment;
 import com.keys.aman.notes.addnote.NoteHelperClass;

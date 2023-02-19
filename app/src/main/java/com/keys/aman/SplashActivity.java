@@ -10,7 +10,6 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.keys.R;
 import com.keys.aman.home.PasswordGeneratorActivity;
 import com.keys.aman.service.MyFirebaseMessagingService;
 import com.keys.aman.signin_login.LogInActivity;

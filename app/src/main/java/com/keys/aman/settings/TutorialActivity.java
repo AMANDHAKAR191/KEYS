@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.keys.R;
+import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
 import com.keys.aman.base.TabLayoutActivity;

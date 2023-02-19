@@ -24,7 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.keys.R;
+import com.keys.aman.R;
 import com.keys.aman.AES;
 import com.keys.aman.PrograceBar;
 import com.keys.aman.SplashActivity;

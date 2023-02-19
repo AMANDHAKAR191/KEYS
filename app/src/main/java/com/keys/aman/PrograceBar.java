@@ -6,8 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.keys.R;
-
 /* TODO Checked on 12/10/2022
     All is ok
  */

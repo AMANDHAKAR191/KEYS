@@ -16,7 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.example.keys.R;
+import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.signin_login.LogInActivity;
 //import com.example.keys.aman.app.signin_login.SignUpActivity;
