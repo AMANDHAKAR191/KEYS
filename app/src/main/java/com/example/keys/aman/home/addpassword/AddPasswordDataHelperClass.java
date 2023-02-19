@@ -43,4 +43,23 @@ public class AddPasswordDataHelperClass {
         return addWebsite_link;
     }
 
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public void setAddDataLogin(String addDataLogin) {
+        this.addDataLogin = addDataLogin;
+    }
+
+    public void setAddDataPassword(String addDataPassword) {
+        this.addDataPassword = addDataPassword;
+    }
+
+    public void setAddWebsite_name(String addWebsite_name) {
+        this.addWebsite_name = addWebsite_name;
+    }
+
+    public void setAddWebsite_link(String addWebsite_link) {
+        this.addWebsite_link = addWebsite_link;
+    }
 }

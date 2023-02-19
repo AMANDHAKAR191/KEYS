@@ -5,16 +5,17 @@
     android:id="@+id/cl_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/viewpager_background">
+    android:background="#80000000">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_thems4"
+        android:background="@drawable/show_password_cardview_bc"
         android:elevation="20dp"
         android:paddingBottom="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <ImageView
@@ -89,7 +90,6 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/rounded_thems2"
             android:elevation="5dp"
             android:orientation="vertical"
             android:padding="10dp"

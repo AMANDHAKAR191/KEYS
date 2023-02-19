@@ -78,7 +78,7 @@ public class ShowCardViewDataDialog extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.activity_show_cardview_data,container,false);
+        View view = inflater.inflate(R.layout.fragment_show_cardview_data,container,false);
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         SplashActivity.isForeground = false;
         //Hooks

@@ -17,7 +17,7 @@ package com.example.keys.aman.service;
 
 import android.app.assist.AssistStructure;
 import android.app.assist.AssistStructure.ViewNode;
-import android.os.Bundle;
+import android.content.SharedPreferences;
 import android.os.CancellationSignal;
 import android.service.autofill.AutofillService;
 import android.service.autofill.Dataset;
@@ -38,6 +38,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.keys.R;
+import com.example.keys.aman.AES;
+import com.example.keys.aman.home.addpassword.AddPasswordDataHelperClass;
+import com.example.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -50,43 +53,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-/**
- * A very basic {@link AutofillService} implementation that only shows dynamic-generated datasets
- * and don't persist the saved data.
- *
- * <p>The goal of this class is to provide a simple autofill service implementation that is easy
- * to understand and extend, but it should <strong>not</strong> be used as-is on real apps because
- * it lacks fundamental security requirements such as data partitioning and package verification
- * &mdashthese requirements are fullfilled by {@link //MyAutofillService}.
- */
 public final class BasicService extends AutofillService {
+    LogInActivity logInActivity = new LogInActivity();
+    AES aes = new AES();
 
     private static final String TAG = "BasicService";
 
-    /**
-     * Number of datasets sent on each request - we're simple, that value is hardcoded in our DNA!
-     */
     private static final int NUMBER_DATASETS = 4;
 
     @Override
     public void onFillRequest(FillRequest request, CancellationSignal cancellationSignal,
                               FillCallback callback) {
         Log.d(TAG, "onFillRequest()");
+        SharedPreferences sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
 
-        Bundle clientState = request.getClientState();
-        if (clientState != null){
-            String clientName = clientState.getString("client_name");
-            Log.d(TAG, "clientName: " + clientName);
-        }else {
-            Log.d(TAG, "clientState is null");
-        }
 
         // Find autofillable fields
         AssistStructure structure = getLatestAssistStructure(request);
         Log.d(TAG, "structure " + structure.getActivityComponent() + "\n+" + structure.describeContents());
         Map<String, AutofillId> fields = getAutofillableFields(structure);
         Log.d(TAG, "autofillable fields:" + fields);
-
 
         if (fields.isEmpty()) {
             toast("No autofill hints found");
@@ -97,40 +84,91 @@ public final class BasicService extends AutofillService {
         // Create the base response
         FillResponse.Builder response = new FillResponse.Builder();
 
-
-        // 1.Add the dynamic datasets
+        // Get the package name
         String packageName = getApplicationContext().getPackageName();
-        for (int i = 1; i <= NUMBER_DATASETS; i++) {
-            Dataset.Builder dataset = new Dataset.Builder();
-            int j = 0;
-            for (Entry<String, AutofillId> field : fields.entrySet()) {
-                String hint = field.getKey();
-                AutofillId id = field.getValue();
 
-                String value = "AMAN DHAKAR";
-//                String value = parentMyAdaptor.dataHolderForAutofill(i).getAddDataPassword();
-                // We're simple - our dataset values are hardcoded as "N-hint" (for example,
-                // "1-username", "2-username") and they're displayed as such, except if they're a
-                // password
-                String displayValue = hint.contains("password") ? "password for #" + i : "username for #" + i;
-                RemoteViews presentation = newDatasetPresentation(packageName, displayValue);
-                dataset.setValue(id, AutofillValue.forText(value), presentation);
-                j++;
+        // Get the datasets from Firebase
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("addpassworddata")
+                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        ref.child("accounts_google_com").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                // Create a list to hold the datasets
+//                List<Dataset.Builder> datasetBuilders = new ArrayList<>();
+
+                // Loop through the data and create a dataset for each record
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    System.out.println("snapshot: " + snapshot);
+                    AddPasswordDataHelperClass record = snapshot.getValue(AddPasswordDataHelperClass.class);
+                    if (record != null) {
+                        Dataset.Builder dataset = new Dataset.Builder();
+                        for (Entry<String, AutofillId> field : fields.entrySet()) {
+                            String hint = field.getKey();
+                            AutofillId id = field.getValue();
+
+                            String tempELogin, tempDLogin, tempEPassword, tempDPassword, dLogin, dPassword;
+                            try {
+                                //Double Decryption
+                                tempELogin = record.getAddDataLogin();
+                                dLogin = aes.decrypt(tempELogin);
+                                tempDLogin = aes.decrypt(dLogin);
+
+                                //Double Decryption
+                                tempEPassword = record.getAddDataPassword();
+                                dPassword = aes.decrypt(tempEPassword);
+                                tempDPassword = aes.decrypt(dPassword);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+
+
+                            // We're simple - our dataset values are hardcoded as "N-hint" (for example,
+                            // "1-username", "2-username") and they're displayed as such, except if they're a
+                            // password
+                            String displayValue = hint.contains("password") ? "password for " + tempDLogin : "username for " + tempDLogin;
+                            RemoteViews presentation = newDatasetPresentation(packageName, displayValue);
+                            String value = "";
+
+
+
+                            if (hint.contains("username")) {
+                                dataset.setValue(id, AutofillValue.forText(tempDLogin), presentation);
+                            } else if (hint.contains("password")) {
+                                dataset.setValue(id, AutofillValue.forText(tempDPassword), presentation);
+                            }
+                            Log.e(TAG, "Dataset: " + dataset);
+
+                        }
+//                        datasetBuilders.add(dataset);
+                        response.addDataset(dataset.build());
+                        Log.e(TAG, "Response: " + response);
+                    }
+                }
+
+//                // Add the datasets to the response
+//                for (int i = 0; i < datasetBuilders.size(); i++) {
+//                    response.addDataset(datasetBuilders.get(i).build());
+//                }
+
+                // Add save info
+                Collection<AutofillId> ids = fields.values();
+                AutofillId[] requiredIds = new AutofillId[ids.size()];
+                ids.toArray(requiredIds);
+                response.setSaveInfo(
+                        // We're simple, so we're generic
+                        new SaveInfo.Builder(SaveInfo.SAVE_DATA_TYPE_USERNAME & SaveInfo.SAVE_DATA_TYPE_PASSWORD, requiredIds).build());
+
+                // Profit!
+                callback.onSuccess(response.build());
             }
-            response.addDataset(dataset.build());
-        }
 
-        // 2.Add save info
-        Collection<AutofillId> ids = fields.values();
-        AutofillId[] requiredIds = new AutofillId[ids.size()];
-        ids.toArray(requiredIds);
-        response.setSaveInfo(
-                // We're simple, so we're generic
-                new SaveInfo.Builder(SaveInfo.SAVE_DATA_TYPE_USERNAME & SaveInfo.SAVE_DATA_TYPE_PASSWORD, requiredIds).build());
-
-        // 3.Profit!
-        callback.onSuccess(response.build());
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.w(TAG, "onFillRequest: onCancelled", error.toException());
+            }
+        });
     }
+
 
     @Override
     public void onSaveRequest(SaveRequest request, SaveCallback callback) {
@@ -146,13 +184,7 @@ public final class BasicService extends AutofillService {
         callback.onSuccess();
     }
 
-    /**
-     * Parses the {@link AssistStructure} representing the activity being autofilled, and returns a
-     * map of autofillable fields (represented by their autofill ids) mapped by the hint associate
-     * with them.
-     *
-     * <p>An autofillable field is a {@link ViewNode} whose {@link //#getHint(ViewNode)} metho
-     */
+
     @NonNull
     private Map<String, AutofillId> getAutofillableFields(@NonNull AssistStructure structure) {
         Map<String, AutofillId> fields = new ArrayMap<>();
@@ -247,22 +279,5 @@ public final class BasicService extends AutofillService {
             ViewNode childNode = viewNode.getChildAt(i);
             traverseNode(childNode);
         }
-    }
-    
-    private void loadDataFromDB(String websiteName){
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata")
-                .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        databaseReference.orderByChild("addWebsite_name").equalTo(websiteName)
-                .addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
     }
 }

@@ -237,6 +237,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.myView
                 tempELogin = dataHolder.get(position).getAddDataLogin();
                 dLogin = aes.decrypt(tempELogin);
                 tempDLogin = aes.decrypt(dLogin);
+
                 tempEPassword = dataHolder.get(position).getAddDataPassword();
                 dPassword = aes.decrypt(tempEPassword);
                 tempDPassword = aes.decrypt(dPassword);

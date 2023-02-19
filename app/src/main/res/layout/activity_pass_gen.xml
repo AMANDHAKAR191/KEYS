@@ -99,12 +99,10 @@
 
     <Button
         android:id="@+id/bt_use"
-        style="@style/Widget.MaterialComponents.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="80dp"
         android:layout_marginTop="30dp"
-        android:background="@drawable/round_btn"
         android:text="Use "
         android:visibility="visible"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -112,10 +110,10 @@
 
     <Button
         android:id="@+id/bt_copy"
+        style="?attr/materialButtonOutlinedStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
-        android:background="@drawable/rounded_thems5"
         android:text="Copy"
         app:layout_constraintLeft_toRightOf="@+id/bt_use"
         app:layout_constraintRight_toRightOf="parent"
