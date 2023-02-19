@@ -8,7 +8,7 @@
     android:paddingTop="10dp"
     android:paddingRight="10dp"
     android:background="@drawable/viewpager_background"
-    tools:context=".aman.notes.NotesFragment">
+    tools:context="com.keys.aman.notes.NotesFragment">
 
     <!--    <SearchView-->
     <!--        android:id="@+id/search_bar"-->
