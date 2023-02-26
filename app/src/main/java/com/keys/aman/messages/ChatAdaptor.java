@@ -5,6 +5,10 @@ import static android.content.Context.MODE_PRIVATE;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +21,16 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.keys.aman.R;
 import com.keys.aman.AES;
+import com.keys.aman.R;
+import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.signin_login.LogInActivity;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,6 +41,7 @@ public class ChatAdaptor extends RecyclerView.Adapter {
 
     private SharedPreferences sharedPreferences;
     ArrayList<ChatModelClass> dataHolder;
+    String commonEncryptionKey, commonEncryptionIv;
     Context context;
     Activity activity;
     LogInActivity logInActivity = new LogInActivity();
@@ -44,16 +55,18 @@ public class ChatAdaptor extends RecyclerView.Adapter {
 
     String chatType = "text";
     private final AES aes = new AES();
+    private Bitmap bmWebsiteLogo;
+    private Bitmap emptyBitmap;
 
     public ChatAdaptor() {
     }
 
-    public ChatAdaptor(ArrayList<ChatModelClass> dataHolder, Context context, Activity activity) {
+    public ChatAdaptor(ArrayList<ChatModelClass> dataHolder, String commonEncryptionKey, String commonEncryptionIv, Context context, Activity activity) {
         this.dataHolder = dataHolder;
         this.context = context;
         this.activity = activity;
         sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
+        aes.initFromStrings(commonEncryptionKey, commonEncryptionIv);
     }
 
     @NonNull
@@ -72,20 +85,22 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                 return new SenderNoteViewHolder(view);
             case RECEIVER_NOTE_VIEW_TYPE:
                 view = LayoutInflater.from(context).inflate(R.layout.layout_receiver_note, parent, false);
-                return new SenderNoteViewHolder(view);
+                return new ReceiverNoteViewHolder(view);
             case SENDER_PASSWORD_VIEW_TYPE:
                 view = LayoutInflater.from(context).inflate(R.layout.layout_sender_password, parent, false);
-                return new SenderNoteViewHolder(view);
+                return new SenderPasswordViewHolder(view);
             default:
                 view = LayoutInflater.from(context).inflate(R.layout.layout_receiver_password, parent, false);
-                return new SenderNoteViewHolder(view);
+                return new ReceiverPasswordViewHolder(view);
         }
 
     }
 
     @Override
     public int getItemViewType(int position) {
+        // sender type
         if (dataHolder.get(position).getPublicUid().equals(sharedPreferences.getString(logInActivity.PUBLIC_UID, null))) {
+            System.out.println("Sender");
             if (dataHolder.get(position).getType().equals("text")) {
                 return SENDER_VIEW_TYPE;
             } else if (dataHolder.get(position).getType().equals("note")) {
@@ -93,7 +108,8 @@ public class ChatAdaptor extends RecyclerView.Adapter {
             } else {
                 return SENDER_PASSWORD_VIEW_TYPE;
             }
-        } else {
+        } else { // receiver type
+            System.out.println("Receiver");
             if (dataHolder.get(position).getType().equals("text")) {
                 return SENDER_VIEW_TYPE;
             } else if (dataHolder.get(position).getType().equals("note")) {
@@ -107,14 +123,17 @@ public class ChatAdaptor extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         String noteTitle, noteBody, decryptedNoteTitle, decryptedNoteBody, doubleDecryptedNoteTitle, doubleDecryptedNoteBody;
+        String[] title1;
+        String tempELogin, dLogin, tempDLogin, tempEPassword, dPassword, tempDPassword, dWebsiteName, dWebsiteLink, Title, currentDate;
         try {
-            if(holder.getClass() == SenderViewHolder.class){
+            if (holder.getClass() == SenderViewHolder.class) {
                 Log.e("ChatActivity", "SenderViewHolder");
                 ((SenderViewHolder) holder).tvSenderMessage.setText(dataHolder.get(position).getMessage());
                 DateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
                 DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                 String dateAndTime1 = sdf.format(Objects.requireNonNull(inputsdf.parse(dataHolder.get(position).getDateAndTime())));
                 ((SenderViewHolder) holder).tvSenderTimeStamp.setText(dateAndTime1);
+                ((SenderViewHolder) holder).tvSenderMessageStatus.setText(dataHolder.get(position).getStatus());
 
             } else if (holder.getClass() == ReceiverViewHolder.class) {
                 Log.e("ChatActivity", "ReceiverViewHolder");
@@ -143,7 +162,7 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                     System.out.println(dataHolder.get(position).getNoteModelClass());
                 }
 
-            }else if (holder.getClass() == ReceiverNoteViewHolder.class){
+            } else if (holder.getClass() == ReceiverNoteViewHolder.class) {
                 if (dataHolder.get(position).getType().equals("note")) {
                     Log.e("ChatActivity", "NoteViewHolder: note");
                     noteBody = dataHolder.get(position).getNoteModelClass().getNote();
@@ -157,61 +176,120 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                     System.out.println(doubleDecryptedNoteTitle);
                     System.out.println(doubleDecryptedNoteBody);
 
-                    ((SenderNoteViewHolder) holder).tvNote.setText(doubleDecryptedNoteBody);
-                    ((SenderNoteViewHolder) holder).tvTitle.setText(doubleDecryptedNoteTitle);
+                    ((ReceiverNoteViewHolder) holder).tvNote.setText(doubleDecryptedNoteBody);
+                    ((ReceiverNoteViewHolder) holder).tvTitle.setText(doubleDecryptedNoteTitle);
                     System.out.println(dataHolder.get(position).getNoteModelClass());
                 }
 
             } else if (holder.getClass() == SenderPasswordViewHolder.class) {
+                final PasswordHelperClass temp = dataHolder.get(position).getPasswordModelClass();
+                try {
+                    currentDate = temp.getDate();
+                    //Double Decryption
+                    tempELogin = temp.getAddDataLogin();
+                    dLogin = aes.decrypt(tempELogin);
+                    tempDLogin = aes.decrypt(dLogin);
 
-            }else {
+                    tempEPassword = temp.getAddDataPassword();
+                    dPassword = aes.decrypt(tempEPassword);
+                    tempDPassword = aes.decrypt(dPassword);
 
+
+                    dWebsiteName = temp.getAddWebsite_name();
+                    dWebsiteLink = temp.getAddWebsite_link();
+
+                    Title = dWebsiteName.substring(0, 1).toUpperCase() + dWebsiteName.substring(1);
+                    title1 = Title.split("_", 3);
+
+
+                    ((SenderPasswordViewHolder) holder).tvLogin.setText(tempDLogin);
+                    myAdaptorThreadRunnable threadRunnable = new myAdaptorThreadRunnable(position, holder, dWebsiteLink);
+                    new Thread(threadRunnable).start();
+                    try {
+                        if (bmWebsiteLogo.sameAs(emptyBitmap)) {
+
+                        }
+                    } catch (NullPointerException e) {
+                        ((SenderPasswordViewHolder) holder).imgWebsiteLogo.setVisibility(View.GONE);
+                        ((SenderPasswordViewHolder) holder).tvImageTitle.setVisibility(View.VISIBLE);
+                        if (title1.length == 3) {
+                            ((SenderPasswordViewHolder) holder).tvImageTitle.setText(title1[1]);
+                        } else if (title1.length == 2) {
+                            ((SenderPasswordViewHolder) holder).tvImageTitle.setText(title1[0]);
+                        } else if (title1.length == 1) {
+                            ((SenderPasswordViewHolder) holder).tvImageTitle.setText(title1[0]);
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                final PasswordHelperClass temp = dataHolder.get(position).getPasswordModelClass();
+                try {
+                    currentDate = temp.getDate();
+                    //Double Decryption
+                    tempELogin = temp.getAddDataLogin();
+                    dLogin = aes.decrypt(tempELogin);
+                    tempDLogin = aes.decrypt(dLogin);
+
+                    tempEPassword = temp.getAddDataPassword();
+                    dPassword = aes.decrypt(tempEPassword);
+                    tempDPassword = aes.decrypt(dPassword);
+
+
+                    dWebsiteName = temp.getAddWebsite_name();
+                    dWebsiteLink = temp.getAddWebsite_link();
+
+                    Title = dWebsiteName.substring(0, 1).toUpperCase() + dWebsiteName.substring(1);
+                    title1 = Title.split("_", 3);
+
+
+                    ((ReceiverPasswordViewHolder) holder).tvLogin.setText(tempDLogin);
+
+                    myAdaptorThreadRunnable threadRunnable = new myAdaptorThreadRunnable(position, holder, dWebsiteLink);
+                    new Thread(threadRunnable).start();
+                    try {
+                        if (bmWebsiteLogo.sameAs(emptyBitmap)) {
+
+                        }
+                    } catch (NullPointerException e) {
+                        ((ReceiverPasswordViewHolder) holder).imgWebsiteLogo.setVisibility(View.GONE);
+                        ((ReceiverPasswordViewHolder) holder).tvImageTitle.setVisibility(View.VISIBLE);
+                        if (title1.length == 3) {
+                            ((ReceiverPasswordViewHolder) holder).tvImageTitle.setText(title1[1]);
+                        } else if (title1.length == 2) {
+                            ((ReceiverPasswordViewHolder) holder).tvImageTitle.setText(title1[0]);
+                        } else if (title1.length == 1) {
+                            ((ReceiverPasswordViewHolder) holder).tvImageTitle.setText(title1[0]);
+                        }
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
-//        try {
-//            if (holder.getClass() == SenderViewHolder.class) {
-//                Log.e("ChatActivity", "SenderViewHolder");
-//                ((SenderViewHolder) holder).tvSenderMessage.setText(dataHolder.get(position).getMessage());
-//                DateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
-//                DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-//                String dateAndTime1 = sdf.format(Objects.requireNonNull(inputsdf.parse(dataHolder.get(position).getDateAndTime())));
-//                ((SenderViewHolder) holder).tvSenderTimeStamp.setText(dateAndTime1);
-//            } else if (holder.getClass() == SenderNoteViewHolder.class) {
-//                Log.e("ChatActivity", "NoteViewHolder => text");
-//                Log.e("ChatActivity", "NoteViewHolder => " + dataHolder.get(position).getType());
-//                if (dataHolder.get(position).getType().equals("note")) {
-//                    Log.e("ChatActivity", "NoteViewHolder: note");
-//                    noteBody = dataHolder.get(position).getNoteModelClass().getNote();
-//                    noteTitle = dataHolder.get(position).getNoteModelClass().getTitle();
-//                    //Double Decryption
-//                    decryptedNoteTitle = aes.decrypt(noteTitle);
-//                    doubleDecryptedNoteTitle = aes.decrypt(decryptedNoteTitle);
-//                    decryptedNoteBody = aes.decrypt(noteBody);
-//                    doubleDecryptedNoteBody = aes.decrypt(decryptedNoteBody);
-//
-//                    System.out.println(doubleDecryptedNoteTitle);
-//                    System.out.println(doubleDecryptedNoteBody);
-//
-//                    ((SenderNoteViewHolder) holder).tvNote.setText(doubleDecryptedNoteBody);
-//                    ((SenderNoteViewHolder) holder).tvTitle.setText(doubleDecryptedNoteTitle);
-//                    System.out.println(dataHolder.get(position).getNoteModelClass());
-//                }
-//            } else {
-//                Log.e("ChatActivity", "ReceiverViewHolder");
-//                ((ReceiverViewHolder) holder).tvReceiverMessage.setText(dataHolder.get(position).getMessage());
-//                DateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
-//                DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-//                String dateAndTime1 = sdf.format(Objects.requireNonNull(inputsdf.parse(dataHolder.get(position).getDateAndTime())));
-//                ((ReceiverViewHolder) holder).tvReceiverTimeStamp.setText(dateAndTime1);
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+    }
+
+    private static Bitmap fetchFavicon(Uri uri) {
+        final Uri iconUri = uri.buildUpon().path("favicon.ico").build();
+
+        InputStream is = null;
+        BufferedInputStream bis = null;
+        try {
+            URLConnection conn = new URL(iconUri.toString()).openConnection();
+            conn.connect();
+            is = conn.getInputStream();
+            bis = new BufferedInputStream(is, 8192);
+            return BitmapFactory.decodeStream(bis);
+        } catch (IOException e) {
+            return null;
+        }
     }
 
     @Override
@@ -280,18 +358,12 @@ public class ChatAdaptor extends RecyclerView.Adapter {
 
     public class SenderPasswordViewHolder extends RecyclerView.ViewHolder {
 
-        final TextView tvLogin, tvWebsiteName, tvWebsiteTitle, tvImageTitle;
+        final TextView tvLogin, tvImageTitle;
         final ImageView imgWebsiteLogo;
-        final Toolbar tbcvMore;
-        final LinearLayout LLCard;
 
         public SenderPasswordViewHolder(@NonNull View itemView) {
             super(itemView);
             tvLogin = itemView.findViewById(R.id.displayname);
-            tvWebsiteName = itemView.findViewById(R.id.displaywebsite);
-            tbcvMore = itemView.findViewById(R.id.cardview_more);
-            LLCard = itemView.findViewById(R.id.linear_layout_card);
-            tvWebsiteTitle = itemView.findViewById(R.id.tv_img_title);
             tvImageTitle = itemView.findViewById(R.id.tv_img_title);
             imgWebsiteLogo = itemView.findViewById(R.id.img_logo);
         }
@@ -300,7 +372,7 @@ public class ChatAdaptor extends RecyclerView.Adapter {
 
     public class ReceiverPasswordViewHolder extends RecyclerView.ViewHolder {
 
-        final TextView tvLogin, tvWebsiteName, tvWebsiteTitle, tvImageTitle;
+        final TextView tvLogin, tvImageTitle;
         final ImageView imgWebsiteLogo;
         final Toolbar tbcvMore;
         final LinearLayout LLCard;
@@ -308,14 +380,51 @@ public class ChatAdaptor extends RecyclerView.Adapter {
         public ReceiverPasswordViewHolder(@NonNull View itemView) {
             super(itemView);
             tvLogin = itemView.findViewById(R.id.displayname);
-            tvWebsiteName = itemView.findViewById(R.id.displaywebsite);
-            tbcvMore = itemView.findViewById(R.id.cardview_more);
-            LLCard = itemView.findViewById(R.id.linear_layout_card);
-            tvWebsiteTitle = itemView.findViewById(R.id.tv_img_title);
             tvImageTitle = itemView.findViewById(R.id.tv_img_title);
             imgWebsiteLogo = itemView.findViewById(R.id.img_logo);
+
+            tbcvMore = itemView.findViewById(R.id.cardview_more);
+            LLCard = itemView.findViewById(R.id.linear_layout_card);
+
+
         }
 
     }
+
+    public class myAdaptorThreadRunnable implements Runnable {
+
+        private final int position;
+        RecyclerView.ViewHolder holder;
+        String dWebsiteLink;
+
+
+        public myAdaptorThreadRunnable(int position1, RecyclerView.ViewHolder holder, String dWebsiteLink) {
+            this.position = position1;
+            this.holder = holder;
+            this.dWebsiteLink = dWebsiteLink;
+        }
+
+        Handler handler = new Handler();
+
+        @Override
+        public void run() {
+            try {
+                //
+                bmWebsiteLogo = fetchFavicon(Uri.parse(dWebsiteLink));
+                System.out.println("website logo loading");
+                emptyBitmap = Bitmap.createBitmap(bmWebsiteLogo.getWidth(), bmWebsiteLogo.getHeight(), bmWebsiteLogo.getConfig());
+
+            } catch (Exception e) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ((SenderPasswordViewHolder) holder).imgWebsiteLogo.setImageBitmap(bmWebsiteLogo);
+                    }
+                });
+
+            }
+        }
+    }
+
 
 }

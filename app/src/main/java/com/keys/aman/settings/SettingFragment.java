@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,21 +20,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.auth.api.signin.GoogleSignInApi;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.firebase.auth.FirebaseAuth;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.PinLockActivity;
 import com.keys.aman.base.TabLayoutActivity;
-import com.keys.aman.import_data.ImportData;
 import com.keys.aman.signin_login.LogInActivity;
-import com.google.android.gms.auth.api.signin.GoogleSignInApi;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.Objects;
 
@@ -183,12 +184,17 @@ public class SettingFragment extends Fragment {
         tvDevicesList.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                llDeviceList.setVisibility(View.VISIBLE);
-//                tvDevice2.setVisibility(View.VISIBLE);
-//                tvDevice3.setVisibility(View.VISIBLE);
-                ImportData importData = new ImportData();
-                importData.getPassword(context);
-//                startActivity(new Intent(context, BiometricAuthActivity.class));
+                AutofillManager autofillManager = activity.getSystemService(AutofillManager.class);
+                if (!autofillManager.hasEnabledAutofillServices()) {
+                    SplashActivity.isForeground = true;
+                    Intent intent = new Intent(Settings.ACTION_REQUEST_SET_AUTOFILL_SERVICE);
+                    intent.setData(Uri.parse("package:" + activity.getPackageName()));
+                    startActivityForResult(intent, 0);
+                }else {
+                    Toast.makeText(context, "Autofill Service is disabled", Toast.LENGTH_SHORT).show();
+                    autofillManager.disableAutofillServices();
+                }
+
             }
         });
         tvTutorial.setOnClickListener(new View.OnClickListener() {

@@ -32,8 +32,8 @@
 
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
-    <color name="background_light_color">#FFFFFF</color>
-    <color name="background_dark_color">#444444</color>
+    <color name="colorBackgroundNight">#141414</color>
+    <color name="colorOnBackgroundDay">#EBEBEB</color>
 
     <color name="primaryColor">#009688</color>
     <color name="primaryLightColor">#52c7b8</color>

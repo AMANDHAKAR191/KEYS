@@ -56,7 +56,7 @@ public class NoteAdapterForUnpinned extends RecyclerView.Adapter<NoteAdapterForU
     @Override
     public myviewholder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_cardview_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_layout_note, parent, false);
         return new myviewholder(view);
 
     }
@@ -188,7 +188,7 @@ public class NoteAdapterForUnpinned extends RecyclerView.Adapter<NoteAdapterForU
                             holder.refreshRecViewCall();
                             return true;
                         case R.id.img_share_note:
-                            NoteHelperClass noteData = dataholder.get(position);
+                            NoteHelperClass noteData = new NoteHelperClass(dateAndTime1, doubleDecryptedNoteTitle, doubleDecryptedNoteBody, isHideNote, isPinned);
                             Log.e("shareNote", "Check1: NoteAdapterForUnpinned: " +noteData);
                             holder.shareNotesCall(noteData);
                     }

@@ -239,10 +239,10 @@ public class AddPasswordActivity extends AppCompatActivity {
             }
 
 
-            AddPasswordDataHelperClass AddPasswordDataHelperClass;
+            PasswordHelperClass PasswordHelperClass;
             if (comingRequestCode.equals(ShowCardViewDataDialog.REQUEST_ID)) {
-                AddPasswordDataHelperClass = new AddPasswordDataHelperClass(comingDate, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, comingLoginWebsiteLink);
-                addDataRef.child(comingDate).setValue(AddPasswordDataHelperClass)
+                PasswordHelperClass = new PasswordHelperClass(comingDate, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, comingLoginWebsiteLink);
+                addDataRef.child(comingDate).setValue(PasswordHelperClass)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -263,8 +263,8 @@ public class AddPasswordActivity extends AppCompatActivity {
                 finish();
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
             } else if (comingRequestCode.equals(TabLayoutActivity.REQUEST_ID)) {
-                AddPasswordDataHelperClass = new AddPasswordDataHelperClass(currentDateAndTime, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, addWebsiteLink);
-                addDataRef.child(currentDateAndTime).setValue(AddPasswordDataHelperClass)
+                PasswordHelperClass = new PasswordHelperClass(currentDateAndTime, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, addWebsiteLink);
+                addDataRef.child(currentDateAndTime).setValue(PasswordHelperClass)
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {

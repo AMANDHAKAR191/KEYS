@@ -14,13 +14,13 @@ import androidx.core.content.ContextCompat;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.base.TabLayoutActivity;
-import com.keys.aman.notes.SecretNotesActivity;
 import com.keys.aman.signin_login.LogInActivity;
 
 import java.util.concurrent.Executor;
 
 public class BiometricAuthActivity extends AppCompatActivity {
 
+    public static final String REQUEST_ID = "BiometricAuthActivity";
     BiometricPrompt biometricPrompt;
     BiometricPrompt.PromptInfo promptInfo;
     LogInActivity logInActivity = new LogInActivity();
@@ -78,11 +78,11 @@ public class BiometricAuthActivity extends AppCompatActivity {
                 Intent intent2;
                 if (ispin_set){
                     intent2 = new Intent(BiometricAuthActivity.this, PinLockActivity.class);
-                    intent2.putExtra(logInActivity.REQUEST_CODE_NAME,"LogInActivity");
+                    intent2.putExtra(logInActivity.REQUEST_CODE_NAME,BiometricAuthActivity.REQUEST_ID);
                     intent2.putExtra("title","Enter Pin");
                 }else {
                     intent2 = new Intent(getApplicationContext(), PinLockActivity.class);
-                    intent2.putExtra(logInActivity.REQUEST_CODE_NAME, "setpin");
+                    intent2.putExtra(logInActivity.REQUEST_CODE_NAME, TabLayoutActivity.REQUEST_ID);
                     intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent2.putExtra("title", "Set Pin");
                 }
@@ -107,7 +107,7 @@ public class BiometricAuthActivity extends AppCompatActivity {
                 Toast.makeText(BiometricAuthActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
                 SplashActivity.isForeground = true;
                 switch (comingRequestCode) {
-                    case "LogInActivity":
+                    case LogInActivity.REQUEST_ID:
                         SharedPreferences.Editor editor1 = sharedPreferences.edit();
                         editor1.putBoolean(getIS_AUTHENTICATED(), true);
                         editor1.apply();
@@ -118,7 +118,7 @@ public class BiometricAuthActivity extends AppCompatActivity {
                         if (!ispinset) {
                             SplashActivity.isForeground = true;
                             Intent intent = new Intent(BiometricAuthActivity.this, PinLockActivity.class);
-                            intent.putExtra(logInActivity.REQUEST_CODE_NAME, "setpin");
+                            intent.putExtra(logInActivity.REQUEST_CODE_NAME, LogInActivity.REQUEST_ID);
                             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                             intent.putExtra("title", "Set Pin");
                             startActivity(intent);
@@ -130,25 +130,6 @@ public class BiometricAuthActivity extends AppCompatActivity {
                             finish();
                         }
 
-
-                        break;
-                    case "notesActivity":
-                        comingRequestCode = "BiometricActivity";
-                        SharedPreferences.Editor editor2 = sharedPreferences.edit();
-                        editor2.putBoolean(getIS_AUTHENTICATED(), true);
-                        editor2.apply();
-
-                        Intent intent1 = new Intent(BiometricAuthActivity.this, SecretNotesActivity.class);
-                        intent1.putExtra(logInActivity.REQUEST_CODE_NAME, comingRequestCode);
-                        startActivity(intent1);
-                        finish();
-                        break;
-                    case "HomeActivity":
-                        Intent intent2 = new Intent(BiometricAuthActivity.this, TabLayoutActivity.class);
-                        Bundle args = new Bundle();
-                        args.putString(logInActivity.REQUEST_CODE_NAME, LogInActivity.REQUEST_ID);
-                        startActivity(intent2, args);
-                        finish();
                         break;
                     case "LockBackGroundApp":
                         SplashActivity.isBackground = false;

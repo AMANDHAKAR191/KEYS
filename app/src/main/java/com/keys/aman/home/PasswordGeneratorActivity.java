@@ -117,6 +117,7 @@ public class PasswordGeneratorActivity extends AppCompatActivity {
         btnUsePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SplashActivity.isForeground = true;
                 String textViewpassword = tvPassword.getText().toString();
                 Intent intentresult = getIntent();
                 intentresult.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);

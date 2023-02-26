@@ -1,9 +1,5 @@
 package com.keys.aman.messages;
 
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,7 +12,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,11 +27,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.keys.aman.AES;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
 import com.keys.aman.base.TabLayoutActivity;
 import com.keys.aman.databinding.ActivityChatBinding;
+import com.keys.aman.home.PasswordAdapter;
+import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.notes.NoteAdapterForUnpinned;
 import com.keys.aman.notes.addnote.NoteHelperClass;
 import com.keys.aman.signin_login.LogInActivity;
@@ -57,7 +55,7 @@ public class ChatActivity extends AppCompatActivity {
     //    ImageButton imgSendMessage;
     RecyclerView recViewChatMessages;
     private ArrayList<ChatModelClass> dataHolderChatMessages;
-    public String receiverPublicUid, receiverPublicUname, senderPublicUid, senderPublicUname, currentDateAndTime;
+    public String receiverPublicUid, receiverPublicUname, commonEncryptionKey, commonEncryptionIv, senderPublicUid, senderPublicUname, currentDateAndTime;
     private SharedPreferences sharedPreferences;
     LogInActivity logInActivity = new LogInActivity();
     TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
@@ -67,6 +65,7 @@ public class ChatActivity extends AppCompatActivity {
     ChatAdaptor chatAdaptor;
     public String senderRoom, receiverRoom;
     private NoteHelperClass noteData;
+    private PasswordHelperClass passwordData;
     private Intent intentResult;
     private DatabaseReference reference;
     private MutableLiveData<NoteHelperClass> data;
@@ -80,6 +79,8 @@ public class ChatActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
 
+        recViewChatMessages = findViewById(R.id.recview_chat);
+
         //todo 3 when is coming from background or foreground always make isForeground false
         SplashActivity.isForeground = false;
 
@@ -91,9 +92,13 @@ public class ChatActivity extends AppCompatActivity {
         if (comingFromActivity.equals(UserListAdapter.REQUEST_ID)) {
             receiverPublicUid = intentResult.getStringExtra("receiver_public_uid");
             receiverPublicUname = intentResult.getStringExtra("receiver_public_uname");
+            commonEncryptionKey = intentResult.getStringExtra("commonEncryptionKey");
+            commonEncryptionIv = intentResult.getStringExtra("commonEncryptionIv");
         } else if (comingFromActivity.equals(NoteAdapterForUnpinned.REQUEST_ID)) {
             receiverPublicUid = intentResult.getStringExtra("receiver_public_uid");
             receiverPublicUname = intentResult.getStringExtra("receiver_public_uname");
+            commonEncryptionKey = intentResult.getStringExtra("commonEncryptionKey");
+            commonEncryptionIv = intentResult.getStringExtra("commonEncryptionIv");
             noteData = intentResult.getParcelableExtra("noteData");
             Log.e("shareNote", "Check5: ChatActivity: " + noteData);
             binding.tilMessage.setEnabled(false);
@@ -105,6 +110,32 @@ public class ChatActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             sendMessage(null, "note");
+                        }
+                    })
+                    .setPositiveButtonIcon(getDrawable(R.drawable.send))
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
+                        }
+                    }).show();
+//            binding.tietMessage.setText("Note: " + noteData.getTitle() + "is sharing with " + receiverPublicUname);
+        } else if (comingFromActivity.equals(PasswordAdapter.REQUEST_ID)) {
+            receiverPublicUid = intentResult.getStringExtra("receiver_public_uid");
+            receiverPublicUname = intentResult.getStringExtra("receiver_public_uname");
+            commonEncryptionKey = intentResult.getStringExtra("commonEncryptionKey");
+            commonEncryptionIv = intentResult.getStringExtra("commonEncryptionIv");
+            passwordData = intentResult.getParcelableExtra("passwordData");
+            Log.e("shareNote", "Check5: ChatActivity: " + passwordData);
+            binding.tilMessage.setEnabled(false);
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Alert!")
+                    .setIcon(R.drawable.app_info)
+                    .setMessage("Your Password will be shared with " + receiverPublicUname)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            sendMessage(null, "password");
                         }
                     })
                     .setPositiveButtonIcon(getDrawable(R.drawable.send))
@@ -167,7 +198,7 @@ public class ChatActivity extends AppCompatActivity {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
 
         binding.recviewChat.setLayoutManager(linearLayoutManager);
-        chatAdaptor = new ChatAdaptor(dataHolderChatMessages, ChatActivity.this, ChatActivity.this);
+        chatAdaptor = new ChatAdaptor(dataHolderChatMessages,commonEncryptionKey, commonEncryptionIv, ChatActivity.this, ChatActivity.this);
 
         binding.recviewChat.setAdapter(chatAdaptor);
 
@@ -238,33 +269,62 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String message, String type) {
+        AES aes = new AES();
+        aes.initFromStrings(commonEncryptionKey, commonEncryptionIv);
+        if (passwordData != null) {
+            String encryptedAddlLogin = "", encryptedAddPassword = "";
+            String addLogin = passwordData.getAddDataLogin();
+            String addPassword = passwordData.getAddDataPassword();
+            String addWebsiteName = passwordData.getAddWebsite_name();
+            String addWebsiteLink = passwordData.getAddWebsite_link();
+
+
+            try {
+                // Double encryption
+                // TODO : in future, (if needed) give two key to user for double encryption
+                encryptedAddlLogin = aes.encrypt(addLogin);
+                encryptedAddlLogin = aes.encrypt(encryptedAddlLogin);
+                encryptedAddPassword = aes.encrypt(addPassword);
+                encryptedAddPassword = aes.encrypt(encryptedAddPassword);
+//                e_addwebsite = aes.encrypt(addwesitename);
+                passwordData.setAddDataLogin(encryptedAddlLogin);
+                passwordData.setAddDataPassword(encryptedAddPassword);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (noteData != null) {
+            String currentDateAndTime, title, note, titleEncrypted, noteEncrypted;
+            title = noteData.getTitle();
+            note = noteData.getNote();
+            try {
+                // Double encryption
+                // TODO : in future, (if needed) give two key to user for double encryption
+                titleEncrypted = aes.encrypt(title);
+                titleEncrypted = aes.encrypt(titleEncrypted);
+                noteEncrypted = aes.encrypt(note);
+                noteEncrypted = aes.encrypt(noteEncrypted);
+
+                noteData.setTitle(titleEncrypted);
+                noteData.setNote(noteEncrypted);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         currentDateAndTime = sdf.format(new Date());
         System.out.println("Dateandtime: " + currentDateAndTime);
 
-        reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-        ChatModelClass chatModelClass = new ChatModelClass(message, currentDateAndTime, senderPublicUid, type, null, noteData);
+        ChatModelClass chatModelClass = new ChatModelClass(message, currentDateAndTime, senderPublicUid, type, "sent", passwordData, noteData);
         binding.tietMessage.setText("");
-        DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference().child("messages");
-        referenceSender.child(senderRoom).push().setValue(chatModelClass)
+        DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference().child("messages").child(senderRoom);
+        referenceSender.push().setValue(chatModelClass)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-//                                setSenderMessageStatus("01");
+//                                setSenderMessageStatus(referenceSender, "sending");
                         DatabaseReference referenceReceiver = FirebaseDatabase.getInstance().getReference().child("messages");
-                        referenceReceiver.child(receiverRoom).push()
-                                .setValue(chatModelClass)
+                        referenceReceiver.child(receiverRoom).push().setValue(chatModelClass)
                                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void unused) {
@@ -273,10 +333,10 @@ public class ChatActivity extends AppCompatActivity {
                                                 new FCMNotificationSender("/topics/" + receiverPublicUid, senderPublicUid, message, ChatActivity.this, ChatActivity.this);
                                         notificationSender.sendNotification();
 
-                                        UserPersonalChatList personalChatList = new UserPersonalChatList(senderPublicUid, senderPublicUname, true, ".");
+                                        UserPersonalChatList personalChatList = new UserPersonalChatList(senderPublicUid, senderPublicUname, commonEncryptionKey, commonEncryptionIv, true, ".");
 
                                         reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).setValue(personalChatList);
-//                                                setSenderMessageStatus("11");
+//                                                setSenderMessageStatus(referenceSender,"sent");
 
 
                                         // Set last message in userList
@@ -296,33 +356,56 @@ public class ChatActivity extends AppCompatActivity {
                 });
     }
 
-    public void createNotification(String tempReceiverPublicUid, String tempReceiverPublicUname) {
-        ChatActivity chatActivity = new ChatActivity();
-        final String CHANNEL_ID = "Foreground Service ID";
-        NotificationChannel channel = new NotificationChannel(
-                CHANNEL_ID,
-                CHANNEL_ID,
-                NotificationManager.IMPORTANCE_DEFAULT
-        );
+    private void setSenderMessageStatus(DatabaseReference reference, String statusMessage) {
+//        reference.child().child("status");
 
-        Intent intent = new Intent(ChatActivity.this, ChatActivity.class);
-        intent.putExtra("receiver_public_uid", chatActivity.receiverPublicUid);
-        intent.putExtra("receiver_public_uname", chatActivity.receiverPublicUname);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(ChatActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
 
-        getSystemService(NotificationManager.class).createNotificationChannel(channel);
-        Notification.Builder notificationBuilder = new Notification.Builder(ChatActivity.this, CHANNEL_ID)
-                .setContentText("New message")
-                .setContentTitle(tempReceiverPublicUid)
-                .setSmallIcon(R.drawable.keys_privacy)
-                .setPriority(Notification.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent)
-                .setCategory(Notification.CATEGORY_MESSAGE)
-                .setAutoCancel(true);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ChatActivity.this);
-        notificationManager.notify(1234, notificationBuilder.build());
+//        // Get the RecyclerView and its adapter
+//
+//        RecyclerView.Adapter adapter = recViewChatMessages.getAdapter();
+//
+//        if (adapter != null) {
+//            // Get the last item in the list
+//            int lastItemIndex = adapter.getItemCount() - 1;
+//            ChatModelClass lastItem = dataHolderChatMessages.get(dataHolderChatMessages.size() - 1);
+//
+//            // Set the status message for the last item
+//            System.out.println("Setting status...");
+//            lastItem.setStatus(statusMessage);
+//
+//            // Update the UI for the last item
+//            adapter.notifyItemChanged(lastItemIndex);
+//        }
     }
+
+
+//    public void createNotification(String tempReceiverPublicUid, String tempReceiverPublicUname) {
+//        ChatActivity chatActivity = new ChatActivity();
+//        final String CHANNEL_ID = "Foreground Service ID";
+//        NotificationChannel channel = new NotificationChannel(
+//                CHANNEL_ID,
+//                CHANNEL_ID,
+//                NotificationManager.IMPORTANCE_DEFAULT
+//        );
+//
+//        Intent intent = new Intent(ChatActivity.this, ChatActivity.class);
+//        intent.putExtra("receiver_public_uid", chatActivity.receiverPublicUid);
+//        intent.putExtra("receiver_public_uname", chatActivity.receiverPublicUname);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+//        PendingIntent pendingIntent = PendingIntent.getActivity(ChatActivity.this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+//
+//        getSystemService(NotificationManager.class).createNotificationChannel(channel);
+//        Notification.Builder notificationBuilder = new Notification.Builder(ChatActivity.this, CHANNEL_ID)
+//                .setContentText("New message")
+//                .setContentTitle(tempReceiverPublicUid)
+//                .setSmallIcon(R.drawable.keys_privacy)
+//                .setPriority(Notification.PRIORITY_DEFAULT)
+//                .setContentIntent(pendingIntent)
+//                .setCategory(Notification.CATEGORY_MESSAGE)
+//                .setAutoCancel(true);
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(ChatActivity.this);
+//        notificationManager.notify(1234, notificationBuilder.build());
+//    }
 
 
     @Override

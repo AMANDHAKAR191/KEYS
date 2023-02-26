@@ -62,6 +62,8 @@ public class NoteAdapterForPinned extends RecyclerView.Adapter<NoteAdapterForPin
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        System.out.println("AES_KEY1: " + sharedPreferences.getString(logInActivity.getAES_KEY(), null));
+        System.out.println("AES_IV1: " + sharedPreferences.getString(logInActivity.getAES_IV(), null));
         aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
         String noteDate, noteTitle, noteBody, decryptedNoteTitle, decryptedNoteBody, doubleDecryptedNoteTitle, doubleDecryptedNoteBody;
         boolean isHideNote, isPinned;
@@ -170,9 +172,8 @@ public class NoteAdapterForPinned extends RecyclerView.Adapter<NoteAdapterForPin
                             NotesFragment.reference.child(noteDate).child("pinned").setValue(false);
                             holder.refreshRecViewCall();
                         case R.id.img_share_note:
-                            NoteHelperClass noteData = dataholder.get(position);
+                            NoteHelperClass noteData = new NoteHelperClass(dateAndTime1, doubleDecryptedNoteTitle, doubleDecryptedNoteBody, isHideNote, isPinned);
                             holder.shareNotesCall(noteData);
-
                     }
                     return false;
                 }

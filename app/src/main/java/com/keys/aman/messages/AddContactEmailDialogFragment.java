@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.keys.aman.home.PasswordGeneratorActivity;
 
 public class AddContactEmailDialogFragment extends DialogFragment {
 
@@ -51,8 +52,11 @@ public class AddContactEmailDialogFragment extends DialogFragment {
                                 UserListModelClass userListModel = ds.getValue(UserListModelClass.class);
                                 String tempUserId = userListModel.getPublicUid();
                                 String tempUserName = userListModel.getPublicUname();
+                                String commonEncryptionKey = PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==";
+                                String commonEncryptionIv = PasswordGeneratorActivity.generateRandomPassword(16, true, true, true, false);
 
-                                UserPersonalChatList personalChatList = new UserPersonalChatList(tempUserId, tempUserName,true, ".");
+                                System.out.println("commonEncryptionKey: " + commonEncryptionKey + " || commonEncryptionIv: " + commonEncryptionIv);
+                                UserPersonalChatList personalChatList = new UserPersonalChatList(tempUserId, tempUserName, commonEncryptionKey, commonEncryptionIv, true, ".");
                                 System.out.println("senderUid: " + senderUid);
                                 reference.child(senderUid).child("userPersonalChatList").child(tempUserId).setValue(personalChatList)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {

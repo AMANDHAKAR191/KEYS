@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -21,19 +22,22 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.keys.aman.R;
-import com.keys.aman.home.addpassword.AddPasswordDataHelperClass;
-import com.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.keys.aman.MyPasswordViewModel;
+import com.keys.aman.R;
+import com.keys.aman.home.addpassword.PasswordHelperClass;
+import com.keys.aman.messages.MessagesFragment;
+import com.keys.aman.signin_login.LogInActivity;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -52,6 +56,7 @@ public class HomeFragment extends Fragment {
     public HomeFragment() {
     }
 
+    ProgressBar progressBar;
     ScrollView scrollView;
     TextView tvNOTE;
     RecyclerView recview;
@@ -60,10 +65,11 @@ public class HomeFragment extends Fragment {
     SharedPreferences sharedPreferences;
     public static DatabaseReference databaseReference;
     public static PasswordAdapter adaptor;
-    ArrayList<AddPasswordDataHelperClass> dataholder;
+    ArrayList<PasswordHelperClass> dataholder;
 
     //    ArrayList<String> parentdataholder;
     String uid;
+    private MyPasswordViewModel viewPasswordModel;
     LogInActivity logInActivity = new LogInActivity();
     public static final String REQUEST_ID = "HomeFragment";
 
@@ -73,14 +79,15 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home, container, false);
         sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        viewPasswordModel = new ViewModelProvider(requireActivity()).get(MyPasswordViewModel.class);
 
         //Hooks
-
-        scrollView = view.findViewById(R.id.scrollView);
+        progressBar = view.findViewById(R.id.progressBar);
         recview = view.findViewById(R.id.recview_website_list);
         searchView = view.findViewById(R.id.search_bar);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         tvNOTE = view.findViewById(R.id.tv_NOTE);
+        progressBar.setVisibility(View.VISIBLE);
 
 
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
@@ -109,6 +116,7 @@ public class HomeFragment extends Fragment {
                 dataholder.clear();
                 recyclerviewsetdata();
                 swipeRefreshLayout.setRefreshing(false);
+                progressBar.setVisibility(View.VISIBLE);
             }
         });
 
@@ -158,7 +166,7 @@ public class HomeFragment extends Fragment {
                         System.out.println("\t" + ds);
                         for (DataSnapshot ds1 : ds.getChildren()) {
                             System.out.println("\t\t" + ds1);
-                            AddPasswordDataHelperClass data = ds1.getValue(AddPasswordDataHelperClass.class);
+                            PasswordHelperClass data = ds1.getValue(PasswordHelperClass.class);
                             dataholder.add(data);
                         }
                     }
@@ -174,6 +182,7 @@ public class HomeFragment extends Fragment {
 
             }
         });
+        progressBar.setVisibility(View.INVISIBLE);
         adaptor = new PasswordAdapter(dataholder, context, activity) {
             @Override
             public void resetAdaptor() {
@@ -193,9 +202,24 @@ public class HomeFragment extends Fragment {
             }
 
             @Override
-            public void sharePassword(String tempELogin, String tempEPassword, String dWebsiteName) {
-                super.sharePassword(tempELogin, tempEPassword, dWebsiteName);
+            public void sharePassword(PasswordHelperClass passwordData) {
+                super.sharePassword(passwordData);
+                viewPasswordModel.setPasswordData(passwordData);
 
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                MessagesFragment messagesFragment = new MessagesFragment(context, activity);
+//                // Create a new bundle to store the data
+//                Bundle data = new Bundle();
+//                // Put the note data in the bundle
+//                data.putString(logInActivity.REQUEST_CODE_NAME,REQUEST_ID);
+//                data.putParcelable(shareNoteCode, noteData);
+//
+//                // Set the arguments on the fragment
+//                messagesFragment.setArguments(data);
+                fragmentTransaction.add(R.id.fl_user_list_container, messagesFragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
             }
         };
         recview.setAdapter(adaptor);

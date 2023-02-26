@@ -121,6 +121,8 @@ public class AddNotesActivity extends AppCompatActivity {
         title = Objects.requireNonNull(tilAddNoteTitle.getEditText()).getText().toString();
         note = Objects.requireNonNull(tilAddNoteBody.getEditText()).getText().toString();
         AES aes = new AES();
+        System.out.println("AES_KEY: " + sharedPreferences.getString(logInActivity.getAES_KEY(), null));
+        System.out.println("AES_IV: " + sharedPreferences.getString(logInActivity.getAES_IV(), null));
         aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
         try {
             // Double encryption
@@ -135,7 +137,7 @@ public class AddNotesActivity extends AppCompatActivity {
 
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         NoteHelperClass addDNoteHelper;
-        if (comingRequestCode.equals("notesCardView")) {
+        if (comingRequestCode.equals(NoteAdapterForUnpinned.REQUEST_ID)) {
             addDNoteHelper = new NoteHelperClass(comingDate, titleDecrypted, noteDecrypted, isHideNote, false);
             reference.child(comingDate).setValue(addDNoteHelper)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -152,6 +154,7 @@ public class AddNotesActivity extends AppCompatActivity {
                     });
         } else {
             addDNoteHelper = new NoteHelperClass(currentDateAndTime, titleDecrypted, noteDecrypted, isHideNote, true);
+            System.out.println("currentDateAndTime: " + currentDateAndTime);
             reference.child(currentDateAndTime).setValue(addDNoteHelper)
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override

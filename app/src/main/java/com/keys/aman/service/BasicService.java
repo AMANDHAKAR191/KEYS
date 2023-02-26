@@ -39,7 +39,7 @@ import androidx.annotation.NonNull;
 
 import com.keys.aman.R;
 import com.keys.aman.AES;
-import com.keys.aman.home.addpassword.AddPasswordDataHelperClass;
+import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -99,7 +99,7 @@ public final class BasicService extends AutofillService {
                 // Loop through the data and create a dataset for each record
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     System.out.println("snapshot: " + snapshot);
-                    AddPasswordDataHelperClass record = snapshot.getValue(AddPasswordDataHelperClass.class);
+                    PasswordHelperClass record = snapshot.getValue(PasswordHelperClass.class);
                     if (record != null) {
                         Dataset.Builder dataset = new Dataset.Builder();
                         for (Entry<String, AutofillId> field : fields.entrySet()) {

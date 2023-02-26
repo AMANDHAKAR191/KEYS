@@ -4,31 +4,33 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.keys.aman.R;
-import com.keys.aman.SplashActivity;
-import com.keys.aman.notes.addnote.NoteHelperClass;
-import com.keys.aman.signin_login.LogInActivity;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.keys.aman.R;
+import com.keys.aman.SplashActivity;
+import com.keys.aman.home.addpassword.PasswordHelperClass;
+import com.keys.aman.notes.addnote.NoteHelperClass;
+import com.keys.aman.signin_login.LogInActivity;
 
 import java.util.ArrayList;
 
 public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myViewHolder> {
 
     private NoteHelperClass noteData;
+    final int SELECTED_ITEM_MESSAGE = 0;
+    final int SELECTED_ITEM_NOTE = 1;
+    final int SELECTED_ITEM_PASSWORD = 2;
+    private PasswordHelperClass passwordData;
     ArrayList<UserPersonalChatList> dataHolder;
     LogInActivity logInActivity = new LogInActivity();
     public static final String REQUEST_ID = "UserListAdapter";
@@ -47,11 +49,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myView
 //        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
 //    }
 
-    public UserListAdapter(ArrayList<UserPersonalChatList> dataHolder, Context context, Activity activity, NoteHelperClass noteData) {
+    public UserListAdapter(ArrayList<UserPersonalChatList> dataHolder, Context context, Activity activity, PasswordHelperClass passwordData, NoteHelperClass noteData) {
         this.dataHolder = dataHolder;
         this.context = context;
         this.activity = activity;
         sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        System.out.println("noteData + " + noteData + " || passwordData + " + passwordData);
+        // retrieve the password data
+        this.passwordData = passwordData;
         // Retrieve the note data
         this.noteData = noteData;
     }
@@ -75,34 +80,43 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myView
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String receiverPublicUid = dataHolder.get(position).getOtherUserPublicUid();
-                String senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID, null);
-                reference.child(receiverPublicUid).child("userPersonalChatList").child(senderPublicUid).child("lastMessage").setValue(".")
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(context, "Last Message Removed", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                System.out.println("UserListAdapter : noteData" + noteData);
+                System.out.println("UserListAdapter : passwordData" + passwordData);
+                if (noteData != null) {
+                    holder.onItemSelectedCall(position, SELECTED_ITEM_NOTE);
+                    holder.llSelector.setVisibility(View.VISIBLE);
+                    SplashActivity.isForeground = true;
+                } else if (passwordData != null) {
+                    holder.onItemSelectedCall(position, SELECTED_ITEM_PASSWORD);
+                    holder.llSelector.setVisibility(View.VISIBLE);
+                    SplashActivity.isForeground = true;
+                } else {
+                    holder.onItemSelectedCall(position, SELECTED_ITEM_MESSAGE);
+                    holder.llSelector.setVisibility(View.VISIBLE);
+                    SplashActivity.isForeground = true;
+                }
 
-                SplashActivity.isForeground = true;
-                Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
-                intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
-                intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
-                activity.startActivity(intent);
+
+//                String senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID, null);
+//
+//
+//                SplashActivity.isForeground = true;
+//                Intent intent = new Intent(context, ChatActivity.class);
+//                intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
+//                intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
+//                intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
+//                activity.startActivity(intent);
             }
         });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                holder.onItemSelectedCall(position);
-                holder.llSelector.setVisibility(View.VISIBLE);
-                SplashActivity.isForeground = true;
-
-                return false;
-            }
-        });
+//        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View view) {
+//                holder.onItemSelectedCall(position);
+//                holder.llSelector.setVisibility(View.VISIBLE);
+//                SplashActivity.isForeground = true;
+//                return false;
+//            }
+//        });
 
     }
 
@@ -125,11 +139,24 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myView
             llSelector = itemView.findViewById(R.id.ll_selector);
         }
 
-        public void onItemSelectedCall(int position) {
-            onItemSelected(position);
+        public void onItemSelectedCall(int position, int selectedItemType) {
+            switch (selectedItemType){
+                case SELECTED_ITEM_MESSAGE:
+                    onItemSelected(position);
+                    break;
+                case SELECTED_ITEM_NOTE:
+                    onNoteSelected(position);
+                    break;
+                case SELECTED_ITEM_PASSWORD:
+                    onPasswordSelected(position);
+                    break;
+            }
+
         }
     }
 
     //
-    public void onItemSelected(int position){}
+    public void onItemSelected(int position) {}
+    public void onNoteSelected(int position) {}
+    public void onPasswordSelected(int position) {}
 }

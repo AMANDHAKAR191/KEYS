@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="160dp"
     android:background="#00000000">
 
     <LinearLayout
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:src="@drawable/ic_baseline_more_vert_24"
-            app:menu="@menu/cardview_catactivity_notes_menu">
+            app:menu="@menu/cardview_shared_notes_menu">
 
             <TextView
                 android:id="@+id/tv_title"

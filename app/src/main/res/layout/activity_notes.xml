@@ -82,7 +82,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clickable="true"
-        tools:listitem="@layout/note_cardview_layout"
+        tools:listitem="@layout/cardview_layout_note"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_unpinned" />
@@ -101,7 +101,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
-        android:id="@+id/fl_container"
+        android:id="@+id/fl_user_list_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="20dp"

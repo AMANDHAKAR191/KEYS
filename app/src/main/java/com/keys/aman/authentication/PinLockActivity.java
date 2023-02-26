@@ -60,28 +60,6 @@ public class PinLockActivity extends AppCompatActivity {
         public void onComplete(String pin) {
 
             switch (comingRequestCode) {
-                case ShowCardViewDataDialog.REQUEST_ID:
-                    if (pin.equals(PIN)) {
-                        Intent intent = new Intent(PinLockActivity.this, SecretNotesActivity.class);
-                        intent.putExtra("result", "yes");
-                        setResult(RESULT_OK, intent);
-                        finish();
-
-                    } else {
-                        tvTitle.setText("Wrong Pin");
-                        vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
-
-                        mPinLockView.resetPinLockView();
-                        wrongPin();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvTitle.setText("Enter Pin Again");
-                                mPinLockView.resetPinLockView();
-                            }
-                        },400);
-                    }
-                    break;
                 case LogInActivity.REQUEST_ID:
                     if (temp == 0) {
                         setPin = pin;
@@ -90,7 +68,7 @@ public class PinLockActivity extends AppCompatActivity {
                         temp = 1;
                     } else {
                         confirmPin = pin;
-                        if (confirmPin.equals(setPin)){
+                        if (confirmPin.equals(setPin)) {
                             tvTitle.setText("Pin Matched");
                             SharedPreferences.Editor editor1 = sharedPreferences.edit();
                             editor1.putBoolean(getIS_PIN_SET(), true);
@@ -104,11 +82,11 @@ public class PinLockActivity extends AppCompatActivity {
                             args.putString(logInActivity.REQUEST_CODE_NAME, LogInActivity.REQUEST_ID);
                             intent.putExtra("result", "yes");
                             startActivity(intent, args);
-                        }else {
+                        } else {
                             tvTitle.setText("Wrong Pin");
                             mPinLockView.resetPinLockView();
 //                            vibrator.vibrate(200);
-                            vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
+                            vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
                             Intent intent = new Intent(PinLockActivity.this, PinLockActivity.class);
                             // for confirm the pin we have open the same page again
                             intent.putExtra(logInActivity.REQUEST_CODE_NAME, LogInActivity.REQUEST_ID);
@@ -118,6 +96,29 @@ public class PinLockActivity extends AppCompatActivity {
                         finish();
                     }
                     break;
+                case ShowCardViewDataDialog.REQUEST_ID:
+                    if (pin.equals(PIN)) {
+                        Intent intent = new Intent(PinLockActivity.this, SecretNotesActivity.class);
+                        intent.putExtra("result", "yes");
+                        setResult(RESULT_OK, intent);
+                        finish();
+
+                    } else {
+                        tvTitle.setText("Wrong Pin");
+                        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+
+                        mPinLockView.resetPinLockView();
+                        wrongPin();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvTitle.setText("Enter Pin Again");
+                                mPinLockView.resetPinLockView();
+                            }
+                        }, 400);
+                    }
+                    break;
+
                 case SettingFragment.REQUEST_ID:
                     if (pin.equals(PIN)) {
                         Intent intent = new Intent(PinLockActivity.this, PinLockActivity.class);
@@ -130,7 +131,23 @@ public class PinLockActivity extends AppCompatActivity {
                         tvTitle.setText("Wrong Pin");
                         mPinLockView.resetPinLockView();
 //                        vibrator.vibrate(200);
-                        vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
+                        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+                        wrongPin();
+                    }
+                    break;
+                case BiometricAuthActivity.REQUEST_ID:
+                    if (pin.equals(PIN)) {
+                        Intent intent = new Intent(PinLockActivity.this, TabLayoutActivity.class);
+                        //for change the pin After verifying the pin we have use same process as we used at the time of login
+                        intent.putExtra(logInActivity.REQUEST_CODE_NAME, LogInActivity.REQUEST_ID);
+                        intent.putExtra("title", "Set 6 digit pin");
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        tvTitle.setText("Wrong Pin");
+                        mPinLockView.resetPinLockView();
+//                        vibrator.vibrate(200);
+                        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
                         wrongPin();
                     }
                     break;
@@ -143,7 +160,7 @@ public class PinLockActivity extends AppCompatActivity {
                     } else {
                         tvTitle.setText("Wrong Pin");
 //                        vibrator.vibrate(200);
-                        vibrator.vibrate(VibrationEffect.createOneShot(200,VibrationEffect.DEFAULT_AMPLITUDE));
+                        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
                         mPinLockView.resetPinLockView();
                         wrongPin();
                         handler.postDelayed(new Runnable() {
@@ -152,7 +169,7 @@ public class PinLockActivity extends AppCompatActivity {
                                 tvTitle.setText("Enter Pin Again");
                                 mPinLockView.resetPinLockView();
                             }
-                        },400);
+                        }, 400);
                     }
                     break;
             }
@@ -199,37 +216,39 @@ public class PinLockActivity extends AppCompatActivity {
         }
 
         Toast.makeText(PinLockActivity.this, comingRequestCode, Toast.LENGTH_SHORT).show();
-
+        String title;
         switch (comingRequestCode) {
-            case ShowCardViewDataDialog.REQUEST_ID: {
+            case ShowCardViewDataDialog.REQUEST_ID:
                 PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
-                String title = intent.getStringExtra("title");
+                title = intent.getStringExtra("title");
                 tvTitle.setText(title);
                 break;
-            }
-            case TabLayoutActivity.REQUEST_ID: {
+            case TabLayoutActivity.REQUEST_ID:
                 PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
-                String title = intent.getStringExtra("title");
+                title = intent.getStringExtra("title");
                 tvTitle.setText(title);
                 break;
-            }
-            case LogInActivity.REQUEST_ID: {
-                String title = intent.getStringExtra("title");
+            case LogInActivity.REQUEST_ID:
+                title = intent.getStringExtra("title");
                 tvTitle.setText(title);
                 break;
-            }
-            case SettingFragment.REQUEST_ID: {
+            case SettingFragment.REQUEST_ID:
                 PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
-                String title = intent.getStringExtra("title");
+                title = intent.getStringExtra("title");
                 tvTitle.setText(title);
                 break;
-            }
+            case BiometricAuthActivity.REQUEST_ID:
+                PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
+                title = intent.getStringExtra("title");
+                tvTitle.setText(title);
+                break;
+
         }
     }
 
-    public void wrongPin(){
-        count =  count + 1;
-        if (count >= 3){
+    public void wrongPin() {
+        count = count + 1;
+        if (count >= 3) {
             SharedPreferences.Editor editor1 = sharedPreferences.edit();
             editor1.putBoolean(getIS_USER_RESTRICTED(), true);
             editor1.apply();
@@ -243,7 +262,7 @@ public class PinLockActivity extends AppCompatActivity {
                     mPinLockView.setVisibility(View.VISIBLE);
                     count = 0;
                 }
-            },5000);
+            }, 5000);
         }
     }
 

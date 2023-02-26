@@ -16,7 +16,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_toolbar"
-        style="@style/Widget.MaterialComponents.Toolbar.Primary"
+        style="@style/Widget.MaterialComponents.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:paddingTop="10dp"
@@ -85,6 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clickable="true"
+        android:background="@drawable/viewpager_background"
         app:layout_constraintBottom_toBottomOf="@+id/barrier_bottom"
         app:layout_constraintEnd_toEndOf="@+id/cl_toolbar"
         app:layout_constraintStart_toStartOf="@+id/cl_toolbar"
@@ -92,12 +93,11 @@
 
     <LinearLayout
         android:id="@+id/ll_edit_message"
-        style="@style/Widget.MaterialComponents.Toolbar.Primary"
+        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:orientation="horizontal"
-        android:background="@drawable/rounded_thems1"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline8"
         app:layout_constraintStart_toStartOf="@+id/guideline7">
@@ -120,7 +120,7 @@
 
         <ImageButton
             android:id="@+id/img_send_message"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

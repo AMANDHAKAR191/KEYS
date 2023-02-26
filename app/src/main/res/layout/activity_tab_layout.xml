@@ -8,12 +8,12 @@
 
     <LinearLayout
         android:id="@+id/ll_toolbar"
-        style="@style/Widget.MaterialComponents.Toolbar"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_weight="100"
         android:isScrollContainer="false"
         android:orientation="horizontal"
+        android:backgroundTint="?attr/background"
         app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout

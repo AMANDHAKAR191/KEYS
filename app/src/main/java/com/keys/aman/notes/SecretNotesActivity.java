@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,18 +12,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.keys.aman.R;
-import com.keys.aman.SplashActivity;
-import com.keys.aman.authentication.AppLockCounterClass;
-import com.keys.aman.base.TabLayoutActivity;
-import com.keys.aman.notes.addnote.NoteHelperClass;
-import com.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.keys.aman.R;
+import com.keys.aman.SplashActivity;
+import com.keys.aman.authentication.AppLockCounterClass;
+import com.keys.aman.base.TabLayoutActivity;
+import com.keys.aman.notes.addnote.NoteHelperClass;
+import com.keys.aman.signin_login.LogInActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,7 +45,7 @@ public class SecretNotesActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secret_notes);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
+//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
         sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
@@ -72,7 +71,7 @@ public class SecretNotesActivity extends AppCompatActivity {
 
     public void recyclerViewSetData() {
         RecyclerView recyclerView;
-        NoteAdapterForUnpinned adaptor;
+        SecretNoteAdapter adaptor;
         ArrayList<NoteHelperClass> dataholder;
 
 
@@ -83,7 +82,7 @@ public class SecretNotesActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         dataholder = new ArrayList<>();
-        adaptor = new NoteAdapterForUnpinned(dataholder, getApplicationContext(),this){
+        adaptor = new SecretNoteAdapter(dataholder, getApplicationContext(),this){
             @Override
             public void resetAdaptor(){
                 dataholder.clear();

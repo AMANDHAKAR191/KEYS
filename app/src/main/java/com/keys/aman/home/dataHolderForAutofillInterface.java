@@ -1,7 +1,7 @@
 package com.keys.aman.home;
 
-import com.keys.aman.home.addpassword.AddPasswordDataHelperClass;
+import com.keys.aman.home.addpassword.PasswordHelperClass;
 
 public interface dataHolderForAutofillInterface {
-    AddPasswordDataHelperClass dataHolderForAutofill(int index);
+    PasswordHelperClass dataHolderForAutofill(int index);
 }

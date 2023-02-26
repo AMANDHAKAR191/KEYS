@@ -1,22 +1,23 @@
 package com.keys.aman.messages;
 
-import com.keys.aman.home.addpassword.AddPasswordDataHelperClass;
+import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.notes.addnote.NoteHelperClass;
 
 public class ChatModelClass {
-    String message,dateAndTime, publicUid, type;
-    AddPasswordDataHelperClass PasswordModelClass;
+    String message,dateAndTime, publicUid, type, status;
+    PasswordHelperClass PasswordModelClass;
     NoteHelperClass noteModelClass;
 
 
     public ChatModelClass() {
     }
 
-    public ChatModelClass(String message, String dateAndTime, String publicUid, String type, AddPasswordDataHelperClass passwordModelClass, NoteHelperClass noteModelClass) {
+    public ChatModelClass(String message, String dateAndTime, String publicUid, String type, String status, PasswordHelperClass passwordModelClass, NoteHelperClass noteModelClass) {
         this.message = message;
         this.dateAndTime = dateAndTime;
         this.publicUid = publicUid;
         this.type = type;
+        this.status = status;
         PasswordModelClass = passwordModelClass;
         this.noteModelClass = noteModelClass;
     }
@@ -53,11 +54,19 @@ public class ChatModelClass {
         this.type = type;
     }
 
-    public AddPasswordDataHelperClass getPasswordModelClass() {
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public PasswordHelperClass getPasswordModelClass() {
         return PasswordModelClass;
     }
 
-    public void setPasswordModelClass(AddPasswordDataHelperClass passwordModelClass) {
+    public void setPasswordModelClass(PasswordHelperClass passwordModelClass) {
         PasswordModelClass = passwordModelClass;
     }
 

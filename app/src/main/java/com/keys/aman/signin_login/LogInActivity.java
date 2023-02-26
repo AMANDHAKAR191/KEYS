@@ -250,6 +250,7 @@ public class LogInActivity extends AppCompatActivity {
                                                 intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
                                                 intent.putExtra("title", "Set Pin");
                                                 startActivity(intent);
+                                                finish();
                                             }
                                         }
                                     }, 10000);

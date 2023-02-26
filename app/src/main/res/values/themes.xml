@@ -12,7 +12,7 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">@color/primaryColor</item>
         <!-- Customize your theme here. -->
-        <item name="background">@color/background_light_color</item>
+        <item name="background">@color/colorOnBackgroundDay</item>
 
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowEnterTransition">@transition/left_trans_anim</item>

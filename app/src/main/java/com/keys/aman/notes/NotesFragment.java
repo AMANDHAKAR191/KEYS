@@ -24,7 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.keys.aman.R;
-import com.keys.aman.MyViewModel;
+import com.keys.aman.MyNoteViewModel;
 import com.keys.aman.messages.MessagesFragment;
 import com.keys.aman.notes.addnote.NoteHelperClass;
 import com.keys.aman.signin_login.LogInActivity;
@@ -49,7 +49,7 @@ public class NotesFragment extends Fragment {
     LogInActivity logInActivity = new LogInActivity();
     public static final String shareNoteCode = "noteData";
     public static final String REQUEST_ID = "NotesFragment";
-    private MyViewModel viewModel;
+    private MyNoteViewModel viewNoteModel;
 
     public NotesFragment(Context context, Activity activity) {
         this.context = context;
@@ -74,7 +74,7 @@ public class NotesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_notes, container, false);
         sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        viewModel = new ViewModelProvider(requireActivity()).get(MyViewModel.class);
+        viewNoteModel = new ViewModelProvider(requireActivity()).get(MyNoteViewModel.class);
 
         //Hooks
 //        searchView = view.findViewById(R.id.search_bar);
@@ -149,7 +149,7 @@ public class NotesFragment extends Fragment {
             public void shareNotes(NoteHelperClass noteData) {
                 super.shareNotes(noteData);
                 //
-                viewModel.setData(noteData);
+                viewNoteModel.setNoteData(noteData);
 
                 Log.e("shareNote", "Check2: NotesFragment: " +noteData);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -163,7 +163,7 @@ public class NotesFragment extends Fragment {
 //
 //                // Set the arguments on the fragment
 //                messagesFragment.setArguments(data);
-                fragmentTransaction.add(R.id.fl_container, messagesFragment);
+                fragmentTransaction.add(R.id.fl_user_list_container, messagesFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
@@ -224,18 +224,22 @@ public class NotesFragment extends Fragment {
             @Override
             public void shareNotes(NoteHelperClass noteData) {
                 super.shareNotes(noteData);
+                //
+                viewNoteModel.setNoteData(noteData);
+
+                Log.e("shareNote", "Check2: NotesFragment: " +noteData);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                // Create a new bundle to store the data
-                Bundle args = new Bundle();
-                // Put the note data in the bundle
-                args.putParcelable("noteData", noteData);
-
-                MessagesFragment messagesFragment = new MessagesFragment(context, activity, args);
-
-                // Set the arguments on the fragment
-                messagesFragment.setArguments(args);
-                fragmentTransaction.add(R.id.fl_container, messagesFragment);
+                MessagesFragment messagesFragment = new MessagesFragment(context, activity);
+//                // Create a new bundle to store the data
+//                Bundle data = new Bundle();
+//                // Put the note data in the bundle
+//                data.putString(logInActivity.REQUEST_CODE_NAME,REQUEST_ID);
+//                data.putParcelable(shareNoteCode, noteData);
+//
+//                // Set the arguments on the fragment
+//                messagesFragment.setArguments(data);
+                fragmentTransaction.add(R.id.fl_user_list_container, messagesFragment);
                 fragmentTransaction.addToBackStack(null);
                 fragmentTransaction.commit();
             }
