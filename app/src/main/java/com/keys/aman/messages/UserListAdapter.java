@@ -92,7 +92,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myView
                     SplashActivity.isForeground = true;
                 } else {
                     holder.onItemSelectedCall(position, SELECTED_ITEM_MESSAGE);
-                    holder.llSelector.setVisibility(View.VISIBLE);
                     SplashActivity.isForeground = true;
                 }
 

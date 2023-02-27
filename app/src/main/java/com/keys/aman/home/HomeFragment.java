@@ -161,11 +161,8 @@ public class HomeFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
-                    System.out.println(dataSnapshot);
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        System.out.println("\t" + ds);
                         for (DataSnapshot ds1 : ds.getChildren()) {
-                            System.out.println("\t\t" + ds1);
                             PasswordHelperClass data = ds1.getValue(PasswordHelperClass.class);
                             dataholder.add(data);
                         }
