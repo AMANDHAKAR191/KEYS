@@ -10,7 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.keys.aman.notes.addnote.NoteHelperClass;
 
 public class MyNoteViewModel extends AndroidViewModel {
-    private final MutableLiveData<NoteHelperClass> noteData;
+    private MutableLiveData<NoteHelperClass> noteData;
 
     public MyNoteViewModel(@NonNull Application application) {
         super(application);
@@ -19,6 +19,10 @@ public class MyNoteViewModel extends AndroidViewModel {
 
     public void setNoteData(NoteHelperClass value) {
         noteData.setValue(value);
+    }
+
+    public void resetNoteData(){
+        noteData = null;
     }
 
     public LiveData<NoteHelperClass> getNoteData() {

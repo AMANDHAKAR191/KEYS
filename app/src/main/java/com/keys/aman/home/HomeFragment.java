@@ -225,4 +225,9 @@ public class HomeFragment extends Fragment {
         recview.setAdapter(adaptor);
         adaptor.notifyDataSetChanged();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
 }

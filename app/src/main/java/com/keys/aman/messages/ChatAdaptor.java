@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -100,7 +99,6 @@ public class ChatAdaptor extends RecyclerView.Adapter {
     public int getItemViewType(int position) {
         // sender type
         if (dataHolder.get(position).getPublicUid().equals(sharedPreferences.getString(logInActivity.PUBLIC_UID, null))) {
-            System.out.println("Sender");
             if (dataHolder.get(position).getType().equals("text")) {
                 return SENDER_VIEW_TYPE;
             } else if (dataHolder.get(position).getType().equals("note")) {
@@ -109,9 +107,8 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                 return SENDER_PASSWORD_VIEW_TYPE;
             }
         } else { // receiver type
-            System.out.println("Receiver");
             if (dataHolder.get(position).getType().equals("text")) {
-                return SENDER_VIEW_TYPE;
+                return RECEIVER_VIEW_TYPE;
             } else if (dataHolder.get(position).getType().equals("note")) {
                 return RECEIVER_NOTE_VIEW_TYPE;
             } else {
@@ -127,7 +124,6 @@ public class ChatAdaptor extends RecyclerView.Adapter {
         String tempELogin, dLogin, tempDLogin, tempEPassword, dPassword, tempDPassword, dWebsiteName, dWebsiteLink, Title, currentDate;
         try {
             if (holder.getClass() == SenderViewHolder.class) {
-                Log.e("ChatActivity", "SenderViewHolder");
                 ((SenderViewHolder) holder).tvSenderMessage.setText(dataHolder.get(position).getMessage());
                 DateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
                 DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
@@ -136,7 +132,6 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                 ((SenderViewHolder) holder).tvSenderMessageStatus.setText(dataHolder.get(position).getStatus());
 
             } else if (holder.getClass() == ReceiverViewHolder.class) {
-                Log.e("ChatActivity", "ReceiverViewHolder");
                 ((ReceiverViewHolder) holder).tvReceiverMessage.setText(dataHolder.get(position).getMessage());
                 DateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
                 DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
@@ -145,7 +140,6 @@ public class ChatAdaptor extends RecyclerView.Adapter {
 
             } else if (holder.getClass() == SenderNoteViewHolder.class) {
                 if (dataHolder.get(position).getType().equals("note")) {
-                    Log.e("ChatActivity", "NoteViewHolder: note");
                     noteBody = dataHolder.get(position).getNoteModelClass().getNote();
                     noteTitle = dataHolder.get(position).getNoteModelClass().getTitle();
                     //Double Decryption
@@ -164,7 +158,6 @@ public class ChatAdaptor extends RecyclerView.Adapter {
 
             } else if (holder.getClass() == ReceiverNoteViewHolder.class) {
                 if (dataHolder.get(position).getType().equals("note")) {
-                    Log.e("ChatActivity", "NoteViewHolder: note");
                     noteBody = dataHolder.get(position).getNoteModelClass().getNote();
                     noteTitle = dataHolder.get(position).getNoteModelClass().getTitle();
                     //Double Decryption

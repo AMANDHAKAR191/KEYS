@@ -49,7 +49,6 @@ public class NotesFragment extends Fragment {
     LogInActivity logInActivity = new LogInActivity();
     public static final String shareNoteCode = "noteData";
     public static final String REQUEST_ID = "NotesFragment";
-    private MyNoteViewModel viewNoteModel;
 
     public NotesFragment(Context context, Activity activity) {
         this.context = context;
@@ -74,7 +73,6 @@ public class NotesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_notes, container, false);
         sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        viewNoteModel = new ViewModelProvider(requireActivity()).get(MyNoteViewModel.class);
 
         //Hooks
 //        searchView = view.findViewById(R.id.search_bar);
@@ -127,6 +125,8 @@ public class NotesFragment extends Fragment {
     }
 
     public void recyclerViewSetData() {
+        MyNoteViewModel viewNoteModel;
+        viewNoteModel = new ViewModelProvider(requireActivity()).get(MyNoteViewModel.class);
         reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         recyclerViewUnpinned.setLayoutManager(new LinearLayoutManager(context));
 
@@ -203,6 +203,8 @@ public class NotesFragment extends Fragment {
     }
 
     public void recyclerViewSetPinnedData() {
+        MyNoteViewModel viewNoteModel;
+        viewNoteModel = new ViewModelProvider(requireActivity()).get(MyNoteViewModel.class);
         reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         recyclerViewPinned.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
 
@@ -278,4 +280,8 @@ public class NotesFragment extends Fragment {
 
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
 }

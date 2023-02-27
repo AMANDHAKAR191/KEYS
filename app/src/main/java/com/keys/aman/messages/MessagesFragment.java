@@ -109,16 +109,12 @@ public class MessagesFragment extends Fragment {
         viewNoteModel.getNoteData().observe(getViewLifecycleOwner(), note -> {
             // Update UI
             noteData = note;
-            System.out.println("shareNote" + "check: noteData value: MessagesFragment + " + noteData);
-            System.out.println("sharePassword" + "check: passwordData value: MessagesFragment + " + passwordData);
             recyclerViewSetData(noteData, passwordData);
         });
         // Observe the object in the view model and update the UI when it changes
         viewPasswordModel.getPasswordData().observe(getViewLifecycleOwner(), password -> {
             // Update UI
             passwordData = password;
-            System.out.println("shareNote" + "check: noteData value: MessagesFragment + " + noteData);
-            System.out.println("sharePassword" + "check: passwordData value: MessagesFragment + " + passwordData);
             recyclerViewSetData(noteData, passwordData);
         });
         recyclerViewSetData(noteData, passwordData);
@@ -156,6 +152,7 @@ public class MessagesFragment extends Fragment {
                     intent.putExtra("commonEncryptionKey", dataHolder.get(position).getCommonEncryptionKey());
                     intent.putExtra("commonEncryptionIv", dataHolder.get(position).getCommonEncryptionIv());
                     activity.startActivity(intent);
+                    activity.finish();
                 }
 
                 @Override
@@ -169,6 +166,7 @@ public class MessagesFragment extends Fragment {
                     intent.putExtra("commonEncryptionKey", dataHolder.get(position).getCommonEncryptionKey());
                     intent.putExtra("commonEncryptionIv", dataHolder.get(position).getCommonEncryptionIv());
                     activity.startActivity(intent);
+                    activity.finish();
                 }
 
                 @Override
@@ -182,6 +180,7 @@ public class MessagesFragment extends Fragment {
                     intent.putExtra("commonEncryptionKey", dataHolder.get(position).getCommonEncryptionKey());
                     intent.putExtra("commonEncryptionIv", dataHolder.get(position).getCommonEncryptionIv());
                     activity.startActivity(intent);
+                    activity.finish();
                 }
             };
 //        }

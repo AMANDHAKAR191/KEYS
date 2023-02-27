@@ -1,5 +1,7 @@
 package com.keys.aman.messages;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -13,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,9 +31,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.keys.aman.AES;
+import com.keys.aman.MyNoteViewModel;
+import com.keys.aman.MyPasswordViewModel;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
+import com.keys.aman.authentication.BiometricAuthActivity;
 import com.keys.aman.base.TabLayoutActivity;
 import com.keys.aman.databinding.ActivityChatBinding;
 import com.keys.aman.home.PasswordAdapter;
@@ -47,6 +53,8 @@ import java.util.Locale;
 public class ChatActivity extends AppCompatActivity {
 
     ActivityChatBinding binding;
+    Activity activity;
+    Context context;
     public final String RECEIVER_ROOM = "receiver_room";
     public final String RECEIVER_PUBLIC_UID = "receiver_public_uid";
     public final String SENDER_ROOM = "sender_room";
@@ -69,15 +77,20 @@ public class ChatActivity extends AppCompatActivity {
     private Intent intentResult;
     private DatabaseReference reference;
     private MutableLiveData<NoteHelperClass> data;
-
+    private MyNoteViewModel viewNoteModel;
+    private MyPasswordViewModel viewPasswordModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityChatBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        activity = ChatActivity.this;
+        context = ChatActivity.this;
         sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
+        viewNoteModel = new ViewModelProvider(this).get(MyNoteViewModel.class);
+        viewPasswordModel = new ViewModelProvider(this).get(MyPasswordViewModel.class);
 
         recViewChatMessages = findViewById(R.id.recview_chat);
 
@@ -190,6 +203,9 @@ public class ChatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
+                Intent intent = new Intent(ChatActivity.this, TabLayoutActivity.class);
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, LogInActivity.REQUEST_ID);
+                startActivity(intent);
                 finish();
             }
         });
@@ -437,5 +453,10 @@ public class ChatActivity extends AppCompatActivity {
         super.onBackPressed();
         //todo 11 do anything
         SplashActivity.isForeground = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
     }
 }

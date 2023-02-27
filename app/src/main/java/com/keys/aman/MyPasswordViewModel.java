@@ -10,11 +10,14 @@ import androidx.lifecycle.MutableLiveData;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
 
 public class MyPasswordViewModel extends AndroidViewModel {
-    private final MutableLiveData<PasswordHelperClass> passwordData;
+    private MutableLiveData<PasswordHelperClass> passwordData;
 
     public MyPasswordViewModel(@NonNull Application application) {
         super(application);
         passwordData = new MutableLiveData<>();
+    }
+    public void resetPasswordData(){
+        passwordData = null;
     }
 
     public void setPasswordData(PasswordHelperClass value) {
