@@ -88,7 +88,6 @@ public class TabLayoutActivity extends AppCompatActivity {
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
 
-//        System.out.println("args: TabLayout: " + savedInstanceState.getString(logInActivity.REQUEST_CODE_NAME));
 
         groupFabAll = findViewById(R.id.group_fab_all);
         groupFabHome = findViewById(R.id.group_fab_home);
@@ -100,7 +99,6 @@ public class TabLayoutActivity extends AppCompatActivity {
         tvTitle = findViewById(R.id.tv_title);
         tvTitle1 = findViewById(R.id.tv_title1);
         exFABtn = findViewById(R.id.ex_fab);
-//        exFABtn_notes = findViewById(R.id.ex_fab_notes);
         fabAddPassword = findViewById(R.id.add_password_fab);
 //        tvAddPassword = findViewById(R.id.tv_add_password);
         fabPasswordGenerator = findViewById(R.id.password_gen_fab);
@@ -181,17 +179,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                 dialogFragment.show(getSupportFragmentManager(),"add_chat");
             }
         });
-//        exFABtn_notes.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                //todo 4 if app is going to another activity make isForeground = true
-//                SplashActivity.isForeground = true;
-//                Intent intent = new Intent(getApplicationContext(), AddNotesActivity.class);
-//                intent.putExtra(logInActivity.getREQUEST_CODE_NAME(), "notesActivity");
-//                startActivity(intent);
-//                overridePendingTransition(R.anim.slide_in_down, R.anim.slide_out_up);
-//            }
-//        });
+
         ViewPagerAdaptor viewPagerAdaptor = new ViewPagerAdaptor(getSupportFragmentManager(), FragmentPagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);
         viewPagerAdaptor.addFragment(new HomeFragment(TabLayoutActivity.this, TabLayoutActivity.this));
         viewPagerAdaptor.addFragment(new MessagesFragment(TabLayoutActivity.this, TabLayoutActivity.this, savedInstanceState));
@@ -212,6 +200,9 @@ public class TabLayoutActivity extends AppCompatActivity {
 
 //        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.home_filled_new_set);
         tabLayout.setUnboundedRipple(true);
+//        //select default tab
+//        TabLayout.Tab tab = tabLayout.getTabAt(2);
+//        tab.select();
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
