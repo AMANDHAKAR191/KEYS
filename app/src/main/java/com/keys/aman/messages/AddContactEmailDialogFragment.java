@@ -39,7 +39,6 @@ public class AddContactEmailDialogFragment extends DialogFragment {
         tilAddUser.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                System.out.println("Checking User");
                 String userName = tilAddUser.getEditText().getText().toString();
                 DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
                 Query checkUser = reference.orderByChild("publicUid").equalTo(userName);
@@ -48,21 +47,17 @@ public class AddContactEmailDialogFragment extends DialogFragment {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if (dataSnapshot.exists()) {
                             for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                                System.out.println("User Found");
                                 UserListModelClass userListModel = ds.getValue(UserListModelClass.class);
                                 String tempUserId = userListModel.getPublicUid();
                                 String tempUserName = userListModel.getPublicUname();
                                 String commonEncryptionKey = PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==";
                                 String commonEncryptionIv = PasswordGeneratorActivity.generateRandomPassword(16, true, true, true, false);
 
-                                System.out.println("commonEncryptionKey: " + commonEncryptionKey + " || commonEncryptionIv: " + commonEncryptionIv);
                                 UserPersonalChatList personalChatList = new UserPersonalChatList(tempUserId, tempUserName, commonEncryptionKey, commonEncryptionIv, true, ".");
-                                System.out.println("senderUid: " + senderUid);
                                 reference.child(senderUid).child("userPersonalChatList").child(tempUserId).setValue(personalChatList)
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-                                                System.out.println("Changed..");
                                                 dismiss();
                                             }
                                         });

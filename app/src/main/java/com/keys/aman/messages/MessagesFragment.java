@@ -47,7 +47,7 @@ public class MessagesFragment extends Fragment {
     Activity activity;
     ProgressBar progressBar;
     Button btnAddMessage;
-//    FloatingActionButton fabAddChat;
+    //    FloatingActionButton fabAddChat;
     RecyclerView recViewUsersChatList;
     LogInActivity logInActivity = new LogInActivity();
     ArrayList<UserPersonalChatList> dataHolderUserList;
@@ -123,7 +123,6 @@ public class MessagesFragment extends Fragment {
     }
 
     public void recyclerViewSetData(NoteHelperClass noteData, PasswordHelperClass passwordData) {
-        System.out.println("recyclerViewSetData");
         reference = FirebaseDatabase.getInstance().getReference("messageUserList").child(senderPublicUid).child("userPersonalChatList");
 
         recViewUsersChatList.setLayoutManager(new LinearLayoutManager(context));
@@ -140,49 +139,49 @@ public class MessagesFragment extends Fragment {
 //            adaptorForUsersList = new UserListAdapter(dataHolderUserList, context, activity, args);
 //        }else {
         System.out.println("noteData + " + noteData + " || passwordData + " + passwordData);
-            adaptorForUsersList = new UserListAdapter(dataHolderUserList, context, activity ,passwordData,  noteData){
-                @Override
-                public void onItemSelected(int position) {
-                    super.onItemSelected(position);
-                    Intent intent = new Intent(context, ChatActivity.class);
-                    intent.putExtra(logInActivity.REQUEST_CODE_NAME, UserListAdapter.REQUEST_ID);
-                    intent.putExtra("noteData", noteData);
-                    intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
-                    intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
-                    intent.putExtra("commonEncryptionKey", dataHolder.get(position).getCommonEncryptionKey());
-                    intent.putExtra("commonEncryptionIv", dataHolder.get(position).getCommonEncryptionIv());
-                    activity.startActivity(intent);
-                    activity.finish();
-                }
+        adaptorForUsersList = new UserListAdapter(dataHolderUserList, context, activity ,passwordData,  noteData){
+            @Override
+            public void onItemSelected(int position) {
+                super.onItemSelected(position);
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, UserListAdapter.REQUEST_ID);
+                intent.putExtra("noteData", noteData);
+                intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
+                intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
+                intent.putExtra("commonEncryptionKey", dataHolder.get(position).getCommonEncryptionKey());
+                intent.putExtra("commonEncryptionIv", dataHolder.get(position).getCommonEncryptionIv());
+                activity.startActivity(intent);
+                activity.finish();
+            }
 
-                @Override
-                public void onNoteSelected(int position) {
-                    super.onNoteSelected(position);
-                    Intent intent = new Intent(context, ChatActivity.class);
-                    intent.putExtra(logInActivity.REQUEST_CODE_NAME, NoteAdapterForUnpinned.REQUEST_ID);
-                    intent.putExtra("noteData", noteData);
-                    intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
-                    intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
-                    intent.putExtra("commonEncryptionKey", dataHolder.get(position).getCommonEncryptionKey());
-                    intent.putExtra("commonEncryptionIv", dataHolder.get(position).getCommonEncryptionIv());
-                    activity.startActivity(intent);
-                    activity.finish();
-                }
+            @Override
+            public void onNoteSelected(int position) {
+                super.onNoteSelected(position);
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, NoteAdapterForUnpinned.REQUEST_ID);
+                intent.putExtra("noteData", noteData);
+                intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
+                intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
+                intent.putExtra("commonEncryptionKey", dataHolder.get(position).getCommonEncryptionKey());
+                intent.putExtra("commonEncryptionIv", dataHolder.get(position).getCommonEncryptionIv());
+                activity.startActivity(intent);
+                activity.finish();
+            }
 
-                @Override
-                public void onPasswordSelected(int position) {
-                    super.onPasswordSelected(position);
-                    Intent intent = new Intent(context, ChatActivity.class);
-                    intent.putExtra(logInActivity.REQUEST_CODE_NAME, PasswordAdapter.REQUEST_ID);
-                    intent.putExtra("passwordData", passwordData);
-                    intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
-                    intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
-                    intent.putExtra("commonEncryptionKey", dataHolder.get(position).getCommonEncryptionKey());
-                    intent.putExtra("commonEncryptionIv", dataHolder.get(position).getCommonEncryptionIv());
-                    activity.startActivity(intent);
-                    activity.finish();
-                }
-            };
+            @Override
+            public void onPasswordSelected(int position) {
+                super.onPasswordSelected(position);
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, PasswordAdapter.REQUEST_ID);
+                intent.putExtra("passwordData", passwordData);
+                intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
+                intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());
+                intent.putExtra("commonEncryptionKey", dataHolder.get(position).getCommonEncryptionKey());
+                intent.putExtra("commonEncryptionIv", dataHolder.get(position).getCommonEncryptionIv());
+                activity.startActivity(intent);
+                activity.finish();
+            }
+        };
 //        }
         recViewUsersChatList.setAdapter(adaptorForUsersList);
         reference.addValueEventListener(new ValueEventListener() {

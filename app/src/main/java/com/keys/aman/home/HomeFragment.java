@@ -2,6 +2,7 @@ package com.keys.aman.home;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -11,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,7 +58,7 @@ public class HomeFragment extends Fragment {
     }
 
     ProgressBar progressBar;
-    ScrollView scrollView;
+    Button btnSharedPassword;
     TextView tvNOTE;
     RecyclerView recview;
     SearchView searchView;
@@ -67,13 +68,13 @@ public class HomeFragment extends Fragment {
     public static PasswordAdapter adaptor;
     ArrayList<PasswordHelperClass> dataholder;
 
-    //    ArrayList<String> parentdataholder;
     String uid;
     private MyPasswordViewModel viewPasswordModel;
     LogInActivity logInActivity = new LogInActivity();
     public static final String REQUEST_ID = "HomeFragment";
 
 
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -83,11 +84,12 @@ public class HomeFragment extends Fragment {
 
         //Hooks
         progressBar = view.findViewById(R.id.progressBar);
-        recview = view.findViewById(R.id.recview_website_list);
+        recview = view.findViewById(R.id.recview_passwords_list);
         searchView = view.findViewById(R.id.search_bar);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         tvNOTE = view.findViewById(R.id.tv_NOTE);
         progressBar.setVisibility(View.VISIBLE);
+        btnSharedPassword = view.findViewById(R.id.btn_shared_password);
 
 
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
@@ -117,6 +119,15 @@ public class HomeFragment extends Fragment {
                 recyclerviewsetdata();
                 swipeRefreshLayout.setRefreshing(false);
                 progressBar.setVisibility(View.VISIBLE);
+            }
+        });
+        btnSharedPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fl_shared_password_container, new SharedPasswordFragment(context, activity));
+                fragmentTransaction.commit();
             }
         });
 

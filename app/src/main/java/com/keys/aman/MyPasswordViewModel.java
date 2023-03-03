@@ -28,4 +28,3 @@ public class MyPasswordViewModel extends AndroidViewModel {
         return passwordData;
     }
 }
-

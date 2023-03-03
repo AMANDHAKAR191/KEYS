@@ -2,6 +2,7 @@ package com.keys.aman.home;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,22 +11,15 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.ScrollView;
-import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -33,10 +27,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.keys.aman.MyPasswordViewModel;
 import com.keys.aman.R;
-import com.keys.aman.home.addpassword.PasswordHelperClass;
-import com.keys.aman.messages.MessagesFragment;
+import com.keys.aman.messages.UserPersonalChatList;
 import com.keys.aman.signin_login.LogInActivity;
 
 import java.util.ArrayList;
@@ -57,74 +49,53 @@ public class SharedPasswordFragment extends Fragment {
     }
 
     ProgressBar progressBar;
-    ScrollView scrollView;
+    ImageButton imgBack;
     TextView tvNOTE;
     RecyclerView recview;
-    SearchView searchView;
-    public static SwipeRefreshLayout swipeRefreshLayout;
     SharedPreferences sharedPreferences;
-    public static DatabaseReference databaseReference;
-    public static PasswordAdapter adaptor;
-    ArrayList<PasswordHelperClass> dataholder;
+    public static SharedPasswordUserListAdapter adaptorForUsersList;
+    ArrayList<UserPersonalChatList> dataHolderUserList;
 
     //    ArrayList<String> parentdataholder;
     String uid;
-    private MyPasswordViewModel viewPasswordModel;
     LogInActivity logInActivity = new LogInActivity();
     public static final String REQUEST_ID = "HomeFragment";
+    private DatabaseReference reference;
+    public String senderPublicUid;
 
 
+    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_shared_password, container, false);
         sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        viewPasswordModel = new ViewModelProvider(requireActivity()).get(MyPasswordViewModel.class);
 
         //Hooks
         progressBar = view.findViewById(R.id.progressBar);
-        recview = view.findViewById(R.id.recview_website_list);
-        searchView = view.findViewById(R.id.search_bar);
-        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
+        recview = view.findViewById(R.id.recview_user_list);
         tvNOTE = view.findViewById(R.id.tv_NOTE);
         progressBar.setVisibility(View.VISIBLE);
+        imgBack = view.findViewById(R.id.img_back);
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                goBack();
+            }
+        });
 
 
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-
-
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String s) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String s) {
-                adaptor.getFilter().filter(s);
-                System.out.println();
-                adaptor.notifyDataSetChanged();
-
-                return false;
-            }
-        });
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                dataholder.clear();
-                recyclerviewsetdata();
-                swipeRefreshLayout.setRefreshing(false);
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        });
 
 
         threadRunnableHomeFragment threadRunnableHomeFragment = new threadRunnableHomeFragment(view);
         new Thread(threadRunnableHomeFragment).start();
 
         return view;
+    }
+
+    public void goBack() {
+        getParentFragmentManager().beginTransaction().remove(SharedPasswordFragment.this).commit();
     }
 
     public class threadRunnableHomeFragment implements Runnable {
@@ -148,83 +119,54 @@ public class SharedPasswordFragment extends Fragment {
 
 
     public void recyclerviewsetdata() {
+        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID, null);
+        reference = FirebaseDatabase.getInstance().getReference("messageUserList").child(senderPublicUid).child("userPersonalChatList");
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata")
-                .child(uid);
+        dataHolderUserList = new ArrayList<>();
+
         recview.setLayoutManager(new LinearLayoutManager(context));
-
-        dataholder = new ArrayList<>();
-
         recview.hasFixedSize();
 
-        databaseReference.addValueEventListener(new ValueEventListener() {
+        reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        for (DataSnapshot ds1 : ds.getChildren()) {
-                            PasswordHelperClass data = ds1.getValue(PasswordHelperClass.class);
-                            dataholder.add(data);
+                        UserPersonalChatList personalChatList = ds.getValue(UserPersonalChatList.class);
+
+                        if (!personalChatList.getOtherUserPublicUid().equals(senderPublicUid)) {
+                            if (personalChatList.isKnowUser()) {
+                                dataHolderUserList.add(personalChatList);
+//                                if (!personalChatList.getLastMessage().equals(".")){
+////                                    createNotification();
+//                                }
+                            }
                         }
                     }
-                    adaptor.notifyDataSetChanged();
-
+//                    Collections.sort(dataHolderUserList, AddNoteDataHelperClass.addDNoteHelperClassComparator);
+                    adaptorForUsersList.notifyDataSetChanged();
                 } else {
-                    tvNOTE.setVisibility(View.VISIBLE);
+//                    tvNote.setVisibility(View.VISIBLE);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                System.out.println(error.getMessage());
+                System.out.println(error.getCode());
+                System.out.println(error.getDetails());
             }
         });
         progressBar.setVisibility(View.INVISIBLE);
-        adaptor = new PasswordAdapter(dataholder, context, activity) {
-            @Override
-            public void resetAdaptor() {
-                dataholder.clear();
-                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void showCardViewFragment(String currentDate, String tempLogin, String tempPassword,
-                                             String dWebsiteName, String dWebsiteLink) {
-
-                FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fl_container, new ShowCardViewDataDialog(context, activity, currentDate, tempLogin,
-                        tempPassword, dWebsiteName, dWebsiteLink));
-                fragmentTransaction.commit();
-            }
-
-            @Override
-            public void sharePassword(PasswordHelperClass passwordData) {
-                super.sharePassword(passwordData);
-                viewPasswordModel.setPasswordData(passwordData);
-
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                MessagesFragment messagesFragment = new MessagesFragment(context, activity);
-//                // Create a new bundle to store the data
-//                Bundle data = new Bundle();
-//                // Put the note data in the bundle
-//                data.putString(logInActivity.REQUEST_CODE_NAME,REQUEST_ID);
-//                data.putParcelable(shareNoteCode, noteData);
-//
-//                // Set the arguments on the fragment
-//                messagesFragment.setArguments(data);
-                fragmentTransaction.add(R.id.fl_user_list_container, messagesFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        };
-        recview.setAdapter(adaptor);
-        adaptor.notifyDataSetChanged();
+        adaptorForUsersList = new SharedPasswordUserListAdapter(dataHolderUserList, context, activity);
+        recview.setAdapter(adaptorForUsersList);
+        adaptorForUsersList.notifyDataSetChanged();
     }
 
     @Override
     public void onStart() {
         super.onStart();
     }
+
 }

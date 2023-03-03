@@ -8,11 +8,11 @@
     tools:context="com.keys.aman.home.HomeFragment">
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/btn_shared_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Shared Password"
         android:layout_margin="25dp"
+        android:text="Shared Password"
         app:layout_constraintBottom_toTopOf="@+id/swipeRefreshLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline12"
@@ -41,7 +41,7 @@
         app:layout_constraintTop_toBottomOf="@id/search_bar">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recview_website_list"
+            android:id="@+id/recview_passwords_list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/viewpager_background"
@@ -71,6 +71,15 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_bar" />
+
+    <FrameLayout
+        android:id="@+id/fl_shared_password_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:translationZ="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <FrameLayout
         android:id="@+id/fl_user_list_container"
