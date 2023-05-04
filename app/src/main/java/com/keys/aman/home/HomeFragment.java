@@ -35,6 +35,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.keys.aman.MyPasswordViewModel;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.messages.MessagesFragment;
@@ -67,6 +68,7 @@ public class HomeFragment extends Fragment {
     public static DatabaseReference databaseReference;
     public static PasswordAdapter adaptor;
     ArrayList<PasswordHelperClass> dataholder;
+    MyPreference myPreference;
 
     String uid;
     private MyPasswordViewModel viewPasswordModel;
@@ -79,7 +81,8 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_home, container, false);
-        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        //initialize local database
+        myPreference = MyPreference.getInstance(context);
         viewPasswordModel = new ViewModelProvider(requireActivity()).get(MyPasswordViewModel.class);
 
         //Hooks

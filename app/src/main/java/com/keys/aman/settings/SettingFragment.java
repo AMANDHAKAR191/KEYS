@@ -30,6 +30,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignInApi;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.PinLockActivity;
@@ -67,6 +68,7 @@ public class SettingFragment extends Fragment {
     Intent serviceIntent;
     String currentUserName, currentUserEmail;
     private GoogleSignInApi mGoogleSignInClient;
+    MyPreference myPreference;
 
 
     public SettingFragment(Context context, Activity activity) {
@@ -83,7 +85,7 @@ public class SettingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.activity_setting, container, false);
 
-        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(context);
 //        serviceIntent = new Intent(context, MyForegroundService.class);
         /*---------------Hooks--------------*/
         tvAppInfo = view.findViewById(R.id.tv_app_info);
@@ -105,7 +107,7 @@ public class SettingFragment extends Fragment {
         tvProfileName = view.findViewById(R.id.tv_profile_name);
         tvProfileEmail = view.findViewById(R.id.tv_profile_email);
         tvTutorial = view.findViewById(R.id.tv_tutorial);
-        checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS, 0);
+        checkedItem = myPreference.getLockAppSelectedOption();
         String[] Item = {"Immediately", "After 1 minute", "Never"};
         tvLockAppResult.setText(Item[checkedItem]);
         currentUserName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
@@ -116,24 +118,7 @@ public class SettingFragment extends Fragment {
             public void onClick(View v) {
                 SplashActivity.isForeground = true;
                 FirebaseAuth.getInstance().signOut();
-//                GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-//                        .requestIdToken(getString(R.string.default_web_client_id))
-//                        .requestEmail()
-//                        .build();
-//
-//                mGoogleSignInClient.signOut()
-//                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-//                            @Override
-//                            public void onComplete(@NonNull Task<Void> task) {
-//                                // User is signed out and their access has been revoked
-//                            }
-//                        });
-
-                SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                editor1.putBoolean(logInActivity.IS_LOGIN, false);
-                editor1.apply();
-                System.out.println(sharedPreferences.getBoolean(logInActivity.IS_LOGIN, false));
-
+                myPreference.setUserLoggedIn(false);
                 Intent intent = new Intent(context, LogInActivity.class);
                 startActivity(intent);
             }
@@ -144,7 +129,6 @@ public class SettingFragment extends Fragment {
             public void onClick(View view) {
                 //todo 4 if app is going to another activity make isForeground = true
                 SplashActivity.isForeground = true;
-                boolean ispin_set = sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(), false);
                 Intent intent = new Intent(context, PinLockActivity.class);
                 intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                 intent.putExtra("title", "Enter Old Pin");
@@ -168,17 +152,12 @@ public class SettingFragment extends Fragment {
                             public void onClick(DialogInterface dialogInterface, int result) {
                                 Log.d(TAG, "=> " + result);
                                 tvLockAppResult.setText(Item[result]);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putInt(tabLayoutActivity.LOCK_APP_OPTIONS, result);
-                                editor.apply();
-
-                                checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS, 2);
+                                myPreference.setLockAppSelectedOption(result);
+                                checkedItem = myPreference.getLockAppSelectedOption();
                                 dialogInterface.dismiss();
                             }
                         });
                 alertDialogBuilder.show();
-//                LockAppOptionsDialog optionsDialog = new LockAppOptionsDialog(activity, context);
-//                optionsDialog.show(requireActivity().getSupportFragmentManager(), "lockAppOptionsDialog");
             }
         });
         tvDevicesList.setOnClickListener(new View.OnClickListener() {

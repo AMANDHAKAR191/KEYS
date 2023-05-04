@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.messages.ChatModelClass;
@@ -42,6 +43,7 @@ public class SharedPasswordUserListAdapter extends RecyclerView.Adapter<SharedPa
     DatabaseReference reference;
     SharedPreferences sharedPreferences;
     private SharedPasswordAdapter adaptorForUsersList;
+    MyPreference myPreference;
 
     public SharedPasswordUserListAdapter() {
     }
@@ -50,7 +52,7 @@ public class SharedPasswordUserListAdapter extends RecyclerView.Adapter<SharedPa
         this.dataHolder = dataHolder;
         this.context = context;
         this.activity = activity;
-        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(context);
         System.out.println("noteData + " + noteData + " || passwordData + " + passwordData);
         // retrieve the password data
         this.passwordData = passwordData;
@@ -71,7 +73,7 @@ public class SharedPasswordUserListAdapter extends RecyclerView.Adapter<SharedPa
 
 
         String receiverPublicUid, senderPublicUid, senderRoom;
-        senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID, null);
+        senderPublicUid = myPreference.getPublicUid();
         receiverPublicUid = dataHolder.get(position).getOtherUserPublicUid();
         System.out.println("receiverPublicUid ==>> " + receiverPublicUid);
         senderRoom = senderPublicUid + receiverPublicUid;

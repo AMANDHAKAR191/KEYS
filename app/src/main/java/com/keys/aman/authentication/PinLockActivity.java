@@ -1,5 +1,6 @@
 package com.keys.aman.authentication;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,44 +18,98 @@ import androidx.core.content.ContextCompat;
 import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.base.TabLayoutActivity;
+
 import com.keys.aman.home.ShowCardViewDataDialog;
 import com.keys.aman.notes.SecretNotesActivity;
+import com.keys.aman.service.BasicService;
 import com.keys.aman.settings.SettingFragment;
 import com.keys.aman.signin_login.LogInActivity;
 
 public class PinLockActivity extends AppCompatActivity {
 
 
+
+    TextView tvTitle, tvDescription, tvErrorMessage;
+    Handler handler = new Handler();
+    LogInActivity logInActivity = new LogInActivity();
+    MyPreference myPreference;
+    String setPin, confirmPin;
+    int temp = 0;
     private PinLockView mPinLockView;
     private Vibrator vibrator;
     private String comingRequestCode;
-    TextView tvTitle, tvErrorMessage;
     private SharedPreferences sharedPreferences;
-    Handler handler = new Handler();
-    LogInActivity logInActivity = new LogInActivity();
-
-    public String getMASTER_PIN() {
-        String MASTER_PIN = "master_pin";
-        return MASTER_PIN;
-    }
-
-    public String getIS_PIN_SET() {
-        String IS_PIN_SET = "ispin_set";
-        return IS_PIN_SET;
-    }
-
-    public String getIS_USER_RESTRICTED() {
-        String IS_USER_RESTRICTED = "is_user_restricted";
-        return IS_USER_RESTRICTED;
-    }
-
     private String PIN = "";
-    String setPin, confirmPin;
-    int temp = 0;
     private int count;
 
+    @SuppressLint("MissingInflatedId")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //it is mandatory to call this requestWindowFeature method before setContentView
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.fragment_pin_lock);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        myPreference = MyPreference.getInstance(this);
+        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        //Hooks
+        mPinLockView = findViewById(R.id.pin_lock_view);
+        IndicatorDots mIndicatorDots = findViewById(R.id.indicator_dots);
+        tvTitle = findViewById(R.id.tv_title_name);
+        tvDescription = findViewById(R.id.tv_description);
+        tvErrorMessage = findViewById(R.id.tv_error_message);
+
+        //properties
+        mPinLockView.attachIndicatorDots(mIndicatorDots);
+        mPinLockView.setPinLockListener(mPinLockListener);
+        mPinLockView.setCustomKeySet(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 0});
+        mPinLockView.setPinLength(6);
+        mPinLockView.setTextColor(ContextCompat.getColor(this, R.color.white));
+        mIndicatorDots.setIndicatorType(IndicatorDots.IndicatorType.FILL_WITH_ANIMATION);
+
+        //Hide mobile no and
+        Intent intent = getIntent();
+        comingRequestCode = intent.getStringExtra(logInActivity.REQUEST_CODE_NAME);
+        if (comingRequestCode == null) {
+            comingRequestCode = "this";
+        }
+
+        Toast.makeText(PinLockActivity.this, comingRequestCode, Toast.LENGTH_SHORT).show();
+        switch (comingRequestCode) {
+            case ShowCardViewDataDialog.REQUEST_ID:
+                PIN = myPreference.getMasterPin();
+                tvTitle.setText("Set Master Pin");
+                tvDescription.setText("enter 6 digit pin");
+                break;
+            case TabLayoutActivity.REQUEST_ID:
+                PIN = myPreference.getMasterPin();
+                tvTitle.setText("verity Master Pin");
+                tvDescription.setText("enter 6 digit master pin to open secret vault");
+                break;
+            case LogInActivity.REQUEST_ID:
+                tvTitle.setText("Set Master Pin");
+                tvDescription.setText("enter 6 digit pin\\nNote: if forgot this pin is not recoverable");
+                break;
+            case SettingFragment.REQUEST_ID:
+                PIN = myPreference.getMasterPin();
+                tvTitle.setText("Verify Master Pin");
+                tvDescription.setText("Enter your previous 6 digit master Pin to continue");
+                break;
+            case BiometricAuthActivity.REQUEST_ID:
+                PIN = myPreference.getMasterPin();
+                tvTitle.setText("Verify Master Pin");
+                tvDescription.setText("enter 6 digit pin");
+                break;
+            case BasicService.REQUEST_ID:
+                PIN = myPreference.getMasterPin();
+                tvTitle.setText("Verify Master Pin");
+                tvDescription.setText("Enter your 6 digit Master pin to continue");
+
+        }
+    }
     private final PinLockListener mPinLockListener = new PinLockListener() {
         @Override
         public void onComplete(String pin) {
@@ -70,10 +125,9 @@ public class PinLockActivity extends AppCompatActivity {
                         confirmPin = pin;
                         if (confirmPin.equals(setPin)) {
                             tvTitle.setText("Pin Matched");
-                            SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                            editor1.putBoolean(getIS_PIN_SET(), true);
-                            editor1.putString(getMASTER_PIN(), confirmPin);
-                            editor1.apply();
+                            //update local database
+                            myPreference.setPinCompleted(true);
+                            myPreference.setMasterPin(confirmPin);
 
                             Toast.makeText(PinLockActivity.this, "Pin Set", Toast.LENGTH_SHORT).show();
 
@@ -172,6 +226,26 @@ public class PinLockActivity extends AppCompatActivity {
                         }, 400);
                     }
                     break;
+                case BasicService.REQUEST_ID:
+                    if (pin.equals(PIN)) {
+                        setResult(RESULT_OK);
+                        finish();
+
+                    } else {
+                        tvTitle.setText("Wrong Pin");
+//                        vibrator.vibrate(200);
+                        vibrator.vibrate(VibrationEffect.createOneShot(200, VibrationEffect.DEFAULT_AMPLITUDE));
+                        mPinLockView.resetPinLockView();
+                        wrongPin();
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                tvTitle.setText("Enter Pin Again");
+                                mPinLockView.resetPinLockView();
+                            }
+                        }, 400);
+                    }
+                    break;
             }
 
         }
@@ -185,73 +259,13 @@ public class PinLockActivity extends AppCompatActivity {
         }
     };
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //it is mandatory to call this requestWindowFeature method before setContentView
-//        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.fragment_pin_lock);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-        //Hooks
-        mPinLockView = findViewById(R.id.pin_lock_view);
-        IndicatorDots mIndicatorDots = findViewById(R.id.indicator_dots);
-        tvTitle = findViewById(R.id.tv_title_name);
-        tvErrorMessage = findViewById(R.id.tv_error_message);
-        //properties
-        mPinLockView.attachIndicatorDots(mIndicatorDots);
-        mPinLockView.setPinLockListener(mPinLockListener);
-        mPinLockView.setCustomKeySet(new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 0});
-        mPinLockView.setPinLength(6);
-        mPinLockView.setTextColor(ContextCompat.getColor(this, R.color.white));
-        mIndicatorDots.setIndicatorType(IndicatorDots.IndicatorType.FILL_WITH_ANIMATION);
-
-        //Hide mobile no and
-        Intent intent = getIntent();
-        comingRequestCode = intent.getStringExtra(logInActivity.REQUEST_CODE_NAME);
-        if (comingRequestCode == null) {
-            comingRequestCode = "this";
-        }
-
-        Toast.makeText(PinLockActivity.this, comingRequestCode, Toast.LENGTH_SHORT).show();
-        String title;
-        switch (comingRequestCode) {
-            case ShowCardViewDataDialog.REQUEST_ID:
-                PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
-                title = intent.getStringExtra("title");
-                tvTitle.setText(title);
-                break;
-            case TabLayoutActivity.REQUEST_ID:
-                PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
-                title = intent.getStringExtra("title");
-                tvTitle.setText(title);
-                break;
-            case LogInActivity.REQUEST_ID:
-                title = intent.getStringExtra("title");
-                tvTitle.setText(title);
-                break;
-            case SettingFragment.REQUEST_ID:
-                PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
-                title = intent.getStringExtra("title");
-                tvTitle.setText(title);
-                break;
-            case BiometricAuthActivity.REQUEST_ID:
-                PIN = sharedPreferences.getString(getMASTER_PIN(), "no");
-                title = intent.getStringExtra("title");
-                tvTitle.setText(title);
-                break;
-
-        }
-    }
-
     public void wrongPin() {
         count = count + 1;
         if (count >= 3) {
             SharedPreferences.Editor editor1 = sharedPreferences.edit();
-            editor1.putBoolean(getIS_USER_RESTRICTED(), true);
-            editor1.apply();
+            //restrict user from login
+            myPreference.setUserRestricted(true);
+
             tvErrorMessage.setVisibility(View.VISIBLE);
             mPinLockView.setVisibility(View.INVISIBLE);
             Handler handler = new Handler();

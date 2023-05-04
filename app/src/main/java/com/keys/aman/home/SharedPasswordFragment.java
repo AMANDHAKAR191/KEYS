@@ -27,6 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.messages.UserPersonalChatList;
 import com.keys.aman.signin_login.LogInActivity;
@@ -62,6 +63,7 @@ public class SharedPasswordFragment extends Fragment {
     public static final String REQUEST_ID = "HomeFragment";
     private DatabaseReference reference;
     public String senderPublicUid;
+    MyPreference myPreference;
 
 
     @SuppressLint("MissingInflatedId")
@@ -69,7 +71,7 @@ public class SharedPasswordFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shared_password, container, false);
-        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(context);
 
         //Hooks
         progressBar = view.findViewById(R.id.progressBar);
@@ -119,8 +121,7 @@ public class SharedPasswordFragment extends Fragment {
 
 
     public void recyclerviewsetdata() {
-        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID, null);
+        senderPublicUid = myPreference.getPublicUid();
         reference = FirebaseDatabase.getInstance().getReference("messageUserList").child(senderPublicUid).child("userPersonalChatList");
 
         dataHolderUserList = new ArrayList<>();

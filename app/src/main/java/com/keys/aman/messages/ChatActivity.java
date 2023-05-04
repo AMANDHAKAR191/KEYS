@@ -33,6 +33,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.keys.aman.AES;
 import com.keys.aman.MyNoteViewModel;
 import com.keys.aman.MyPasswordViewModel;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
@@ -55,16 +56,12 @@ public class ChatActivity extends AppCompatActivity {
     ActivityChatBinding binding;
     Activity activity;
     Context context;
-    public final String RECEIVER_ROOM = "receiver_room";
-    public final String RECEIVER_PUBLIC_UID = "receiver_public_uid";
-    public final String SENDER_ROOM = "sender_room";
     TextView tvSentMessage, tvReceivedMessage;
     TextInputLayout tilMessage;
     //    ImageButton imgSendMessage;
     RecyclerView recViewChatMessages;
     private ArrayList<ChatModelClass> dataHolderChatMessages;
     public String receiverPublicUid, receiverPublicUname, commonEncryptionKey, commonEncryptionIv, senderPublicUid, senderPublicUname, currentDateAndTime;
-    private SharedPreferences sharedPreferences;
     LogInActivity logInActivity = new LogInActivity();
     TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
     //todo 2 object calling of AppLockCounterClass
@@ -79,6 +76,8 @@ public class ChatActivity extends AppCompatActivity {
     private MutableLiveData<NoteHelperClass> data;
     private MyNoteViewModel viewNoteModel;
     private MyPasswordViewModel viewPasswordModel;
+    MyPreference myPreference;
+    private AES aes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +86,7 @@ public class ChatActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         activity = ChatActivity.this;
         context = ChatActivity.this;
-        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(this);
         reference = FirebaseDatabase.getInstance().getReference().child("messageUserList");
         viewNoteModel = new ViewModelProvider(this).get(MyNoteViewModel.class);
         viewPasswordModel = new ViewModelProvider(this).get(MyPasswordViewModel.class);
@@ -160,20 +159,21 @@ public class ChatActivity extends AppCompatActivity {
                     }).show();
 //            binding.tietMessage.setText("Note: " + noteData.getTitle() + "is sharing with " + receiverPublicUname);
         }
+        //initialize
+        aes = AES.getInstance(commonEncryptionKey, commonEncryptionIv);
 
 
-        senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID, null);
+        senderPublicUid = myPreference.getPublicUid();
         System.out.println(senderPublicUid + "\t" + receiverPublicUid);
         senderPublicUname = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
         FirebaseMessaging.getInstance().subscribeToTopic(senderPublicUid);
 
         senderRoom = senderPublicUid + receiverPublicUid;
         receiverRoom = receiverPublicUid + senderPublicUid;
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(RECEIVER_ROOM, receiverRoom);
-        editor.putString(SENDER_ROOM, senderRoom);
-        editor.putString(RECEIVER_PUBLIC_UID, receiverPublicUid);
-        editor.apply();
+
+        myPreference.setReceiverRoomId(receiverRoom);
+        myPreference.setReceiverPublicId(receiverPublicUid);
+        myPreference.setSenderRoomId(senderRoom);
 
         System.out.println("senderRoom\t" + senderRoom);
         System.out.println("receiverRoom\t" + receiverRoom);
@@ -285,8 +285,7 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String message, String type) {
-        AES aes = new AES();
-        aes.initFromStrings(commonEncryptionKey, commonEncryptionIv);
+
         if (passwordData != null) {
             String encryptedAddlLogin = "", encryptedAddPassword = "";
             String addLogin = passwordData.getAddDataLogin();
@@ -296,13 +295,9 @@ public class ChatActivity extends AppCompatActivity {
 
 
             try {
-                // Double encryption
                 // TODO : in future, (if needed) give two key to user for double encryption
-                encryptedAddlLogin = aes.encrypt(addLogin);
-                encryptedAddlLogin = aes.encrypt(encryptedAddlLogin);
-                encryptedAddPassword = aes.encrypt(addPassword);
-                encryptedAddPassword = aes.encrypt(encryptedAddPassword);
-//                e_addwebsite = aes.encrypt(addwesitename);
+                encryptedAddlLogin = aes.doubleEncryption(addLogin);
+                encryptedAddPassword = aes.doubleEncryption(addPassword);
                 passwordData.setAddDataLogin(encryptedAddlLogin);
                 passwordData.setAddDataPassword(encryptedAddPassword);
             } catch (Exception e) {
@@ -313,13 +308,9 @@ public class ChatActivity extends AppCompatActivity {
             title = noteData.getTitle();
             note = noteData.getNote();
             try {
-                // Double encryption
                 // TODO : in future, (if needed) give two key to user for double encryption
-                titleEncrypted = aes.encrypt(title);
-                titleEncrypted = aes.encrypt(titleEncrypted);
-                noteEncrypted = aes.encrypt(note);
-                noteEncrypted = aes.encrypt(noteEncrypted);
-
+                titleEncrypted = aes.doubleEncryption(title);
+                noteEncrypted = aes.doubleEncryption(note);
                 noteData.setTitle(titleEncrypted);
                 noteData.setNote(noteEncrypted);
             } catch (Exception e) {
@@ -444,7 +435,7 @@ public class ChatActivity extends AppCompatActivity {
         // is going in background then this method will make
         // isBackground = true and timer will started,
         // at time of return, user will be verified.
-        appLockCounterClass.checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS, 0);
+        appLockCounterClass.checkedItem = myPreference.getLockAppSelectedOption();
         appLockCounterClass.onPauseOperation();
     }
 

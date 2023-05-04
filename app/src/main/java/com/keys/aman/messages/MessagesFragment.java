@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.keys.aman.MyNoteViewModel;
 import com.keys.aman.MyPasswordViewModel;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.home.PasswordAdapter;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
@@ -61,6 +62,7 @@ public class MessagesFragment extends Fragment {
     private MyPasswordViewModel viewPasswordModel;
     private NoteHelperClass noteData;
     private PasswordHelperClass passwordData;
+    MyPreference myPreference;
 
 
     public MessagesFragment(Context context, Activity activity) {
@@ -87,14 +89,14 @@ public class MessagesFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.activity_messages, container, false);
-        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(context);
         viewNoteModel = new ViewModelProvider(requireActivity()).get(MyNoteViewModel.class);
         viewPasswordModel = new ViewModelProvider(requireActivity()).get(MyPasswordViewModel.class);
 
         recViewUsersChatList = view.findViewById(R.id.recview_user_chat_list);
         progressBar = view.findViewById(R.id.progressBar);
 //        fabAddChat = view.findViewById(R.id.fab_add_chat);
-        senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID,null);
+        senderPublicUid = myPreference.getPublicUid();
         progressBar.setVisibility(View.VISIBLE);
 
 //        fabAddChat.setOnClickListener(new View.OnClickListener() {

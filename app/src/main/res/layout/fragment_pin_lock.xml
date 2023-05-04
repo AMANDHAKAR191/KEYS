@@ -11,22 +11,11 @@
         android:id="@+id/profile_image"
         android:layout_width="100dp"
         android:layout_height="100dp"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:elevation="8dp"
         android:src="@drawable/keys_privacy" />
-
-<!--    <TextView-->
-<!--        android:id="@+id/tv_use_biometrix"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_below="@+id/profile_name"-->
-<!--        android:gravity="center"-->
-<!--        android:onClick="open_fingerprintActivity"-->
-<!--        android:text="Use FingerPrint"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textSize="24dp"-->
-<!--        android:visibility="visible" />-->
 
     <TextView
         android:id="@+id/tv_title_name"
@@ -37,16 +26,27 @@
         android:layout_marginTop="56dp"
         android:fontFamily="@font/aclonica"
         android:gravity="center"
+        android:text="Set Master Pin"
         android:textColor="@color/white"
         android:textSize="20sp" />
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="256dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_title_name"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="@font/aclonica"
+        android:gravity="center"
+        android:text="enter 6 digit pin\nNote: if forgot this pin is not recoverable"
+        android:textColor="@color/white"
+        android:textSize="10sp" />
 
     <TextView
         android:id="@+id/tv_error_message"
         android:layout_width="256dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/profile_image"
+        android:layout_below="@+id/tv_description"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="106dp"
         android:gravity="center"
         android:text="Too many attempts. Try again, after 5 seconds later."
         android:textColor="@color/design_default_color_error"

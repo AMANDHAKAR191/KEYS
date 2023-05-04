@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
@@ -38,6 +39,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myView
     Activity activity;
     DatabaseReference reference;
     SharedPreferences sharedPreferences;
+    MyPreference myPreference;
 
     public UserListAdapter() {
     }
@@ -53,7 +55,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.myView
         this.dataHolder = dataHolder;
         this.context = context;
         this.activity = activity;
-        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(context);
         System.out.println("noteData + " + noteData + " || passwordData + " + passwordData);
         // retrieve the password data
         this.passwordData = passwordData;

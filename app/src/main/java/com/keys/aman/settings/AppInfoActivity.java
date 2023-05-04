@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
@@ -25,13 +26,14 @@ public class AppInfoActivity extends AppCompatActivity {
     //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(AppInfoActivity.this, AppInfoActivity.this);
     private SharedPreferences sharedPreferences;
+    MyPreference myPreference;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_info);
-        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(this);
         tv_app_version = findViewById(R.id.tv_app_version);
         img_back = findViewById(R.id.img_back);
         //todo 3 when is coming from background or foreground always isForeground false
@@ -88,7 +90,7 @@ public class AppInfoActivity extends AppCompatActivity {
         // is going in background then this method will make
         // isBackground = true and timer will started,
         // at time of return, user will be verified.
-        appLockCounterClass.checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS, 0);
+        appLockCounterClass.checkedItem = myPreference.getLockAppSelectedOption();
         appLockCounterClass.onPauseOperation();
     }
 

@@ -19,23 +19,26 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.KEYS">
         <activity
-            android:name="com.keys.aman.authentication.BiometricAuthActivity"
+            android:name=".MyAuthenticationActivity"
             android:exported="false" />
         <activity
-            android:name="com.keys.aman.messages.ChatActivity"
+            android:name=".authentication.BiometricAuthActivity"
+            android:exported="false" />
+        <activity
+            android:name=".messages.ChatActivity"
             android:exported="false" />
 
         <service
-            android:name="com.keys.aman.service.BasicService"
+            android:name=".service.BasicService"
             android:exported="true"
-            android:label="KEYSe"
+            android:label="KEYS"
             android:permission="android.permission.BIND_AUTOFILL_SERVICE">
             <intent-filter>
                 <action android:name="android.service.autofill.AutofillService" />
             </intent-filter>
         </service>
         <service
-            android:name="com.keys.aman.service.MyFirebaseMessagingService"
+            android:name=".service.MyFirebaseMessagingService"
             android:exported="true"
             android:permission="TODO">
             <intent-filter>
@@ -50,16 +53,16 @@
         <!-- </intent-filter> -->
         <!-- </receiver> -->
         <activity
-            android:name="com.keys.aman.settings.TutorialActivity"
+            android:name=".settings.TutorialActivity"
             android:exported="false" />
         <activity
-            android:name="com.keys.aman.notes.SecretNotesActivity"
+            android:name=".notes.SecretNotesActivity"
             android:exported="false" />
         <activity
-            android:name="com.keys.aman.notes.addnote.AddNotesActivity"
+            android:name=".notes.addnote.AddNotesActivity"
             android:exported="false" />
         <activity
-            android:name="com.keys.aman.SplashActivity"
+            android:name=".SplashActivity"
             android:exported="true"
             android:theme="@style/SplashTheme">
             <intent-filter>
@@ -69,28 +72,28 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.keys.aman.signin_login.LogInActivity"
+            android:name=".signin_login.LogInActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" /> <!-- <activity -->
         <!-- android:name=".aman.app.home.HomeActivity" -->
         <!-- android:exported="false" -->
         <!-- android:windowSoftInputMode="adjustPan" /> -->
         <activity
-            android:name="com.keys.aman.home.PasswordGeneratorActivity"
+            android:name=".home.PasswordGeneratorActivity"
             android:exported="false" />
         <activity
-            android:name="com.keys.aman.home.addpassword.AddPasswordActivity"
+            android:name=".home.addpassword.AddPasswordActivity"
             android:exported="false" />
         <activity
-            android:name="com.keys.aman.base.TabLayoutActivity"
+            android:name=".base.TabLayoutActivity"
             android:exported="false"
             android:theme="@style/Theme.KEYS"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name="com.keys.aman.settings.AppInfoActivity"
+            android:name=".settings.AppInfoActivity"
             android:exported="false" />
         <activity
-            android:name="com.keys.aman.authentication.PinLockActivity"
+            android:name=".authentication.PinLockActivity"
             android:exported="false" />
     </application>
 

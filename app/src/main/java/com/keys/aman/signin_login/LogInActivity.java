@@ -40,6 +40,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.keys.aman.AES;
+import com.keys.aman.MyPreference;
 import com.keys.aman.PrograceBar;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
@@ -63,20 +64,12 @@ public class LogInActivity extends AppCompatActivity {
     private PrograceBar prograceBar;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
-    SharedPreferences sharedPreferences;
+    MyPreference myPreference;
     public static DatabaseReference myRef;
     ActivityResultLauncher<Intent> getResultLogin;
     ActivityResultLauncher<Intent> getResultSignIn;
     Handler progressBarHandler = new Handler();
 
-
-    //Global variables
-    private final String AES_KEY = "aes_key";
-    private final String AES_IV = "aes_iv";
-    public final String PUBLIC_UID = "public_uid";
-    public final String SHARED_PREF_ALL_DATA = "All data";
-    public final String IS_LOGIN = "islogin";
-    public final String IS_FIRST_TIME = "0";
     public final String REQUEST_CODE_NAME = "request_code";
     public static final String REQUEST_ID = "LogInActivity";
 
@@ -84,6 +77,7 @@ public class LogInActivity extends AppCompatActivity {
     String UID;
     private boolean turn = false;
     public GoogleSignInOptions gso;
+    private AES aes;
 
 
     @Override
@@ -96,7 +90,9 @@ public class LogInActivity extends AppCompatActivity {
         } catch (GooglePlayServicesRepairableException | GooglePlayServicesNotAvailableException e) {
             e.printStackTrace();
         }
-        sharedPreferences = getSharedPreferences(SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        //initialize local database
+        myPreference = MyPreference.getInstance(this);
+
         SplashActivity.isForeground = false;
 
         //Hooks
@@ -104,9 +100,7 @@ public class LogInActivity extends AppCompatActivity {
         tvErrorMessage = findViewById(R.id.tv_error_message);
 
 //        Check if User is already login then go direct to HomeScreen
-        Boolean isLogin = sharedPreferences.getBoolean(IS_LOGIN, false);
-        System.out.println(isLogin);
-        if (isLogin) {
+        if (myPreference.isUserLoggedIn()) {
             SplashActivity.isForeground = true;
             Intent intent = new Intent(LogInActivity.this, BiometricAuthActivity.class);
             intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
@@ -199,15 +193,8 @@ public class LogInActivity extends AppCompatActivity {
                                                 progressBar();
                                             }
                                             prograceBar.dismissbar();
-                                            String temp = sharedPreferences.getString(IS_FIRST_TIME, "0");
-                                            if (temp == "0") {
-                                                SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                                                editor1.putString(AES_KEY, PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==");
-                                                editor1.putString(AES_IV, PasswordGeneratorActivity.generateRandomPassword(16, true, true, true, false));
-                                                editor1.putBoolean(IS_LOGIN, true);
-                                                editor1.putString(IS_FIRST_TIME, "1");
-                                                editor1.apply();
-
+                                            boolean temp = myPreference.isNewUser();
+                                            if (temp) { //new User
                                                 createEntryOnDatabase(user);
                                                 turn = false;
                                                 Toast.makeText(LogInActivity.this, "Registration Completed!!", Toast.LENGTH_SHORT).show();
@@ -228,13 +215,12 @@ public class LogInActivity extends AppCompatActivity {
                                                         String aes_key = dataSnapshot.child("aes_key").getValue(String.class);
                                                         String public_uid = dataSnapshot.child("public_uid").getValue(String.class);
 
-                                                        SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                                                        editor1.putString(AES_KEY, aes_key);
-                                                        editor1.putString(AES_IV, aes_iv);
-                                                        editor1.putString(PUBLIC_UID,public_uid);
-                                                        editor1.putBoolean(IS_LOGIN, true);
-                                                        editor1.putString(IS_FIRST_TIME, "1");
-                                                        editor1.apply();
+                                                        myPreference.setAesKey(aes_key);
+                                                        myPreference.setAesIv(aes_iv);
+                                                        myPreference.setPublicUid(public_uid);
+                                                        myPreference.setUserLoggedIn(true);
+                                                        myPreference.setNewUser(false);
+
                                                         turn = false;
                                                         Toast.makeText(LogInActivity.this, "SignIn Completed!!", Toast.LENGTH_SHORT).show();
                                                     }
@@ -285,10 +271,7 @@ public class LogInActivity extends AppCompatActivity {
 
 
                 if (temp != "1") {
-                    SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                    editor1.putString(IS_FIRST_TIME, "1");
-                    editor1.apply();
-
+                    myPreference.setNewUser(false);
                 }
                 turn = true;
             }
@@ -307,34 +290,27 @@ public class LogInActivity extends AppCompatActivity {
         publicUname = user.getDisplayName();
         email = user.getEmail();
         private_uid = user.getUid();
-//        publicUid = PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==";
-        String[] tempEmail = email.split("@",2);
+        publicUid = createPublicUid(email);
 
-        tempEmail[0] = tempEmail[0].replace(".", "_");
-        publicUid = tempEmail[0].replace("+", "_");
-        System.out.println(publicUid);
-
-        SharedPreferences.Editor editor1 = sharedPreferences.edit();
-        editor1.putString(AES_KEY, PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==");
-        editor1.putString(AES_IV, PasswordGeneratorActivity.generateRandomPassword(16, true, true, true, false));
-        editor1.putBoolean(IS_LOGIN, true);
-        editor1.putString(PUBLIC_UID, publicUid);
-        editor1.putString(IS_FIRST_TIME, "1");
-        editor1.apply();
+        myPreference.setAesKey(PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==");
+        myPreference.setAesIv(PasswordGeneratorActivity.generateRandomPassword(16, true, true, true, false));
+        myPreference.setPublicUid(publicUid);
+        myPreference.setUserLoggedIn(true);
+        myPreference.setNewUser(false);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         myRef = firebaseDatabase.getReference("signupdata");
 
-        AES aes = new AES();
-        String encryptionKey = sharedPreferences.getString(AES_KEY, null);
-        String encryptionIv = sharedPreferences.getString(AES_IV, null);
-        aes.initFromStrings(encryptionKey, encryptionIv);
+        String aesKey = myPreference.getAesKey();
+        String aesIv = myPreference.getAesIv();
+
+        aes = AES.getInstance(aesKey,aesIv);
         String encryptedName, encryptedEmail;
         try {
             Toast.makeText(LogInActivity.this, "Creating Data  Entry on DB", Toast.LENGTH_SHORT).show();
-            encryptedName = aes.encrypt(publicUname);
-            encryptedEmail = aes.encrypt(email);
-            UserHelperClass userHelperClass = new UserHelperClass(encryptedName, encryptedEmail, encryptionKey, encryptionIv, private_uid, publicUid);
+            encryptedName = aes.singleEncryption(publicUname);
+            encryptedEmail = aes.singleEncryption(email);
+            UserHelperClass userHelperClass = new UserHelperClass(encryptedName, encryptedEmail, aesKey, aesIv, private_uid, publicUid);
 
 
             myRef.child(private_uid).setValue(userHelperClass)
@@ -366,20 +342,21 @@ public class LogInActivity extends AppCompatActivity {
 
     }
 
+    @NonNull
+    private String createPublicUid(String email) {
+        String publicUid;
+        String[] tempEmail = email.split("@",2);
+
+        tempEmail[0] = tempEmail[0].replace(".", "_");
+        publicUid = tempEmail[0].replace("+", "_");
+        System.out.println(publicUid);
+        return publicUid;
+    }
+
 
     public void progressBar() {
         prograceBar = new PrograceBar(LogInActivity.this);
         prograceBar.showDialog();
-    }
-
-
-    // getter and setter methods for Global Variable
-    public String getAES_KEY() {
-        return AES_KEY;
-    }
-
-    public String getAES_IV() {
-        return AES_IV;
     }
 
 

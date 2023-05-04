@@ -18,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
@@ -35,6 +36,7 @@ public class SecretNotesActivity extends AppCompatActivity {
     TextView tvNote;
     private String uid;
     LogInActivity logInActivity = new LogInActivity();
+    MyPreference myPreference;
     TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
     //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(SecretNotesActivity.this, SecretNotesActivity.this);
@@ -46,7 +48,7 @@ public class SecretNotesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_secret_notes);
 //        getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE,WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(this);
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
 
@@ -149,7 +151,7 @@ public class SecretNotesActivity extends AppCompatActivity {
         // is going in background then this method will make
         // isBackground = true and timer will started,
         // at time of return, user will be verified.
-        appLockCounterClass.checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS, 0);
+        appLockCounterClass.checkedItem = myPreference.getLockAppSelectedOption();
         appLockCounterClass.onPauseOperation();
     }
 

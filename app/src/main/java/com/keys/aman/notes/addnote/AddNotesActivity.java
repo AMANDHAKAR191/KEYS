@@ -13,6 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.AES;
 import com.keys.aman.SplashActivity;
@@ -51,13 +52,16 @@ public class AddNotesActivity extends AppCompatActivity {
     private String comingRequestCode;
     private String comingDate;
     private String uid;
+    MyPreference myPreference;
+    private AES aes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_notes);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(this);
+        aes = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
@@ -120,17 +124,12 @@ public class AddNotesActivity extends AppCompatActivity {
     public void goSave(View view) {
         title = Objects.requireNonNull(tilAddNoteTitle.getEditText()).getText().toString();
         note = Objects.requireNonNull(tilAddNoteBody.getEditText()).getText().toString();
-        AES aes = new AES();
-        System.out.println("AES_KEY: " + sharedPreferences.getString(logInActivity.getAES_KEY(), null));
-        System.out.println("AES_IV: " + sharedPreferences.getString(logInActivity.getAES_IV(), null));
-        aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
         try {
             // Double encryption
             // TODO : in future, (if needed) give two key to user for double encryption
-            titleDecrypted = aes.encrypt(title);
-            titleDecrypted = aes.encrypt(titleDecrypted);
-            noteDecrypted = aes.encrypt(note);
-            noteDecrypted = aes.encrypt(noteDecrypted);
+            titleDecrypted = aes.doubleEncryption(title);
+            noteDecrypted = aes.doubleEncryption(note);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -207,7 +206,7 @@ public class AddNotesActivity extends AppCompatActivity {
         // is going in background then this method will make
         // isBackground = true and timer will started,
         // at time of return, user will be verified.
-        appLockCounterClass.checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS, 0);
+        appLockCounterClass.checkedItem = myPreference.getLockAppSelectedOption();
         appLockCounterClass.onPauseOperation();
     }
 

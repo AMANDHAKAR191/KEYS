@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.AES;
 import com.keys.aman.PrograceBar;
@@ -70,6 +71,7 @@ public class AddPasswordActivity extends AppCompatActivity {
     TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
     //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(AddPasswordActivity.this, AddPasswordActivity.this);
+    MyPreference myPreference;
 
 
     private String uid;
@@ -90,6 +92,7 @@ public class AddPasswordActivity extends AppCompatActivity {
     String s9 = "https://www.facebook.com/";
     String s10 = "https://www.instagram.com/";
     String s11 = "other";
+    private AES aes;
 
 
     @Override
@@ -97,7 +100,8 @@ public class AddPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_password_data);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        //initialize local database
+        myPreference = MyPreference.getInstance(this);
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
 
@@ -224,16 +228,11 @@ public class AddPasswordActivity extends AppCompatActivity {
 
             FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
             DatabaseReference addDataRef = firebaseDatabase.getReference("addpassworddata").child(uid).child(addWebsiteName);
-            AES aes = new AES();
-            aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
+            aes = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
             try {
-                // Double encryption
                 // TODO : in future, (if needed) give two key to user for double encryption
-                encryptedAddlLogin = aes.encrypt(addLogin);
-                encryptedAddlLogin = aes.encrypt(encryptedAddlLogin);
-                encryptedAddPassword = aes.encrypt(addPassword);
-                encryptedAddPassword = aes.encrypt(encryptedAddPassword);
-//                e_addwebsite = aes.encrypt(addwesitename);
+                encryptedAddlLogin = aes.doubleEncryption(addLogin);
+                encryptedAddPassword = aes.doubleEncryption(addPassword);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -473,7 +472,7 @@ public class AddPasswordActivity extends AppCompatActivity {
         // is going in background then this method will make
         // isBackground = true and timer will started,
         // at time of return, user will be verified.
-        appLockCounterClass.checkedItem = sharedPreferences.getInt(tabLayoutActivity.LOCK_APP_OPTIONS, 0);
+        appLockCounterClass.checkedItem = myPreference.getLockAppSelectedOption();
         appLockCounterClass.onPauseOperation();
     }
 

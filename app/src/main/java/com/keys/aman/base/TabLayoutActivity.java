@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
@@ -45,9 +46,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class TabLayoutActivity extends AppCompatActivity {
 
     private static final String TAG = "TabLayoutActivity";
-    public final String LOCK_APP_OPTIONS = "lock_app";
-    public static final String REQUEST_ID = "TabLayoutActivity";
 
+    public static final String REQUEST_ID = "TabLayoutActivity";
     //objects
     private TabLayout tabLayout;
     TextView tvTitle, tvTitle1;
@@ -65,10 +65,6 @@ public class TabLayoutActivity extends AppCompatActivity {
     private FirebaseAuth firebaseAuth;
     private FirebaseUser user;
 
-    public String getLOCK_APP_OPTIONS() {
-        return LOCK_APP_OPTIONS;
-    }
-
 
     //variables
     int selectedTab = 1;
@@ -76,6 +72,7 @@ public class TabLayoutActivity extends AppCompatActivity {
     Boolean isAllFabsVisible;
     private int clickCounter = 0;
     public static int pauseCounter;
+    MyPreference myPreference;
 
 
     @SuppressLint("MissingInflatedId")
@@ -84,7 +81,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_layout);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
-        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(this);
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
 
@@ -111,7 +108,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(viewPager);
         llToolbar = findViewById(R.id.ll_toolbar);
 
-        senderPublicUid = sharedPreferences.getString(logInActivity.PUBLIC_UID,null);
+        senderPublicUid = myPreference.getPublicUid();
 
 
         llFab.setOnClickListener(new View.OnClickListener() {
@@ -299,13 +296,11 @@ public class TabLayoutActivity extends AppCompatActivity {
                         }
                     }, 1000);
                     if (clickCounter == 2) {
-                        boolean isPinSet = sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(), false);
-                        if (isPinSet) {
+                        if (myPreference.isPinCompleted()) {
                             //todo 4 if app is going to another activity make isForeground = true
                             SplashActivity.isForeground = true;
                             Intent intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
                             intent3.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
-                            intent3.putExtra("title", "Enter 6 digit Pin");
                             startActivity(intent3);
                             clickCounter = 0;
                         } else {
@@ -358,7 +353,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         // is going in background then this method will make
         // isBackground = true and timer will started,
         // at time of return, user will be verified.
-        appLockCounterClass.checkedItem = sharedPreferences.getInt(LOCK_APP_OPTIONS, 0);
+        appLockCounterClass.checkedItem = myPreference.getLockAppSelectedOption();
         appLockCounterClass.onPauseOperation();
     }
 

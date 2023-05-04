@@ -36,8 +36,6 @@ public class FCMNotificationSender  {
         this.body = body;
         this.mContext = mContext;
         this.mActivity = mActivity;
-
-
     }
 
     public void sendNotification() {

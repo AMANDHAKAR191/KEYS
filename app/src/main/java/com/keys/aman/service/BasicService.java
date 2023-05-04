@@ -15,8 +15,12 @@
  */
 package com.keys.aman.service;
 
+import android.app.PendingIntent;
 import android.app.assist.AssistStructure;
 import android.app.assist.AssistStructure.ViewNode;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.CancellationSignal;
 import android.service.autofill.AutofillService;
@@ -37,8 +41,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.keys.aman.MyAuthenticationActivity;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.AES;
+import com.keys.aman.authentication.PinLockActivity;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,20 +62,23 @@ import java.util.Map.Entry;
 
 public final class BasicService extends AutofillService {
     LogInActivity logInActivity = new LogInActivity();
-    AES aes = new AES();
+    public static final String REQUEST_ID = "BasicService";
 
     private static final String TAG = "BasicService";
 
     private static final int NUMBER_DATASETS = 4;
+    MyPreference myPreference;
+    AES aes;
 
     @Override
     public void onFillRequest(FillRequest request, CancellationSignal cancellationSignal,
                               FillCallback callback) {
         Log.d(TAG, "onFillRequest()");
-        SharedPreferences sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
 
+        myPreference = MyPreference.getInstance(getApplicationContext());
+        aes = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
 
+        Log.d(TAG, "client name: " + request.getFillContexts().get(0).getStructure().getActivityComponent().getPackageName());
         // Find autofillable fields
         AssistStructure structure = getLatestAssistStructure(request);
         Log.d(TAG, "structure " + structure.getActivityComponent() + "\n+" + structure.describeContents());
@@ -77,8 +87,7 @@ public final class BasicService extends AutofillService {
 
         if (fields.isEmpty()) {
             toast("No autofill hints found");
-            callback.onSuccess(null);
-            return;
+            traverseStructure(structure);
         }
 
         // Create the base response
@@ -90,33 +99,39 @@ public final class BasicService extends AutofillService {
         // Get the datasets from Firebase
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("addpassworddata")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
-        ref.child("accounts_google_com").addListenerForSingleValueEvent(new ValueEventListener() {
+        //accounts_google_com
+        //com_netflix_mediaclient
+        ref.child("com_netflix_mediaclient").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // Create a list to hold the datasets
 //                List<Dataset.Builder> datasetBuilders = new ArrayList<>();
+                // Step 1: Create an authentication Intent
+                Context context = getApplicationContext();
+                Intent authIntent = new Intent(context, PinLockActivity.class);
+                authIntent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
+//                authIntent.putExtra(EXTRA_AUTOFILL_DATASET_ID, datasetId); // Pass any extras you might need in the authentication activity
 
+                // Step 2: Create a PendingIntent from the authentication Intent
+                PendingIntent authPendingIntent = PendingIntent.getActivity(context, 0, authIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                IntentSender intentSender = authPendingIntent.getIntentSender();
                 // Loop through the data and create a dataset for each record
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     System.out.println("snapshot: " + snapshot);
                     PasswordHelperClass record = snapshot.getValue(PasswordHelperClass.class);
                     if (record != null) {
-                        Dataset.Builder dataset = new Dataset.Builder();
+                        Dataset.Builder dataset = new Dataset.Builder()
+                                .setAuthentication(intentSender);
                         for (Entry<String, AutofillId> field : fields.entrySet()) {
                             String hint = field.getKey();
                             AutofillId id = field.getValue();
 
-                            String tempELogin, tempDLogin, tempEPassword, tempDPassword, dLogin, dPassword;
+                            String dLogin, dPassword;
                             try {
-                                //Double Decryption
-                                tempELogin = record.getAddDataLogin();
-                                dLogin = aes.decrypt(tempELogin);
-                                tempDLogin = aes.decrypt(dLogin);
+                                dLogin = aes.doubleDecryption(record.getAddDataLogin());
+                                dPassword = aes.doubleDecryption(record.getAddDataPassword());
 
-                                //Double Decryption
-                                tempEPassword = record.getAddDataPassword();
-                                dPassword = aes.decrypt(tempEPassword);
-                                tempDPassword = aes.decrypt(dPassword);
                             } catch (Exception e) {
                                 throw new RuntimeException(e);
                             }
@@ -125,16 +140,16 @@ public final class BasicService extends AutofillService {
                             // We're simple - our dataset values are hardcoded as "N-hint" (for example,
                             // "1-username", "2-username") and they're displayed as such, except if they're a
                             // password
-                            String displayValue = hint.contains("password") ? "password for " + tempDLogin : "username for " + tempDLogin;
+                            String displayValue = hint.contains("password") ? "password for " + dLogin : "username for " + dLogin;
                             RemoteViews presentation = newDatasetPresentation(packageName, displayValue);
                             String value = "";
 
 
 
                             if (hint.contains("username")) {
-                                dataset.setValue(id, AutofillValue.forText(tempDLogin), presentation);
+                                dataset.setValue(id, AutofillValue.forText(dLogin), presentation);
                             } else if (hint.contains("password")) {
-                                dataset.setValue(id, AutofillValue.forText(tempDPassword), presentation);
+                                dataset.setValue(id, AutofillValue.forText(dPassword), presentation);
                             }
                             Log.e(TAG, "Dataset: " + dataset);
 
@@ -184,6 +199,15 @@ public final class BasicService extends AutofillService {
         callback.onSuccess();
     }
 
+    @Override
+    public void onConnected() {
+        super.onConnected();
+    }
+
+    @Override
+    public void onDisconnected() {
+        super.onDisconnected();
+    }
 
     @NonNull
     private Map<String, AutofillId> getAutofillableFields(@NonNull AssistStructure structure) {
@@ -269,10 +293,12 @@ public final class BasicService extends AutofillService {
         Log.d(TAG, "traverseNode");
         if (viewNode.getAutofillHints() != null && viewNode.getAutofillHints().length > 0) {
             // If the client app provides autofill hints, you can obtain them using:
-            // viewNode.getAutofillHints();
+//             viewNode.getAutofillHints();
+            Log.d(TAG, "viewNode.getAutofillHints(): " + viewNode.getAutofillHints().toString());
         } else {
             // Or use your own heuristics to describe the contents of a view
             // using methods such as getText() or getHint().
+//            Log.d(TAG, "viewNode.getAutofillHints(): " + viewNode.get);
         }
 
         for (int i = 0; i < viewNode.getChildCount(); i++) {

@@ -23,6 +23,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.MyNoteViewModel;
 import com.keys.aman.messages.MessagesFragment;
@@ -64,6 +65,7 @@ public class NotesFragment extends Fragment {
     public static NoteAdapterForPinned adaptorPinned;
     TextView tvNote, tvPinned, tvUnpinned;
     SearchView searchView;
+    MyPreference myPreference;
 
 
     private String uid;
@@ -72,7 +74,7 @@ public class NotesFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_notes, container, false);
-        sharedPreferences = activity.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(context);
 
         //Hooks
 //        searchView = view.findViewById(R.id.search_bar);

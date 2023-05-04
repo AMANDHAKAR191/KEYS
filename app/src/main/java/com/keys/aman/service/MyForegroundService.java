@@ -13,6 +13,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.messages.ChatActivity;
 import com.keys.aman.signin_login.LogInActivity;
@@ -24,10 +25,12 @@ public class MyForegroundService extends Service {
     SharedPreferences sharedPreferences;
     Context context;
     Activity activity;
+    MyPreference myPreference;
 
     public MyForegroundService(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
+        myPreference = MyPreference.getInstance(context);
     }
 
     public MyForegroundService() {
@@ -35,7 +38,6 @@ public class MyForegroundService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
         new Thread(new Runnable() {
             @Override
             public void run() {

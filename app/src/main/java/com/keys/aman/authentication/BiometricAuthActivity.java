@@ -11,6 +11,7 @@ import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.base.TabLayoutActivity;
@@ -25,19 +26,15 @@ public class BiometricAuthActivity extends AppCompatActivity {
     BiometricPrompt.PromptInfo promptInfo;
     LogInActivity logInActivity = new LogInActivity();
     PinLockActivity pinLockActivity = new PinLockActivity();
-    private final String IS_AUTHENTICATED = "isauthenticated";
-    public SharedPreferences sharedPreferences;
-    private String comingRequestCode;
+    MyPreference myPreference;
 
-    public String getIS_AUTHENTICATED() {
-        return IS_AUTHENTICATED;
-    }
+    private String comingRequestCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biometric_authentication);
-        sharedPreferences = getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
+        myPreference = MyPreference.getInstance(this);
 
         Intent intent = getIntent();
         comingRequestCode = intent.getStringExtra(logInActivity.REQUEST_CODE_NAME);
@@ -51,10 +48,9 @@ public class BiometricAuthActivity extends AppCompatActivity {
             case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
                 Toast.makeText(this, "Fingerprint Scanner not detected in Device", Toast.LENGTH_SHORT).show();
 
-                boolean isPinSet =  sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(),false);
                 SplashActivity.isForeground = true;
                 Intent intent3;
-                if (isPinSet){
+                if (myPreference.isPinCompleted()){
                     intent3 = new Intent(BiometricAuthActivity.this, PinLockActivity.class);
                     intent3.putExtra(logInActivity.REQUEST_CODE_NAME,"LogInActivity");
                     intent3.putExtra("title","Enter Pin");
@@ -72,11 +68,9 @@ public class BiometricAuthActivity extends AppCompatActivity {
                 break;
             case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
                 Toast.makeText(this, "Biometric is not enrolled", Toast.LENGTH_SHORT).show();
-                boolean ispin_set =  sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(),false);
-                Toast.makeText(this, "ispin_set" + ispin_set, Toast.LENGTH_SHORT).show();
                 SplashActivity.isForeground = true;
                 Intent intent2;
-                if (ispin_set){
+                if (myPreference.isPinCompleted()){
                     intent2 = new Intent(BiometricAuthActivity.this, PinLockActivity.class);
                     intent2.putExtra(logInActivity.REQUEST_CODE_NAME,BiometricAuthActivity.REQUEST_ID);
                     intent2.putExtra("title","Enter Pin");
@@ -108,14 +102,9 @@ public class BiometricAuthActivity extends AppCompatActivity {
                 SplashActivity.isForeground = true;
                 switch (comingRequestCode) {
                     case LogInActivity.REQUEST_ID:
-                        SharedPreferences.Editor editor1 = sharedPreferences.edit();
-                        editor1.putBoolean(getIS_AUTHENTICATED(), true);
-                        editor1.apply();
+                        myPreference.setUserAuthenticated(true);
 
-//                    String masterPin = sharedPreferences.getString(getMASTER_PIN(), "");
-                        boolean ispinset = sharedPreferences.getBoolean(pinLockActivity.getIS_PIN_SET(),false);
-
-                        if (!ispinset) {
+                        if (!myPreference.isPinCompleted()) {
                             SplashActivity.isForeground = true;
                             Intent intent = new Intent(BiometricAuthActivity.this, PinLockActivity.class);
                             intent.putExtra(logInActivity.REQUEST_CODE_NAME, LogInActivity.REQUEST_ID);

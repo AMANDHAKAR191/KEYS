@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.keys.aman.AES;
+import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.notes.addnote.AddNotesActivity;
@@ -41,7 +42,8 @@ public class SecretNoteAdapter extends RecyclerView.Adapter<SecretNoteAdapter.my
     final ArrayList<NoteHelperClass> dataholderfilter;
     final Context context;
     Activity activity;
-    AES aes = new AES();
+    AES aes;
+    MyPreference myPreference;
     LogInActivity logInActivity = new LogInActivity();
     public static final String REQUEST_ID = "NoteAdapter";
 
@@ -50,6 +52,8 @@ public class SecretNoteAdapter extends RecyclerView.Adapter<SecretNoteAdapter.my
         this.context = context;
         this.activity = activity;
         this.dataholderfilter = new ArrayList<>(dataholder);
+        myPreference = MyPreference.getInstance(context);
+        aes = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
     }
 
     @NonNull
@@ -63,10 +67,7 @@ public class SecretNoteAdapter extends RecyclerView.Adapter<SecretNoteAdapter.my
 
     @Override
     public void onBindViewHolder(@NonNull myviewholder holder, int position) {
-
-        SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.SHARED_PREF_ALL_DATA, MODE_PRIVATE);
-        aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
-        String noteDate, noteTitle, noteBody, decryptedNoteTitle, decryptedNoteBody, doubleDecryptedNoteTitle, doubleDecryptedNoteBody;
+        String noteDate, noteTitle, noteBody, decryptedNoteTitle, decryptedNoteBody;
         boolean isHideNote, isPinned;
         try {
             noteDate = dataholder.get(position).getDate();
@@ -77,10 +78,8 @@ public class SecretNoteAdapter extends RecyclerView.Adapter<SecretNoteAdapter.my
             noteBody = dataholder.get(position).getNote();
 
             //Double Decryption
-            decryptedNoteTitle = aes.decrypt(noteTitle);
-            doubleDecryptedNoteTitle = aes.decrypt(decryptedNoteTitle);
-            decryptedNoteBody = aes.decrypt(noteBody);
-            doubleDecryptedNoteBody = aes.decrypt(decryptedNoteBody);
+            decryptedNoteTitle = aes.doubleDecryption(noteTitle);
+            decryptedNoteBody = aes.doubleDecryption(noteBody);
 
 
             DateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy / hh:mm", Locale.getDefault());
@@ -89,8 +88,8 @@ public class SecretNoteAdapter extends RecyclerView.Adapter<SecretNoteAdapter.my
 //            String ispin = String.valueOf(isPinned);
 //            String ishide = String.valueOf(isHideNote);
             holder.tvDate.setText(dateAndTime1);
-            holder.tvTitle.setText(doubleDecryptedNoteTitle);
-            holder.tvNote.setText(doubleDecryptedNoteBody);
+            holder.tvTitle.setText(decryptedNoteTitle);
+            holder.tvNote.setText(decryptedNoteBody);
 
             holder.llCard.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -100,8 +99,8 @@ public class SecretNoteAdapter extends RecyclerView.Adapter<SecretNoteAdapter.my
                     intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                     intent.putExtra("date", noteDate);
                     intent.putExtra("hide note", isHideNote);
-                    intent.putExtra("title", doubleDecryptedNoteTitle);
-                    intent.putExtra("note", doubleDecryptedNoteBody);
+                    intent.putExtra("title", decryptedNoteTitle);
+                    intent.putExtra("note", decryptedNoteBody);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_down, 0);
@@ -115,8 +114,8 @@ public class SecretNoteAdapter extends RecyclerView.Adapter<SecretNoteAdapter.my
                     intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                     intent.putExtra("date", noteDate);
                     intent.putExtra("hide note", isHideNote);
-                    intent.putExtra("title", doubleDecryptedNoteTitle);
-                    intent.putExtra("note", doubleDecryptedNoteBody);
+                    intent.putExtra("title", decryptedNoteTitle);
+                    intent.putExtra("note", decryptedNoteBody);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_down, 0);
@@ -130,8 +129,8 @@ public class SecretNoteAdapter extends RecyclerView.Adapter<SecretNoteAdapter.my
                     intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                     intent.putExtra("date", noteDate);
                     intent.putExtra("hide note", isHideNote);
-                    intent.putExtra("title", doubleDecryptedNoteTitle);
-                    intent.putExtra("note", doubleDecryptedNoteBody);
+                    intent.putExtra("title", decryptedNoteTitle);
+                    intent.putExtra("note", decryptedNoteBody);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_down, 0);
@@ -145,8 +144,8 @@ public class SecretNoteAdapter extends RecyclerView.Adapter<SecretNoteAdapter.my
                     intent.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
                     intent.putExtra("date", noteDate);
                     intent.putExtra("hide note", isHideNote);
-                    intent.putExtra("title", doubleDecryptedNoteTitle);
-                    intent.putExtra("note", doubleDecryptedNoteBody);
+                    intent.putExtra("title", decryptedNoteTitle);
+                    intent.putExtra("note", decryptedNoteBody);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     context.startActivity(intent);
                     activity.overridePendingTransition(R.anim.slide_in_down, 0);
@@ -158,7 +157,7 @@ public class SecretNoteAdapter extends RecyclerView.Adapter<SecretNoteAdapter.my
                     switch (item.getItemId()) {
                         case R.id.img_copy_note:
                             ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                            ClipData clipData = ClipData.newPlainText("Copy_Password", doubleDecryptedNoteBody);
+                            ClipData clipData = ClipData.newPlainText("Copy_Password", decryptedNoteBody);
                             clipboardManager.setPrimaryClip(clipData);
                             Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
                             return true;
@@ -188,7 +187,7 @@ public class SecretNoteAdapter extends RecyclerView.Adapter<SecretNoteAdapter.my
                             holder.refreshRecViewCall();
                             return true;
                         case R.id.img_share_note:
-                            NoteHelperClass noteData = new NoteHelperClass(dateAndTime1, doubleDecryptedNoteTitle, doubleDecryptedNoteBody, isHideNote, isPinned);
+                            NoteHelperClass noteData = new NoteHelperClass(dateAndTime1, decryptedNoteTitle, decryptedNoteBody, isHideNote, isPinned);
                             Log.e("shareNote", "Check1: NoteAdapterForUnpinned: " +noteData);
                             holder.shareNotesCall(noteData);
                     }
