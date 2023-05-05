@@ -10,24 +10,21 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.keys.aman.MyPreference;
-import com.keys.aman.R;
-import com.keys.aman.AES;
-import com.keys.aman.SplashActivity;
-import com.keys.aman.authentication.AppLockCounterClass;
-import com.keys.aman.base.TabLayoutActivity;
-import com.keys.aman.notes.NoteAdapterForUnpinned;
-import com.keys.aman.signin_login.LogInActivity;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.keys.aman.AES;
+import com.keys.aman.MyPreference;
+import com.keys.aman.R;
+import com.keys.aman.SplashActivity;
+import com.keys.aman.authentication.AppLockCounterClass;
+import com.keys.aman.base.TabLayoutActivity;
+import com.keys.aman.data.Firebase;
+import com.keys.aman.notes.NoteAdapterForUnpinned;
+import com.keys.aman.signin_login.LogInActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -46,13 +43,13 @@ public class AddNotesActivity extends AppCompatActivity {
     //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(AddNotesActivity.this, AddNotesActivity.this);
 
+    String currentDateAndTime;
 
-    String currentDateAndTime, title, note, titleDecrypted, noteDecrypted;
     boolean isHideNote;
+    MyPreference myPreference;
     private String comingRequestCode;
     private String comingDate;
     private String uid;
-    MyPreference myPreference;
     private AES aes;
 
     @Override
@@ -122,51 +119,38 @@ public class AddNotesActivity extends AppCompatActivity {
     }
 
     public void goSave(View view) {
+        String title, note, titleEncrypted, noteEncrypted;
         title = Objects.requireNonNull(tilAddNoteTitle.getEditText()).getText().toString();
         note = Objects.requireNonNull(tilAddNoteBody.getEditText()).getText().toString();
-        try {
-            // Double encryption
-            // TODO : in future, (if needed) give two key to user for double encryption
-            titleDecrypted = aes.doubleEncryption(title);
-            noteDecrypted = aes.doubleEncryption(note);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        titleEncrypted = aes.doubleEncryption(title);
+        noteEncrypted = aes.doubleEncryption(note);
 
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
         NoteHelperClass addDNoteHelper;
         if (comingRequestCode.equals(NoteAdapterForUnpinned.REQUEST_ID)) {
-            addDNoteHelper = new NoteHelperClass(comingDate, titleDecrypted, noteDecrypted, isHideNote, false);
-            reference.child(comingDate).setValue(addDNoteHelper)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Toast.makeText(AddNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(AddNotesActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            Firebase.getInstance(AddNotesActivity.this).saveSingleNote(comingDate, titleEncrypted, noteEncrypted, isHideNote, new Firebase.onNoteSaveCallBack() {
+                @Override
+                public void onNoteSaved() {
+                    Toast.makeText(AddNotesActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailed(String message) {
+                    Toast.makeText(AddNotesActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                }
+            });
         } else {
-            addDNoteHelper = new NoteHelperClass(currentDateAndTime, titleDecrypted, noteDecrypted, isHideNote, true);
-            System.out.println("currentDateAndTime: " + currentDateAndTime);
-            reference.child(currentDateAndTime).setValue(addDNoteHelper)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-                            Toast.makeText(AddNotesActivity.this, "saved!", Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Toast.makeText(AddNotesActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            Firebase.getInstance(AddNotesActivity.this).saveSingleNote(currentDateAndTime, titleEncrypted, noteEncrypted, isHideNote, new Firebase.onNoteSaveCallBack() {
+                @Override
+                public void onNoteSaved() {
+                    Toast.makeText(AddNotesActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailed(String message) {
+                    Toast.makeText(AddNotesActivity.this, "Failed", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
 
         //todo 6 if app is going to another activity make isForeground = true
@@ -177,6 +161,7 @@ public class AddNotesActivity extends AppCompatActivity {
         finish();
         overridePendingTransition(0, R.anim.slide_out_down);
     }
+
 
     public void goEdit(View view) {
         img_save.setVisibility(View.VISIBLE);

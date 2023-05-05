@@ -129,7 +129,7 @@ public class NotesFragment extends Fragment {
     public void recyclerViewSetData() {
         MyNoteViewModel viewNoteModel;
         viewNoteModel = new ViewModelProvider(requireActivity()).get(MyNoteViewModel.class);
-        reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
+        reference = FirebaseDatabase.getInstance().getReference("NotesData").child(uid);
         recyclerViewUnpinned.setLayoutManager(new LinearLayoutManager(context));
 
         dataHolderUnpinned = new ArrayList<>();
@@ -207,7 +207,7 @@ public class NotesFragment extends Fragment {
     public void recyclerViewSetPinnedData() {
         MyNoteViewModel viewNoteModel;
         viewNoteModel = new ViewModelProvider(requireActivity()).get(MyNoteViewModel.class);
-        reference = FirebaseDatabase.getInstance().getReference("notes").child(uid);
+        reference = FirebaseDatabase.getInstance().getReference("NotesData").child(uid);
         recyclerViewPinned.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
 
         dataHolderPinned = new ArrayList<>();

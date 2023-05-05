@@ -34,7 +34,7 @@
         android:paddingTop="5dp"
         android:paddingRight="10dp"
         android:paddingBottom="5dp"
-        android:text="TextView AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+        android:text="TextView"
         android:textColor="?attr/colorOnSecondary"
         app:layout_constraintBottom_toTopOf="@+id/tv_receiver_time_stamp"
         app:layout_constraintStart_toStartOf="@+id/guideline5"

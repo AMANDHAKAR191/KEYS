@@ -1,7 +1,6 @@
 package com.keys.aman.data;
 
 import android.content.Context;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -17,29 +16,31 @@ import com.keys.aman.AES;
 import com.keys.aman.MyPreference;
 import com.keys.aman.home.PasswordGeneratorActivity;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
+import com.keys.aman.messages.ChatModelClass;
 import com.keys.aman.messages.UserListModelClass;
-import com.keys.aman.signin_login.LogInActivity;
+import com.keys.aman.notes.addnote.NoteHelperClass;
 import com.keys.aman.signin_login.UserHelperClass;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class Firebase {
-    private static Firebase sInstance;
     static DatabaseReference databaseReference;
     static FirebaseAuth firebaseAuth;
-    Context context;
-    ArrayList<PasswordHelperClass> dataHolderPassword;
     static MyPreference myPreference;
+    private static Firebase sInstance;
+    Context context;
+    ArrayList<PasswordHelperClass> dataHolder;
     private AES aes;
+    private ArrayList<ChatModelClass> dataHolderChatMessages;
 
 
     public Firebase(Context context) {
         this.context = context;
     }
 
-    public static Firebase getInstance(Context context){
-        if (sInstance == null){
+    public static Firebase getInstance(Context context) {
+        if (sInstance == null) {
             sInstance = new Firebase(context);
             firebaseAuth = FirebaseAuth.getInstance();
             myPreference = MyPreference.getInstance(context);
@@ -47,14 +48,14 @@ public class Firebase {
         return sInstance;
     }
 
-    public String getUID(){
+    public String getUID() {
         return Objects.requireNonNull(firebaseAuth.getCurrentUser()).getUid();
     }
 
-    public void loadPasswordsData(final FirebaseCallBack callBack){
+    public void loadPasswordsData(final FirebaseLoadPasswordDataCallback loadPasswordDataCallback) {
         System.out.println("UID: " + getUID());
-        dataHolderPassword = new ArrayList<>();
-        databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata").child(getUID());
+        dataHolder = new ArrayList<>();
+        databaseReference = FirebaseDatabase.getInstance().getReference("PasswordsData").child(getUID());
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -64,12 +65,13 @@ public class Firebase {
                     for (DataSnapshot ds : dataSnapshot.getChildren()) {
                         for (DataSnapshot ds1 : ds.getChildren()) {
                             PasswordHelperClass data = ds1.getValue(PasswordHelperClass.class);
-                            dataHolderPassword.add(data);
+                            dataHolder.add(data);
                         }
                     }
-                    System.out.println("dataHolderPassword: " + dataHolderPassword);
-                    callBack.onPasswordDataReceivedCallback(dataHolderPassword);
+                    System.out.println("dataHolderPassword: " + dataHolder);
+                    loadPasswordDataCallback.onPasswordDataReceivedCallback(dataHolder);
                 } else {
+                    loadPasswordDataCallback.onPasswordDataReceivedCallback(dataHolder);
                 }
             }
 
@@ -81,20 +83,58 @@ public class Firebase {
         });
     }
 
-    public void checkUser(final FirebaseCallBack callBack) {
-        databaseReference = FirebaseDatabase.getInstance().getReference("signupdata");
+    public void saveSinglePassword(String comingDate, String encryptedAddLogin, String encryptedAddPassword, String addWebsiteName, String comingLoginWebsiteLink, onPasswordSaveCallBack passwordSaveCallBack) {
+        databaseReference = FirebaseDatabase.getInstance().getReference("PasswordsData").child(getUID()).child(addWebsiteName);
+        PasswordHelperClass passwordHelperClass = new PasswordHelperClass(comingDate, encryptedAddLogin, encryptedAddPassword, addWebsiteName, comingLoginWebsiteLink);
+        databaseReference.child(comingDate).setValue(passwordHelperClass)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        passwordSaveCallBack.onPasswordSaved();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        passwordSaveCallBack.onFailed(e.getMessage());
+                    }
+                });
+    }
+
+    public void saveSingleNote(String date, String titleEncrypted, String noteEncrypted, boolean isHideNote, final onNoteSaveCallBack noteSaveCallBack) {
+        databaseReference = FirebaseDatabase.getInstance().getReference("NotesData").child(getUID());
+        NoteHelperClass addDNoteHelper;
+        addDNoteHelper = new NoteHelperClass(date, titleEncrypted, noteEncrypted, isHideNote, false);
+        databaseReference.child(date).setValue(addDNoteHelper)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        noteSaveCallBack.onNoteSaved();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        noteSaveCallBack.onFailed(e.getMessage());
+                    }
+                });
+    }
+
+    public void checkUser(final FirebaseUserCheckCallback userCheckCallback) {
+        databaseReference = FirebaseDatabase.getInstance().getReference("UserData");
         databaseReference.child(getUID()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     myPreference.setNewUser(true);
-                    callBack.onUserExist();
+                    userCheckCallback.onUserExist();
 
-                }else {
+                } else {
                     myPreference.setNewUser(false);
-                    callBack.onUserNotExist();
+                    userCheckCallback.onUserNotExist();
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 System.err.println(error);
@@ -103,7 +143,7 @@ public class Firebase {
         });
     }
 
-    public void saveUserData(){
+    public void saveUserData(final FirebaseCreateAccountCallBack createAccountCallBack) {
         String publicUname, email, private_uid, publicUid;
         publicUname = firebaseAuth.getCurrentUser().getDisplayName();
         email = firebaseAuth.getCurrentUser().getEmail();
@@ -117,12 +157,12 @@ public class Firebase {
         myPreference.setNewUser(false);
 
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        databaseReference = firebaseDatabase.getReference("signupdata");
+        databaseReference = firebaseDatabase.getReference("UserData");
 
         String aesKey = myPreference.getAesKey();
         String aesIv = myPreference.getAesIv();
 
-        aes = AES.getInstance(aesKey,aesIv);
+        aes = AES.getInstance(aesKey, aesIv);
         String encryptedName, encryptedEmail;
         try {
             encryptedName = aes.singleEncryption(publicUname);
@@ -134,7 +174,7 @@ public class Firebase {
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void unused) {
-//                            UserPersonalChatList personalChatList = new UserPersonalChatList(publicUid, publicUname, false);
+                            createAccountCallBack.onAccountCreatedSuccessfullyOnFirebase();
                             UserListModelClass userListModel = new UserListModelClass(publicUid, publicUname, false);
                             DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference();
                             referenceSender.child("messageUserList").child(publicUid)
@@ -148,32 +188,35 @@ public class Firebase {
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
+                            createAccountCallBack.onAccountCreationFailed(e.getMessage());
                         }
                     });
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     private String createPublicUid(String email) {
         String publicUid;
-        String[] tempEmail = email.split("@",2);
+        String[] tempEmail = email.split("@", 2);
 
         tempEmail[0] = tempEmail[0].replace(".", "_");
         publicUid = tempEmail[0].replace("+", "_");
         System.out.println(publicUid);
         return publicUid;
     }
-    public void loadUserData(){
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(getUID());
+
+    public void loadUserData() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("UserData").child(getUID());
         // Read from the database
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                String aes_iv = dataSnapshot.child("aes_iv").getValue(String.class);
-                String aes_key = dataSnapshot.child("aes_key").getValue(String.class);
-                String public_uid = dataSnapshot.child("public_uid").getValue(String.class);
+                String aes_iv = dataSnapshot.child("aesIv").getValue(String.class);
+                String aes_key = dataSnapshot.child("aesKey").getValue(String.class);
+                String public_uid = dataSnapshot.child("publicUid").getValue(String.class);
 
                 myPreference.setAesKey(aes_key);
                 myPreference.setAesIv(aes_iv);
@@ -189,10 +232,64 @@ public class Firebase {
             }
         });
     }
-    public interface FirebaseCallBack {
-        void onPasswordDataReceivedCallback(ArrayList<PasswordHelperClass> dataHolderPassword);
+
+    public void loadChatMessages(String senderRoom, final FirebaseLoadChatMessagesCallback loadChatMessagesCallback){
+        dataHolderChatMessages = new ArrayList<>();
+        FirebaseDatabase.getInstance().getReference().child("messages").child(senderRoom)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        dataHolderChatMessages.clear();
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            System.out.println(ds);
+                            ChatModelClass chatModel = ds.getValue(ChatModelClass.class);
+                            if (chatModel.getType().equals("note")) {
+                                System.out.println(chatModel.getNoteModelClass().getTitle());
+                                System.out.println(chatModel.getNoteModelClass().getNote());
+                            }
+                            dataHolderChatMessages.add(chatModel);
+                        }
+                        loadChatMessagesCallback.onChatMessagesLoaded(dataHolderChatMessages);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    public interface FirebaseUserCheckCallback {
         void onUserExist();
+
         void onUserNotExist();
+    }
+
+    public interface FirebaseCreateAccountCallBack {
+        void onAccountCreatedSuccessfullyOnFirebase();
+
+        void onAccountCreationFailed(String message);
+
+    }
+
+    public interface FirebaseLoadPasswordDataCallback {
+        void onPasswordDataReceivedCallback(ArrayList<PasswordHelperClass> dataHolderPassword);
+    }
+
+    public interface FirebaseLoadChatMessagesCallback{
+        void onChatMessagesLoaded(ArrayList<ChatModelClass> dataHolderChatMessages);
+    }
+
+    public interface onPasswordSaveCallBack {
+        void onPasswordSaved();
+
+        void onFailed(String message);
+    }
+
+    public interface onNoteSaveCallBack {
+        void onNoteSaved();
+
+        void onFailed(String message);
     }
 
 }

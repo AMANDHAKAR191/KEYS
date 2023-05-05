@@ -38,6 +38,13 @@ public class AES {
         }
         return sInstance;
     }
+    public static AES getInstanceForCommon(String commonAesKey, String commonAes_Iv) {
+        if (sInstance == null) {
+            sInstance = new AES();
+            initFromStrings(commonAesKey,commonAes_Iv);
+        }
+        return sInstance;
+    }
 
     public String encryptOld(String message) throws Exception {
         byte[] messageInBytes = message.getBytes();
@@ -91,6 +98,23 @@ public class AES {
         }
     }
     public String doubleDecryption(String encryptionString){
+        try {
+            String temp = decrypt(encryptionString);
+            return decrypt(temp);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public String doubleEncryptionForCommon(String data){
+        try {
+            String temp = encrypt(data);
+            return encrypt(temp);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public String doubleDecryptionForCommon(String encryptionString){
         try {
             String temp = decrypt(encryptionString);
             return decrypt(temp);

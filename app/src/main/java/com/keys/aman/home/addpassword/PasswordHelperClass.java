@@ -3,7 +3,10 @@ package com.keys.aman.home.addpassword;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.room.Entity;
+
 import java.util.Comparator;
+
 
 public class PasswordHelperClass implements Parcelable {
     String date, addDataLogin, addDataPassword, addWebsite_name, addWebsite_link;

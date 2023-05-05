@@ -25,6 +25,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -41,35 +42,30 @@ import java.util.Objects;
 
 
 public class HomeFragment extends Fragment {
+    public static final String REQUEST_ID = "HomeFragment";
+    public static SwipeRefreshLayout swipeRefreshLayout;
+    public static DatabaseReference databaseReference;
+    public static PasswordAdapter adaptor;
     Context context;
     Activity activity;
-
-
+//    ProgressBar progressBar;
+    Button btnSharedPassword;
+    LinearProgressIndicator progressBar;
+    TextView tvNOTE;
+    RecyclerView recview;
+    SearchView searchView;
+    SharedPreferences sharedPreferences;
+    ArrayList<PasswordHelperClass> dataholder;
+    MyPreference myPreference;
+    String uid;
+    LogInActivity logInActivity = new LogInActivity();
+    private MyPasswordViewModel viewPasswordModel;
     public HomeFragment(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
     }
-
     public HomeFragment() {
     }
-
-    ProgressBar progressBar;
-    Button btnSharedPassword;
-    TextView tvNOTE;
-    RecyclerView recview;
-    SearchView searchView;
-    public static SwipeRefreshLayout swipeRefreshLayout;
-    SharedPreferences sharedPreferences;
-    public static DatabaseReference databaseReference;
-    public static PasswordAdapter adaptor;
-    ArrayList<PasswordHelperClass> dataholder;
-    MyPreference myPreference;
-
-    String uid;
-    private MyPasswordViewModel viewPasswordModel;
-    LogInActivity logInActivity = new LogInActivity();
-    public static final String REQUEST_ID = "HomeFragment";
-
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -81,11 +77,11 @@ public class HomeFragment extends Fragment {
         viewPasswordModel = new ViewModelProvider(requireActivity()).get(MyPasswordViewModel.class);
 
         //Hooks
-        progressBar = view.findViewById(R.id.progressBar);
         recview = view.findViewById(R.id.recview_passwords_list);
         searchView = view.findViewById(R.id.search_bar);
         swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
         tvNOTE = view.findViewById(R.id.tv_NOTE);
+        progressBar = view.findViewById(R.id.linear_progress_indicator);
         progressBar.setVisibility(View.VISIBLE);
         btnSharedPassword = view.findViewById(R.id.btn_shared_password);
 
@@ -136,26 +132,6 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    public class threadRunnableHomeFragment implements Runnable {
-        Handler handler = new Handler();
-        View view;
-
-        public threadRunnableHomeFragment(View view) {
-            this.view = view;
-        }
-
-        @Override
-        public void run() {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    recyclerviewsetdata();
-                }
-            });
-        }
-    }
-
-
     public void recyclerviewsetdata() {
 
         databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata").child(uid);
@@ -185,9 +161,12 @@ public class HomeFragment extends Fragment {
 //
 //            }
 //        });
-        Firebase.getInstance(context).loadPasswordsData(new Firebase.FirebaseCallBack() {
+        Firebase.getInstance(context).loadPasswordsData(new Firebase.FirebaseLoadPasswordDataCallback() {
             @Override
             public void onPasswordDataReceivedCallback(ArrayList<PasswordHelperClass> dataHolderPassword) {
+                if (dataHolderPassword.isEmpty()) {
+                    tvNOTE.setVisibility(View.VISIBLE);
+                }
                 dataholder = dataHolderPassword;
                 progressBar.setVisibility(View.INVISIBLE);
                 System.out.println("check1");
@@ -233,22 +212,30 @@ public class HomeFragment extends Fragment {
                 recview.setAdapter(adaptor);
                 adaptor.notifyDataSetChanged();
             }
-
-            @Override
-            public void onUserExist() {
-
-            }
-
-            @Override
-            public void onUserNotExist() {
-
-            }
         });
-
     }
 
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    public class threadRunnableHomeFragment implements Runnable {
+        Handler handler = new Handler();
+        View view;
+
+        public threadRunnableHomeFragment(View view) {
+            this.view = view;
+        }
+
+        @Override
+        public void run() {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerviewsetdata();
+                }
+            });
+        }
     }
 }

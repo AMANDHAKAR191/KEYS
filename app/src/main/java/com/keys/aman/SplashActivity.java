@@ -10,6 +10,7 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+//import com.keys.aman.data.LocalDatabase;
 import com.keys.aman.home.PasswordGeneratorActivity;
 import com.keys.aman.service.MyFirebaseMessagingService;
 import com.keys.aman.signin_login.LogInActivity;
@@ -35,17 +36,13 @@ public class SplashActivity extends AppCompatActivity {
         imageView = findViewById(R.id.imageView);
         imageView1 = findViewById(R.id.imageView1);
 
+//        LocalDatabase.getInstance(this).getDatabases();
+
         createShortcutOfApp();
 
+        //start firebase messaging service
         Intent serviceIntent = new Intent(SplashActivity.this, MyFirebaseMessagingService.class);
         startService(serviceIntent);
-//        ActivityManager activityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-//        for (ActivityManager.RunningServiceInfo serviceInfo : activityManager.getRunningServices(Integer.MAX_VALUE)) {
-//            if (MyForegroundService.class.getName().equals(serviceInfo.service.getClassName())) {
-//
-//            }
-//        }
-
 
         isForeground = true;
         Intent i = new Intent(SplashActivity.this, LogInActivity.class);

@@ -62,24 +62,10 @@ public class ChatAdaptor extends RecyclerView.Adapter {
         myPreference = MyPreference.getInstance(context);
         System.out.println("commonEncryptionKey: " + commonEncryptionKey);
         System.out.println("commonEncryptionIv: " + commonEncryptionIv);
-        aes = AES.getInstance(commonEncryptionKey, commonEncryptionIv);
+
+        aes = AES.getInstanceForCommon(commonEncryptionKey, commonEncryptionIv);
     }
 
-    private static Bitmap fetchFavicon(Uri uri) {
-        final Uri iconUri = uri.buildUpon().path("favicon.ico").build();
-
-        InputStream is = null;
-        BufferedInputStream bis = null;
-        try {
-            URLConnection conn = new URL(iconUri.toString()).openConnection();
-            conn.connect();
-            is = conn.getInputStream();
-            bis = new BufferedInputStream(is, 8192);
-            return BitmapFactory.decodeStream(bis);
-        } catch (IOException e) {
-            return null;
-        }
-    }
 
     @NonNull
     @Override
@@ -137,7 +123,8 @@ public class ChatAdaptor extends RecyclerView.Adapter {
         String dLogin, dPassword, dWebsiteName, dWebsiteLink, Title, currentDate;
         try {
             if (holder.getClass() == SenderViewHolder.class) {
-                ((SenderViewHolder) holder).tvSenderMessage.setText(dataHolder.get(position).getMessage());
+                String message = aes.doubleDecryptionForCommon(dataHolder.get(position).getMessage());
+                ((SenderViewHolder) holder).tvSenderMessage.setText(message);
                 DateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
                 DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                 String dateAndTime1 = sdf.format(Objects.requireNonNull(inputsdf.parse(dataHolder.get(position).getDateAndTime())));
@@ -145,7 +132,9 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                 ((SenderViewHolder) holder).tvSenderMessageStatus.setText(dataHolder.get(position).getStatus());
 
             } else if (holder.getClass() == ReceiverViewHolder.class) {
-                ((ReceiverViewHolder) holder).tvReceiverMessage.setText(dataHolder.get(position).getMessage());
+                String message = aes.doubleDecryptionForCommon(dataHolder.get(position).getMessage());
+                System.out.println("message: " + message);
+                ((ReceiverViewHolder) holder).tvReceiverMessage.setText(message);
                 DateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
                 DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                 String dateAndTime1 = sdf.format(Objects.requireNonNull(inputsdf.parse(dataHolder.get(position).getDateAndTime())));
@@ -167,12 +156,10 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                 if (dataHolder.get(position).getType().equals("note")) {
                     noteBody = dataHolder.get(position).getNoteModelClass().getNote();
                     noteTitle = dataHolder.get(position).getNoteModelClass().getTitle();
-                    //Double Decryption
-                    decryptedNoteTitle = aes.doubleDecryption(noteTitle);
-                    decryptedNoteBody = aes.doubleDecryption(noteBody);
 
-                    System.out.println(decryptedNoteTitle);
-                    System.out.println(decryptedNoteBody);
+                    //Double Decryption
+                    decryptedNoteTitle = aes.doubleDecryptionForCommon(noteTitle);
+                    decryptedNoteBody = aes.doubleDecryptionForCommon(noteBody);
 
                     ((ReceiverNoteViewHolder) holder).tvNote.setText(decryptedNoteBody);
                     ((ReceiverNoteViewHolder) holder).tvTitle.setText(decryptedNoteTitle);
@@ -211,9 +198,9 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                 final PasswordHelperClass temp = dataHolder.get(position).getPasswordModelClass();
                 try {
                     currentDate = temp.getDate();
-                    //Double Decryption
-                    dLogin = aes.doubleDecryption(temp.getAddDataLogin());
-                    dPassword = aes.doubleDecryption(temp.getAddDataPassword());
+                    System.out.println("temp.getAddDataLogin(): " + temp.getAddDataLogin());
+                    dLogin = aes.doubleDecryptionForCommon(temp.getAddDataLogin());
+                    dPassword = aes.doubleDecryptionForCommon(temp.getAddDataPassword());
                     dWebsiteName = temp.getAddWebsite_name();
                     dWebsiteLink = temp.getAddWebsite_link();
 

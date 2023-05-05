@@ -24,19 +24,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.keys.aman.MyPreference;
-import com.keys.aman.R;
-import com.keys.aman.AES;
-import com.keys.aman.PrograceBar;
-import com.keys.aman.SplashActivity;
-import com.keys.aman.authentication.AppLockCounterClass;
-import com.keys.aman.base.TabLayoutActivity;
-import com.keys.aman.home.HomeFragment;
-import com.keys.aman.home.PasswordGeneratorActivity;
-import com.keys.aman.home.ShowCardViewDataDialog;
-import com.keys.aman.signin_login.LogInActivity;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,6 +32,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.keys.aman.AES;
+import com.keys.aman.MyPreference;
+import com.keys.aman.PrograceBar;
+import com.keys.aman.R;
+import com.keys.aman.SplashActivity;
+import com.keys.aman.authentication.AppLockCounterClass;
+import com.keys.aman.base.TabLayoutActivity;
+import com.keys.aman.data.Firebase;
+import com.keys.aman.home.HomeFragment;
+import com.keys.aman.home.PasswordGeneratorActivity;
+import com.keys.aman.home.ShowCardViewDataDialog;
+import com.keys.aman.signin_login.LogInActivity;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,7 +55,7 @@ import java.util.Objects;
 public class AddPasswordActivity extends AppCompatActivity {
 
     public static final String REQUEST_ID = "AddPasswordActivity";
-
+    public static WebsiteListAdaptor adaptor;
     TextInputLayout tilUsername, tilPassword, tilWebsiteName, tilWebsitelink;
     TextInputEditText tietUsername, tietPassword, tietWebsiteName, tietWebsitelink;
     Button btnSubmit, btnGenratePassword;
@@ -64,23 +63,16 @@ public class AddPasswordActivity extends AppCompatActivity {
     TextView tvError;
     ScrollView scrollView1, scrollView2;
     SharedPreferences sharedPreferences;
-    public static WebsiteListAdaptor adaptor;
     ActivityResultLauncher<Intent> getResult;
-    private PrograceBar prograceBar;
     LogInActivity logInActivity = new LogInActivity();
     TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
     //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(AddPasswordActivity.this, AddPasswordActivity.this);
     MyPreference myPreference;
-
-
-    private String uid;
     String comingRequestCode;
     String comingDate, comingLoginName, comingLoginPassword, comingLoginWebsiteName, comingLoginWebsiteLink;
     //    public static String addWebsiteLink;
     String currentDateAndTime;
-
-
     String s1 = "https://wetv.vip/en/channel/1001?id=1001";
     String s2 = "https://www.linkedin.com/";
     String s3 = "https://account.microsoft.com/account?lang=en-us";
@@ -92,8 +84,17 @@ public class AddPasswordActivity extends AppCompatActivity {
     String s9 = "https://www.facebook.com/";
     String s10 = "https://www.instagram.com/";
     String s11 = "other";
+    private PrograceBar prograceBar;
+    private String uid;
     private AES aes;
 
+    public static String reverseFun(String str) {
+//        String str= "This#string%contains^special*characters&.";
+
+        str = str.replaceAll("_", ".");
+        System.out.println(str);
+        return str;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +165,6 @@ public class AddPasswordActivity extends AppCompatActivity {
                 scrollView2.setVisibility(View.GONE);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                 currentDateAndTime = sdf.format(new Date());
-
                 break;
         }
 
@@ -178,7 +178,6 @@ public class AddPasswordActivity extends AppCompatActivity {
         });
 
         recyclerViewSetData();
-
 
 
         getResult = registerForActivityResult(
@@ -210,7 +209,6 @@ public class AddPasswordActivity extends AppCompatActivity {
 
     }
 
-
     private void addData() {
         String addLogin = Objects.requireNonNull(tilUsername.getEditText()).getText().toString().trim();
         String addPassword = Objects.requireNonNull(tilPassword.getEditText()).getText().toString();
@@ -226,8 +224,6 @@ public class AddPasswordActivity extends AppCompatActivity {
         if (validate(addLogin, addPassword, addWebsiteName)) {
             String encryptedAddlLogin = "", encryptedAddPassword = "";
 
-            FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-            DatabaseReference addDataRef = firebaseDatabase.getReference("addpassworddata").child(uid).child(addWebsiteName);
             aes = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
             try {
                 // TODO : in future, (if needed) give two key to user for double encryption
@@ -238,22 +234,19 @@ public class AddPasswordActivity extends AppCompatActivity {
             }
 
 
-            PasswordHelperClass PasswordHelperClass;
             if (comingRequestCode.equals(ShowCardViewDataDialog.REQUEST_ID)) {
-                PasswordHelperClass = new PasswordHelperClass(comingDate, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, comingLoginWebsiteLink);
-                addDataRef.child(comingDate).setValue(PasswordHelperClass)
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                System.out.println("comingDate: " + comingDate);
+                Firebase.getInstance(AddPasswordActivity.this).saveSinglePassword(comingDate, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, comingLoginWebsiteLink, new Firebase.onPasswordSaveCallBack() {
                     @Override
-                    public void onSuccess(Void unused) {
-                        Toast.makeText(AddPasswordActivity.this, " password saved!", Toast.LENGTH_SHORT).show();
+                    public void onPasswordSaved() {
+                        Toast.makeText(AddPasswordActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
                     }
-                })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(AddPasswordActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+
+                    @Override
+                    public void onFailed(String message) {
+                        Toast.makeText(AddPasswordActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
+                    }
+                });
 
 
                 Intent intent = new Intent(AddPasswordActivity.this, HomeFragment.class);
@@ -262,20 +255,17 @@ public class AddPasswordActivity extends AppCompatActivity {
                 finish();
                 overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
             } else if (comingRequestCode.equals(TabLayoutActivity.REQUEST_ID)) {
-                PasswordHelperClass = new PasswordHelperClass(currentDateAndTime, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, addWebsiteLink);
-                addDataRef.child(currentDateAndTime).setValue(PasswordHelperClass)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                Toast.makeText(AddPasswordActivity.this, "password saved!", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(AddPasswordActivity.this, "Error occurred!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                Firebase.getInstance(AddPasswordActivity.this).saveSinglePassword(currentDateAndTime, encryptedAddlLogin, encryptedAddPassword, addWebsiteName, addWebsiteLink, new Firebase.onPasswordSaveCallBack() {
+                    @Override
+                    public void onPasswordSaved() {
+                        Toast.makeText(AddPasswordActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailed(String message) {
+                        Toast.makeText(AddPasswordActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             //todo 5 if app is going to another activity make isForeground = true
@@ -295,6 +285,7 @@ public class AddPasswordActivity extends AppCompatActivity {
     }
 
     public void submitOrUpdateData(View view) {
+        System.out.println("comingDate: " + comingDate);
         addData();
     }
 
@@ -428,14 +419,6 @@ public class AddPasswordActivity extends AppCompatActivity {
         String[] str1 = str.split("/", 4);
         System.out.println(str1[2]);
         str = str1[2].replaceAll("[^a-zA-Z0-9]", "_");
-        System.out.println(str);
-        return str;
-    }
-
-    public static String reverseFun(String str) {
-//        String str= "This#string%contains^special*characters&.";
-
-        str = str.replaceAll("_", ".");
         System.out.println(str);
         return str;
     }

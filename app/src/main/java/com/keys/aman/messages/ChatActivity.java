@@ -39,6 +39,7 @@ import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
 import com.keys.aman.authentication.BiometricAuthActivity;
 import com.keys.aman.base.TabLayoutActivity;
+import com.keys.aman.data.Firebase;
 import com.keys.aman.databinding.ActivityChatBinding;
 import com.keys.aman.home.PasswordAdapter;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
@@ -160,7 +161,9 @@ public class ChatActivity extends AppCompatActivity {
 //            binding.tietMessage.setText("Note: " + noteData.getTitle() + "is sharing with " + receiverPublicUname);
         }
         //initialize
-        aes = AES.getInstance(commonEncryptionKey, commonEncryptionIv);
+        System.out.println("commonEncryptionKey: " + commonEncryptionKey);
+        System.out.println("commonEncryptionIv: " + commonEncryptionIv);
+        aes = AES.getInstanceForCommon(commonEncryptionKey, commonEncryptionIv);
 
 
         senderPublicUid = myPreference.getPublicUid();
@@ -211,77 +214,26 @@ public class ChatActivity extends AppCompatActivity {
         });
 
         dataHolderChatMessages = new ArrayList<>();
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ChatActivity.this);
 
         binding.recviewChat.setLayoutManager(linearLayoutManager);
-        chatAdaptor = new ChatAdaptor(dataHolderChatMessages,commonEncryptionKey, commonEncryptionIv, ChatActivity.this, ChatActivity.this);
 
-        binding.recviewChat.setAdapter(chatAdaptor);
 
-        FirebaseDatabase.getInstance().getReference().child("messages")
-                .child(senderRoom)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        dataHolderChatMessages.clear();
-                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                            System.out.println(ds);
-                            ChatModelClass chatModel = ds.getValue(ChatModelClass.class);
-                            if (chatModel.getType().equals("note")) {
-                                System.out.println(chatModel.getNoteModelClass().getTitle());
-                                System.out.println(chatModel.getNoteModelClass().getNote());
-                            }
-                            dataHolderChatMessages.add(chatModel);
+        Firebase.getInstance(ChatActivity.this).loadChatMessages(senderRoom, new Firebase.FirebaseLoadChatMessagesCallback() {
+            @Override
+            public void onChatMessagesLoaded(ArrayList<ChatModelClass> dataHolderChatMessage) {
+                dataHolderChatMessages = dataHolderChatMessage;
+                chatAdaptor = new ChatAdaptor(dataHolderChatMessages,commonEncryptionKey, commonEncryptionIv, ChatActivity.this, ChatActivity.this);
 
-                        }
-                        chatAdaptor.notifyDataSetChanged();
-                    }
+                binding.recviewChat.setAdapter(chatAdaptor);
+                chatAdaptor.notifyDataSetChanged();
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-        chatAdaptor.notifyDataSetChanged();
-
-        FirebaseDatabase.getInstance().getReference().child("messages")
-                .addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String previousChildName) {
-                        System.out.println(dataSnapshot.getKey());
-                        if (dataSnapshot.getKey().equals(receiverRoom)) {
-                            System.out.println("Yes");
-                        } else {
-                            System.out.println("No");
-                        }
-
-                    }
-
-                    @Override
-                    public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-        int lastPosition = dataHolderChatMessages.size() - 1;
-        if (lastPosition >= 0 && lastPosition < dataHolderChatMessages.size()) {
-            binding.recviewChat.smoothScrollToPosition(lastPosition);
-        }
-
+                int lastPosition = dataHolderChatMessages.size() - 1;
+                if (lastPosition >= 0 && lastPosition < dataHolderChatMessages.size()) {
+                    binding.recviewChat.smoothScrollToPosition(lastPosition);
+                }
+            }
+        });
     }
 
     private void sendMessage(String message, String type) {
@@ -292,12 +244,9 @@ public class ChatActivity extends AppCompatActivity {
             String addPassword = passwordData.getAddDataPassword();
             String addWebsiteName = passwordData.getAddWebsite_name();
             String addWebsiteLink = passwordData.getAddWebsite_link();
-
-
             try {
-                // TODO : in future, (if needed) give two key to user for double encryption
-                encryptedAddlLogin = aes.doubleEncryption(addLogin);
-                encryptedAddPassword = aes.doubleEncryption(addPassword);
+                encryptedAddlLogin = aes.doubleEncryptionForCommon(addLogin);
+                encryptedAddPassword = aes.doubleEncryptionForCommon(addPassword);
                 passwordData.setAddDataLogin(encryptedAddlLogin);
                 passwordData.setAddDataPassword(encryptedAddPassword);
             } catch (Exception e) {
@@ -308,9 +257,8 @@ public class ChatActivity extends AppCompatActivity {
             title = noteData.getTitle();
             note = noteData.getNote();
             try {
-                // TODO : in future, (if needed) give two key to user for double encryption
-                titleEncrypted = aes.doubleEncryption(title);
-                noteEncrypted = aes.doubleEncryption(note);
+                titleEncrypted = aes.doubleEncryptionForCommon(title);
+                noteEncrypted = aes.doubleEncryptionForCommon(note);
                 noteData.setTitle(titleEncrypted);
                 noteData.setNote(noteEncrypted);
             } catch (Exception e) {
@@ -320,9 +268,9 @@ public class ChatActivity extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         currentDateAndTime = sdf.format(new Date());
         System.out.println("Dateandtime: " + currentDateAndTime);
+        String decryptedMessage = aes.doubleEncryptionForCommon(message);
 
-
-        ChatModelClass chatModelClass = new ChatModelClass(message, currentDateAndTime, senderPublicUid, type, "sent", passwordData, noteData);
+        ChatModelClass chatModelClass = new ChatModelClass(decryptedMessage, currentDateAndTime, senderPublicUid, type, "sent", passwordData, noteData);
         binding.tietMessage.setText("");
         DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference().child("messages").child(senderRoom);
         referenceSender.push().setValue(chatModelClass)
