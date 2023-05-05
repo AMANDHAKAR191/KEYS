@@ -46,16 +46,19 @@ import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.BiometricAuthActivity;
 import com.keys.aman.authentication.PinLockActivity;
+import com.keys.aman.data.Firebase;
 import com.keys.aman.home.PasswordGeneratorActivity;
+import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.messages.UserListModelClass;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /* TODO Checked on 12/10/2022
     All unimportant variable methods is removed
     Not Working
 */
-public class LogInActivity extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity{
 
     private static final String TAG = "LogInActivity";
     //objects
@@ -92,6 +95,7 @@ public class LogInActivity extends AppCompatActivity {
         }
         //initialize local database
         myPreference = MyPreference.getInstance(this);
+        prograceBar = new PrograceBar(LogInActivity.this);
 
         SplashActivity.isForeground = false;
 
@@ -117,7 +121,8 @@ public class LogInActivity extends AppCompatActivity {
             public void onClick(View view) {
                 createRequest();
                 SplashActivity.isForeground = true;
-                progressBar();
+                prograceBar.showDialog();
+                prograceBar.updateProgress("Fetching google account list...");
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 getResultLogin.launch(signInIntent);
             }
@@ -129,9 +134,9 @@ public class LogInActivity extends AppCompatActivity {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                        prograceBar.dismissbar();
                         try {
                             // Google Sign In was successful, authenticate with Firebase
+                            prograceBar.updateProgress("Authenticating with firebase...");
                             GoogleSignInAccount account = task.getResult(ApiException.class);
                             firebaseAuthWithGoogle(account);
                         } catch (ApiException e) {
@@ -171,79 +176,43 @@ public class LogInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            progressBar();
+                            prograceBar.updateProgress("Checking User...");
                             // Sign in success, update UI with the signed-in user's information
                             FirebaseUser user = mAuth.getCurrentUser();
                             UID = user.getUid();
                             //check user if already signed up in background
-                            MyThreadRunnable MyThreadRunnable = new MyThreadRunnable();
-                            new Thread(MyThreadRunnable).start();
 
-                            Handler handler = new Handler();
-                            Thread loginThread = new Thread(new Runnable() {
+                            Firebase.getInstance(LogInActivity.this).checkUser(new Firebase.FirebaseCallBack() {
+
                                 @Override
-                                public void run() {
-                                    handler.postDelayed(new Runnable() {
-                                        private int count = 0;
+                                public void onPasswordDataReceivedCallback(ArrayList<PasswordHelperClass> dataHolderPassword) {
 
-                                        @Override
-                                        public void run() {
-                                            while (!turn) {
-                                                count++;
-                                                progressBar();
-                                            }
-                                            prograceBar.dismissbar();
-                                            boolean temp = myPreference.isNewUser();
-                                            if (temp) { //new User
-                                                createEntryOnDatabase(user);
-                                                turn = false;
-                                                Toast.makeText(LogInActivity.this, "Registration Completed!!", Toast.LENGTH_SHORT).show();
-                                                SplashActivity.isForeground = true;
-                                                Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
-                                                intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
-                                                intent.putExtra("title", "Set Pin");
-                                                startActivity(intent);
-                                            } else {
-                                                DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata").child(UID);
-                                                // Read from the database
-                                                reference.addValueEventListener(new ValueEventListener() {
-                                                    @Override
-                                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                                        // This method is called once with the initial value and again
-                                                        // whenever data at this location is updated.
-                                                        String aes_iv = dataSnapshot.child("aes_iv").getValue(String.class);
-                                                        String aes_key = dataSnapshot.child("aes_key").getValue(String.class);
-                                                        String public_uid = dataSnapshot.child("public_uid").getValue(String.class);
+                                }
+                                @Override
+                                public void onUserExist() {
+                                    prograceBar.dismissbar();
+                                    Firebase.getInstance(LogInActivity.this).loadUserData();
+                                    SplashActivity.isForeground = true;
+                                    Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
+                                    intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
+                                    intent.putExtra("title", "Set Pin");
+                                    startActivity(intent);
+                                    finish();
+                                }
 
-                                                        myPreference.setAesKey(aes_key);
-                                                        myPreference.setAesIv(aes_iv);
-                                                        myPreference.setPublicUid(public_uid);
-                                                        myPreference.setUserLoggedIn(true);
-                                                        myPreference.setNewUser(false);
-
-                                                        turn = false;
-                                                        Toast.makeText(LogInActivity.this, "SignIn Completed!!", Toast.LENGTH_SHORT).show();
-                                                    }
-
-                                                    @Override
-                                                    public void onCancelled(@NonNull DatabaseError error) {
-                                                        // Failed to read value
-                                                        System.out.println("Not able get data from database");
-                                                    }
-                                                });
-                                                SplashActivity.isForeground = true;
-                                                Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
-                                                intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
-                                                intent.putExtra("title", "Set Pin");
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        }
-                                    }, 10000);
+                                @Override
+                                public void onUserNotExist() {
+                                    prograceBar.dismissbar();
+                                    Firebase.getInstance(LogInActivity.this).saveUserData();
+                                    turn = false;
+                                    Toast.makeText(LogInActivity.this, "Registration Completed!!", Toast.LENGTH_SHORT).show();
+                                    SplashActivity.isForeground = true;
+                                    Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
+                                    intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
+                                    intent.putExtra("title", "Set Pin");
+                                    startActivity(intent);
                                 }
                             });
-                            loginThread.start();
-
                         } else {
                             Toast.makeText(LogInActivity.this, "Sorry authentication failed.", Toast.LENGTH_SHORT).show();
 
@@ -253,122 +222,4 @@ public class LogInActivity extends AppCompatActivity {
                 });
     }
 
-
-    public boolean checkUser(DatabaseReference reference) {
-        Log.d(TAG, "UID: " + UID);
-        reference.child(UID).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "Checking User... 1");
-                String temp;
-                try {
-                    Log.d(TAG, "Checking User... 2");
-                    temp = Objects.requireNonNull(dataSnapshot.getValue()).toString();
-                } catch (Exception e) {
-                    Log.d(TAG, "Checking User.. 3");
-                    temp = "1";
-                }
-
-
-                if (temp != "1") {
-                    myPreference.setNewUser(false);
-                }
-                turn = true;
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                System.err.println(error);
-
-            }
-        });
-        return turn;
-    }
-
-    private void createEntryOnDatabase(FirebaseUser user) {
-        String publicUname, email, private_uid, publicUid;
-        publicUname = user.getDisplayName();
-        email = user.getEmail();
-        private_uid = user.getUid();
-        publicUid = createPublicUid(email);
-
-        myPreference.setAesKey(PasswordGeneratorActivity.generateRandomPassword(22, true, true, true, false) + "==");
-        myPreference.setAesIv(PasswordGeneratorActivity.generateRandomPassword(16, true, true, true, false));
-        myPreference.setPublicUid(publicUid);
-        myPreference.setUserLoggedIn(true);
-        myPreference.setNewUser(false);
-
-        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-        myRef = firebaseDatabase.getReference("signupdata");
-
-        String aesKey = myPreference.getAesKey();
-        String aesIv = myPreference.getAesIv();
-
-        aes = AES.getInstance(aesKey,aesIv);
-        String encryptedName, encryptedEmail;
-        try {
-            Toast.makeText(LogInActivity.this, "Creating Data  Entry on DB", Toast.LENGTH_SHORT).show();
-            encryptedName = aes.singleEncryption(publicUname);
-            encryptedEmail = aes.singleEncryption(email);
-            UserHelperClass userHelperClass = new UserHelperClass(encryptedName, encryptedEmail, aesKey, aesIv, private_uid, publicUid);
-
-
-            myRef.child(private_uid).setValue(userHelperClass)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void unused) {
-//                            UserPersonalChatList personalChatList = new UserPersonalChatList(publicUid, publicUname, false);
-                            UserListModelClass userListModel = new UserListModelClass(publicUid, publicUname, false);
-                            DatabaseReference referenceSender = FirebaseDatabase.getInstance().getReference();
-                            referenceSender.child("messageUserList").child(publicUid)
-                                    .setValue(userListModel)
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void unused) {
-                                            Toast.makeText(LogInActivity.this, "Chat User Added", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            tvErrorMessage.setText(e.getMessage());
-                        }
-                    });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    @NonNull
-    private String createPublicUid(String email) {
-        String publicUid;
-        String[] tempEmail = email.split("@",2);
-
-        tempEmail[0] = tempEmail[0].replace(".", "_");
-        publicUid = tempEmail[0].replace("+", "_");
-        System.out.println(publicUid);
-        return publicUid;
-    }
-
-
-    public void progressBar() {
-        prograceBar = new PrograceBar(LogInActivity.this);
-        prograceBar.showDialog();
-    }
-
-
-    private class MyThreadRunnable implements Runnable {
-
-        public MyThreadRunnable() {
-        }
-
-        @Override
-        public void run() {
-            DatabaseReference reference = FirebaseDatabase.getInstance().getReference("signupdata");
-            turn = checkUser(reference);
-        }
-    }
 }

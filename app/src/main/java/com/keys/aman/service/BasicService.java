@@ -21,7 +21,6 @@ import android.app.assist.AssistStructure.ViewNode;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.SharedPreferences;
 import android.os.CancellationSignal;
 import android.service.autofill.AutofillService;
 import android.service.autofill.Dataset;
@@ -41,7 +40,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.keys.aman.MyAuthenticationActivity;
 import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.AES;

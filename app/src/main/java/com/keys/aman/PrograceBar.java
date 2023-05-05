@@ -12,19 +12,23 @@ import android.widget.TextView;
 public class PrograceBar {
     final Activity activity;
     AlertDialog dialog;
-    TextView tvPrograceBar;
+    TextView tvProgressStatus;
 
     public PrograceBar(Activity thisActivity){
         activity = thisActivity;
     }
     public void showDialog(){
         View view = LayoutInflater.from(activity).inflate(R.layout.prograce_bar_layout,null);
+        tvProgressStatus = view.findViewById(R.id.tv_progress_status);
         AlertDialog.Builder builder = new AlertDialog.Builder(activity);
 //        LayoutInflater inflater = activity.getLayoutInflater();
 //        builder.setView(inflater.inflate(R.layout.prograce_bar_layout,null));
         builder.setView(view);
         dialog = builder.create();
         dialog.show();
+    }
+    public void updateProgress(String message){
+        tvProgressStatus.setText(message);
     }
     public void dismissbar(){
         dialog.dismiss();
