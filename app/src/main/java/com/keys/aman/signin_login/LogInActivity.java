@@ -29,6 +29,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseNetworkException;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -214,8 +215,12 @@ public class LogInActivity extends AppCompatActivity{
                                 }
                             });
                         } else {
-                            Toast.makeText(LogInActivity.this, "Sorry authentication failed.", Toast.LENGTH_SHORT).show();
-
+                            try {
+                                task.getResult();
+                            }catch (Exception firebaseNetworkException){
+                                Toast.makeText(LogInActivity.this, "Check Internet Connection", Toast.LENGTH_SHORT).show();
+                                prograceBar.dismissbar();
+                            }
 
                         }
                     }
