@@ -25,18 +25,17 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/tv_title"
+                android:id="@+id/tv_title_greeting"
                 style="@style/Widget.MaterialComponents.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/aclonica"
-                android:text="Hello 👋"
                 android:textSize="16sp"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/tv_title1"
+                android:id="@+id/tv_title_name"
                 style="@style/Widget.MaterialComponents.TextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -49,7 +48,7 @@
         </LinearLayout>
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/img_profile"
+            android:id="@+id/circular_img_profile"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
@@ -110,7 +109,7 @@
         app:layout_constraintTop_toBottomOf="@+id/barrier_toolbar" />
 
     <LinearLayout
-        android:id="@+id/ll_fab"
+        android:id="@+id/ll_fab_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
@@ -122,13 +121,13 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_fab1"
+        android:id="@+id/ll_fab_add_note"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/ll_fab2"
+        app:layout_constraintBottom_toTopOf="@+id/ll_fab_pass_gen"
         app:layout_constraintRight_toRightOf="@id/guideline_end">
 
         <TextView
@@ -153,13 +152,13 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_fab2"
+        android:id="@+id/ll_fab_pass_gen"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/ll_fab3"
+        app:layout_constraintBottom_toTopOf="@+id/ll_fab_add_password"
         app:layout_constraintRight_toRightOf="@id/guideline_end">
 
         <TextView
@@ -184,13 +183,13 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_fab3"
+        android:id="@+id/ll_fab_add_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/ex_fab"
+        app:layout_constraintBottom_toTopOf="@+id/ex_fab_button"
         app:layout_constraintRight_toRightOf="@id/guideline_end">
 
         <TextView
@@ -214,13 +213,13 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_fab4"
+        android:id="@+id/ll_fab_add_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:layout_marginBottom="24dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/ll_fab1"
+        app:layout_constraintBottom_toTopOf="@+id/ll_fab_add_note"
         app:layout_constraintRight_toRightOf="@id/guideline_end"
         tools:visibility="gone">
 
@@ -245,7 +244,7 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/ex_fab"
+        android:id="@+id/ex_fab_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
@@ -283,25 +282,25 @@
         android:id="@+id/group_fab_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ll_fab1,ll_fab2,ll_fab3" />
+        app:constraint_referenced_ids="ll_fab_add_note,ll_fab_pass_gen,ll_fab_add_password" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_fab_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ll_fab4" />
+        app:constraint_referenced_ids="ll_fab_add_email" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_fab_note"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ll_fab1" />
+        app:constraint_referenced_ids="ll_fab_add_note" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/group_fab_all"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="ll_fab4,ll_fab1,ll_fab2,ll_fab3"
+        app:constraint_referenced_ids="ll_fab_add_email,ll_fab_add_note,ll_fab_pass_gen,ll_fab_add_password"
         tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

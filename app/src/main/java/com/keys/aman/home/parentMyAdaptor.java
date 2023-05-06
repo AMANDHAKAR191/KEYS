@@ -45,7 +45,7 @@
 //    public static int passwordCounter = 0;
 //    final Context context;
 //    Activity activity;
-//    AES aes = new AES();
+//    AES iAES = new AES();
 //    public static Bitmap bmWebsiteLogo;
 //    private Bitmap emptyBitmap;
 //    public myadaptor myadaptor;
@@ -94,7 +94,7 @@
 //        @Override
 //        public void run() {
 //            SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
-//            aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
+//            iAES.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
 //            int p = holder.getAdapterPosition();
 //            final String temp = parentDataHolder.get(position);
 //

@@ -15,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
 import com.keys.aman.AES;
 import com.keys.aman.MyPreference;
 import com.keys.aman.R;
@@ -23,6 +22,7 @@ import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
 import com.keys.aman.base.TabLayoutActivity;
 import com.keys.aman.data.Firebase;
+import com.keys.aman.iAES;
 import com.keys.aman.notes.NoteAdapterForUnpinned;
 import com.keys.aman.signin_login.LogInActivity;
 
@@ -50,7 +50,7 @@ public class AddNotesActivity extends AppCompatActivity {
     private String comingRequestCode;
     private String comingDate;
     private String uid;
-    private AES aes;
+    iAES iAES;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,7 @@ public class AddNotesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_notes);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         myPreference = MyPreference.getInstance(this);
-        aes = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
+        iAES = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
@@ -123,8 +123,8 @@ public class AddNotesActivity extends AppCompatActivity {
         title = Objects.requireNonNull(tilAddNoteTitle.getEditText()).getText().toString();
         note = Objects.requireNonNull(tilAddNoteBody.getEditText()).getText().toString();
 
-        titleEncrypted = aes.doubleEncryption(title);
-        noteEncrypted = aes.doubleEncryption(note);
+        titleEncrypted = iAES.doubleEncryption(title);
+        noteEncrypted = iAES.doubleEncryption(note);
 
         NoteHelperClass addDNoteHelper;
         if (comingRequestCode.equals(NoteAdapterForUnpinned.REQUEST_ID)) {

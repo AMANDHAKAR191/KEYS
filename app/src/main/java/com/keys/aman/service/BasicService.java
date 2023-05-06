@@ -45,6 +45,7 @@ import com.keys.aman.R;
 import com.keys.aman.AES;
 import com.keys.aman.authentication.PinLockActivity;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
+import com.keys.aman.iAES;
 import com.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -66,7 +67,7 @@ public final class BasicService extends AutofillService {
 
     private static final int NUMBER_DATASETS = 4;
     MyPreference myPreference;
-    AES aes;
+    iAES iAES;
 
     @Override
     public void onFillRequest(FillRequest request, CancellationSignal cancellationSignal,
@@ -74,7 +75,7 @@ public final class BasicService extends AutofillService {
         Log.d(TAG, "onFillRequest()");
 
         myPreference = MyPreference.getInstance(getApplicationContext());
-        aes = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
+        iAES = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
 
         Log.d(TAG, "client name: " + request.getFillContexts().get(0).getStructure().getActivityComponent().getPackageName());
         // Find autofillable fields
@@ -127,8 +128,8 @@ public final class BasicService extends AutofillService {
 
                             String dLogin, dPassword;
                             try {
-                                dLogin = aes.doubleDecryption(record.getAddDataLogin());
-                                dPassword = aes.doubleDecryption(record.getAddDataPassword());
+                                dLogin = iAES.doubleDecryption(record.getAddDataLogin());
+                                dPassword = iAES.doubleDecryption(record.getAddDataPassword());
 
                             } catch (Exception e) {
                                 throw new RuntimeException(e);

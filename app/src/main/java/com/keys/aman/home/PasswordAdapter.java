@@ -28,6 +28,7 @@ import com.keys.aman.AES;
 import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
+import com.keys.aman.iAES;
 import com.keys.aman.messages.ChatActivity;
 import com.keys.aman.signin_login.LogInActivity;
 
@@ -81,7 +82,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.myView
     MyPreference myPreference;
     Context context;
     Activity activity;
-    AES aes;
+    iAES iAES;
     LogInActivity logInActivity = new LogInActivity();
     ChatActivity chatActivity = new ChatActivity();
     //    public static Bitmap bmWebsiteLogo;
@@ -89,7 +90,7 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.myView
 
     public PasswordAdapter(ArrayList<PasswordHelperClass> tempDataHolder, Context context, Activity activity) {
         myPreference = MyPreference.getInstance(context);
-        aes = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
+        iAES = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
         this.dataHolder = tempDataHolder;
         this.dataHolderFull = tempDataHolder;
         this.context = context;
@@ -233,9 +234,9 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.myView
             try {
                 currentDate = dataHolder.get(position).getDate();
                 tempELogin = dataHolder.get(position).getAddDataLogin();
-                decryptedLogin = aes.doubleDecryption(tempELogin);
+                decryptedLogin = iAES.doubleDecryption(tempELogin);
                 tempEPassword = dataHolder.get(position).getAddDataPassword();
-                decryptedPassword = aes.doubleDecryption(tempEPassword);
+                decryptedPassword = iAES.doubleDecryption(tempEPassword);
                 dWebsiteName = temp.getAddWebsite_name();
                 dWebsiteLink = temp.getAddWebsite_link();
 

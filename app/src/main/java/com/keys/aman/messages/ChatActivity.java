@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -23,12 +20,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.keys.aman.AES;
 import com.keys.aman.MyNoteViewModel;
@@ -37,12 +30,12 @@ import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
-import com.keys.aman.authentication.BiometricAuthActivity;
 import com.keys.aman.base.TabLayoutActivity;
 import com.keys.aman.data.Firebase;
 import com.keys.aman.databinding.ActivityChatBinding;
 import com.keys.aman.home.PasswordAdapter;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
+import com.keys.aman.iAES;
 import com.keys.aman.notes.NoteAdapterForUnpinned;
 import com.keys.aman.notes.addnote.NoteHelperClass;
 import com.keys.aman.signin_login.LogInActivity;
@@ -54,6 +47,8 @@ import java.util.Locale;
 
 public class ChatActivity extends AppCompatActivity {
 
+    public String receiverPublicUid, receiverPublicUname, commonEncryptionKey, commonEncryptionIv, senderPublicUid, senderPublicUname, currentDateAndTime;
+    public String senderRoom, receiverRoom;
     ActivityChatBinding binding;
     Activity activity;
     Context context;
@@ -61,15 +56,14 @@ public class ChatActivity extends AppCompatActivity {
     TextInputLayout tilMessage;
     //    ImageButton imgSendMessage;
     RecyclerView recViewChatMessages;
-    private ArrayList<ChatModelClass> dataHolderChatMessages;
-    public String receiverPublicUid, receiverPublicUname, commonEncryptionKey, commonEncryptionIv, senderPublicUid, senderPublicUname, currentDateAndTime;
     LogInActivity logInActivity = new LogInActivity();
     TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
     //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(ChatActivity.this, ChatActivity.this);
 
     ChatAdaptor chatAdaptor;
-    public String senderRoom, receiverRoom;
+    MyPreference myPreference;
+    private ArrayList<ChatModelClass> dataHolderChatMessages;
     private NoteHelperClass noteData;
     private PasswordHelperClass passwordData;
     private Intent intentResult;
@@ -77,8 +71,7 @@ public class ChatActivity extends AppCompatActivity {
     private MutableLiveData<NoteHelperClass> data;
     private MyNoteViewModel viewNoteModel;
     private MyPasswordViewModel viewPasswordModel;
-    MyPreference myPreference;
-    private AES aes;
+    private iAES iAES;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,7 +106,6 @@ public class ChatActivity extends AppCompatActivity {
             commonEncryptionKey = intentResult.getStringExtra("commonEncryptionKey");
             commonEncryptionIv = intentResult.getStringExtra("commonEncryptionIv");
             noteData = intentResult.getParcelableExtra("noteData");
-            Log.e("shareNote", "Check5: ChatActivity: " + noteData);
             binding.tilMessage.setEnabled(false);
             new MaterialAlertDialogBuilder(this)
                     .setTitle("Alert!")
@@ -139,7 +131,7 @@ public class ChatActivity extends AppCompatActivity {
             commonEncryptionKey = intentResult.getStringExtra("commonEncryptionKey");
             commonEncryptionIv = intentResult.getStringExtra("commonEncryptionIv");
             passwordData = intentResult.getParcelableExtra("passwordData");
-            Log.e("shareNote", "Check5: ChatActivity: " + passwordData);
+
             binding.tilMessage.setEnabled(false);
             new MaterialAlertDialogBuilder(this)
                     .setTitle("Alert!")
@@ -163,7 +155,7 @@ public class ChatActivity extends AppCompatActivity {
         //initialize
         System.out.println("commonEncryptionKey: " + commonEncryptionKey);
         System.out.println("commonEncryptionIv: " + commonEncryptionIv);
-        aes = AES.getInstanceForCommon(commonEncryptionKey, commonEncryptionIv);
+        iAES = AES.getInstance(commonEncryptionKey, commonEncryptionIv);
 
 
         senderPublicUid = myPreference.getPublicUid();
@@ -223,7 +215,7 @@ public class ChatActivity extends AppCompatActivity {
             @Override
             public void onChatMessagesLoaded(ArrayList<ChatModelClass> dataHolderChatMessage) {
                 dataHolderChatMessages = dataHolderChatMessage;
-                chatAdaptor = new ChatAdaptor(dataHolderChatMessages,commonEncryptionKey, commonEncryptionIv, ChatActivity.this, ChatActivity.this);
+                chatAdaptor = new ChatAdaptor(dataHolderChatMessages, commonEncryptionKey, commonEncryptionIv, ChatActivity.this, ChatActivity.this);
 
                 binding.recviewChat.setAdapter(chatAdaptor);
                 chatAdaptor.notifyDataSetChanged();
@@ -237,38 +229,29 @@ public class ChatActivity extends AppCompatActivity {
     }
 
     private void sendMessage(String message, String type) {
-
-        if (passwordData != null) {
-            String encryptedAddlLogin = "", encryptedAddPassword = "";
-            String addLogin = passwordData.getAddDataLogin();
-            String addPassword = passwordData.getAddDataPassword();
-            String addWebsiteName = passwordData.getAddWebsite_name();
-            String addWebsiteLink = passwordData.getAddWebsite_link();
-            try {
-                encryptedAddlLogin = aes.doubleEncryptionForCommon(addLogin);
-                encryptedAddPassword = aes.doubleEncryptionForCommon(addPassword);
-                passwordData.setAddDataLogin(encryptedAddlLogin);
-                passwordData.setAddDataPassword(encryptedAddPassword);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else if (noteData != null) {
-            String currentDateAndTime, title, note, titleEncrypted, noteEncrypted;
-            title = noteData.getTitle();
-            note = noteData.getNote();
-            try {
-                titleEncrypted = aes.doubleEncryptionForCommon(title);
-                noteEncrypted = aes.doubleEncryptionForCommon(note);
-                noteData.setTitle(titleEncrypted);
-                noteData.setNote(noteEncrypted);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//        if (passwordData != null) {
+//            String encryptedAddlLogin = "", encryptedAddPassword = "";
+//            String addLogin = passwordData.getAddDataLogin();
+//            String addPassword = passwordData.getAddDataPassword();
+//            String addWebsiteName = passwordData.getAddWebsite_name();
+//            String addWebsiteLink = passwordData.getAddWebsite_link();
+//            encryptedAddlLogin = aes.doubleEncryptionForCommon(addLogin);
+//            encryptedAddPassword = aes.doubleEncryptionForCommon(addPassword);
+//            passwordData.setAddDataLogin(encryptedAddlLogin);
+//            passwordData.setAddDataPassword(encryptedAddPassword);
+//        } else if (noteData != null) {
+//            String currentDateAndTime, title, note, titleEncrypted, noteEncrypted;
+//            title = noteData.getTitle();
+//            note = noteData.getNote();
+//            titleEncrypted = aes.doubleEncryptionForCommon(title);
+//            noteEncrypted = aes.doubleEncryptionForCommon(note);
+//            noteData.setTitle(titleEncrypted);
+//            noteData.setNote(noteEncrypted);
+//        }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
         currentDateAndTime = sdf.format(new Date());
         System.out.println("Dateandtime: " + currentDateAndTime);
-        String decryptedMessage = aes.doubleEncryptionForCommon(message);
+        String decryptedMessage = iAES.singleEncryption(message);
 
         ChatModelClass chatModelClass = new ChatModelClass(decryptedMessage, currentDateAndTime, senderPublicUid, type, "sent", passwordData, noteData);
         binding.tietMessage.setText("");

@@ -1,7 +1,5 @@
 package com.keys.aman;
 
-import android.content.Context;
-
 import java.util.Base64;
 
 import javax.crypto.Cipher;
@@ -13,7 +11,7 @@ import javax.crypto.spec.SecretKeySpec;
 /* TODO Checked on 12/10/2022
     All is ok
  */
-public class AES {
+public class AES implements iAES{
     private static AES sInstance;
     private static SecretKey key;
 
@@ -27,9 +25,9 @@ public class AES {
         key = generator.generateKey();
     }
 
-    private static void initFromStrings(String aesKey, String aesIv) {
-        key = new SecretKeySpec(decode(aesKey), "AES");
-        IV = decode(aesIv);
+    public static void initFromStrings(String aesKey, String aesIv) {
+        key = new SecretKeySpec(sInstance.decode(aesKey), "AES");
+        IV = sInstance.decode(aesIv);
     }
     public static AES getInstance(String aesKey, String aes_Iv) {
         if (sInstance == null) {
@@ -38,15 +36,8 @@ public class AES {
         }
         return sInstance;
     }
-    public static AES getInstanceForCommon(String commonAesKey, String commonAes_Iv) {
-        if (sInstance == null) {
-            sInstance = new AES();
-            initFromStrings(commonAesKey,commonAes_Iv);
-        }
-        return sInstance;
-    }
 
-    public String encryptOld(String message) throws Exception {
+    private String encryptOld(String message) throws Exception {
         byte[] messageInBytes = message.getBytes();
         Cipher encryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
         encryptionCipher.init(Cipher.ENCRYPT_MODE, key);
@@ -55,7 +46,7 @@ public class AES {
         return encode(encryptedBytes);
     }
 
-    private static String encrypt(String message) throws Exception {
+    public String encrypt(String message) throws Exception {
         byte[] messageInBytes = message.getBytes();
         Cipher encryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
         GCMParameterSpec spec = new GCMParameterSpec(T_LEN, IV);
@@ -64,7 +55,7 @@ public class AES {
         return encode(encryptedBytes);
     }
 
-    private static String decrypt(String encryptedMessage) throws Exception {
+    public String decrypt(String encryptedMessage) throws Exception {
         byte[] messageInBytes = decode(encryptedMessage);
         Cipher decryptionCipher = Cipher.getInstance("AES/GCM/NoPadding");
         GCMParameterSpec spec = new GCMParameterSpec(T_LEN, IV);
@@ -106,28 +97,12 @@ public class AES {
         }
     }
 
-    public String doubleEncryptionForCommon(String data){
-        try {
-            String temp = encrypt(data);
-            return encrypt(temp);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
-    public String doubleDecryptionForCommon(String encryptionString){
-        try {
-            String temp = decrypt(encryptionString);
-            return decrypt(temp);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
-    private static String encode(byte[] data) {
+    public String encode(byte[] data) {
         return Base64.getEncoder().encodeToString(data);
     }
 
-    private static byte[] decode(String data) {
+    public byte[] decode(String data) {
         return Base64.getDecoder().decode(data);
     }
 

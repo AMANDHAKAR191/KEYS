@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.keys.aman.AES;
 import com.keys.aman.R;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
+import com.keys.aman.iAES;
 import com.keys.aman.messages.ChatActivity;
 import com.keys.aman.signin_login.LogInActivity;
 
@@ -36,7 +36,7 @@ public class SharedPasswordAdapter extends RecyclerView.Adapter<SharedPasswordAd
     ArrayList<PasswordHelperClass> dataHolder;
     Context context;
     Activity activity;
-    AES aes;
+    iAES iAES;
     LogInActivity logInActivity = new LogInActivity();
     ChatActivity chatActivity = new ChatActivity();
     private Bitmap emptyBitmap;
@@ -45,7 +45,7 @@ public class SharedPasswordAdapter extends RecyclerView.Adapter<SharedPasswordAd
         this.dataHolder = tempDataHolder;
         this.context = context;
         this.activity = activity;
-        aes = AES.getInstance(commonEncryptionKey, commonEncryptionIv);
+        iAES = AES.getInstance(commonEncryptionKey, commonEncryptionIv);
         System.out.println("in constructor... " + tempDataHolder);
     }
 
@@ -79,8 +79,8 @@ public class SharedPasswordAdapter extends RecyclerView.Adapter<SharedPasswordAd
         String dLogin, dPassword, dWebsiteName, dWebsiteLink, Title, currentDate;
         final PasswordHelperClass temp = dataHolder.get(position);
         currentDate = temp.getDate();
-        dLogin = aes.doubleDecryption(temp.getAddDataLogin());
-        dPassword = aes.doubleDecryption(temp.getAddDataPassword());
+        dLogin = iAES.doubleDecryption(temp.getAddDataLogin());
+        dPassword = iAES.doubleDecryption(temp.getAddDataPassword());
 
         dWebsiteName = temp.getAddWebsite_name();
         dWebsiteLink = temp.getAddWebsite_link();

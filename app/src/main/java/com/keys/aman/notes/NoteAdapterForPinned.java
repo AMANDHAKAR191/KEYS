@@ -1,13 +1,10 @@
 package com.keys.aman.notes;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +21,7 @@ import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.AES;
 import com.keys.aman.SplashActivity;
+import com.keys.aman.iAES;
 import com.keys.aman.notes.addnote.NoteHelperClass;
 import com.keys.aman.notes.addnote.AddNotesActivity;
 import com.keys.aman.signin_login.LogInActivity;
@@ -39,7 +37,7 @@ public class NoteAdapterForPinned extends RecyclerView.Adapter<NoteAdapterForPin
     final ArrayList<NoteHelperClass> dataholderfilter;
     final Context context;
     Activity activity;
-    AES aes;
+    iAES iAES;
     LogInActivity logInActivity = new LogInActivity();
     public static final String REQUEST_ID = "NoteAdapter";
     MyPreference myPreference;
@@ -50,7 +48,7 @@ public class NoteAdapterForPinned extends RecyclerView.Adapter<NoteAdapterForPin
         this.activity = activity;
         this.dataholderfilter = new ArrayList<>(dataholder);
         myPreference = MyPreference.getInstance(context);
-        aes = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
+        iAES = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
     }
 
     @NonNull
@@ -75,8 +73,8 @@ public class NoteAdapterForPinned extends RecyclerView.Adapter<NoteAdapterForPin
 
 
             //Double Decryption
-            decryptedNoteTitle = aes.doubleDecryption(noteTitle);
-            decryptedNoteBody = aes.doubleDecryption(noteBody);
+            decryptedNoteTitle = iAES.doubleDecryption(noteTitle);
+            decryptedNoteBody = iAES.doubleDecryption(noteBody);
 
 
             DateFormat sdf = new SimpleDateFormat("dd-MMMM-yyyy / hh:mm", Locale.getDefault());

@@ -41,7 +41,7 @@
 //    final ArrayList<AddPasswordDataHelperClass> dataholderfilter;
 //    final Context context;
 //    Activity activity;
-//    AES aes = new AES();
+//    AES iAES = new AES();
 //    public static Bitmap bmWebsiteLogo;
 //    private Bitmap emptyBitmap;
 //    LogInActivity logInActivity = new LogInActivity();
@@ -87,17 +87,17 @@
 //        @Override
 //        public void run() {
 //            SharedPreferences sharedPreferences = context.getSharedPreferences(logInActivity.getSHARED_PREF_ALL_DATA(), MODE_PRIVATE);
-//            aes.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
+//            iAES.initFromStrings(sharedPreferences.getString(logInActivity.getAES_KEY(), null), sharedPreferences.getString(logInActivity.getAES_IV(), null));
 //            int p = holder.getAdapterPosition();
 //            final AddPasswordDataHelperClass temp = dataholder.get(position);
 //
 //            try {
 //                current_date = dataholder.get(position).getDate();
 //                //Double Decryption
-//                dlogin = aes.decrypt(dataholder.get(position).getAddDataLogin());
-//                temp_dlogin = aes.decrypt(dlogin);
-//                dpassword = aes.decrypt(dataholder.get(position).getAddDataPassword());
-//                temp_dpassword = aes.decrypt(dpassword);
+//                dlogin = iAES.decrypt(dataholder.get(position).getAddDataLogin());
+//                temp_dlogin = iAES.decrypt(dlogin);
+//                dpassword = iAES.decrypt(dataholder.get(position).getAddDataPassword());
+//                temp_dpassword = iAES.decrypt(dpassword);
 //
 //
 //                dwebsite_name = temp.getAddWebsite_name();

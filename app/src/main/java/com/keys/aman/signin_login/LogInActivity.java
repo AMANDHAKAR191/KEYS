@@ -1,3 +1,6 @@
+/*created by AMAN DHAKAR
+Last update 07/05/2025*/
+
 package com.keys.aman.signin_login;
 
 import android.content.Intent;
@@ -31,7 +34,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.database.DatabaseReference;
-import com.keys.aman.AES;
 import com.keys.aman.MyPreference;
 import com.keys.aman.PrograceBar;
 import com.keys.aman.R;
@@ -39,79 +41,48 @@ import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.BiometricAuthActivity;
 import com.keys.aman.authentication.PinLockActivity;
 import com.keys.aman.data.Firebase;
+import com.keys.aman.databinding.ActivityLogInBinding;
 
-/* TODO Checked on 12/10/2022
-    All unimportant variable methods is removed
-    Not Working
-*/
 public class LogInActivity extends AppCompatActivity {
 
     public static final String REQUEST_ID = "LogInActivity";
     private static final String TAG = "LogInActivity";
-    public static DatabaseReference myRef;
     public final String REQUEST_CODE_NAME = "request_code";
     public GoogleSignInOptions gso;
     //objects
-    Button btnLogin;
-    TextView tvErrorMessage;
     MyPreference myPreference;
     ActivityResultLauncher<Intent> getResultLogin;
-    ActivityResultLauncher<Intent> getResultSignIn;
-    Handler progressBarHandler = new Handler();
-    String UID;
     private PrograceBar prograceBar;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
-    private boolean turn = false;
-    private AES aes;
-
+    ActivityLogInBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_log_in);
-        try {
-            ProviderInstaller.installIfNeeded(getApplicationContext());
-        } catch (GooglePlayServicesRepairableException |
-                 GooglePlayServicesNotAvailableException e) {
-            e.printStackTrace();
-        }
-        //initialize local database
-        myPreference = MyPreference.getInstance(this);
-        prograceBar = new PrograceBar(LogInActivity.this);
-
-        SplashActivity.isForeground = false;
-
-        //Hooks
-        btnLogin = findViewById(R.id.btn_login);
-        tvErrorMessage = findViewById(R.id.tv_error_message);
+        binding = ActivityLogInBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+        initVariables();
+        checkGooglePlayServiceSecurityProvider();
 
 //        Check if User is already login then go direct to HomeScreen
         if (myPreference.isUserLoggedIn()) {
             SplashActivity.isForeground = true;
-            Intent intent = new Intent(LogInActivity.this, BiometricAuthActivity.class);
-            intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent, savedInstanceState);
-            finish();
+            startBioAuthActivity();
         }
 
-
-        mAuth = FirebaseAuth.getInstance();
-
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        binding.btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 createRequest();
                 SplashActivity.isForeground = true;
+                //Show ProgressBar and Update Status
                 prograceBar.showDialog();
                 prograceBar.updateProgress("Fetching google account list...");
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 getResultLogin.launch(signInIntent);
             }
         });
-
         getResultLogin = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -120,18 +91,47 @@ public class LogInActivity extends AppCompatActivity {
                         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
                         try {
                             // Google Sign In was successful, authenticate with Firebase
+                            //Update ProgressBar status
                             prograceBar.updateProgress("Authenticating with firebase...");
                             GoogleSignInAccount account = task.getResult(ApiException.class);
                             firebaseAuthWithGoogle(account);
                         } catch (ApiException e) {
                             // Google Sign In failed, update UI appropriately
-                            // ...
                             Toast.makeText(LogInActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
 
                         }
                     }
                 }
         );
+    }
+
+    private void checkGooglePlayServiceSecurityProvider() {
+        //This code initializes the Google Play services security provider to ensure that the app uses
+        // the latest security protocols available on the device. It uses the ProviderInstaller class
+        // from the Google Play services library to install the security provider if it is not already
+        // installed on the device.
+        try {
+            ProviderInstaller.installIfNeeded(getApplicationContext());
+        } catch (GooglePlayServicesRepairableException |
+                 GooglePlayServicesNotAvailableException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void initVariables(){
+        mAuth = FirebaseAuth.getInstance();
+        //initialize local database
+        myPreference = MyPreference.getInstance(this);
+        prograceBar = new PrograceBar(LogInActivity.this);
+        SplashActivity.isForeground = false;
+    }
+
+    private void startBioAuthActivity() {
+        Intent intent = new Intent(LogInActivity.this, BiometricAuthActivity.class);
+        intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 
     @Override
@@ -160,12 +160,9 @@ public class LogInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            //Update ProgressBar status
                             prograceBar.updateProgress("Checking User...");
-                            // Sign in success, update UI with the signed-in user's information
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            UID = user.getUid();
                             //check user if already signed up in background
-
                             Firebase.getInstance(LogInActivity.this).checkUser(new Firebase.FirebaseUserCheckCallback() {
                                 @Override
                                 public void onUserExist() {
@@ -173,11 +170,7 @@ public class LogInActivity extends AppCompatActivity {
                                     Toast.makeText(LogInActivity.this, "User Exist, loading data...", Toast.LENGTH_SHORT).show();
                                     Firebase.getInstance(LogInActivity.this).loadUserData();
                                     SplashActivity.isForeground = true;
-                                    Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
-                                    intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
-                                    intent.putExtra("title", "Set Pin");
-                                    startActivity(intent);
-                                    finish();
+                                    startPinLockActivity();
                                 }
 
                                 @Override
@@ -185,13 +178,10 @@ public class LogInActivity extends AppCompatActivity {
                                     Firebase.getInstance(LogInActivity.this).saveUserData(new Firebase.FirebaseCreateAccountCallBack() {
                                         @Override
                                         public void onAccountCreatedSuccessfullyOnFirebase() {
+                                            //Update ProgressBar status
                                             prograceBar.updateProgress("Account Created");
-                                            turn = false;
                                             SplashActivity.isForeground = true;
-                                            Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
-                                            intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
-                                            intent.putExtra("title", "Set Pin");
-                                            startActivity(intent);
+                                            startPinLockActivity();
                                         }
 
                                         @Override
@@ -214,5 +204,13 @@ public class LogInActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void startPinLockActivity() {
+        Intent intent = new Intent(getApplicationContext(), PinLockActivity.class);
+        intent.putExtra(REQUEST_CODE_NAME, REQUEST_ID);
+        intent.putExtra("title", "Set Pin");
+        startActivity(intent);
+        finish();
     }
 }

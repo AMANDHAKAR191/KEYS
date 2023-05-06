@@ -140,7 +140,6 @@ public class ShowCardViewDataDialog extends Fragment {
                     SplashActivity.isForeground = true;
                     Intent intent1 = new Intent(context, PinLockActivity.class);
                     intent1.putExtra(logInActivity.REQUEST_CODE_NAME, REQUEST_ID);
-                    intent1.putExtra("title", "Enter 6 digit Pin");
                     getResult.launch(intent1);
 
 
@@ -164,9 +163,13 @@ public class ShowCardViewDataDialog extends Fragment {
                     @Override
                     public void onActivityResult(ActivityResult result) {
                         Intent data = result.getData();
-                        String tempResult = Objects.requireNonNull(data).getStringExtra("result");
-                        if (tempResult.equals("yes")) {
-                            tietDisplayPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                        try {
+                            String tempResult = data.getStringExtra("result");
+                            if (tempResult.equals("yes")) {
+                                tietDisplayPassword.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                            }
+                        }catch (Exception e){
+                            e.printStackTrace();
                         }
                     }
                 }

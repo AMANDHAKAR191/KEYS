@@ -1,6 +1,7 @@
 package com.keys.aman.settings;
 
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
@@ -13,13 +14,15 @@ import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
 import com.keys.aman.base.TabLayoutActivity;
+import com.keys.aman.iActivityTracking;
 import com.keys.aman.signin_login.LogInActivity;
 
-public class TutorialActivity extends AppCompatActivity {
+public class TutorialActivity extends AppCompatActivity implements iActivityTracking {
 
     private ImageView img_back;
     LogInActivity logInActivity = new LogInActivity();
     TabLayoutActivity tabLayoutActivity = new TabLayoutActivity();
+    iActivityTracking iActivityTracking = new TutorialActivity();
     //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(TutorialActivity.this, TutorialActivity.this);
     MyPreference myPreference;
@@ -30,10 +33,9 @@ public class TutorialActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutorial);
         myPreference = MyPreference.getInstance(this);
-
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
-
+        iActivityTracking.onComingFromActivity();
         img_back = findViewById(R.id.img_back);
 
         img_back.setOnClickListener(new View.OnClickListener() {
@@ -78,5 +80,12 @@ public class TutorialActivity extends AppCompatActivity {
         SplashActivity.isForeground = true;
         finish();
         overridePendingTransition(0, R.anim.slide_out_down);
+    }
+
+    @Override
+    public void onComingFromActivity() {
+        Intent intent = getIntent();
+        String comingFromActivity = intent.getStringExtra(logInActivity.REQUEST_CODE_NAME);
+        System.out.println("comingFromActivity: " + comingFromActivity);
     }
 }

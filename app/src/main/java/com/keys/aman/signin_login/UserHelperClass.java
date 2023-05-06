@@ -1,29 +1,14 @@
 package com.keys.aman.signin_login;
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
-import androidx.room.Ignore;
-import androidx.room.PrimaryKey;
-
-@Entity(tableName = "signupdata")
 public class UserHelperClass {
-    @ColumnInfo(name = "name")
-    String name;
-    @ColumnInfo(name = "email")
-    String email;
-    @ColumnInfo(name = "aesKey")
-    String aesKey;
-    @ColumnInfo(name = "aesIv")
-    String aesIv;
-    @ColumnInfo(name = "privateUid")
-    @PrimaryKey
-    @NonNull
-    String privateUid;
-    @ColumnInfo(name = "publicUid")
-    String publicUid ;
 
-    @Ignore
+    String name;
+    String email;
+    String aesKey;
+    String aesIv;
+    String privateUid;
+    String publicUid;
+
     public UserHelperClass() {
 
     }

@@ -3,13 +3,9 @@ package com.keys.aman.messages;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,13 +17,9 @@ import com.keys.aman.AES;
 import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
+import com.keys.aman.iAES;
 import com.keys.aman.signin_login.LogInActivity;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,7 +42,7 @@ public class ChatAdaptor extends RecyclerView.Adapter {
     String chatType = "text";
     MyPreference myPreference;
     private SharedPreferences sharedPreferences;
-    private AES aes;
+    private iAES iAES;
 
     public ChatAdaptor() {
     }
@@ -63,7 +55,7 @@ public class ChatAdaptor extends RecyclerView.Adapter {
         System.out.println("commonEncryptionKey: " + commonEncryptionKey);
         System.out.println("commonEncryptionIv: " + commonEncryptionIv);
 
-        aes = AES.getInstanceForCommon(commonEncryptionKey, commonEncryptionIv);
+        iAES = AES.getInstance(commonEncryptionKey, commonEncryptionIv);
     }
 
 
@@ -123,7 +115,7 @@ public class ChatAdaptor extends RecyclerView.Adapter {
         String dLogin, dPassword, dWebsiteName, dWebsiteLink, Title, currentDate;
         try {
             if (holder.getClass() == SenderViewHolder.class) {
-                String message = aes.doubleDecryptionForCommon(dataHolder.get(position).getMessage());
+                String message = iAES.singleDecryption(dataHolder.get(position).getMessage());
                 ((SenderViewHolder) holder).tvSenderMessage.setText(message);
                 DateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
                 DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
@@ -132,9 +124,10 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                 ((SenderViewHolder) holder).tvSenderMessageStatus.setText(dataHolder.get(position).getStatus());
 
             } else if (holder.getClass() == ReceiverViewHolder.class) {
-                String message = aes.doubleDecryptionForCommon(dataHolder.get(position).getMessage());
+                System.out.println("message: ");
+                String message = iAES.singleDecryption(dataHolder.get(position).getMessage());
                 System.out.println("message: " + message);
-                ((ReceiverViewHolder) holder).tvReceiverMessage.setText(message);
+                ((ReceiverViewHolder) holder).tvReceiverMessage.setText(dataHolder.get(position).getStatus());
                 DateFormat sdf = new SimpleDateFormat("hh:mm", Locale.getDefault());
                 DateFormat inputsdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
                 String dateAndTime1 = sdf.format(Objects.requireNonNull(inputsdf.parse(dataHolder.get(position).getDateAndTime())));
@@ -145,10 +138,10 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                     noteBody = dataHolder.get(position).getNoteModelClass().getNote();
                     noteTitle = dataHolder.get(position).getNoteModelClass().getTitle();
 
-                    decryptedNoteTitle = aes.doubleDecryption(noteTitle);
-                    decryptedNoteBody = aes.doubleDecryption(noteBody);
-                    ((SenderNoteViewHolder) holder).tvNote.setText(decryptedNoteBody);
-                    ((SenderNoteViewHolder) holder).tvTitle.setText(decryptedNoteTitle);
+//                    decryptedNoteTitle = aes.doubleDecryption(noteTitle);
+//                    decryptedNoteBody = aes.doubleDecryption(noteBody);
+                    ((SenderNoteViewHolder) holder).tvNote.setText(noteBody);
+                    ((SenderNoteViewHolder) holder).tvTitle.setText(noteTitle);
                     System.out.println(dataHolder.get(position).getNoteModelClass());
                 }
 
@@ -157,12 +150,11 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                     noteBody = dataHolder.get(position).getNoteModelClass().getNote();
                     noteTitle = dataHolder.get(position).getNoteModelClass().getTitle();
 
-                    //Double Decryption
-                    decryptedNoteTitle = aes.doubleDecryptionForCommon(noteTitle);
-                    decryptedNoteBody = aes.doubleDecryptionForCommon(noteBody);
+//                    decryptedNoteTitle = aes.doubleDecryptionForCommon(noteTitle);
+//                    decryptedNoteBody = aes.doubleDecryptionForCommon(noteBody);
 
-                    ((ReceiverNoteViewHolder) holder).tvNote.setText(decryptedNoteBody);
-                    ((ReceiverNoteViewHolder) holder).tvTitle.setText(decryptedNoteTitle);
+                    ((ReceiverNoteViewHolder) holder).tvNote.setText(noteBody);
+                    ((ReceiverNoteViewHolder) holder).tvTitle.setText(noteTitle);
                     System.out.println(dataHolder.get(position).getNoteModelClass());
                 }
 
@@ -170,18 +162,14 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                 final PasswordHelperClass temp = dataHolder.get(position).getPasswordModelClass();
                 try {
                     currentDate = temp.getDate();
-                    dLogin = aes.doubleDecryption(temp.getAddDataLogin());
-                    dPassword = aes.doubleDecryption(temp.getAddDataPassword());
+                    dLogin = temp.getAddDataLogin();
+                    dPassword = temp.getAddDataPassword();
                     dWebsiteName = temp.getAddWebsite_name();
                     dWebsiteLink = temp.getAddWebsite_link();
-
                     Title = dWebsiteName.substring(0, 1).toUpperCase() + dWebsiteName.substring(1);
                     title1 = Title.split("_", 3);
 
-
                     ((SenderPasswordViewHolder) holder).tvLogin.setText(dLogin);
-
-
                     ((SenderPasswordViewHolder) holder).tvImageTitle.setVisibility(View.VISIBLE);
                     if (title1.length == 3) {
                         ((SenderPasswordViewHolder) holder).tvImageTitle.setText(title1[1]);
@@ -198,19 +186,15 @@ public class ChatAdaptor extends RecyclerView.Adapter {
                 final PasswordHelperClass temp = dataHolder.get(position).getPasswordModelClass();
                 try {
                     currentDate = temp.getDate();
-                    System.out.println("temp.getAddDataLogin(): " + temp.getAddDataLogin());
-                    dLogin = aes.doubleDecryptionForCommon(temp.getAddDataLogin());
-                    dPassword = aes.doubleDecryptionForCommon(temp.getAddDataPassword());
+                    dLogin = temp.getAddDataLogin();
+                    dPassword = temp.getAddDataPassword();
                     dWebsiteName = temp.getAddWebsite_name();
                     dWebsiteLink = temp.getAddWebsite_link();
-
                     Title = dWebsiteName.substring(0, 1).toUpperCase() + dWebsiteName.substring(1);
                     title1 = Title.split("_", 3);
 
 
                     ((ReceiverPasswordViewHolder) holder).tvLogin.setText(dLogin);
-
-
                     ((ReceiverPasswordViewHolder) holder).tvImageTitle.setVisibility(View.VISIBLE);
                     if (title1.length == 3) {
                         ((ReceiverPasswordViewHolder) holder).tvImageTitle.setText(title1[1]);

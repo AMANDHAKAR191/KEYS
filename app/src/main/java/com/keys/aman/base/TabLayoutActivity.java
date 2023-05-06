@@ -24,6 +24,7 @@ import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
 import com.keys.aman.authentication.PinLockActivity;
+import com.keys.aman.data.Firebase;
 import com.keys.aman.home.HomeFragment;
 import com.keys.aman.home.PasswordGeneratorActivity;
 import com.keys.aman.home.addpassword.AddPasswordActivity;
@@ -48,67 +49,56 @@ public class TabLayoutActivity extends AppCompatActivity {
     private static final String TAG = "TabLayoutActivity";
 
     public static final String REQUEST_ID = "TabLayoutActivity";
-    //objects
     private TabLayout tabLayout;
     TextView tvTitle, tvTitle1;
     LinearLayout llFab, llToolbar;
     Group groupFabHome, groupFabChat, groupFabNote, groupFabAll;
     CircleImageView cimgProfile;
-    ExtendedFloatingActionButton exFABtn; /*exFABtn_notes*/
+    ExtendedFloatingActionButton exFABtn;
     FloatingActionButton fabAddPassword, fabPasswordGenerator, fabAddNote, fabAddContactEmail;
-    private SharedPreferences sharedPreferences;
     LogInActivity logInActivity = new LogInActivity();
-    PinLockActivity pinLockActivity = new PinLockActivity();
     //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(TabLayoutActivity.this, TabLayoutActivity.this);
     private String senderPublicUid;
-    private FirebaseAuth firebaseAuth;
-    private FirebaseUser user;
-
-
     //variables
     int selectedTab = 1;
-
     Boolean isAllFabsVisible;
     private int clickCounter = 0;
-    public static int pauseCounter;
     MyPreference myPreference;
 
 
-    @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab_layout);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+
+        //init variables
         myPreference = MyPreference.getInstance(this);
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
+        senderPublicUid = myPreference.getPublicUid();
+        selectedTab = 1;
+        clickCounter = 0;
 
-
+        //init views
         groupFabAll = findViewById(R.id.group_fab_all);
         groupFabHome = findViewById(R.id.group_fab_home);
         groupFabChat = findViewById(R.id.group_fab_chat);
         groupFabNote = findViewById(R.id.group_fab_note);
         tabLayout = findViewById(R.id.tablayout);
         ViewPager viewPager = findViewById(R.id.viewpager);
-        cimgProfile = findViewById(R.id.img_profile);
-        tvTitle = findViewById(R.id.tv_title);
-        tvTitle1 = findViewById(R.id.tv_title1);
-        exFABtn = findViewById(R.id.ex_fab);
+        cimgProfile = findViewById(R.id.circular_img_profile);
+        tvTitle = findViewById(R.id.tv_title_greeting);
+        tvTitle1 = findViewById(R.id.tv_title_name);
+        exFABtn = findViewById(R.id.ex_fab_button);
         fabAddPassword = findViewById(R.id.add_password_fab);
-//        tvAddPassword = findViewById(R.id.tv_add_password);
         fabPasswordGenerator = findViewById(R.id.password_gen_fab);
-//        fabAddNote = findViewById(R.id.add_contact_email_fab);
         fabAddContactEmail = findViewById(R.id.add_contact_email_fab);
-//        tvPasswordGenerator = findViewById(R.id.tv_pass_gen);
         fabAddNote = findViewById(R.id.add_note_fab);
-//        tvAddNote = findViewById(R.id.tv_add_note);
-        llFab = findViewById(R.id.ll_fab);
+        llFab = findViewById(R.id.ll_fab_background);
         tabLayout.setupWithViewPager(viewPager);
         llToolbar = findViewById(R.id.ll_toolbar);
-
-        senderPublicUid = myPreference.getPublicUid();
 
 
         llFab.setOnClickListener(new View.OnClickListener() {
@@ -188,18 +178,14 @@ public class TabLayoutActivity extends AppCompatActivity {
         Objects.requireNonNull(tabLayout.getTabAt(1)).setIcon(R.drawable.chats_new_set);
         Objects.requireNonNull(tabLayout.getTabAt(2)).setIcon(R.drawable.notes_new_set);
         Objects.requireNonNull(tabLayout.getTabAt(3)).setIcon(R.drawable.setting_new_set);
-        firebaseAuth = FirebaseAuth.getInstance();
-        user = firebaseAuth.getCurrentUser();
+
         Objects.requireNonNull(tabLayout.getTabAt(0)).setText("Home");
         Objects.requireNonNull(tabLayout.getTabAt(1)).setText("Chats");
         Objects.requireNonNull(tabLayout.getTabAt(2)).setText("Notes");
         Objects.requireNonNull(tabLayout.getTabAt(3)).setText("Setting");
 
-//        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.home_filled_new_set);
         tabLayout.setUnboundedRipple(true);
-//        //select default tab
-//        TabLayout.Tab tab = tabLayout.getTabAt(2);
-//        tab.select();
+
 
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -208,21 +194,18 @@ public class TabLayoutActivity extends AppCompatActivity {
                 switch (position) {
                     case 0:
                         selectedTab = 1;
-//                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Home");
+                        tvTitle.setTextSize(40);
                         tvTitle.setText("Hello 👋");
                         tvTitle1.setVisibility(View.VISIBLE);
-                        tvTitle1.setText(user.getDisplayName());
+                        tvTitle1.setText(Firebase.getInstance(TabLayoutActivity.this).getDisplayName());
                         break;
                     case 1:
                         selectedTab = 2;
-//                        fabAddContactEmail.setVisibility(View.VISIBLE);
-//                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Chats");
                         tvTitle.setTextSize(40);
                         tvTitle.setText("Chats");
                         break;
                     case 2:
                         selectedTab = 3;
-//                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Notes");
                         tvTitle.setTextSize(40);
                         tvTitle.setText("NOTES");
                         break;
@@ -230,7 +213,6 @@ public class TabLayoutActivity extends AppCompatActivity {
                         selectedTab = 4;
                         exFABtn.setVisibility(View.GONE);
                         groupFabAll.setVisibility(View.GONE);
-//                        Objects.requireNonNull(tabLayout.getTabAt(position)).setText("Setting");
                         tvTitle.setTextSize(40);
                         tvTitle.setText("SETTING");
                         cimgProfile.setVisibility(View.INVISIBLE);
@@ -241,7 +223,6 @@ public class TabLayoutActivity extends AppCompatActivity {
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 int position = tab.getPosition();
-//                Objects.requireNonNull(tabLayout.getTabAt(position)).setText("");
 
                 switch (position) {
                     case 0:
@@ -250,7 +231,6 @@ public class TabLayoutActivity extends AppCompatActivity {
                         exFABtn.setIconResource(R.drawable.add);
                         exFABtn.extend();
                         llFab.setVisibility(View.GONE);
-//                        Objects.requireNonNull(tabLayout.getTabAt(0)).setIcon(R.drawable.home_new_set);
                         llFab.setBackground(getDrawable(R.drawable.transparent_background));
                         break;
                     case 1:
@@ -320,7 +300,6 @@ public class TabLayoutActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -329,8 +308,10 @@ public class TabLayoutActivity extends AppCompatActivity {
         appLockCounterClass.onStartOperation();
         Uri currentUser = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getPhotoUrl();
 
+        tvTitle.setTextSize(40);
         tvTitle.setText("Hello 👋");
-        tvTitle1.setText(user.getDisplayName());
+        tvTitle1.setVisibility(View.VISIBLE);
+        tvTitle1.setText(Firebase.getInstance(TabLayoutActivity.this).getDisplayName());
 
         if (currentUser == null) {
             // No user is signed in

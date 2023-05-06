@@ -1,3 +1,5 @@
+/*created by AMAN DHAKAR
+Last update 07/05/2025*/
 package com.keys.aman.authentication;
 
 import android.content.Intent;
@@ -34,64 +36,30 @@ public class BiometricAuthActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_biometric_authentication);
+        //init variable
         myPreference = MyPreference.getInstance(this);
 
-        Intent intent = getIntent();
-        comingRequestCode = intent.getStringExtra(logInActivity.REQUEST_CODE_NAME);
-        if (comingRequestCode == null){
-            comingRequestCode = "this";
-        }
+        onComingFromActivity();
+        openBiometricPrompt();
+    }
 
-
-        BiometricManager biometricManager = BiometricManager.from(this);
-        switch (biometricManager.canAuthenticate()){
-            case BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE:
-                Toast.makeText(this, "Fingerprint Scanner not detected in Device", Toast.LENGTH_SHORT).show();
-
-                SplashActivity.isForeground = true;
-                Intent intent3;
-                if (myPreference.isPinCompleted()){
-                    intent3 = new Intent(BiometricAuthActivity.this, PinLockActivity.class);
-                    intent3.putExtra(logInActivity.REQUEST_CODE_NAME,"LogInActivity");
-                    intent3.putExtra("title","Enter Pin");
-                }else {
-                    intent3 = new Intent(getApplicationContext(), PinLockActivity.class);
-                    intent3.putExtra(logInActivity.REQUEST_CODE_NAME, "setpin");
-                    intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent3.putExtra("title", "Set Pin");
-                }
-                startActivity(intent3);
-                finish();
-                break;
-            case BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE:
-                Toast.makeText(this, "Biometric is not available", Toast.LENGTH_SHORT).show();
-                break;
-            case BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED:
-                Toast.makeText(this, "Biometric is not enrolled", Toast.LENGTH_SHORT).show();
+    private void openBiometricPrompt() {
+        Executor executor = ContextCompat.getMainExecutor(this);
+        biometricPrompt = new BiometricPrompt(this, executor, new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
+                super.onAuthenticationError(errorCode, errString);
                 SplashActivity.isForeground = true;
                 Intent intent2;
                 if (myPreference.isPinCompleted()){
                     intent2 = new Intent(BiometricAuthActivity.this, PinLockActivity.class);
                     intent2.putExtra(logInActivity.REQUEST_CODE_NAME,BiometricAuthActivity.REQUEST_ID);
-                    intent2.putExtra("title","Enter Pin");
                 }else {
                     intent2 = new Intent(getApplicationContext(), PinLockActivity.class);
                     intent2.putExtra(logInActivity.REQUEST_CODE_NAME, TabLayoutActivity.REQUEST_ID);
                     intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent2.putExtra("title", "Set Pin");
                 }
                 startActivity(intent2);
-                finish();
-                break;
-        }
-
-        Executor executor = ContextCompat.getMainExecutor(this);
-
-        biometricPrompt = new BiometricPrompt(this, executor, new BiometricPrompt.AuthenticationCallback() {
-            @Override
-            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
-                super.onAuthenticationError(errorCode, errString);
-                Toast.makeText(BiometricAuthActivity.this, "Login Error", Toast.LENGTH_SHORT).show();
                 finish();
             }
 
@@ -138,5 +106,13 @@ public class BiometricAuthActivity extends AppCompatActivity {
                 .setDescription("KEYS want to verify your biometric")
                 .setDeviceCredentialAllowed(true).build();
         biometricPrompt.authenticate(promptInfo);
+    }
+
+    public void onComingFromActivity(){
+        Intent intent = getIntent();
+        comingRequestCode = intent.getStringExtra(logInActivity.REQUEST_CODE_NAME);
+        if (comingRequestCode == null){
+            comingRequestCode = "this";
+        }
     }
 }
