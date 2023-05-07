@@ -1,5 +1,7 @@
 package com.keys.aman;
 
+import android.util.Log;
+
 import java.util.Base64;
 
 import javax.crypto.Cipher;
@@ -13,6 +15,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public class AES implements iAES{
     private static AES sInstance;
+    final public static String TAG = "AES";
     private static SecretKey key;
 
     private final int KEY_SIZE = 128;
@@ -28,14 +31,18 @@ public class AES implements iAES{
     public static void initFromStrings(String aesKey, String aesIv) {
         key = new SecretKeySpec(sInstance.decode(aesKey), "AES");
         IV = sInstance.decode(aesIv);
+        System.err.println("AES initialization Check Point ==> AES " + aesKey + " || IV" + aesIv);
+
     }
     public static AES getInstance(String aesKey, String aes_Iv) {
         if (sInstance == null) {
             sInstance = new AES();
-            initFromStrings(aesKey,aes_Iv);
         }
+        initFromStrings(aesKey,aes_Iv);
         return sInstance;
     }
+    //AES initialization Check Point ==> AES Rs7jnUSkq1sFrXkAk0evO7== || IVNp4ddPmgwBYCi7oS
+    //AES initialization Check Point ==> AES Qw3rWsPhR9Pt7TLt2AsJgo== || IVHi66zMU1AmVfH6OP
 
     private String encryptOld(String message) throws Exception {
         byte[] messageInBytes = message.getBytes();

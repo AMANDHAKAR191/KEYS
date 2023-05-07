@@ -5,10 +5,7 @@ package com.keys.aman.signin_login;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -31,19 +28,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DatabaseReference;
 import com.keys.aman.MyPreference;
-import com.keys.aman.PrograceBar;
+import com.keys.aman.ProgressBar;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.BiometricAuthActivity;
 import com.keys.aman.authentication.PinLockActivity;
 import com.keys.aman.data.Firebase;
+import com.keys.aman.data.iFirebaseDAO;
 import com.keys.aman.databinding.ActivityLogInBinding;
+import com.keys.aman.iProgressBar;
 
-public class LogInActivity extends AppCompatActivity {
+public class LogInActivity extends AppCompatActivity{
 
     public static final String REQUEST_ID = "LogInActivity";
     private static final String TAG = "LogInActivity";
@@ -52,10 +49,11 @@ public class LogInActivity extends AppCompatActivity {
     //objects
     MyPreference myPreference;
     ActivityResultLauncher<Intent> getResultLogin;
-    private PrograceBar prograceBar;
+    iProgressBar iProgressBar;
     private GoogleSignInClient mGoogleSignInClient;
     private FirebaseAuth mAuth;
     ActivityLogInBinding binding;
+    iFirebaseDAO iFirebaseDAO;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,8 +75,8 @@ public class LogInActivity extends AppCompatActivity {
                 createRequest();
                 SplashActivity.isForeground = true;
                 //Show ProgressBar and Update Status
-                prograceBar.showDialog();
-                prograceBar.updateProgress("Fetching google account list...");
+                iProgressBar.showDialog();
+                iProgressBar.updateProgressBar("Fetching google account list...");
                 Intent signInIntent = mGoogleSignInClient.getSignInIntent();
                 getResultLogin.launch(signInIntent);
             }
@@ -92,7 +90,7 @@ public class LogInActivity extends AppCompatActivity {
                         try {
                             // Google Sign In was successful, authenticate with Firebase
                             //Update ProgressBar status
-                            prograceBar.updateProgress("Authenticating with firebase...");
+                            iProgressBar.updateProgressBar("Authenticating with firebase...");
                             GoogleSignInAccount account = task.getResult(ApiException.class);
                             firebaseAuthWithGoogle(account);
                         } catch (ApiException e) {
@@ -103,6 +101,14 @@ public class LogInActivity extends AppCompatActivity {
                     }
                 }
         );
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (iProgressBar.isDialogShowing()){
+            iProgressBar.dismissDialog();
+        }
     }
 
     private void checkGooglePlayServiceSecurityProvider() {
@@ -122,8 +128,9 @@ public class LogInActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         //initialize local database
         myPreference = MyPreference.getInstance(this);
-        prograceBar = new PrograceBar(LogInActivity.this);
+        iProgressBar = new ProgressBar(LogInActivity.this);
         SplashActivity.isForeground = false;
+        iFirebaseDAO = Firebase.getInstance(LogInActivity.this);
     }
 
     private void startBioAuthActivity() {
@@ -161,25 +168,25 @@ public class LogInActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             //Update ProgressBar status
-                            prograceBar.updateProgress("Checking User...");
+                            iProgressBar.updateProgressBar("Checking User...");
                             //check user if already signed up in background
-                            Firebase.getInstance(LogInActivity.this).checkUser(new Firebase.FirebaseUserCheckCallback() {
+                            iFirebaseDAO.checkUser(new Firebase.iUserCheckCallback() {
                                 @Override
                                 public void onUserExist() {
-                                    prograceBar.dismissbar();
+                                    iProgressBar.dismissDialog();
                                     Toast.makeText(LogInActivity.this, "User Exist, loading data...", Toast.LENGTH_SHORT).show();
-                                    Firebase.getInstance(LogInActivity.this).loadUserData();
+                                    iFirebaseDAO.loadUserData();
                                     SplashActivity.isForeground = true;
                                     startPinLockActivity();
                                 }
 
                                 @Override
                                 public void onUserNotExist() {
-                                    Firebase.getInstance(LogInActivity.this).saveUserData(new Firebase.FirebaseCreateAccountCallBack() {
+                                    iFirebaseDAO.saveUserData(new Firebase.iCreateAccountCallBack() {
                                         @Override
                                         public void onAccountCreatedSuccessfullyOnFirebase() {
                                             //Update ProgressBar status
-                                            prograceBar.updateProgress("Account Created");
+                                            iProgressBar.updateProgressBar("Account Created");
                                             SplashActivity.isForeground = true;
                                             startPinLockActivity();
                                         }
@@ -187,7 +194,7 @@ public class LogInActivity extends AppCompatActivity {
                                         @Override
                                         public void onAccountCreationFailed(String message) {
                                             Toast.makeText(LogInActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
-                                            prograceBar.dismissbar();
+                                            iProgressBar.dismissDialog();
                                         }
                                     });
 
@@ -198,7 +205,7 @@ public class LogInActivity extends AppCompatActivity {
                                 task.getResult();
                             } catch (Exception firebaseNetworkException) {
                                 Toast.makeText(LogInActivity.this, "Check Internet Connection", Toast.LENGTH_SHORT).show();
-                                prograceBar.dismissbar();
+                                iProgressBar.dismissDialog();
                             }
 
                         }

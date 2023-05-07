@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -25,20 +24,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.keys.aman.MyPreference;
-import com.keys.aman.PrograceBar;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
 import com.keys.aman.base.TabLayoutActivity;
 import com.keys.aman.data.Firebase;
-import com.keys.aman.home.HomeFragment;
+import com.keys.aman.data.iFirebaseDAO;
+import com.keys.aman.databinding.ActivityAddPasswordDataBinding;
 import com.keys.aman.home.PasswordGeneratorActivity;
 import com.keys.aman.home.ShowCardViewDataDialog;
-import com.keys.aman.iAES;
-import com.keys.aman.iActivityTracking;
 import com.keys.aman.signin_login.LogInActivity;
 
 import java.text.SimpleDateFormat;
@@ -47,10 +42,11 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
-public class AddPasswordActivity extends AppCompatActivity implements iActivityTracking {
+public class AddPasswordActivity extends AppCompatActivity {
 
     public static final String REQUEST_ID = "AddPasswordActivity";
     public static WebsiteListAdaptor adaptor;
+    ActivityAddPasswordDataBinding binding;
     TextInputLayout tilUsername, tilPassword, tilWebsiteName, tilWebsitelink;
     TextInputEditText tietUsername, tietPassword, tietWebsiteName, tietWebsitelink;
     Button btnSubmit, btnGenratePassword;
@@ -64,15 +60,11 @@ public class AddPasswordActivity extends AppCompatActivity implements iActivityT
     //todo 2 object calling of AppLockCounterClass
     AppLockCounterClass appLockCounterClass = new AppLockCounterClass(AddPasswordActivity.this, AddPasswordActivity.this);
     MyPreference myPreference;
+    iFirebaseDAO iFirebaseDAO;
     String comingRequestCode;
-    String comingDate, comingUserName, comingPassword, comingWebsiteName, comingWebsiteLink;
-    //    public static String addWebsiteLink;
-    String currentDateAndTime;
-    iActivityTracking iActivityTracking = new AddPasswordActivity();
-    private PrograceBar prograceBar;
-    private iAES iAES;
     private RecyclerView recyclerView;
     private ArrayList<WebsiteHelperClass> dataHolder;
+    private String date;
 
     public static String reverseFun(String str) {
 //        String str= "This#string%contains^special*characters&.";
@@ -85,13 +77,15 @@ public class AddPasswordActivity extends AppCompatActivity implements iActivityT
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_password_data);
+        binding = ActivityAddPasswordDataBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         //initialize local database
         myPreference = MyPreference.getInstance(this);
+        iFirebaseDAO = Firebase.getInstance(AddPasswordActivity.this);
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
-        iActivityTracking.onComingFromActivity();
+
 
         //Hooks
         tilUsername = findViewById(R.id.til_username);
@@ -119,6 +113,13 @@ public class AddPasswordActivity extends AppCompatActivity implements iActivityT
                 return false;
             }
         });
+        binding.btnSubmit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                System.out.println("iFirebaseDAO1: " + iFirebaseDAO);
+                savePassword();
+            }
+        });
 
         getResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 new ActivityResultCallback<ActivityResult>() {
@@ -139,10 +140,48 @@ public class AddPasswordActivity extends AppCompatActivity implements iActivityT
                     }
                 });
 
-
+        onComingFromActivity();
+        recyclerViewSetData();
     }
 
+    private void savePassword() {
+        String userName = Objects.requireNonNull(tilUsername.getEditText()).getText().toString().trim();
+        String password = Objects.requireNonNull(tilPassword.getEditText()).getText().toString();
+        String websiteName = Objects.requireNonNull(tilWebsiteName.getEditText()).getText().toString().toLowerCase().trim();
+        String websiteLink = Objects.requireNonNull(tilWebsitelink.getEditText()).getText().toString().toLowerCase().trim();
 
+        if (websiteLink.equals("")) {
+            websiteLink = "_";
+        }
+
+
+        if (validate(userName, password, websiteName)) {
+            iFirebaseDAO.saveSinglePassword(date, userName, password, websiteName, websiteLink, new Firebase.iPasswordSaveCallBack() {
+                @Override
+                public void onPasswordSaved() {
+                    Toast.makeText(AddPasswordActivity.this, "Password saved", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onFailed(String message) {
+                    Toast.makeText(AddPasswordActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
+                }
+            });
+            //todo 5 if app is going to another activity make isForeground = true
+            SplashActivity.isForeground = true;
+            finish();
+            overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
+        } else {
+            tvError.setVisibility(View.VISIBLE);
+            tvError.setText("Please enter all Fields");
+            tvError.setTextColor(Color.RED);
+        }
+    }
+
+    public boolean validate(String tempAddLogin, String tempAddPassword, String tempAddWebsiteName) {
+        return !tempAddLogin.equals("") && !tempAddPassword.equals("") && !tempAddWebsiteName.equals("");
+
+    }
 
 
     public void goBack(View view) {
@@ -164,14 +203,14 @@ public class AddPasswordActivity extends AppCompatActivity implements iActivityT
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.hasFixedSize();
 
-        Firebase.getInstance(this).getWebsiteListData(new Firebase.WebsiteListCallback() {
+
+        iFirebaseDAO.getWebsiteListData(new Firebase.iWebsiteListCallback() {
             @Override
             public void onWebsiteListLoaded(ArrayList<WebsiteHelperClass> dataHolderWebsiteList) {
-                System.out.println("dataHolderWebsiteList: " + dataHolderWebsiteList);
+                dataHolder = dataHolderWebsiteList;
                 adaptor = new WebsiteListAdaptor(dataHolder, getApplicationContext(), AddPasswordActivity.this) {
                     @Override
                     public void onPictureClick(String dwebsiteLink, String dwebsitename) {
-
                         scrollView1.setVisibility(View.INVISIBLE);
                         scrollView2.setVisibility(View.VISIBLE);
                         tietWebsiteName.setText(dwebsitename);
@@ -200,18 +239,6 @@ public class AddPasswordActivity extends AppCompatActivity implements iActivityT
         str = str1[2].replaceAll("[^a-zA-Z0-9]", "_");
         System.out.println(str);
         return str;
-    }
-
-    public void progressbar() {
-        prograceBar = new PrograceBar(AddPasswordActivity.this);
-        prograceBar.showDialog();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }, 500);
     }
 
     @Override
@@ -247,7 +274,6 @@ public class AddPasswordActivity extends AppCompatActivity implements iActivityT
         overridePendingTransition(R.anim.slide_in_up, R.anim.slide_out_down);
     }
 
-    @Override
     public void onComingFromActivity() {
         //Getting intent
         Intent intent = getIntent();
@@ -255,14 +281,20 @@ public class AddPasswordActivity extends AppCompatActivity implements iActivityT
         if (comingRequestCode == null) {
             comingRequestCode = "this";
         }
-        comingDate = intent.getStringExtra("date");
-        comingUserName = intent.getStringExtra("loginname");
-        comingPassword = intent.getStringExtra("loginpassowrd");
-        comingWebsiteName = intent.getStringExtra("loginwebsite_name");
-        comingWebsiteLink = intent.getStringExtra("loginwebsite_link");
+//        comingDate = intent.getStringExtra("date");
+//        comingUserName = intent.getStringExtra("loginname");
+//        comingPassword = intent.getStringExtra("loginpassowrd");
+//        comingWebsiteName = intent.getStringExtra("loginwebsite_name");
+//        comingWebsiteLink = intent.getStringExtra("loginwebsite_link");
 
         switch (comingRequestCode) {
             case ShowCardViewDataDialog.REQUEST_ID: // for editing the password
+                date = intent.getStringExtra("date");
+                String comingUserName = intent.getStringExtra("loginname");
+                String comingPassword = intent.getStringExtra("loginpassowrd");
+                String comingWebsiteName = intent.getStringExtra("loginwebsite_name");
+                String comingWebsiteLink = intent.getStringExtra("loginwebsite_link");
+
                 tietWebsitelink.setEnabled(comingWebsiteLink.equals(""));
                 btnSubmit.setText("Update");
                 tietUsername.setText(comingUserName);
@@ -285,7 +317,7 @@ public class AddPasswordActivity extends AppCompatActivity implements iActivityT
                 scrollView1.setVisibility(View.VISIBLE);
                 scrollView2.setVisibility(View.GONE);
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault());
-                currentDateAndTime = sdf.format(new Date());
+                date = sdf.format(new Date());
                 break;
         }
     }

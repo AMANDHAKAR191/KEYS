@@ -32,14 +32,6 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-
-        imageView = findViewById(R.id.imageView);
-        imageView1 = findViewById(R.id.imageView1);
-
-//        LocalDatabase.getInstance(this).getDatabases();
-
-        createShortcutOfApp();
-
         //start firebase messaging service
         Intent serviceIntent = new Intent(SplashActivity.this, MyFirebaseMessagingService.class);
         startService(serviceIntent);
@@ -52,20 +44,20 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    public void createShortcutOfApp() {
-
-        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
-
-        Intent intent = new Intent(SplashActivity.this, PasswordGeneratorActivity.class);
-        intent.setAction(Intent.ACTION_VIEW);
-        ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(this, "short1").
-                setShortLabel("Gen Password").
-                setLongLabel("Open PassGenActivity ").
-                setIcon(Icon.createWithResource(SplashActivity.this, R.drawable.add)).
-                setIntent(intent).
-                build();
-        shortcutManager.setDynamicShortcuts(Arrays.asList(shortcutInfo));
-    }
+//    public void createShortcutOfApp() {
+//
+//        ShortcutManager shortcutManager = getSystemService(ShortcutManager.class);
+//
+//        Intent intent = new Intent(SplashActivity.this, PasswordGeneratorActivity.class);
+//        intent.setAction(Intent.ACTION_VIEW);
+//        ShortcutInfo shortcutInfo = new ShortcutInfo.Builder(this, "short1").
+//                setShortLabel("Gen Password").
+//                setLongLabel("Open PassGenActivity ").
+//                setIcon(Icon.createWithResource(SplashActivity.this, R.drawable.add)).
+//                setIntent(intent).
+//                build();
+//        shortcutManager.setDynamicShortcuts(Arrays.asList(shortcutInfo));
+//    }
 
 
 }

@@ -21,6 +21,9 @@ import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.AES;
 import com.keys.aman.SplashActivity;
+import com.keys.aman.data.Firebase;
+import com.keys.aman.data.iFirebaseDAO;
+import com.keys.aman.home.HomeFragment;
 import com.keys.aman.iAES;
 import com.keys.aman.notes.addnote.NoteHelperClass;
 import com.keys.aman.notes.addnote.AddNotesActivity;
@@ -159,9 +162,15 @@ public class NoteAdapterForPinned extends RecyclerView.Adapter<NoteAdapterForPin
                             Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
                             return true;
                         case R.id.img_delete:
-                            NotesFragment.reference.child(noteDate).removeValue();
-                            NotesFragment.adaptorPinned.notifyDataSetChanged();
-                            holder.resetPinnedAdaptorCall();
+                            iFirebaseDAO iFirebaseDAO = new Firebase(context);
+                            iFirebaseDAO.deleteSingleNote(noteDate, new Firebase.iNoteDeleteCallback() {
+                                @Override
+                                public void onNoteDeleted() {
+                                    NotesFragment.adaptorPinned.notifyDataSetChanged();
+                                    holder.resetPinnedAdaptorCall();
+                                }
+                            });
+
                             return true;
                         case R.id.item_pin:
                             NotesFragment.reference.child(noteDate).child("pinned").setValue(false);

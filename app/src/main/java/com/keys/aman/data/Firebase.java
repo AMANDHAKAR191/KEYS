@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
-public class Firebase {
+public class Firebase implements iFirebaseDAO{
     static DatabaseReference databaseReference;
     static FirebaseAuth firebaseAuth;
     static MyPreference myPreference;
@@ -45,9 +45,9 @@ public class Firebase {
     public static Firebase getInstance(Context context) {
         if (sInstance == null) {
             sInstance = new Firebase(context);
-            firebaseAuth = FirebaseAuth.getInstance();
-            myPreference = MyPreference.getInstance(context);
         }
+        firebaseAuth = FirebaseAuth.getInstance();
+        myPreference = MyPreference.getInstance(context);
         return sInstance;
     }
 
@@ -58,7 +58,7 @@ public class Firebase {
         return Objects.requireNonNull(firebaseAuth.getCurrentUser()).getDisplayName();
     }
 
-    public void loadPasswordsData(final FirebaseLoadPasswordDataCallback loadPasswordDataCallback) {
+    public void loadPasswordsData(final iLoadPasswordDataCallback loadPasswordDataCallback) {
         dataHolder = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference("PasswordsData").child(getUID());
 
@@ -86,9 +86,12 @@ public class Firebase {
         });
     }
 
-    public void saveSinglePassword(String comingDate, String encryptedAddLogin, String encryptedAddPassword, String addWebsiteName, String comingLoginWebsiteLink, onPasswordSaveCallBack passwordSaveCallBack) {
-        databaseReference = FirebaseDatabase.getInstance().getReference("PasswordsData").child(getUID()).child(addWebsiteName);
-        PasswordHelperClass passwordHelperClass = new PasswordHelperClass(comingDate, encryptedAddLogin, encryptedAddPassword, addWebsiteName, comingLoginWebsiteLink);
+    public void saveSinglePassword(String comingDate, String userName, String Password, String websiteName, String websiteLink, iPasswordSaveCallBack passwordSaveCallBack) {
+        iAES = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
+        String encryptedUserName = iAES.doubleEncryption(userName);
+        String encryptedPassword = iAES.doubleEncryption(userName);
+        databaseReference = FirebaseDatabase.getInstance().getReference("PasswordsData").child(getUID()).child(websiteName);
+        PasswordHelperClass passwordHelperClass = new PasswordHelperClass(comingDate, encryptedUserName, encryptedPassword, websiteName, websiteLink);
         databaseReference.child(comingDate).setValue(passwordHelperClass)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -104,8 +107,20 @@ public class Firebase {
                 });
     }
 
-    public void getWebsiteListData(final WebsiteListCallback websiteListCallback) {
+    public void deleteSinglePassword(String passwordDate, String websiteName, final iPasswordDeleteCallback iPasswordDeleteCallback){
+        databaseReference = FirebaseDatabase.getInstance().getReference("PasswordData").child(getUID());
+        databaseReference.child(websiteName).child(passwordDate).removeValue()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        iPasswordDeleteCallback.onPasswordDeleted();
+                    }
+                });
+    }
+
+    public void getWebsiteListData(final iWebsiteListCallback iWebsiteListCallback) {
         ArrayList<WebsiteHelperClass> dataholder = new ArrayList<>();
+        databaseReference = FirebaseDatabase.getInstance().getReference("website_list");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -115,7 +130,7 @@ public class Firebase {
                         dataholder.add(data);
                     }
                     Collections.sort(dataholder, WebsiteHelperClass.addDataHelperClassComparator);
-                    websiteListCallback.onWebsiteListLoaded(dataholder);
+                    iWebsiteListCallback.onWebsiteListLoaded(dataholder);
                 }
             }
 
@@ -126,7 +141,7 @@ public class Firebase {
         });
     }
 
-    public void saveSingleNote(String date, String titleEncrypted, String noteEncrypted, boolean isHideNote, final onNoteSaveCallBack noteSaveCallBack) {
+    public void saveSingleNote(String date, String titleEncrypted, String noteEncrypted, boolean isHideNote, final iNoteSaveCallBack noteSaveCallBack) {
         databaseReference = FirebaseDatabase.getInstance().getReference("NotesData").child(getUID());
         NoteHelperClass addDNoteHelper;
         addDNoteHelper = new NoteHelperClass(date, titleEncrypted, noteEncrypted, isHideNote, false);
@@ -145,7 +160,17 @@ public class Firebase {
                 });
     }
 
-    public void checkUser(final FirebaseUserCheckCallback userCheckCallback) {
+    public void deleteSingleNote(String noteDate, final iNoteDeleteCallback iNoteDeleteCallback){
+        databaseReference = FirebaseDatabase.getInstance().getReference("NotesData").child(getUID());
+        databaseReference.child(noteDate).removeValue()
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        iNoteDeleteCallback.onNoteDeleted();
+                    }
+                });
+    }
+    public void checkUser(final iUserCheckCallback userCheckCallback) {
         databaseReference = FirebaseDatabase.getInstance().getReference("UserData");
         databaseReference.child(getUID()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -167,7 +192,7 @@ public class Firebase {
         });
     }
 
-    public void saveUserData(final FirebaseCreateAccountCallBack createAccountCallBack) {
+    public void saveUserData(final iCreateAccountCallBack createAccountCallBack) {
         String publicUname, email, private_uid, publicUid;
         publicUname = firebaseAuth.getCurrentUser().getDisplayName();
         email = firebaseAuth.getCurrentUser().getEmail();
@@ -260,7 +285,7 @@ public class Firebase {
         });
     }
 
-    public void loadChatMessages(String senderRoom, final FirebaseLoadChatMessagesCallback loadChatMessagesCallback) {
+    public void loadChatMessages(String senderRoom, final iLoadChatMessagesCallback loadChatMessagesCallback) {
         dataHolderChatMessages = new ArrayList<>();
         FirebaseDatabase.getInstance().getReference().child("messages").child(senderRoom)
                 .addValueEventListener(new ValueEventListener() {
@@ -286,40 +311,47 @@ public class Firebase {
                 });
     }
 
-    public interface FirebaseUserCheckCallback {
+    public interface iUserCheckCallback {
         void onUserExist();
 
         void onUserNotExist();
     }
 
-    public interface FirebaseCreateAccountCallBack {
+    public interface iCreateAccountCallBack {
         void onAccountCreatedSuccessfullyOnFirebase();
 
         void onAccountCreationFailed(String message);
 
     }
 
-    public interface FirebaseLoadPasswordDataCallback {
+    public interface iLoadPasswordDataCallback {
         void onPasswordDataReceivedCallback(ArrayList<PasswordHelperClass> dataHolderPassword);
     }
 
-    public interface FirebaseLoadChatMessagesCallback {
+    public interface iLoadChatMessagesCallback {
         void onChatMessagesLoaded(ArrayList<ChatModelClass> dataHolderChatMessages);
     }
 
-    public interface onPasswordSaveCallBack {
+    public interface iPasswordSaveCallBack {
         void onPasswordSaved();
 
         void onFailed(String message);
     }
 
-    public interface onNoteSaveCallBack {
+    public interface iNoteSaveCallBack {
         void onNoteSaved();
 
         void onFailed(String message);
     }
 
-    public interface WebsiteListCallback {
+    public interface iPasswordDeleteCallback {
+        void onPasswordDeleted();
+    }
+    public interface iNoteDeleteCallback{
+        void onNoteDeleted();
+    }
+
+    public interface iWebsiteListCallback {
         void onWebsiteListLoaded(ArrayList<WebsiteHelperClass> dataHolderWebsiteList);
     }
 

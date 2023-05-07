@@ -1,9 +1,7 @@
 package com.keys.aman.home;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -11,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,9 +30,9 @@ import com.keys.aman.MyPasswordViewModel;
 import com.keys.aman.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.data.Firebase;
+import com.keys.aman.data.iFirebaseDAO;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.messages.MessagesFragment;
-import com.keys.aman.signin_login.LogInActivity;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -48,18 +45,17 @@ public class HomeFragment extends Fragment {
     public static PasswordAdapter adaptor;
     Context context;
     Activity activity;
-//    ProgressBar progressBar;
     Button btnSharedPassword;
     LinearProgressIndicator progressBar;
     TextView tvNOTE;
     RecyclerView recview;
     SearchView searchView;
-    SharedPreferences sharedPreferences;
     ArrayList<PasswordHelperClass> dataholder;
     MyPreference myPreference;
     String uid;
-    LogInActivity logInActivity = new LogInActivity();
     private MyPasswordViewModel viewPasswordModel;
+    private iFirebaseDAO iFirebase;
+
     public HomeFragment(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
@@ -67,7 +63,6 @@ public class HomeFragment extends Fragment {
     public HomeFragment() {
     }
 
-    @SuppressLint("MissingInflatedId")
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -75,6 +70,7 @@ public class HomeFragment extends Fragment {
         //initialize local database
         myPreference = MyPreference.getInstance(context);
         viewPasswordModel = new ViewModelProvider(requireActivity()).get(MyPasswordViewModel.class);
+        iFirebase = Firebase.getInstance(context);
 
         //Hooks
         recview = view.findViewById(R.id.recview_passwords_list);
@@ -161,7 +157,7 @@ public class HomeFragment extends Fragment {
 //
 //            }
 //        });
-        Firebase.getInstance(context).loadPasswordsData(new Firebase.FirebaseLoadPasswordDataCallback() {
+        iFirebase.loadPasswordsData(new Firebase.iLoadPasswordDataCallback() {
             @Override
             public void onPasswordDataReceivedCallback(ArrayList<PasswordHelperClass> dataHolderPassword) {
                 if (dataHolderPassword.isEmpty()) {

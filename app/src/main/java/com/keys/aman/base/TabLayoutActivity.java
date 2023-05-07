@@ -25,6 +25,7 @@ import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
 import com.keys.aman.authentication.PinLockActivity;
 import com.keys.aman.data.Firebase;
+import com.keys.aman.data.iFirebaseDAO;
 import com.keys.aman.home.HomeFragment;
 import com.keys.aman.home.PasswordGeneratorActivity;
 import com.keys.aman.home.addpassword.AddPasswordActivity;
@@ -65,6 +66,7 @@ public class TabLayoutActivity extends AppCompatActivity {
     Boolean isAllFabsVisible;
     private int clickCounter = 0;
     MyPreference myPreference;
+    iFirebaseDAO iFirebaseDAO;
 
 
     @Override
@@ -80,6 +82,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         senderPublicUid = myPreference.getPublicUid();
         selectedTab = 1;
         clickCounter = 0;
+        iFirebaseDAO = Firebase.getInstance(TabLayoutActivity.this);
 
         //init views
         groupFabAll = findViewById(R.id.group_fab_all);
@@ -197,7 +200,7 @@ public class TabLayoutActivity extends AppCompatActivity {
                         tvTitle.setTextSize(40);
                         tvTitle.setText("Hello 👋");
                         tvTitle1.setVisibility(View.VISIBLE);
-                        tvTitle1.setText(Firebase.getInstance(TabLayoutActivity.this).getDisplayName());
+                        tvTitle1.setText(iFirebaseDAO.getDisplayName());
                         break;
                     case 1:
                         selectedTab = 2;
@@ -311,7 +314,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         tvTitle.setTextSize(40);
         tvTitle.setText("Hello 👋");
         tvTitle1.setVisibility(View.VISIBLE);
-        tvTitle1.setText(Firebase.getInstance(TabLayoutActivity.this).getDisplayName());
+        tvTitle1.setText(iFirebaseDAO.getDisplayName());
 
         if (currentUser == null) {
             // No user is signed in

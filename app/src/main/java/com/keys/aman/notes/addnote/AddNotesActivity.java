@@ -22,6 +22,7 @@ import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
 import com.keys.aman.base.TabLayoutActivity;
 import com.keys.aman.data.Firebase;
+import com.keys.aman.data.iFirebaseDAO;
 import com.keys.aman.iAES;
 import com.keys.aman.notes.NoteAdapterForUnpinned;
 import com.keys.aman.signin_login.LogInActivity;
@@ -51,6 +52,7 @@ public class AddNotesActivity extends AppCompatActivity {
     private String comingDate;
     private String uid;
     iAES iAES;
+    private iFirebaseDAO iFirebase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class AddNotesActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
         myPreference = MyPreference.getInstance(this);
         iAES = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
+        iFirebase = Firebase.getInstance(AddNotesActivity.this);
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
         //todo 3 when is coming from background or foreground always isForeground false
         SplashActivity.isForeground = false;
@@ -128,7 +131,7 @@ public class AddNotesActivity extends AppCompatActivity {
 
         NoteHelperClass addDNoteHelper;
         if (comingRequestCode.equals(NoteAdapterForUnpinned.REQUEST_ID)) {
-            Firebase.getInstance(AddNotesActivity.this).saveSingleNote(comingDate, titleEncrypted, noteEncrypted, isHideNote, new Firebase.onNoteSaveCallBack() {
+            iFirebase.saveSingleNote(comingDate, titleEncrypted, noteEncrypted, isHideNote, new Firebase.iNoteSaveCallBack() {
                 @Override
                 public void onNoteSaved() {
                     Toast.makeText(AddNotesActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
@@ -140,7 +143,7 @@ public class AddNotesActivity extends AppCompatActivity {
                 }
             });
         } else {
-            Firebase.getInstance(AddNotesActivity.this).saveSingleNote(currentDateAndTime, titleEncrypted, noteEncrypted, isHideNote, new Firebase.onNoteSaveCallBack() {
+            iFirebase.saveSingleNote(currentDateAndTime, titleEncrypted, noteEncrypted, isHideNote, new Firebase.iNoteSaveCallBack() {
                 @Override
                 public void onNoteSaved() {
                     Toast.makeText(AddNotesActivity.this, "Note saved", Toast.LENGTH_SHORT).show();

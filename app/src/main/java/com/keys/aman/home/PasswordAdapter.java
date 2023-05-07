@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +26,8 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.keys.aman.AES;
 import com.keys.aman.MyPreference;
 import com.keys.aman.R;
+import com.keys.aman.data.Firebase;
+import com.keys.aman.data.iFirebaseDAO;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.iAES;
 import com.keys.aman.messages.ChatActivity;
@@ -95,39 +96,94 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.myView
         this.dataHolderFull = tempDataHolder;
         this.context = context;
         this.activity = activity;
-        System.out.println("in constructor... " + tempDataHolder);
-    }
 
-    private static Bitmap fetchFavicon(Uri uri) {
-        final Uri iconUri = uri.buildUpon().path("favicon.ico").build();
-
-        InputStream is = null;
-        BufferedInputStream bis = null;
-        try {
-            URLConnection conn = new URL(iconUri.toString()).openConnection();
-            conn.connect();
-            is = conn.getInputStream();
-            bis = new BufferedInputStream(is, 8192);
-            return BitmapFactory.decodeStream(bis);
-        } catch (IOException e) {
-            return null;
-        }
     }
 
     @NonNull
     @Override
     public myViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_layout_password, parent, false);
-
         return new myViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull myViewHolder holder, int position) {
-        System.out.println("in Adaptor...");
-        System.err.println("dataHolderFull " + dataHolderFull + "\nlength = " + dataHolderFull.size());
-        myAdaptorThreadRunnable threadRunnable = new myAdaptorThreadRunnable(position, holder);
-        new Thread(threadRunnable).start();
+        String date, userName, decryptedUserName, password, decryptedPassword, websiteName, websiteLink, title;
+        final PasswordHelperClass temp = dataHolder.get(position);
+
+        String[] title1;
+        date = dataHolder.get(position).getDate();
+        userName = dataHolder.get(position).getAddDataLogin();
+        decryptedUserName = iAES.doubleDecryption(userName);
+        password = dataHolder.get(position).getAddDataPassword();
+        decryptedPassword = iAES.doubleDecryption(password);
+        websiteName = temp.getAddWebsite_name();
+        websiteLink = temp.getAddWebsite_link();
+
+        title = websiteName.substring(0, 1).toUpperCase() + websiteName.substring(1);
+        title1 = title.split("_", 3);
+        holder.tvLogin.setText(decryptedUserName);
+        if (title1.length == 3) {
+            holder.tvImageTitle.setText(title1[1]);
+            holder.tvWebsiteName.setText(title1[1]);
+        } else if (title1.length == 2) {
+            holder.tvImageTitle.setText(title1[0]);
+            holder.tvWebsiteName.setText(title1[0]);
+        } else if (title1.length == 1) {
+            holder.tvImageTitle.setText(title1[0]);
+            holder.tvWebsiteName.setText(title1[0]);
+        }
+
+
+        holder.showCardViewFragmentCall(date, decryptedUserName, decryptedPassword, websiteName, websiteLink);
+        holder.tbcvMore.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.img_copy_username:
+                        ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clipData = ClipData.newPlainText("Copy_Login", decryptedUserName);
+                        clipboardManager.setPrimaryClip(clipData);
+                        Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
+                        return true;
+
+                    case R.id.img_copy_password:
+                        ClipboardManager clipboardManager1 = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clipData1 = ClipData.newPlainText("Copy_Password", decryptedPassword);
+                        clipboardManager1.setPrimaryClip(clipData1);
+                        Toast.makeText(context, "Copied! ", Toast.LENGTH_SHORT).show();
+                        return true;
+                    case R.id.img_delete:
+                        new MaterialAlertDialogBuilder(context)
+                                .setTitle("Alert!")
+                                .setMessage("Are you sure, you want to delete the password?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        iFirebaseDAO iFirebaseDAO = new Firebase(context);
+                                        iFirebaseDAO.deleteSinglePassword(date, websiteName, new Firebase.iPasswordDeleteCallback() {
+                                            @Override
+                                            public void onPasswordDeleted() {
+                                                HomeFragment.adaptor.notifyDataSetChanged();
+                                                holder.resetAdaptorCall();
+                                            }
+                                        });
+                                    }
+                                })
+                                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                }).show();
+                        return true;
+                    case R.id.img_share_password:
+                        PasswordHelperClass passwordData = new PasswordHelperClass(date, decryptedUserName, decryptedPassword, websiteName, websiteLink);
+                        holder.sharePasswordCall(passwordData);
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -209,105 +265,5 @@ public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.myView
         }
 
 
-    }
-
-    public class myAdaptorThreadRunnable implements Runnable {
-
-        private final int position;
-        myViewHolder holder;
-        String dWebsiteLink, Title;
-        String[] title1;
-        String dWebsiteName;
-        String currentDate, decryptedLogin, decryptedPassword, tempELogin, tempEPassword;
-        Handler handler = new Handler();
-
-        public myAdaptorThreadRunnable(int position1, myViewHolder holder1) {
-            this.position = position1;
-            this.holder = holder1;
-        }
-
-        @Override
-        public void run() {
-            int p = holder.getAdapterPosition();
-            final PasswordHelperClass temp = dataHolder.get(position);
-
-            try {
-                currentDate = dataHolder.get(position).getDate();
-                tempELogin = dataHolder.get(position).getAddDataLogin();
-                decryptedLogin = iAES.doubleDecryption(tempELogin);
-                tempEPassword = dataHolder.get(position).getAddDataPassword();
-                decryptedPassword = iAES.doubleDecryption(tempEPassword);
-                dWebsiteName = temp.getAddWebsite_name();
-                dWebsiteLink = temp.getAddWebsite_link();
-
-                Title = dWebsiteName.substring(0, 1).toUpperCase() + dWebsiteName.substring(1);
-                title1 = Title.split("_", 3);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    holder.tvLogin.setText(decryptedLogin);
-                    if (title1.length == 3) {
-                        holder.tvImageTitle.setText(title1[1]);
-                        holder.tvWebsiteName.setText(title1[1]);
-                    } else if (title1.length == 2) {
-                        holder.tvImageTitle.setText(title1[0]);
-                        holder.tvWebsiteName.setText(title1[0]);
-                    } else if (title1.length == 1) {
-                        holder.tvImageTitle.setText(title1[0]);
-                        holder.tvWebsiteName.setText(title1[0]);
-                    }
-
-                    holder.showCardViewFragmentCall(currentDate, decryptedLogin, decryptedPassword, dWebsiteName, dWebsiteLink);
-
-                    holder.tbcvMore.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.img_copy_username:
-                                    ClipboardManager clipboardManager = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                                    ClipData clipData = ClipData.newPlainText("Copy_Login", decryptedLogin);
-                                    clipboardManager.setPrimaryClip(clipData);
-                                    Toast.makeText(context, "Copied!", Toast.LENGTH_SHORT).show();
-                                    return true;
-
-                                case R.id.img_copy_password:
-                                    ClipboardManager clipboardManager1 = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
-                                    ClipData clipData1 = ClipData.newPlainText("Copy_Password", decryptedPassword);
-                                    clipboardManager1.setPrimaryClip(clipData1);
-                                    Toast.makeText(context, "Copied! ", Toast.LENGTH_SHORT).show();
-                                    return true;
-                                case R.id.img_delete:
-                                    new MaterialAlertDialogBuilder(context)
-                                            .setTitle("Alert!")
-                                            .setMessage("Are you sure, you want to delete the password?")
-                                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    HomeFragment.databaseReference.child(dWebsiteName).child(currentDate).removeValue();
-                                                    HomeFragment.adaptor.notifyDataSetChanged();
-                                                    holder.resetAdaptorCall();
-                                                }
-                                            })
-                                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    dialogInterface.dismiss();
-                                                }
-                                            }).show();
-                                    return true;
-                                case R.id.img_share_password:
-                                    PasswordHelperClass passwordData = new PasswordHelperClass(currentDate, decryptedLogin, decryptedPassword, dWebsiteName, dWebsiteLink);
-                                    holder.sharePasswordCall(passwordData);
-                            }
-                            return false;
-                        }
-                    });
-                }
-            });
-        }
     }
 }
