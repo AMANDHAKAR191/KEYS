@@ -20,7 +20,7 @@ import androidx.core.content.ContextCompat;
 import com.andrognito.pinlockview.IndicatorDots;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
-import com.keys.aman.MyPreference;
+import com.keys.aman.data.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.base.TabLayoutActivity;
 

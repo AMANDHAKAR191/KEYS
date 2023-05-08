@@ -1,7 +1,5 @@
 package com.keys.aman.notes;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -23,52 +21,47 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.keys.aman.MyPreference;
-import com.keys.aman.R;
-import com.keys.aman.MyNoteViewModel;
-import com.keys.aman.messages.MessagesFragment;
-import com.keys.aman.notes.addnote.NoteHelperClass;
-import com.keys.aman.signin_login.LogInActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.keys.aman.MyNoteViewModel;
+import com.keys.aman.R;
+import com.keys.aman.data.MyPreference;
+import com.keys.aman.messages.MessagesFragment;
+import com.keys.aman.notes.addnote.NoteHelperClass;
+import com.keys.aman.signin_login.LogInActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 
-public class NotesFragment extends Fragment {
+public class NotesFragment extends Fragment implements iIconChangeListener {
 
-    Context context;
-    Activity activity;
-    //    private SwipeRefreshLayout swipeRefreshLayout;
-    public ArrayList<NoteHelperClass> dataHolderPinned, dataHolderUnpinned;
-    RecyclerView recyclerViewPinned, recyclerViewUnpinned;
-    LogInActivity logInActivity = new LogInActivity();
     public static final String shareNoteCode = "noteData";
     public static final String REQUEST_ID = "NotesFragment";
-
+    public static DatabaseReference reference;
+    public static NoteAdapter adaptorUnpinned;
+    public ArrayList<NoteHelperClass> dataHolder;
+    Context context;
+    Activity activity;
+    RecyclerView recyclerViewPinned, recyclerViewUnpinned;
+    LogInActivity logInActivity = new LogInActivity();
+    SharedPreferences sharedPreferences;
+    TextView tvNote, tvPinned, tvUnpinned;
+    SearchView searchView;
+    MyPreference myPreference;
+    private String uid;
     public NotesFragment(Context context, Activity activity) {
         this.context = context;
         this.activity = activity;
     }
 
+
     public NotesFragment() {
     }
-
-    SharedPreferences sharedPreferences;
-    public static DatabaseReference reference;
-    public static NoteAdapterForUnpinned adaptorUnpinned;
-    public static NoteAdapterForPinned adaptorPinned;
-    TextView tvNote, tvPinned, tvUnpinned;
-    SearchView searchView;
-    MyPreference myPreference;
-
-
-    private String uid;
 
     @Nullable
     @Override
@@ -79,9 +72,6 @@ public class NotesFragment extends Fragment {
         //Hooks
 //        searchView = view.findViewById(R.id.search_bar);
         tvNote = view.findViewById(R.id.tv_NOTE);
-        tvPinned = view.findViewById(R.id.tv_pinned);
-        tvUnpinned = view.findViewById(R.id.tv_unpinned);
-        recyclerViewPinned = view.findViewById(R.id.recview_pinned);
         recyclerViewUnpinned = view.findViewById(R.id.recview_unpinned);
         recyclerViewUnpinned.setOnScrollChangeListener(new View.OnScrollChangeListener() {
             @Override
@@ -104,24 +94,6 @@ public class NotesFragment extends Fragment {
 
 
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
-//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-//            @Override
-//            public boolean onQueryTextSubmit(String s) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onQueryTextChange(String s) {
-//                adaptor.getFilter().filter(s);
-//
-//                adaptor.notifyDataSetChanged();
-//
-//                return false;
-//            }
-//        });
-
-
-        recyclerViewSetPinnedData();
         recyclerViewSetData();
         return view;
     }
@@ -132,19 +104,18 @@ public class NotesFragment extends Fragment {
         reference = FirebaseDatabase.getInstance().getReference("NotesData").child(uid);
         recyclerViewUnpinned.setLayoutManager(new LinearLayoutManager(context));
 
-        dataHolderUnpinned = new ArrayList<>();
-        adaptorUnpinned = new NoteAdapterForUnpinned(dataHolderUnpinned, context, activity) {
+        dataHolder = new ArrayList<>();
+        adaptorUnpinned = new NoteAdapter(dataHolder, context, activity) {
             @Override
             public void resetAdaptor() {
-                dataHolderUnpinned.clear();
-                dataHolderPinned.clear();
+                dataHolder.clear();
                 Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void refreshRecView() {
-                dataHolderUnpinned.clear();
-                dataHolderPinned.clear();
+                dataholder.clear();
+                recyclerViewSetData();
             }
 
             @Override
@@ -153,7 +124,7 @@ public class NotesFragment extends Fragment {
                 //
                 viewNoteModel.setNoteData(noteData);
 
-                Log.e("shareNote", "Check2: NotesFragment: " +noteData);
+                Log.e("shareNote", "Check2: NotesFragment: " + noteData);
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 MessagesFragment messagesFragment = new MessagesFragment(context, activity);
@@ -181,15 +152,11 @@ public class NotesFragment extends Fragment {
                         if (data.isHideNote()) {
 
                         } else {
-                            if (data.isPinned()) {
-
-                            } else {
-                                dataHolderUnpinned.add(data);
-                            }
+                            dataHolder.add(data);
                         }
 
                     }
-                    Collections.sort(dataHolderUnpinned, NoteHelperClass.addDNoteHelperClassComparator);
+                    Collections.sort(dataHolder, NoteHelperClass.addDNoteHelperClassComparator);
                     adaptorUnpinned.notifyDataSetChanged();
                 } else {
                     tvNote.setVisibility(View.VISIBLE);
@@ -204,86 +171,13 @@ public class NotesFragment extends Fragment {
 
     }
 
-    public void recyclerViewSetPinnedData() {
-        MyNoteViewModel viewNoteModel;
-        viewNoteModel = new ViewModelProvider(requireActivity()).get(MyNoteViewModel.class);
-        reference = FirebaseDatabase.getInstance().getReference("NotesData").child(uid);
-        recyclerViewPinned.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-
-        dataHolderPinned = new ArrayList<>();
-        adaptorPinned = new NoteAdapterForPinned(dataHolderPinned, context, activity) {
-            @Override
-            public void resetPinnedAdaptor() {
-                dataHolderPinned.clear();
-                dataHolderUnpinned.clear();
-                Toast.makeText(context, "Deleted", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void refreshRecView() {
-                dataHolderPinned.clear();
-                dataHolderUnpinned.clear();
-            }
-
-            @Override
-            public void shareNotes(NoteHelperClass noteData) {
-                super.shareNotes(noteData);
-                //
-                viewNoteModel.setNoteData(noteData);
-
-                Log.e("shareNote", "Check2: NotesFragment: " +noteData);
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                MessagesFragment messagesFragment = new MessagesFragment(context, activity);
-//                // Create a new bundle to store the data
-//                Bundle data = new Bundle();
-//                // Put the note data in the bundle
-//                data.putString(logInActivity.REQUEST_CODE_NAME,REQUEST_ID);
-//                data.putParcelable(shareNoteCode, noteData);
-//
-//                // Set the arguments on the fragment
-//                messagesFragment.setArguments(data);
-                fragmentTransaction.add(R.id.fl_user_list_container, messagesFragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-            }
-        };
-        recyclerViewPinned.setAdapter(adaptorPinned);
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-                        NoteHelperClass data = ds.getValue(NoteHelperClass.class);
-                        assert data != null;
-                        if (data.isHideNote()) {
-                        } else {
-                            if (data.isPinned()) {
-                                dataHolderPinned.add(data);
-                            } else {
-
-                            }
-
-                        }
-
-                    }
-                    Collections.sort(dataHolderPinned, NoteHelperClass.addDNoteHelperClassComparator);
-                    adaptorPinned.notifyDataSetChanged();
-                } else {
-                    tvNote.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-            }
-        });
-        recyclerViewPinned.setAdapter(adaptorPinned);
-
-    }
-
     @Override
     public void onStart() {
         super.onStart();
+    }
+
+    @Override
+    public void changeIcon(int resourceId) {
+        
     }
 }

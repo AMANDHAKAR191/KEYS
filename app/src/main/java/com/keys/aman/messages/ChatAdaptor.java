@@ -14,7 +14,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.keys.aman.AES;
-import com.keys.aman.MyPreference;
+import com.keys.aman.data.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.iAES;

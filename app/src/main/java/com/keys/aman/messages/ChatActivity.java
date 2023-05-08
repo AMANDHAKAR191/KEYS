@@ -26,7 +26,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.keys.aman.AES;
 import com.keys.aman.MyNoteViewModel;
 import com.keys.aman.MyPasswordViewModel;
-import com.keys.aman.MyPreference;
+import com.keys.aman.data.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
@@ -37,7 +37,7 @@ import com.keys.aman.databinding.ActivityChatBinding;
 import com.keys.aman.home.PasswordAdapter;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.iAES;
-import com.keys.aman.notes.NoteAdapterForUnpinned;
+import com.keys.aman.notes.NoteAdapter;
 import com.keys.aman.notes.addnote.NoteHelperClass;
 import com.keys.aman.signin_login.LogInActivity;
 
@@ -107,7 +107,7 @@ public class ChatActivity extends AppCompatActivity {
             System.out.println("commonEncryptionKey: " + commonEncryptionKey);
             System.out.println("commonEncryptionIv: " + commonEncryptionIv);
             iAES = AES.getInstance(commonEncryptionKey, commonEncryptionIv);
-        } else if (comingFromActivity.equals(NoteAdapterForUnpinned.REQUEST_ID)) {
+        } else if (comingFromActivity.equals(NoteAdapter.REQUEST_ID)) {
             receiverPublicUid = intentResult.getStringExtra("receiver_public_uid");
             receiverPublicUname = intentResult.getStringExtra("receiver_public_uname");
             commonEncryptionKey = intentResult.getStringExtra("commonEncryptionKey");

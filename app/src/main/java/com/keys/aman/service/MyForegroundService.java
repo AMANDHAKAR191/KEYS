@@ -13,7 +13,7 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import com.keys.aman.MyPreference;
+import com.keys.aman.data.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.messages.ChatActivity;
 import com.keys.aman.signin_login.LogInActivity;

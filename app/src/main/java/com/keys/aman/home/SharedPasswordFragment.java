@@ -1,14 +1,16 @@
 package com.keys.aman.home;
 
-import static android.content.Context.MODE_PRIVATE;
-
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Handler;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -27,8 +29,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.keys.aman.MyPreference;
 import com.keys.aman.R;
+import com.keys.aman.data.MyPreference;
 import com.keys.aman.messages.UserPersonalChatList;
 import com.keys.aman.signin_login.LogInActivity;
 
@@ -37,34 +39,29 @@ import java.util.Objects;
 
 
 public class SharedPasswordFragment extends Fragment {
+    public static final String REQUEST_ID = "HomeFragment";
+    public static SharedPasswordUserListAdapter adaptorForUsersList;
+    public String senderPublicUid;
     Context context;
     Activity activity;
-
-
-    public SharedPasswordFragment(Context context, Activity activity) {
-        this.context = context;
-        this.activity = activity;
-    }
-
-    public SharedPasswordFragment() {
-    }
-
     ProgressBar progressBar;
     ImageButton imgBack;
-    TextView tvNOTE;
+    TextView tvNOTE, textViewTitleSharedPassword;
     RecyclerView recview;
     SharedPreferences sharedPreferences;
-    public static SharedPasswordUserListAdapter adaptorForUsersList;
     ArrayList<UserPersonalChatList> dataHolderUserList;
 
     //    ArrayList<String> parentdataholder;
     String uid;
     LogInActivity logInActivity = new LogInActivity();
-    public static final String REQUEST_ID = "HomeFragment";
-    private DatabaseReference reference;
-    public String senderPublicUid;
     MyPreference myPreference;
-
+    private DatabaseReference reference;
+    public SharedPasswordFragment(Context context, Activity activity) {
+        this.context = context;
+        this.activity = activity;
+    }
+    public SharedPasswordFragment() {
+    }
 
     @SuppressLint("MissingInflatedId")
     @Nullable
@@ -79,6 +76,7 @@ public class SharedPasswordFragment extends Fragment {
         tvNOTE = view.findViewById(R.id.tv_NOTE);
         progressBar.setVisibility(View.VISIBLE);
         imgBack = view.findViewById(R.id.img_back);
+        textViewTitleSharedPassword = view.findViewById(R.id.tv_title_shared_pass);
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,13 +84,55 @@ public class SharedPasswordFragment extends Fragment {
             }
         });
 
+        // Add touch listener to title view
+        textViewTitleSharedPassword.setOnTouchListener(new View.OnTouchListener() {
+            private int screenHeight;
+            private float initialY;
+            private boolean isDragging = false;
+
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        initialY = event.getRawY();
+                        isDragging = false;
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        float currentY = event.getRawY();
+                        float deltaY = currentY - initialY;
+                        if (deltaY > 50) {
+                            // User has dragged down the title
+                            isDragging = true;
+                            // Animate rootView to bottom of screen
+                            int duration = getResources().getInteger(android.R.integer.config_shortAnimTime);
+                            ValueAnimator animator = ValueAnimator.ofInt(view.getTop(), screenHeight);
+                            animator.setDuration(duration);
+                            animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                @Override
+                                public void onAnimationUpdate(ValueAnimator animation) {
+                                    int animatedValue = (int) animation.getAnimatedValue();
+                                    view.layout(view.getLeft(), animatedValue, view.getRight(), animatedValue + view.getHeight());
+                                }
+                            });
+                            animator.addListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    goBack();
+                                }
+                            });
+                            animator.start();
+                        }
+                        break;
+                }
+                return isDragging;
+            }
+        });
+
+
 
         uid = Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid();
 
-
-        threadRunnableHomeFragment threadRunnableHomeFragment = new threadRunnableHomeFragment(view);
-        new Thread(threadRunnableHomeFragment).start();
-
+        recyclerViewSetData();
         return view;
     }
 
@@ -100,27 +140,8 @@ public class SharedPasswordFragment extends Fragment {
         getParentFragmentManager().beginTransaction().remove(SharedPasswordFragment.this).commit();
     }
 
-    public class threadRunnableHomeFragment implements Runnable {
-        Handler handler = new Handler();
-        View view;
 
-        public threadRunnableHomeFragment(View view) {
-            this.view = view;
-        }
-
-        @Override
-        public void run() {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    recyclerviewsetdata();
-                }
-            });
-        }
-    }
-
-
-    public void recyclerviewsetdata() {
+    public void recyclerViewSetData() {
         senderPublicUid = myPreference.getPublicUid();
         reference = FirebaseDatabase.getInstance().getReference("messageUserList").child(senderPublicUid).child("userPersonalChatList");
 

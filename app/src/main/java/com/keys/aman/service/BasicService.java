@@ -40,7 +40,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.keys.aman.MyPreference;
+import com.keys.aman.data.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.AES;
 import com.keys.aman.authentication.PinLockActivity;

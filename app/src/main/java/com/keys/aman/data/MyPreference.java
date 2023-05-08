@@ -1,9 +1,7 @@
-package com.keys.aman;
+package com.keys.aman.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import java.util.regex.Matcher;
 
 public class MyPreference {
     private static MyPreference sInstance;

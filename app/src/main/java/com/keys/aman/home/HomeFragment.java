@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.SearchView;
@@ -22,12 +23,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.google.android.material.animation.AnimationUtils;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.keys.aman.MyPasswordViewModel;
-import com.keys.aman.MyPreference;
+import com.keys.aman.data.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.data.Firebase;
 import com.keys.aman.data.iFirebaseDAO;
@@ -41,7 +41,6 @@ import java.util.Objects;
 public class HomeFragment extends Fragment {
     public static final String REQUEST_ID = "HomeFragment";
     public static SwipeRefreshLayout swipeRefreshLayout;
-    public static DatabaseReference databaseReference;
     public static PasswordAdapter adaptor;
     Context context;
     Activity activity;
@@ -106,7 +105,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onRefresh() {
                 dataholder.clear();
-                recyclerviewsetdata();
+                recyclerViewSetData();
                 swipeRefreshLayout.setRefreshing(false);
                 progressBar.setVisibility(View.VISIBLE);
             }
@@ -121,42 +120,16 @@ public class HomeFragment extends Fragment {
             }
         });
 
-
-        threadRunnableHomeFragment threadRunnableHomeFragment = new threadRunnableHomeFragment(view);
-        new Thread(threadRunnableHomeFragment).start();
+        recyclerViewSetData();
 
         return view;
     }
 
-    public void recyclerviewsetdata() {
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("addpassworddata").child(uid);
+    public void recyclerViewSetData() {
         recview.setLayoutManager(new LinearLayoutManager(context));
         dataholder = new ArrayList<>();
         recview.hasFixedSize();
 
-//        databaseReference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.exists()) {
-//                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
-//                        for (DataSnapshot ds1 : ds.getChildren()) {
-//                            PasswordHelperClass data = ds1.getValue(PasswordHelperClass.class);
-//                            dataholder.add(data);
-//                        }
-//                    }
-//                    adaptor.notifyDataSetChanged();
-//
-//                } else {
-//                    tvNOTE.setVisibility(View.VISIBLE);
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
         iFirebase.loadPasswordsData(new Firebase.iLoadPasswordDataCallback() {
             @Override
             public void onPasswordDataReceivedCallback(ArrayList<PasswordHelperClass> dataHolderPassword) {
@@ -216,22 +189,4 @@ public class HomeFragment extends Fragment {
         super.onStart();
     }
 
-    public class threadRunnableHomeFragment implements Runnable {
-        Handler handler = new Handler();
-        View view;
-
-        public threadRunnableHomeFragment(View view) {
-            this.view = view;
-        }
-
-        @Override
-        public void run() {
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
-                    recyclerviewsetdata();
-                }
-            });
-        }
-    }
 }

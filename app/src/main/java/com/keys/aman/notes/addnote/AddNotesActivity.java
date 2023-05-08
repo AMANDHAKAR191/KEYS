@@ -16,7 +16,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.keys.aman.AES;
-import com.keys.aman.MyPreference;
+import com.keys.aman.data.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.SplashActivity;
 import com.keys.aman.authentication.AppLockCounterClass;
@@ -24,7 +24,7 @@ import com.keys.aman.base.TabLayoutActivity;
 import com.keys.aman.data.Firebase;
 import com.keys.aman.data.iFirebaseDAO;
 import com.keys.aman.iAES;
-import com.keys.aman.notes.NoteAdapterForUnpinned;
+import com.keys.aman.notes.NoteAdapter;
 import com.keys.aman.signin_login.LogInActivity;
 
 import java.text.SimpleDateFormat;
@@ -87,7 +87,7 @@ public class AddNotesActivity extends AppCompatActivity {
         String comingTitle = intent.getStringExtra("title");
         String comingNote = intent.getStringExtra("note");
         switch (comingRequestCode) {
-            case NoteAdapterForUnpinned.REQUEST_ID:
+            case NoteAdapter.REQUEST_ID:
                 tietAddNoteTitle.setText(comingTitle);
                 tietAddNoteBody.setText(comingNote);
                 cbHideNote.setChecked(comingIsHideNote);
@@ -130,7 +130,7 @@ public class AddNotesActivity extends AppCompatActivity {
         noteEncrypted = iAES.doubleEncryption(note);
 
         NoteHelperClass addDNoteHelper;
-        if (comingRequestCode.equals(NoteAdapterForUnpinned.REQUEST_ID)) {
+        if (comingRequestCode.equals(NoteAdapter.REQUEST_ID)) {
             iFirebase.saveSingleNote(comingDate, titleEncrypted, noteEncrypted, isHideNote, new Firebase.iNoteSaveCallBack() {
                 @Override
                 public void onNoteSaved() {

@@ -23,7 +23,14 @@ public class NoteHelperClass implements Parcelable {
     public static Comparator<NoteHelperClass> addDNoteHelperClassComparator = new Comparator<NoteHelperClass>() {
         @Override
         public int compare(NoteHelperClass a1, NoteHelperClass a2) {
-            return a2.getDate().compareTo(a1.getDate());
+            if (a1.isPinned() && !a2.isPinned()) {
+                return -1;
+            } else if (!a1.isPinned() && a2.isPinned()) {
+                return 1;
+            } else {
+                return a2.getDate().compareTo(a1.getDate());
+            }
+
         }
     };
 

@@ -6,8 +6,6 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.keys.aman.AES;
-import com.keys.aman.MyPreference;
+import com.keys.aman.data.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.data.Firebase;
 import com.keys.aman.data.iFirebaseDAO;
@@ -33,11 +31,6 @@ import com.keys.aman.iAES;
 import com.keys.aman.messages.ChatActivity;
 import com.keys.aman.signin_login.LogInActivity;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 
 public class PasswordAdapter extends RecyclerView.Adapter<PasswordAdapter.myViewHolder> implements Filterable {

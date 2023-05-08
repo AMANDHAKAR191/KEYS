@@ -1,7 +1,5 @@
 package com.keys.aman.messages;
 
-import static android.content.Context.MODE_PRIVATE;
-
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -32,11 +30,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.keys.aman.MyNoteViewModel;
 import com.keys.aman.MyPasswordViewModel;
-import com.keys.aman.MyPreference;
+import com.keys.aman.data.MyPreference;
 import com.keys.aman.R;
 import com.keys.aman.home.PasswordAdapter;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
-import com.keys.aman.notes.NoteAdapterForUnpinned;
+import com.keys.aman.notes.NoteAdapter;
 import com.keys.aman.notes.addnote.NoteHelperClass;
 import com.keys.aman.signin_login.LogInActivity;
 
@@ -160,7 +158,7 @@ public class MessagesFragment extends Fragment {
             public void onNoteSelected(int position) {
                 super.onNoteSelected(position);
                 Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra(logInActivity.REQUEST_CODE_NAME, NoteAdapterForUnpinned.REQUEST_ID);
+                intent.putExtra(logInActivity.REQUEST_CODE_NAME, NoteAdapter.REQUEST_ID);
                 intent.putExtra("noteData", noteData);
                 intent.putExtra("receiver_public_uid", dataHolder.get(position).getOtherUserPublicUid());
                 intent.putExtra("receiver_public_uname", dataHolder.get(position).getOtherUserPublicUname());

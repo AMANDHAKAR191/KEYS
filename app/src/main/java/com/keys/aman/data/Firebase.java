@@ -13,7 +13,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.keys.aman.AES;
-import com.keys.aman.MyPreference;
 import com.keys.aman.home.PasswordGeneratorActivity;
 import com.keys.aman.home.addpassword.PasswordHelperClass;
 import com.keys.aman.home.addpassword.WebsiteHelperClass;
@@ -86,10 +85,10 @@ public class Firebase implements iFirebaseDAO{
         });
     }
 
-    public void saveSinglePassword(String comingDate, String userName, String Password, String websiteName, String websiteLink, iPasswordSaveCallBack passwordSaveCallBack) {
+    public void saveSinglePassword(String comingDate, String userName, String password, String websiteName, String websiteLink, iPasswordSaveCallBack passwordSaveCallBack) {
         iAES = AES.getInstance(myPreference.getAesKey(), myPreference.getAesIv());
         String encryptedUserName = iAES.doubleEncryption(userName);
-        String encryptedPassword = iAES.doubleEncryption(userName);
+        String encryptedPassword = iAES.doubleEncryption(password);
         databaseReference = FirebaseDatabase.getInstance().getReference("PasswordsData").child(getUID()).child(websiteName);
         PasswordHelperClass passwordHelperClass = new PasswordHelperClass(comingDate, encryptedUserName, encryptedPassword, websiteName, websiteLink);
         databaseReference.child(comingDate).setValue(passwordHelperClass)

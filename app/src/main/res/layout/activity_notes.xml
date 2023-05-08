@@ -10,82 +10,15 @@
     android:background="@drawable/viewpager_background"
     tools:context="com.keys.aman.notes.NotesFragment">
 
-    <!--    <SearchView-->
-    <!--        android:id="@+id/search_bar"-->
-    <!--        android:layout_width="wrap_content"-->
-    <!--        android:layout_height="50dp"-->
-    <!--        android:layout_marginTop="-25dp"-->
-    <!--        android:background="@drawable/search_et_background"-->
-    <!--        android:elevation="8dp"-->
-    <!--        android:visibility="gone"-->
-    <!--        app:layout_constraintLeft_toLeftOf="parent"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/toolbar" />-->
-
-
-    <TextView
-        android:id="@+id/tv_pinned"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="1dp"
-        android:background="@drawable/rounded_thems1"
-        android:gravity="center"
-        android:minHeight="48dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        android:text="Pinned"
-        android:textColor="?attr/colorOnPrimary"
-        android:textSize="14dp"
-        android:textStyle="bold"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recview_pinned"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="#00000000"
-        android:clickable="true"
-        android:orientation="horizontal"
-        tools:listitem="@layout/pinned_note_cardview_layout"
-        android:visibility="visible"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_pinned" />
-
-    <TextView
-        android:id="@+id/tv_unpinned"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="1dp"
-        android:background="@drawable/rounded_thems1"
-        android:gravity="center"
-        android:minHeight="48dp"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="5dp"
-        android:text="Unpinned"
-        android:textColor="?attr/colorOnPrimary"
-        android:textSize="14dp"
-        android:textStyle="bold"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recview_pinned" />
-
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recview_unpinned"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clickable="true"
-        tools:listitem="@layout/cardview_layout_note"
+        tools:listitem="@layout/cardview_layout_note_unpinned"
         app:layout_constraintBottom_toTopOf="@+id/guideline10"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_unpinned" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <TextView
