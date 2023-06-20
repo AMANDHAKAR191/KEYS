@@ -96,8 +96,9 @@ public final class BasicService extends AutofillService {
         String packageName = getApplicationContext().getPackageName();
 
         // Get the datasets from Firebase
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("addpassworddata")
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("PasswordsData")
                 .child(FirebaseAuth.getInstance().getCurrentUser().getUid());
+        ref.keepSynced(true);
         //accounts_google_com
         //com_netflix_mediaclient
         ref.child("com_netflix_mediaclient").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -112,7 +113,7 @@ public final class BasicService extends AutofillService {
 //                authIntent.putExtra(EXTRA_AUTOFILL_DATASET_ID, datasetId); // Pass any extras you might need in the authentication activity
 
                 // Step 2: Create a PendingIntent from the authentication Intent
-                PendingIntent authPendingIntent = PendingIntent.getActivity(context, 0, authIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                PendingIntent authPendingIntent = PendingIntent.getActivity(context, 0, authIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
                 IntentSender intentSender = authPendingIntent.getIntentSender();
                 // Loop through the data and create a dataset for each record
@@ -164,13 +165,13 @@ public final class BasicService extends AutofillService {
 //                    response.addDataset(datasetBuilders.get(i).build());
 //                }
 
-                // Add save info
-                Collection<AutofillId> ids = fields.values();
-                AutofillId[] requiredIds = new AutofillId[ids.size()];
-                ids.toArray(requiredIds);
-                response.setSaveInfo(
-                        // We're simple, so we're generic
-                        new SaveInfo.Builder(SaveInfo.SAVE_DATA_TYPE_USERNAME & SaveInfo.SAVE_DATA_TYPE_PASSWORD, requiredIds).build());
+//                // Add save info
+//                Collection<AutofillId> ids = fields.values();
+//                AutofillId[] requiredIds = new AutofillId[ids.size()];
+//                ids.toArray(requiredIds);
+//                response.setSaveInfo(
+//                        // We're simple, so we're generic
+//                        new SaveInfo.Builder(SaveInfo.SAVE_DATA_TYPE_USERNAME & SaveInfo.SAVE_DATA_TYPE_PASSWORD, requiredIds).build());
 
                 // Profit!
                 callback.onSuccess(response.build());

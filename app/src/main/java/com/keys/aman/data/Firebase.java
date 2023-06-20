@@ -60,6 +60,7 @@ public class Firebase implements iFirebaseDAO{
     public void loadPasswordsData(final iLoadPasswordDataCallback loadPasswordDataCallback) {
         dataHolder = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference("PasswordsData").child(getUID());
+        databaseReference.keepSynced(true);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -90,6 +91,7 @@ public class Firebase implements iFirebaseDAO{
         String encryptedUserName = iAES.doubleEncryption(userName);
         String encryptedPassword = iAES.doubleEncryption(password);
         databaseReference = FirebaseDatabase.getInstance().getReference("PasswordsData").child(getUID()).child(websiteName);
+        databaseReference.keepSynced(true);
         PasswordHelperClass passwordHelperClass = new PasswordHelperClass(comingDate, encryptedUserName, encryptedPassword, websiteName, websiteLink);
         databaseReference.child(comingDate).setValue(passwordHelperClass)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -108,6 +110,7 @@ public class Firebase implements iFirebaseDAO{
 
     public void deleteSinglePassword(String passwordDate, String websiteName, final iPasswordDeleteCallback iPasswordDeleteCallback){
         databaseReference = FirebaseDatabase.getInstance().getReference("PasswordData").child(getUID());
+        databaseReference.keepSynced(true);
         databaseReference.child(websiteName).child(passwordDate).removeValue()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -120,6 +123,7 @@ public class Firebase implements iFirebaseDAO{
     public void getWebsiteListData(final iWebsiteListCallback iWebsiteListCallback) {
         ArrayList<WebsiteHelperClass> dataholder = new ArrayList<>();
         databaseReference = FirebaseDatabase.getInstance().getReference("website_list");
+        databaseReference.keepSynced(true);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -142,6 +146,7 @@ public class Firebase implements iFirebaseDAO{
 
     public void saveSingleNote(String date, String titleEncrypted, String noteEncrypted, boolean isHideNote, final iNoteSaveCallBack noteSaveCallBack) {
         databaseReference = FirebaseDatabase.getInstance().getReference("NotesData").child(getUID());
+        databaseReference.keepSynced(true);
         NoteHelperClass addDNoteHelper;
         addDNoteHelper = new NoteHelperClass(date, titleEncrypted, noteEncrypted, isHideNote, false);
         databaseReference.child(date).setValue(addDNoteHelper)
@@ -161,6 +166,7 @@ public class Firebase implements iFirebaseDAO{
 
     public void deleteSingleNote(String noteDate, final iNoteDeleteCallback iNoteDeleteCallback){
         databaseReference = FirebaseDatabase.getInstance().getReference("NotesData").child(getUID());
+        databaseReference.keepSynced(true);
         databaseReference.child(noteDate).removeValue()
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
@@ -171,6 +177,7 @@ public class Firebase implements iFirebaseDAO{
     }
     public void checkUser(final iUserCheckCallback userCheckCallback) {
         databaseReference = FirebaseDatabase.getInstance().getReference("UserData");
+        databaseReference.keepSynced(true);
         databaseReference.child(getUID()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -206,6 +213,7 @@ public class Firebase implements iFirebaseDAO{
         myPreference.setNewUser(false);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("UserData");
+        databaseReference.keepSynced(true);
 
         String aesKey = myPreference.getAesKey();
         String aesIv = myPreference.getAesIv();
@@ -257,6 +265,7 @@ public class Firebase implements iFirebaseDAO{
 
     public void loadUserData() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("UserData").child(getUID());
+        reference.keepSynced(true);
         // Read from the database
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -286,8 +295,9 @@ public class Firebase implements iFirebaseDAO{
 
     public void loadChatMessages(String senderRoom, final iLoadChatMessagesCallback loadChatMessagesCallback) {
         dataHolderChatMessages = new ArrayList<>();
-        FirebaseDatabase.getInstance().getReference().child("messages").child(senderRoom)
-                .addValueEventListener(new ValueEventListener() {
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("messages").child(senderRoom);
+        databaseReference.keepSynced(true);
+        databaseReference.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         dataHolderChatMessages.clear();

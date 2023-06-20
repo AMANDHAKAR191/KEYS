@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 //import com.keys.aman.data.LocalDatabase;
+import com.google.firebase.database.FirebaseDatabase;
 import com.keys.aman.home.PasswordGeneratorActivity;
 import com.keys.aman.service.MyFirebaseMessagingService;
 import com.keys.aman.signin_login.LogInActivity;
@@ -31,6 +32,8 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        // Enabling Offline Capabilities on Android
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
         //start firebase messaging service
         Intent serviceIntent = new Intent(SplashActivity.this, MyFirebaseMessagingService.class);
